@@ -1,2 +1,2 @@
 # DiamondPal
-DiamondPal : a tool to help improve the diamond prospecting industry.
+DiamondPal : a software tool to help improve the diamond prospecting industry.
