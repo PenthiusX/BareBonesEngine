@@ -14,10 +14,12 @@ TARGET = DiamondPal
 TEMPLATE = app
 
 SOURCES += main.cpp\
-                mainwindow.cpp
+                mainwindow.cpp \
+    myglwidget.cpp
 
 HEADERS  += window.h \
-    mainwindow.h
+    mainwindow.h \
+    myglwidget.h
 
 FORMS    += mainwindow.ui
 
