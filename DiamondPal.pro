@@ -16,14 +16,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
            mainwindow.cpp \
            _glwidget.cpp \
-    _renderer.cpp
+    _renderer.cpp \
+    tools.cpp
 
 HEADERS  += mainwindow.h \
             _glwidget.h \
-    _renderer.h
+    _renderer.h \
+    tools.h
 
 FORMS    += mainwindow.ui
-<<<<<<< HEAD
 
 RESOURCES += \
     shaders.qrc \
