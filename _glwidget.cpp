@@ -1,6 +1,7 @@
 #include "_glwidget.h"
 #include <iostream>
 #include <QOpenGLShader>
+#include <tools.h>
 
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -32,18 +33,11 @@ void _GLWidget::initializeGL()
     //---------------------------------
     //shader string literals
 
-    const char *vshader = "#version 330 core\n"
-                          "layout (location = 0) in vec3 aPos;\n"
-                          "void main()\n"
-                          "{\n"
-                          "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                          "}\0";
-    const char *fShader = "#version 330 core\n"
-                          "out vec4 FragColor;\n"
-                          "void main()\n"
-                          "{\n"
-                          "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                          "}\n\0";
+    QByteArray v_source_utf = ReadStringFromQrc(":/shaders/vshader.glsl").toLocal8Bit(); // get shader source from qrc file
+    QByteArray f_source_utf = ReadStringFromQrc(":/shaders/fshader.glsl").toLocal8Bit(); // get shader source from qrc file
+
+    const char *vshader = v_source_utf.data(); //convert to const char *
+    const char *fShader = f_source_utf.data(); //convert to const char *
 
     //Vertex Shader
     unsigned int vertexShader;
