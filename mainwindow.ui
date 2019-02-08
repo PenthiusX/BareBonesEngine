@@ -25,9 +25,9 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="Quit">
        <property name="text">
-        <string>PushButton</string>
+        <string>Quit</string>
        </property>
       </widget>
      </item>
@@ -36,10 +36,10 @@
    <widget class="_GLWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>501</width>
-      <height>381</height>
+      <x>40</x>
+      <y>30</y>
+      <width>571</width>
+      <height>351</height>
      </rect>
     </property>
    </widget>
@@ -64,7 +64,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>Quit</sender>
    <signal>released()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
