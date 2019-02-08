@@ -21,6 +21,17 @@ HEADERS  += mainwindow.h \
             _glwidget.h
 
 FORMS    += mainwindow.ui
-LIBS += -lOpengl32
 
 
+linux-g++ { #check if platform is linux
+message(Linux)
+INCLUDEPATH +=
+DEPENDPATH += 
+LIBS += 
+}
+
+win32 { #check if platform is windows
+INCLUDEPATH += 
+DEPENDPATH += 
+LIBS += 
+}
