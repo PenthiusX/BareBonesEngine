@@ -3,9 +3,11 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QGLFramebufferObjectFormat>
+#include <qopenglextrafunctions.h>
+#include <vector>
 
-class _GLWidget :  public QOpenGLWidget, protected QOpenGLFunctions
+
+class _GLWidget :  public QOpenGLWidget, protected QOpenGLExtraFunctions
 {
 public:
 _GLWidget();
@@ -14,6 +16,14 @@ protected:
 void initializeGL() Q_DECL_OVERRIDE;
 void resizeGL(int w, int h)Q_DECL_OVERRIDE;
 void paintGL()Q_DECL_OVERRIDE;
+
+private:
+unsigned int VBO;
+unsigned int VAO;
+unsigned int EBO;
+unsigned int shaderProgram;
+
+
 
 };
 

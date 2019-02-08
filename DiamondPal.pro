@@ -15,12 +15,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
            mainwindow.cpp \
-           _glwidget.cpp
+           _glwidget.cpp \
+    _renderer.cpp
 
 HEADERS  += mainwindow.h \
-            _glwidget.h
+            _glwidget.h \
+    _renderer.h
 
 FORMS    += mainwindow.ui
-LIBS += -lOpengl32
 
-
+RESOURCES += \
+    shaders.qrc \
+    textures.qrc
