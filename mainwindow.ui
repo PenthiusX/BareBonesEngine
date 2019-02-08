@@ -13,16 +13,36 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>633</width>
-     <height>20</height>
-    </rect>
-   </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>10</y>
+      <width>82</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="_GLWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>501</width>
+      <height>381</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -32,9 +52,32 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>_GLWidget</class>
+   <extends>QWidget</extends>
+   <header>_glwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>released()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>48</x>
+     <y>364</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>45</x>
+     <y>246</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
