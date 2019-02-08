@@ -23,7 +23,22 @@ HEADERS  += mainwindow.h \
     _renderer.h
 
 FORMS    += mainwindow.ui
+<<<<<<< HEAD
 
 RESOURCES += \
     shaders.qrc \
     textures.qrc
+
+linux-g++ { #check if platform is linux
+message(Linux)
+INCLUDEPATH +=
+DEPENDPATH += 
+LIBS += 
+}
+
+win32 { #check if platform is windows
+INCLUDEPATH += 
+DEPENDPATH += 
+LIBS += 
+}
+
