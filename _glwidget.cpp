@@ -8,7 +8,8 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 
 }
 
-float vertices[] = {
+float vertices[] =
+{
     0.5f,  0.5f, 0.0f,  // top right
     0.5f, -0.5f, 0.0f,  // bottom right
     -0.5f, -0.5f, 0.0f,  // bottom left
@@ -19,11 +20,13 @@ unsigned int indices[] = {  // note that we start from 0!
                             1, 2, 3    // second triangle
                          };
 
-float texCoords[] = {
+float texCoords[] =
+{
     0.0f, 0.0f,  // lower-left corner
     1.0f, 0.0f,  // lower-right corner
     0.5f, 1.0f   // top-center corner
 };
+
 void _GLWidget::initializeGL()
 {
     //---------------------------------
@@ -32,7 +35,6 @@ void _GLWidget::initializeGL()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //---------------------------------
     //shader string literals
-
     QByteArray v_source_utf = ReadStringFromQrc(":/shaders/vshader.glsl").toLocal8Bit(); // get shader source from qrc file
     QByteArray f_source_utf = ReadStringFromQrc(":/shaders/fshader.glsl").toLocal8Bit(); // get shader source from qrc file
 
@@ -93,8 +95,8 @@ void _GLWidget::initializeGL()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     //-----------------------------------
-
 }
+
 void _GLWidget::resizeGL(int w, int h)
 {
 
