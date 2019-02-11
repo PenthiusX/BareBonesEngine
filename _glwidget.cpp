@@ -3,6 +3,7 @@
 #include <QOpenGLShader>
 #include <tools.h>
 
+
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 
