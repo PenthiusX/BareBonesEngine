@@ -1,7 +1,16 @@
 #include "_renderer.h"
 #include <tools.h>
 #include <iostream>
+/*
+ * The Renderer class
+ * To create an abstraction for randering data
+ * Extends the _glwidget class, will be included in the _glwidget class
+*/
 
+/* Constructor for the renderer class
+ * The "QOpenGLExtraFunctions(QOpenGLContext::currentContext())" is passed by parameter
+ * to avoid using initialiseopenglfunction() in the initcallback
+ */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
@@ -10,7 +19,6 @@ _Renderer::~_Renderer()
 {
 
 }
-
 
 unsigned int indices[] = {  // note that we start from 0!
                             0, 1, 3,   // first triangle
@@ -23,17 +31,16 @@ float texCoords[] =
     0.5f, 1.0f   // top-center corner
 };
 
-void _Renderer::init(float a)
+float vertices[] =
 {
+    0.5,  0.5f, 0.0f,  // top right
+    0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left
+};
 
-    float vertices[] =
-    {
-        a,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left
-    };
-    //initializeOpenGLFunctions();
+void _Renderer::init()
+{
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //---------------------------------
@@ -118,7 +125,6 @@ void _Renderer::setTexture(char *texBitmap)
 
 void _Renderer::draw()
 {
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
