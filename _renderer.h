@@ -1,6 +1,7 @@
 #ifndef _RENDERER_H
 #define _RENDERER_H
 #include <vector>
+#include <qopenglfunctions.h>
 #include <qopenglextrafunctions.h>
 /*
  * The Renderer class
@@ -16,11 +17,8 @@ public:
     void init();
     void setShader(char* vpath, char* gpath);//takes a string literal and passes
     void setBuffers(std::vector<float>vertexArray,std::vector<int> indexArray);//take vertex and index data and binds it to object buffer
-    void setTexture(char* texBitmapm);//takes am image and binds it to object
-protected:
-//void initializeGL() Q_DECL_OVERRIDE;
-//void resizeGL(int w, int h)Q_DECL_OVERRIDE;
-//void paintGL()Q_DECL_OVERRIDE;
+    void setTexture(char* texBitmap);//takes am image and binds it to object
+    void draw();
 
 private:
 unsigned int VBO;
