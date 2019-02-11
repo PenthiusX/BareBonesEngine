@@ -1,7 +1,7 @@
 #ifndef _RENDERER_H
 #define _RENDERER_H
-#include <QOpenGLExtraFunctions>
-
+#include <vector>
+#include <qopenglextrafunctions.h>
 /*
  * The Renderer class
  * To create an abstraction for randering data
@@ -13,12 +13,23 @@ public:
     _Renderer();
     ~_Renderer();
 
+    void init();
     void setShader(char* vpath, char* gpath);//takes a string literal and passes
     void setBuffers(std::vector<float>vertexArray,std::vector<int> indexArray);//take vertex and index data and binds it to object buffer
-    void setTexture(char* texBitmap);//takes am image and binds it to object
+    void setTexture(char* texBitmapm);//takes am image and binds it to object
+protected:
+//void initializeGL() Q_DECL_OVERRIDE;
+//void resizeGL(int w, int h)Q_DECL_OVERRIDE;
+//void paintGL()Q_DECL_OVERRIDE;
+
 private:
+unsigned int VBO;
+unsigned int VAO;
+unsigned int EBO;
+unsigned int shaderProgram;
 
 
+bool move;
 };
 
 #endif // _RENDERER_H

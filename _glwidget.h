@@ -2,12 +2,12 @@
 #define _GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions>
-#include <qopenglextrafunctions.h>
-#include <vector>
+//#include <QOpenGLFunctions>
+//#include <qopenglextrafunctions.h>
+//#include <vector>
+#include "_renderer.h"
 
-
-class _GLWidget :  public QOpenGLWidget, protected QOpenGLExtraFunctions
+class _GLWidget :  public QOpenGLWidget//, protected QOpenGLExtraFunctions
 {
 public:
 _GLWidget();
@@ -22,9 +22,8 @@ unsigned int VBO;
 unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
-
-
-
+//---------------------
+_Renderer r,x;
 };
 
 #endif // _GLWIDGET_H
