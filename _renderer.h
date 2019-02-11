@@ -15,7 +15,7 @@ public:
     ~_Renderer();
 
     void init();
-    void setShader(char* vpath, char* gpath);//takes a string literal and passes
+    void setShader();//takes a string literal and passes
     void setBuffers(std::vector<float>vertexArray,std::vector<int> indexArray);//take vertex and index data and binds it to object buffer
 
     void setTexture(char* texBitmap);//takes am image and binds it to object
@@ -27,8 +27,9 @@ unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
 
+std::vector<float> vertices;
+std::vector<int> indices;
 
-bool move;
 };
 
 #endif // _RENDERER_H

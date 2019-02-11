@@ -14,32 +14,13 @@
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
-}
-_Renderer::~_Renderer()
-{
 
 }
-
-unsigned int indices[] = {  // note that we start from 0!
-                            0, 1, 3,   // first triangle
-                            1, 2, 3    // second triangle
-                         };
-float texCoords[] =
-{
-    0.0f, 0.0f,  // lower-left corner
-    1.0f, 0.0f,  // lower-right corner
-    0.5f, 1.0f   // top-center corner
-};
-
-float vertices[] =
-{
-    0.5,  0.5f, 0.0f,  // top right
-    0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left
-};
-
-void _Renderer::init()
+_Renderer::~_Renderer(){}
+/*
+ *
+*/
+void _Renderer::setShader()
 {
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -57,7 +38,7 @@ void _Renderer::init()
     glShaderSource(vertexShader, 1, &vshader, NULL);
     glCompileShader(vertexShader);
     //check for compile success
-    int  success;
+    int success;
     char infoLog[512];
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if(!success)
@@ -83,7 +64,20 @@ void _Renderer::init()
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-    //-----------------------------------
+    //------------------------------------
+    glUseProgram(shaderProgram);
+    //------------------------------------
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    //------------------------------------
+}
+/*
+ * setBUffers set Vertex and Index data into
+ * the GPU buffers to use for the current model.
+ * The functions takes two param
+*/
+void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
+{
     //  Initialization code (done once (unless your object frequently changes))
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
@@ -94,35 +88,22 @@ void _Renderer::init()
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof (float), &vertexArray[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size()* sizeof(int), &indexArray[0], GL_STATIC_DRAW);
     //
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    //
-    //-----------------------------------
-    glUseProgram(shaderProgram);
-    //-----------------------------------
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    //-----------------------------------
 }
-
-void _Renderer::setShader(char *vpath, char *gpath)
-{
-
-}
-
-void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
-{
-
-}
-
+/*
+ *
+*/
 void _Renderer::setTexture(char *texBitmap)
 {
 
 }
-
+/*
+ *
+*/
 void _Renderer::draw()
 {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
