@@ -4,16 +4,18 @@
 /*
  * The Renderer class
  * To create an abstraction for randering data
- * Extends the _glwidget class, will be included in the _glwidget class
+ * Extends the _glwidget class, will be included in the _glwidget class.
+ * Created: 8_02_2019
+ * Author: Aditya,Saurabh
 */
 
 /* Constructor for the renderer class
  * The "QOpenGLExtraFunctions(QOpenGLContext::currentContext())" is passed by parameter
- * to avoid using initialiseopenglfunction() in the initcallback
+ * to avoid using initialiseopenglfunction() in the initcallback.
+ * Create:11_02_2019
  */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-
 
 }
 _Renderer::~_Renderer(){}
@@ -72,9 +74,10 @@ void _Renderer::setShader()
     //------------------------------------
 }
 /*
- * setBUffers set Vertex and Index data into
+ * SetBUffers set Vertex and Index data into
  * the GPU buffers to use for the current model.
- * The functions takes two param
+ * The functions takes two parameters
+ * Created: 11_02_2019
 */
 void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
 {
