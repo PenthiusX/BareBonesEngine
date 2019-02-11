@@ -38,11 +38,12 @@ void _GLWidget::initializeGL()
     renderers.push_back(_Renderer());
     renderers.push_back(_Renderer());
 
-    renderers[0].init();
-    renderers[1].init();
+    renderers[0].init(1.0f);
+    renderers[1].init(0.5f);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 /*
     glEnable(GL_DEPTH_TEST);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //---------------------------------
     //shader string literals
 
@@ -114,12 +115,10 @@ void _GLWidget::resizeGL(int w, int h)
 {
 
 }
-
 void _GLWidget::paintGL()
 {
-    char* a;
-    renderers[0].setTexture(a);
-    renderers[1].setTexture(a);
+    renderers[0].draw();
+    renderers[1].draw();
 
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
