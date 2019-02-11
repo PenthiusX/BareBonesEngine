@@ -13,10 +13,10 @@ public:
     _Renderer();
     ~_Renderer();
 
-    void init();
+    void init(float a);
     void setShader(char* vpath, char* gpath);//takes a string literal and passes
     void setBuffers(std::vector<float>vertexArray,std::vector<int> indexArray);//take vertex and index data and binds it to object buffer
-    void setTexture(char* texBitmapm);//takes am image and binds it to object
+    void draw();//takes am image and binds it to object
 protected:
 //void initializeGL() Q_DECL_OVERRIDE;
 //void resizeGL(int w, int h)Q_DECL_OVERRIDE;
