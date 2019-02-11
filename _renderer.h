@@ -14,7 +14,7 @@ public:
     _Renderer();
     ~_Renderer();
 
-    void init(float a);
+    void init();
     void setShader(char* vpath, char* gpath);//takes a string literal and passes
     void setBuffers(std::vector<float>vertexArray,std::vector<int> indexArray);//take vertex and index data and binds it to object buffer
 
