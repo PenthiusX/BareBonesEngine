@@ -7,7 +7,7 @@
 //#include <vector>
 #include "_renderer.h"
 
-class _GLWidget :  public QOpenGLWidget//, protected QOpenGLExtraFunctions
+class _GLWidget :  public QOpenGLWidget , protected QOpenGLExtraFunctions
 {
 public:
 _GLWidget();
@@ -23,7 +23,7 @@ unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
 //---------------------
-_Renderer r,x;
+std::vector<_Renderer> renderers;
 };
 
 #endif // _GLWIDGET_H

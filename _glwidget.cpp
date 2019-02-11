@@ -32,10 +32,15 @@ float texCoords[] =
 void _GLWidget::initializeGL()
 {
     //---------------------------------
-    r.init();
-    x.init();
-/*
+
     initializeOpenGLFunctions();
+
+    renderers.push_back(_Renderer());
+    renderers.push_back(_Renderer());
+
+    renderers[0].init();
+    renderers[1].init();
+/*
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //---------------------------------
@@ -113,8 +118,8 @@ void _GLWidget::resizeGL(int w, int h)
 void _GLWidget::paintGL()
 {
     char* a;
-    r.setTexture(a);
-    x.setTexture(a);
+    renderers[0].setTexture(a);
+    renderers[1].setTexture(a);
 
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
