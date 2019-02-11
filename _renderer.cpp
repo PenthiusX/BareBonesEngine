@@ -2,7 +2,7 @@
 #include <tools.h>
 #include <iostream>
 
-_Renderer::_Renderer()
+_Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
 }
@@ -32,7 +32,7 @@ float texCoords[] =
 void _Renderer::init()
 {
 
-    initializeOpenGLFunctions();
+    //initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //---------------------------------
