@@ -1,13 +1,14 @@
 #include "_glwidget.h"
 #include <iostream>
-#include <QOpenGLShader>
-#include <tools.h>
+//#include <QOpenGLShader>
+//#include <tools.h>
 
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 
 }
 
+/*
 float vertices[] =
 {
     0.5f,  0.5f, 0.0f,  // top right
@@ -26,15 +27,21 @@ float texCoords[] =
     1.0f, 0.0f,  // lower-right corner
     0.5f, 1.0f   // top-center corner
 };
+*/
 
 void _GLWidget::initializeGL()
 {
     //---------------------------------
+    r.init();
+    x.init();
+/*
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //---------------------------------
     //shader string literals
+
+
     QByteArray v_source_utf = ReadStringFromQrc(":/shaders/vshader.glsl").toLocal8Bit(); // get shader source from qrc file
     QByteArray f_source_utf = ReadStringFromQrc(":/shaders/fshader.glsl").toLocal8Bit(); // get shader source from qrc file
 
@@ -95,6 +102,7 @@ void _GLWidget::initializeGL()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     //-----------------------------------
+*/
 }
 
 void _GLWidget::resizeGL(int w, int h)
@@ -104,5 +112,10 @@ void _GLWidget::resizeGL(int w, int h)
 
 void _GLWidget::paintGL()
 {
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    char* a;
+    r.setTexture(a);
+    x.setTexture(a);
+
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 }
