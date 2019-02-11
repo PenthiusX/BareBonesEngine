@@ -40,6 +40,6 @@ LIBS +=
 win32 { #check if platform is windows
 INCLUDEPATH += 
 DEPENDPATH += 
-LIBS += 
+LIBS +=
 }
 

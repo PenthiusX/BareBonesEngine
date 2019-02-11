@@ -22,16 +22,15 @@ unsigned int indices[] = {  // note that we start from 0!
                             0, 1, 3,   // first triangle
                             1, 2, 3    // second triangle
                          };
-
 float texCoords[] =
 {
     0.0f, 0.0f,  // lower-left corner
     1.0f, 0.0f,  // lower-right corner
     0.5f, 1.0f   // top-center corner
 };
+
 void _Renderer::init()
 {
-
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -40,8 +39,8 @@ void _Renderer::init()
     QByteArray v_source_utf = ReadStringFromQrc(":/shaders/vshader.glsl").toLocal8Bit(); // get shader source from qrc file
     QByteArray f_source_utf = ReadStringFromQrc(":/shaders/fshader.glsl").toLocal8Bit(); // get shader source from qrc file
 
-    const char *vshader = v_source_utf.data(); //convert to const char *
-    const char *fShader = f_source_utf.data(); //convert to const char *
+    const char *vshader = v_source_utf.data(); //convert to const char*
+    const char *fShader = f_source_utf.data(); //convert to const char*
 
     //Vertex Shader
     unsigned int vertexShader;
@@ -104,6 +103,7 @@ void _Renderer::setShader(char *vpath, char *gpath)
 {
 
 }
+
 void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
 {
 
@@ -111,5 +111,13 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
 
 void _Renderer::setTexture(char *texBitmap)
 {
-     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+}
+
+void _Renderer::draw()
+{
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

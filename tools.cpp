@@ -16,7 +16,6 @@ QString ReadStringFromQrc(QString Filename)
     if(!mFile.open(QFile::ReadOnly | QFile::Text)){
         qDebug() << "could not open file for read";
     }
-
         QTextStream in(&mFile);
         mText = in.readAll();
 

@@ -1,7 +1,5 @@
 #include "_glwidget.h"
 #include <iostream>
-//#include <QOpenGLShader>
-//#include <tools.h>
 
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -110,12 +108,9 @@ void _GLWidget::resizeGL(int w, int h)
 
 }
 
-void _GLWidget::paintGL()
+void _GLWidget::paintGL()//the renderloop
 {
-    char* a;
-    r.setTexture(a);
-    x.setTexture(a);
-
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+    r.draw();
+    x.draw();
+   //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
