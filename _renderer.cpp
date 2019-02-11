@@ -18,6 +18,9 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
 }
+/*
+ *
+*/
 _Renderer::~_Renderer(){}
 /*
  *
@@ -26,7 +29,6 @@ void _Renderer::setShader()
 {
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    //---------------------------------
     //shader string literals
     QByteArray v_source_utf = ReadStringFromQrc(":/shaders/vshader.glsl").toLocal8Bit(); // get shader source from qrc file
     QByteArray f_source_utf = ReadStringFromQrc(":/shaders/fshader.glsl").toLocal8Bit(); // get shader source from qrc file
@@ -39,6 +41,7 @@ void _Renderer::setShader()
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vshader, NULL);
     glCompileShader(vertexShader);
+
     //check for compile success
     int success;
     char infoLog[512];
@@ -66,12 +69,13 @@ void _Renderer::setShader()
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-    //------------------------------------
+
+    //using the shader program in the current context
     glUseProgram(shaderProgram);
-    //------------------------------------
+
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-    //------------------------------------
+
 }
 /*
  * SetBUffers set Vertex and Index data into
@@ -83,6 +87,7 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
 {
     //  Initialization code (done once (unless your object frequently changes))
     glGenBuffers(1, &VBO);
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
     std::cout << VBO << std::endl;

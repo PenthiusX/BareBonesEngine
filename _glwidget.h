@@ -2,9 +2,6 @@
 #define _GLWIDGET_H
 
 #include <QOpenGLWidget>
-//#include <QOpenGLFunctions>
-//#include <qopenglextrafunctions.h>
-//#include <vector>
 #include "_renderer.h"
 
 
@@ -24,7 +21,7 @@ unsigned int VBO;
 unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
-//---------------------
+
 std::vector<_Renderer> renderers;
 };
 
