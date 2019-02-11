@@ -7,7 +7,8 @@
 //#include <vector>
 #include "_renderer.h"
 
-class _GLWidget :  public QOpenGLWidget
+
+class _GLWidget :  public QOpenGLWidget , protected QOpenGLExtraFunctions
 {
 public:
 _GLWidget();
@@ -18,7 +19,13 @@ void resizeGL(int w, int h)Q_DECL_OVERRIDE;
 void paintGL()Q_DECL_OVERRIDE;
 
 private:
-_Renderer r,x;
+
+unsigned int VBO;
+unsigned int VAO;
+unsigned int EBO;
+unsigned int shaderProgram;
+//---------------------
+std::vector<_Renderer> renderers;
 };
 
 #endif // _GLWIDGET_H
