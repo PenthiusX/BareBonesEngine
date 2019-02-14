@@ -1,8 +1,9 @@
 #ifndef _RENDERER_H
 #define _RENDERER_H
 #include <vector>
+#include "_shader.h"
 #include <qopenglextrafunctions.h>
-#include <QOpenGLFunctions>
+
 /*
  * The Renderer class
  * To create an abstraction for randering data
@@ -27,6 +28,9 @@ unsigned int VBO;
 unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
+
+//_Shader* shdr;
+
 
 std::vector<float> vertices;
 std::vector<int> indices;

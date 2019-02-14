@@ -16,15 +16,20 @@
  */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    setShader();
+    //----
+//    shdr = new _Shader();
 }
 /*
  *
 */
-_Renderer::~_Renderer(){}
+_Renderer::~_Renderer()
+{
+
+}
 /*
  * Set Shader Function(no params)
- * Meant to set a dafault shader
+ * Sets a dafault hardfed shader
  * on the render object
  */
 void _Renderer::setShader()
@@ -72,10 +77,6 @@ void _Renderer::setShader()
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-
-    //using the shader program in the current context
-//    glUseProgram(shaderProgram);
-
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
@@ -86,6 +87,7 @@ void _Renderer::setShader()
 */
 void _Renderer::setShader(QString vSh, QString fSh)
 {
+
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0,0.1,0.1,1.0);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -101,10 +103,10 @@ void _Renderer::setShader(QString vSh, QString fSh)
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vshader, NULL);
     glCompileShader(vertexShader);
-
     //check for compile success
     int success;
     char infoLog[512];
+
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if(!success)
     {
@@ -115,13 +117,14 @@ void _Renderer::setShader(QString vSh, QString fSh)
     unsigned int fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fShader, NULL);
-    glCompileShader(fragmentShader);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    glCompileShader(fragmentShader);\
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if(!fragmentShader)
     {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
+
     //shader program is a uint in the header
     shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
@@ -134,14 +137,9 @@ void _Renderer::setShader(QString vSh, QString fSh)
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADERPROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-
-    //using the shader program in the current context
-    //can be called once in the init or every frame
-    //if the shader is switching between objects
-    //glUseProgram(shaderProgram);
-
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
 }
 /*
  * SetBUffers set Vertex and Index data into
@@ -186,6 +184,7 @@ void _Renderer::draw()
     //can be called once in the init or every frame
     //if the shader is switching between objects
     glUseProgram(shaderProgram);
+//    shdr->useShaderProgram();
     //
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindVertexArray(VAO);
