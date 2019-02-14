@@ -28,6 +28,7 @@ _Renderer::~_Renderer(){}
 void _Renderer::setShader()
 {
     glEnable(GL_DEPTH_TEST);
+    glClearColor(0.0,0.1,0.1,1.0);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //shader string literals
     QByteArray v_source_utf = ReadStringFromQrc(":/shaders/vshader.glsl").toLocal8Bit(); // get shader source from qrc file
@@ -101,6 +102,11 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
     //
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    //
+//    int a = glGetUniformLocation(shaderProgram,"aColor");
+    //we use 1 as the color index location as we have set it to 1 in the shader
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
 }
 /*
  *
