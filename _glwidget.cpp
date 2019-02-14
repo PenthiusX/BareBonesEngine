@@ -6,44 +6,13 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 
 }
 
-/*
-float vertices[] =
-{
-    0.5f,  0.5f, 0.0f,  // top right
-    0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left
-};
-unsigned int indices[] = {  // note that we start from 0!
-                            0, 1, 3,   // first triangle
-                            1, 2, 3    // second triangle
-                         };
-
-float texCoords[] =
-{
-    0.0f, 0.0f,  // lower-left corner
-    1.0f, 0.0f,  // lower-right corner
-    0.5f, 1.0f   // top-center corner
-};
-*/
-
 void _GLWidget::initializeGL()
 {
-    //---------------------------------
-    initializeOpenGLFunctions();
-
     renderers.push_back(_Renderer());
     renderers.push_back(_Renderer());
 
     renderers[0].setShader();
     renderers[1].setShader();
-
-    float texCoords[] =
-    {
-        0.0f, 0.0f,  // lower-left corner
-        1.0f, 0.0f,  // lower-right corner
-        0.5f, 1.0f   // top-center corner
-    };
 
     std::vector<float> vertsV = {
         0.5,  0.5f, 0.0f,  // top right
@@ -59,7 +28,6 @@ void _GLWidget::initializeGL()
     renderers[0].setBuffers(vertsV,indiceV);
     renderers[1].setBuffers(vertsV,indiceV);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    //---------------------------------
 }
 
 void _GLWidget::resizeGL(int w, int h)
