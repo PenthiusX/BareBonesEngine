@@ -5,7 +5,7 @@
 #include "_renderer.h"
 
 
-class _GLWidget :  public QOpenGLWidget , protected QOpenGLExtraFunctions
+class _GLWidget :  public QOpenGLWidget , protected QOpenGLExtraFunctions, protected QOpenGLFunctions
 {
 public:
 _GLWidget();
