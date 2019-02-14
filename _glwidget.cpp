@@ -8,11 +8,13 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 
 void _GLWidget::initializeGL()
 {
+
+
     renderers.push_back(_Renderer());
     renderers.push_back(_Renderer());
 
     renderers[0].setShader();
-    renderers[1].setShader();
+    renderers[1].setShader(":/shaders/vshader1.glsl",":/shaders/fshader1.glsl");
 
     std::vector<float> vertsV = {
         0.5,  0.5f, 0.0f,  // top right
@@ -26,8 +28,9 @@ void _GLWidget::initializeGL()
     };
 
     renderers[0].setBuffers(vertsV,indiceV);
+    vertsV[0] = 1.0f;
     renderers[1].setBuffers(vertsV,indiceV);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 }
 
 void _GLWidget::resizeGL(int w, int h)

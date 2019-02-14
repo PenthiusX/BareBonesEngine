@@ -2,6 +2,7 @@
 #define _RENDERER_H
 #include <vector>
 #include <qopenglextrafunctions.h>
+#include <QOpenGLFunctions>
 /*
  * The Renderer class
  * To create an abstraction for randering data
@@ -15,7 +16,8 @@ public:
     _Renderer();
     ~_Renderer();
 
-    void setShader();//takes a string literal and passes
+    void setShader();//default
+    void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     void setBuffers(std::vector<float>vertexArray,std::vector<int> indexArray);//take vertex and index data and binds it to object buffer
     void setTexture(char* texBitmap);//takes am image and binds it to object
     void draw();//takes am image and binds it to object
