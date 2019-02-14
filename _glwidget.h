@@ -5,7 +5,7 @@
 #include "_renderer.h"
 
 
-class _GLWidget :  public QOpenGLWidget , protected QOpenGLExtraFunctions, protected QOpenGLFunctions
+class _GLWidget :  public QOpenGLWidget
 {
 public:
 _GLWidget();
@@ -22,7 +22,7 @@ unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
 
-std::vector<_Renderer> renderers;
+std::vector<_Renderer> sceneObject;
 };
 
 #endif // _GLWIDGET_H

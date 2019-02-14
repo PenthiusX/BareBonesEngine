@@ -5,41 +5,49 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 
 }
-
+/*
+*
+*/
 void _GLWidget::initializeGL()
 {
-
-
-    renderers.push_back(_Renderer());
-    renderers.push_back(_Renderer());
-
-    renderers[0].setShader();
-    renderers[1].setShader(":/shaders/vshader1.glsl",":/shaders/fshader1.glsl");
+    sceneObject.push_back(_Renderer());
+    sceneObject.push_back(_Renderer());
+    sceneObject[0].setShader();
+    sceneObject[1].setShader(":/shaders/vshader1.glsl",":/shaders/fshader1.glsl");
 
     std::vector<float> vertsV = {
         0.5,  0.5f, 0.0f,  // top right
         0.5f, -0.5f, 0.0f,  // bottom right
         -0.5f, -0.5f, 0.0f,  // bottom left
         -0.5f,  0.5f, 0.0f   // top left
-    };
+       };
     std::vector<int> indiceV = {// note that we start from 0!
                                 0, 1, 3,   // first triangle
                                 1, 2, 3    // second triangle
-    };
+                               };
 
-    renderers[0].setBuffers(vertsV,indiceV);
+    sceneObject[0].setBuffers(vertsV,indiceV);
     vertsV[0] = 1.0f;
-    renderers[1].setBuffers(vertsV,indiceV);
-
+    sceneObject[1].setBuffers(vertsV,indiceV);
 }
-
+/*
+ * ResizeGL function : ovveriding the
+ * function in OpopenglFunctions
+ * Runs everytime the Screen is resized
+*/
 void _GLWidget::resizeGL(int w, int h)
 {
 
 }
-
+/*
+ * paintGl function : ovveriding the
+ * function in OpopenglFunctions
+ * Your proprietory Draw function
+ * this run in a loop till the
+ * Application ends
+*/
 void _GLWidget::paintGL()//the renderloop
 {
-    renderers[0].draw();
-    renderers[1].draw();
+    sceneObject[0].draw();
+    sceneObject[1].draw();
 }

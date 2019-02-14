@@ -13,7 +13,8 @@ QString ReadStringFromQrc(QString Filename)
     QString mText = "";
     QFile mFile(Filename);
 
-    if(!mFile.open(QFile::ReadOnly | QFile::Text)){
+    if(!mFile.open(QFile::ReadOnly | QFile::Text))
+    {
         qDebug() << "could not open file for read";
     }
         QTextStream in(&mFile);
