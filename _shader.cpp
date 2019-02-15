@@ -2,7 +2,7 @@
 #include "tools.h"
 #include <iostream>
 
-_Shader::_Shader()
+_Shader::_Shader() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     vertexShader = 0;
     fragmentShader = 0;
@@ -92,9 +92,6 @@ void _Shader::attachShaders()
 */
 void _Shader::attachShaders(QString v,QString f)
 {
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.0,0.1,0.1,1.0);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //shader string literals
     QByteArray v_source_utf = ReadStringFromQrc(v).toLocal8Bit(); // get shader source from qrc file
     QByteArray f_source_utf = ReadStringFromQrc(f).toLocal8Bit(); // get shader source from qrc file
