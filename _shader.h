@@ -9,7 +9,6 @@
  * Created: 14_02_2019
  * Author: Aditya Mattoo
 */
-
 class _Shader: protected QOpenGLExtraFunctions
 {
 public:
