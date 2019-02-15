@@ -84,7 +84,6 @@ void _Shader::attachShaders()
        std::cerr << "ERROR::SHADERCLASS::PLEASE_COMPILE_AND_ATTACH_SHADERS_FIRST" << std::endl;
        exit(0);
     }
-
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }

@@ -17,8 +17,8 @@
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     setShader();
-    //----
-//    shdr = new _Shader();
+//-----------------
+    //shdr = new _Shader();
 }
 /*
  *
@@ -31,7 +31,7 @@ _Renderer::~_Renderer()
  * Set Shader Function(no params)
  * Sets a dafault hardfed shader
  * on the render object
- */
+*/
 void _Renderer::setShader()
 {
     glEnable(GL_DEPTH_TEST);
@@ -81,13 +81,12 @@ void _Renderer::setShader()
     glDeleteShader(fragmentShader);
 }
 /*
- *SetShadr function (Qstring , Q string)
+ * SetShadr function (Qstring , Q string)
  * takes the path to the relative qrc aided directory
  * to set shader paths externaly on the render object
 */
 void _Renderer::setShader(QString vSh, QString fSh)
 {
-
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0,0.1,0.1,1.0);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -139,7 +138,6 @@ void _Renderer::setShader(QString vSh, QString fSh)
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
 }
 /*
  * SetBUffers set Vertex and Index data into

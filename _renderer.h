@@ -29,7 +29,7 @@ unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
 
-//_Shader* shdr;
+_Shader* shdr;
 
 
 std::vector<float> vertices;
