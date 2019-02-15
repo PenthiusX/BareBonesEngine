@@ -2,4 +2,14 @@
 ###################
 *.pro.user
 *.autosave
+/x64
+/debug
+/release
+/vs
+*.vs
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.stash
+*ui_mainwindow.h
 
