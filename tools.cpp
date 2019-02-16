@@ -9,14 +9,13 @@ QString ReadStringFromQrc(QString Filename)
 {
     // Read text files from .qrc file
     // return as QString
-
     QString mText = "";
     QFile mFile(Filename);
 
-    if(!mFile.open(QFile::ReadOnly | QFile::Text)){
+    if(!mFile.open(QFile::ReadOnly | QFile::Text))
+    {
         qDebug() << "could not open file for read";
     }
-
         QTextStream in(&mFile);
         mText = in.readAll();
 
