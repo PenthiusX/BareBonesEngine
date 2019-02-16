@@ -9,14 +9,17 @@ _Shader::_Shader() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 }
 _Shader::~_Shader(){}
 /*
- *
+ * The getShaderProgram() retrun the shaderprogram 
+ * unsigned int variable.
 */
 uint _Shader::getShaderProgram()
 {
     return this->shaderProgram;
 }
 /*
- *
+ * The setFragmentShader(QString f) copiles and
+ * binds the fragment shader passed in form a Qstring
+ * and returns an unsigned int;
 */
 void _Shader::setFragmentShader(QString f)
 {
@@ -39,7 +42,9 @@ void _Shader::setFragmentShader(QString f)
     }
 }
 /*
- *
+ * The setVertexShader(QString v) copiles and 
+ * binds the vertex shader passed in from a Qstring parameter,
+ * and returns an unsigned int;
 */
 void _Shader::setVertexShader(QString v)
 {
@@ -60,7 +65,9 @@ void _Shader::setVertexShader(QString v)
     }
 }
 /*
- *
+ * attachShaders(), attaches the shaders to the GLProgram
+ * this will only work if the fragment and vertex shader
+ * have been compiled before this function.
 */
 void _Shader::attachShaders()
 {
@@ -76,19 +83,20 @@ void _Shader::attachShaders()
         if(!success)
         {
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADERPROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
+            std::cerr << "ERROR::SHADERPROGRAM::COMPILATION_FAILED." << infoLog << std::endl;
         }
     }
     else
     {
-       std::cerr << "ERROR::SHADERCLASS::PLEASE_COMPILE_AND_ATTACH_SHADERS_FIRST" << std::endl;
+       std::cerr << "ERROR::SHADERCLASS::NEED_VERTEX_FRAGMENT_SHADERS_FIRST." << std::endl;
        exit(0);
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
 /*
- *
+ * attachShaders(QString v,QString f), 
+ * this then binds the 
 */
 void _Shader::attachShaders(QString v,QString f)
 {
