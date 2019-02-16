@@ -6,8 +6,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl
-
+QT       += core gui
+QT       +=opengl
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = DiamondPal
@@ -17,12 +17,14 @@ SOURCES += main.cpp\
            mainwindow.cpp \
            _glwidget.cpp \
     _renderer.cpp \
-    tools.cpp
+    tools.cpp \
+    _shader.cpp
 
 HEADERS  += mainwindow.h \
             _glwidget.h \
     _renderer.h \
-    tools.h
+    tools.h \
+    _shader.h
 
 FORMS    += mainwindow.ui
 
@@ -40,6 +42,6 @@ LIBS +=
 win32 { #check if platform is windows
 INCLUDEPATH += 
 DEPENDPATH += 
-LIBS += 
+LIBS +=
 }
 
