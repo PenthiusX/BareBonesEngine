@@ -15,9 +15,9 @@
  */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.0, 0.1, 0.1, 1.0);
-	shdr = new _Shader();
+	glEnable(GL_DEPTH_TEST);//
+	glClearColor(0.0, 0.1, 0.1, 1.0);//sets the bckground color of the openglContext.
+	shdr = new _Shader();//initialising the _shader() class * object
 	setShader();//will run this shader by default
 }
 /*
@@ -45,6 +45,10 @@ void _Renderer::setShader()
 void _Renderer::setShader(QString vSh, QString fSh)
 {
 	shdr->attachShaders(vSh,fSh);
+	int a = glGetUniformLocation(shdr->getShaderProgram(), "aColor");
+	//we use 1 as the color index location as we have set it to 1 in the shader
+	glVertexAttribPointer(a, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(a);
 }
 /*
  * SetBUffers set Vertex and Index data into
@@ -68,10 +72,6 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
     //
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    //int a = glGetUniformLocation(shaderProgram,"aColor");
-    //we use 1 as the color index location as we have set it to 1 in the shader
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
 }
 /*
  *
@@ -81,7 +81,7 @@ void _Renderer::setTexture(char *texBitmap)
 
 }
 /*
- *
+ * This is your proprietory draw function 
 */
 void _Renderer::draw()
 {
