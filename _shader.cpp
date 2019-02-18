@@ -83,7 +83,7 @@ void _Shader::setVertexShader(QString v)
 /*
  * Function: attachShaders(), attaches the shaders to the GLProgram
  * this will only work if the fragment and vertex shader
- * have been compiled before this function.\
+ * have been compiled before this function.
  * Created: 14_02_2019
 */
 void _Shader::attachShaders()
