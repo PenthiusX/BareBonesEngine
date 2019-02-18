@@ -11,6 +11,7 @@ _Shader::~_Shader(){}
 /*
  * The getShaderProgram() retrun the shaderprogram 
  * unsigned int variable.
+ * created 14_02_2019
 */
 uint _Shader::getShaderProgram()
 {
@@ -20,6 +21,7 @@ uint _Shader::getShaderProgram()
  * The setFragmentShader(QString f) copiles and
  * binds the fragment shader passed in form a Qstring
  * and returns an unsigned int;
+ * created 14_02_2019
 */
 void _Shader::setFragmentShader(QString f)
 {
@@ -45,6 +47,7 @@ void _Shader::setFragmentShader(QString f)
  * The setVertexShader(QString v) copiles and 
  * binds the vertex shader passed in from a Qstring parameter,
  * and returns an unsigned int;
+ * created 14_02_2019
 */
 void _Shader::setVertexShader(QString v)
 {
@@ -67,7 +70,8 @@ void _Shader::setVertexShader(QString v)
 /*
  * attachShaders(), attaches the shaders to the GLProgram
  * this will only work if the fragment and vertex shader
- * have been compiled before this function.
+ * have been compiled before this function.\
+ * created 14_02_2019
 */
 void _Shader::attachShaders()
 {
@@ -97,6 +101,7 @@ void _Shader::attachShaders()
 /*
  * attachShaders(QString v,QString f), 
  * this then binds the 
+ * created 14_02_2019
 */
 void _Shader::attachShaders(QString v,QString f)
 {
@@ -155,6 +160,7 @@ void _Shader::attachShaders(QString v,QString f)
  * everyloop for multiple
  * sets which shader needs to be used in the
  * current context
+ * created 14_02_2019
  */
 void _Shader::useShaderProgram()
 {
