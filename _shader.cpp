@@ -1,27 +1,39 @@
 #include "_shader.h"
 #include "tools.h"
 #include <iostream>
-
+/*
+ * The _Shader class
+ * Created: 14_02_2019
+ * Author: Aditya
+*/
+/*
+* Constructor 
+* Object initialised in _renderer class
+* Created: 14_02_2019
+*/
 _Shader::_Shader() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     vertexShader = 0;
     fragmentShader = 0;
 }
+/*Distructor*/
 _Shader::~_Shader(){}
 /*
- * The getShaderProgram() retrun the shaderprogram 
+ * Function: getShaderProgram() retrun the shaderprogram 
  * unsigned int variable.
- * created 14_02_2019
+ * Is being used by the _renderer class
+ * Created: 14_02_2019
 */
 uint _Shader::getShaderProgram()
 {
     return this->shaderProgram;
 }
 /*
- * The setFragmentShader(QString f) copiles and
- * binds the fragment shader passed in form a Qstring
- * and returns an unsigned int;
- * created 14_02_2019
+ * Function: setFragmentShader(QString f) copiles and,
+ * binds the fragment shader passed in form a Qstring,
+ * and returns an unsigned int.
+ * Is being used by the _renderer class
+ * Created: 14_02_2019
 */
 void _Shader::setFragmentShader(QString f)
 {
@@ -44,10 +56,11 @@ void _Shader::setFragmentShader(QString f)
     }
 }
 /*
- * The setVertexShader(QString v) copiles and 
+ * Function: setVertexShader(QString v) copiles and 
  * binds the vertex shader passed in from a Qstring parameter,
  * and returns an unsigned int;
- * created 14_02_2019
+ * Is being used by the _renderer class
+ * Created: 14_02_2019
 */
 void _Shader::setVertexShader(QString v)
 {
@@ -68,10 +81,10 @@ void _Shader::setVertexShader(QString v)
     }
 }
 /*
- * attachShaders(), attaches the shaders to the GLProgram
+ * Function: attachShaders(), attaches the shaders to the GLProgram
  * this will only work if the fragment and vertex shader
  * have been compiled before this function.\
- * created 14_02_2019
+ * Created: 14_02_2019
 */
 void _Shader::attachShaders()
 {
@@ -99,9 +112,9 @@ void _Shader::attachShaders()
     glDeleteShader(fragmentShader);
 }
 /*
- * attachShaders(QString v,QString f), 
+ * Function: attachShaders(QString v,QString f), 
  * this then binds the 
- * created 14_02_2019
+ * Created: 14_02_2019
 */
 void _Shader::attachShaders(QString v,QString f)
 {
@@ -156,11 +169,11 @@ void _Shader::attachShaders(QString v,QString f)
     glDeleteShader(fragmentShader);
 }
 /*
- * Needs to be called before draw
+ * Function: useShaderProgram() Needs to be called before draw
  * everyloop for multiple
  * sets which shader needs to be used in the
  * current context
- * created 14_02_2019
+ * Created: 14_02_2019
  */
 void _Shader::useShaderProgram()
 {

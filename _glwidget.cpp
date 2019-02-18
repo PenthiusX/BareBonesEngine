@@ -1,14 +1,20 @@
 #include "_glwidget.h"
 #include <iostream>
+/*
+ * The _GLWidget Class:
+ * Created: 5_02_2019
+ * Author: Aditya,Saurabh
+*/
 
-
+/*Constructor*/
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 
 }
 /*
-* initializeGL(int w, int h) overrides the 
-* function 
+* Function: initializeGL() overrides the 
+* function initializeGL() in the OpopenglFunctions class
+* runs once the opengl context is initialised.
 */
 void _GLWidget::initializeGL()
 {
@@ -35,7 +41,7 @@ void _GLWidget::initializeGL()
     sceneObject[1].setBuffers(vertsV,indiceV);
 }
 /*
- * resizeGL(int w, int h) overides the
+ * Function: resizeGL(int w, int h) overides the
  * function in OpopenglFunctions class.
  * pasees the current width and height 
  * of the layout via - int w and int h
@@ -45,11 +51,10 @@ void _GLWidget::resizeGL(int w, int h)
 
 }
 /*
- * paintGl function : ovveriding the
+ * Function: paintGl() ovveriding thes
  * function in OpopenglFunctions
  * Your proprietory Draw function
- * this run in a loop till the
- * Application ends
+ * this run in a loop till the application ends
 */
 void _GLWidget::paintGL()//the renderloop
 {
