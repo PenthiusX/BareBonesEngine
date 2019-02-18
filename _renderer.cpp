@@ -21,7 +21,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	setShader();//will run this shader by default
 }
 /*
- *
+ * Class Distructor
 */
 _Renderer::~_Renderer()
 {
@@ -32,6 +32,8 @@ _Renderer::~_Renderer()
  * Set Shader Function(no params)
  * Sets a dafault hardfed shader
  * on the render object
+ * Is being used by the _glWidget class
+ * Create:11_02_2019 
 */
 void _Renderer::setShader()
 {
@@ -40,7 +42,9 @@ void _Renderer::setShader()
 /*
  * SetShadr function (Qstring , Q string)
  * takes the path to the relative qrc aided directory
- * to set shader paths externaly on the render object
+ * to set shader paths externaly on the render object.
+ * Is being used by the _glWidget class
+ * Create:11_02_2019
 */
 void _Renderer::setShader(QString vSh, QString fSh)
 {
@@ -53,7 +57,8 @@ void _Renderer::setShader(QString vSh, QString fSh)
 /*
  * SetBUffers set Vertex and Index data into
  * the GPU buffers to use for the current model.
- * The functions takes two parameters
+ * The functions takes two parameters.
+ * Is being used by the _glWidget class
  * Created: 11_02_2019
 */
 void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
@@ -74,7 +79,7 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
     glEnableVertexAttribArray(0);
 }
 /*
- *
+ * 
 */
 void _Renderer::setTexture(char *texBitmap)
 {
@@ -82,6 +87,8 @@ void _Renderer::setTexture(char *texBitmap)
 }
 /*
  * This is your proprietory draw function 
+ * Is being used by the _glWidget class
+ * Create:11_02_2019
 */
 void _Renderer::draw()
 {

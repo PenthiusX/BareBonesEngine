@@ -14,15 +14,17 @@ void _GLWidget::initializeGL()
 {
     sceneObject.push_back(_Renderer());
     sceneObject.push_back(_Renderer());
-    sceneObject[0].setShader();
-    sceneObject[1].setShader(":/shaders/vshader1.glsl",":/shaders/fshader1.glsl");
+    sceneObject[0].setShader();//takes a default shader
+    sceneObject[1].setShader(":/shaders/vshader1.glsl",":/shaders/fshader1.glsl");//loads an explicitly defined shader
 
+	/*Hard coded vertices*/
     std::vector<float> vertsV = {
         0.5,  0.5f, 0.0f,	// top right
         0.5f, -0.5f, 0.0f,  // bottom right
         -0.5f, -0.5f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f  // top left
        };
+	/*Hard coded Indices*/
     std::vector<int> indiceV = {// note that we start from 0!
                                 0, 1, 3,   // first triangle
                                 1, 2, 3    // second triangle
