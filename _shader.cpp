@@ -113,7 +113,8 @@ void _Shader::attachShaders()
 }
 /*
  * Function: attachShaders(QString v,QString f), 
- * this then binds the 
+ * takes the qrc aided path to the vertex and fragment 
+ * shader files and compiles them for linking
  * Created: 14_02_2019
 */
 void _Shader::attachShaders(QString v,QString f)
@@ -144,7 +145,7 @@ void _Shader::attachShaders(QString v,QString f)
     unsigned int fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fShader, NULL);
-    glCompileShader(fragmentShader);\
+    glCompileShader(fragmentShader);
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if(!fragmentShader)
     {
@@ -169,13 +170,23 @@ void _Shader::attachShaders(QString v,QString f)
     glDeleteShader(fragmentShader);
 }
 /*
- * Function: useShaderProgram() Needs to be called before draw
- * everyloop for multiple
- * sets which shader needs to be used in the
- * current context
+ * Function: useShaderProgram() 
+ * Needs to be called before draw everyloop for multiple
+ * sets which shader needs to be used in the current context
  * Created: 14_02_2019
  */
 void _Shader::useShaderProgram()
 {
     glUseProgram(this->shaderProgram);
+}
+/*
+* Function: getUniformLocation(char* nameOfUniform)
+* returns a uint representing the loaction index of 
+* the uniform in the shader takes the name of the uniform
+* as the parameter
+* Created: 18_02_2019
+*/
+uint _Shader::getUniformLocation(const char* nameOfUniform)
+{
+	return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
 }

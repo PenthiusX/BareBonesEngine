@@ -16,11 +16,13 @@ public:
     ~_Shader();
 
     uint getShaderProgram();
-    void setFragmentShader(QString fshader);
-    void setVertexShader(QString vShader);
+    void setFragmentShader(QString fragmentshaderPath);
+    void setVertexShader(QString vertexShaderPath);
     void attachShaders();
-    void attachShaders(QString v , QString f);
+    void attachShaders(QString vertexInfo , QString fragmentInfo);
     void useShaderProgram();
+	uint getUniformLocation(const char* nameOfUniform);
+
 private:
     //Shader Program
      uint shaderProgram;
