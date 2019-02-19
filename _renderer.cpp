@@ -73,10 +73,10 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
     glEnableVertexAttribArray(0);
 
 	//for shader with a position of 1 pass the value as color
-	int a = glGetUniformLocation(shdr->getShaderProgram(), "aColor");
-//we use 1 as the color index location as we have set it to 1 in the shader
-	glVertexAttribPointer(a, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(a);
+	int a = shdr->getUniformLocation("aColor");
+	//we use 1 as the color index location as we have set it to 1 in the shader
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
 }
 /*
  * 
