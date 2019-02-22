@@ -1,6 +1,7 @@
 #include "_renderer.h"
-#include <tools.h>
 #include <iostream>
+#include <tools.h>
+#include <qquaternion.h>
 /*
  * The Renderer class
  * Created: 8_02_2019
@@ -13,10 +14,16 @@
  */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-	glEnable(GL_DEPTH_TEST);//
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_FRONT_AND_BACK);
 	glClearColor(0.0, 0.1, 0.1, 1.0);//sets the bckground color of the openglContext.
 	shdr = new _Shader();//initialising the _shader() class * object
 	setShader();//will run this shader by default
+	//
+	view4x4.setToIdentity();
+	model4x4.setToIdentity();
+	//
+	timer.start();
 }
 /*
  * Class Distructor
@@ -71,12 +78,6 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
     //
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-	//for shader with a position of 1 pass the value as color
-	int a = shdr->getUniformLocation("aColor");
-	//we use 1 as the color index location as we have set it to 1 in the shader
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
 }
 /*
  * 
@@ -86,23 +87,59 @@ void _Renderer::setTexture(char *texBitmap)
 
 }
 /*
+*/
+void _Renderer::setMatrices(int w,int h)
+{
+	//z += 0.005;
+	//model4x4.setToIdentity();
+	model4x4.translate(0.0, 0.0, 0.0);
+	model4x4.scale(1.0);
+	//const QQuaternion q = QQuaternion(QVector3D(3.0,0.0,0.3));
+	//model4x4.rotate(q);
+	//
+	view4x4.lookAt(
+		QVector3D(0.0, 0.0, 5.0), // Eye
+		QVector3D(0.0, 0.0, 0.0),  // Focal Point
+		QVector3D(0.0, 1.0, 0.0)); // Up vector
+	//
+	// Calculate aspect ratio
+	qreal aspect = qreal(w)/qreal(h ? h : 1);
+	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
+	const qreal zNear = 3.0, zFar = 7.0, fov = 90.0;
+	projection4x4.setToIdentity();
+	projection4x4.perspective(fov, aspect, zNear, zFar);
+	//
+	mvp = (projection4x4 * view4x4 * model4x4);
+	//
+	//For uniform with a position of 1 pass the value as colors
+	this->colorUniform = shdr->getUniformLocation("aColor");
+	//pass the mvp4x4 matrix to the vertex shader uniform mvp
+	this->mvpUniform = shdr->getUniformLocation("mvp");
+}
+/*
  * This is your proprietory draw function 
  * Is being used by the _glWidget class
  * Create:11_02_2019
 */
 void _Renderer::draw()
 {
-    //using the shader program in the current context
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
-   	shdr->useShaderProgram();
-	//
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	shdr->useShaderProgram();
+	//Bind the Buffers data of the respective buffer object
+	//in the context each frame.
+	glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+	//Setting the uniform each frame.
+	//Depends if the need is to update the values
+	float r = abs(cos(timer.elapsed()* 0.002));
+	float g = abs(sin(timer.elapsed() * 0.003));
+	float b = abs(cos(timer.elapsed() * 0.005));
+	glUniform4f(colorUniform, r,g,b, 1.0f);
+	glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, mvp.constData());
+	//
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    //
-    //Dont need to reset the shaderprogram to 0;
-    //will be overriten anyways
-    //glUseProgram(0);
 }

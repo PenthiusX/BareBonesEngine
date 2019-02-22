@@ -141,6 +141,7 @@ void _Shader::attachShaders(QString v,QString f)
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
+
     //Fragment Shader
     unsigned int fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -164,20 +165,9 @@ void _Shader::attachShaders(QString v,QString f)
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADERPROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-
     //delete shaders after linking
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-}
-/*
- * Function: useShaderProgram() 
- * Needs to be called before draw everyloop for multiple
- * sets which shader needs to be used in the current context
- * Created: 14_02_2019
- */
-void _Shader::useShaderProgram()
-{
-    glUseProgram(this->shaderProgram);
 }
 /*
 * Function: getUniformLocation(char* nameOfUniform)
@@ -189,4 +179,14 @@ void _Shader::useShaderProgram()
 uint _Shader::getUniformLocation(const char* nameOfUniform)
 {
 	return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
+}
+/*
+ * Function: useShaderProgram()
+ * Needs to be called before draw everyloop for multiple
+ * sets which shader needs to be used in the current context
+ * Created: 14_02_2019
+ */
+void _Shader::useShaderProgram()
+{
+	glUseProgram(this->shaderProgram);
 }

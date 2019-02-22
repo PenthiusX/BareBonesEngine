@@ -13,47 +13,19 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="layoutWidget">
+  <widget class="_GLWidget" name="centralWidget">
+   <widget class="QPushButton" name="Quit">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>10</y>
-      <width>108</width>
+      <x>542</x>
+      <y>11</y>
+      <width>75</width>
       <height>23</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="Quit">
-       <property name="text">
-        <string>Quit</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>591</width>
-      <height>353</height>
-     </rect>
+    <property name="text">
+     <string>Quit</string>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="_GLWidget" name="glwidget" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -70,7 +42,7 @@
   <customwidget>
    <class>_GLWidget</class>
    <extends>QWidget</extends>
-   <header>_glwidget.h</header>
+   <header location="global">_glwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
