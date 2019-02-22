@@ -22,6 +22,10 @@ unsigned int VAO;
 unsigned int EBO;
 unsigned int shaderProgram;
 
+//Resolution variables
+int width;
+int height;
+
 std::vector<_Renderer> sceneObject;
 };
 

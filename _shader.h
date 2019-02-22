@@ -20,9 +20,9 @@ public:
     void setVertexShader(QString vertexShaderPath);
     void attachShaders();
     void attachShaders(QString vertexInfo , QString fragmentInfo);
-    void useShaderProgram();
 	uint getUniformLocation(const char* nameOfUniform);
-
+    void useShaderProgram();
+	
 private:
     //Shader Program
      uint shaderProgram;
