@@ -85,7 +85,7 @@ void _GLWidget::paintGL()//the renderloop
 */
 void _GLWidget::mousePressEvent(QMouseEvent *e)
 {
-	std::cout << "pressd " << std::endl;
+	std::cout << e << std::endl;
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
@@ -95,5 +95,5 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-	std::cout << "pressd " << std::endl;
+	std::cout << e << std::endl;
 }
