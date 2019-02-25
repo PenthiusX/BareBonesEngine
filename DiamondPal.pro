@@ -18,13 +18,15 @@ SOURCES += main.cpp\
             _glwidget.cpp \
             _renderer.cpp \
             tools.cpp \
-            _shader.cpp
+            _shader.cpp \
+    _sceneentity.cpp
 
 HEADERS  += mainwindow.h \
             _glwidget.h \
             _renderer.h \
             tools.h \
-            _shader.h
+            _shader.h \
+    _sceneentity.h
 
 FORMS    += mainwindow.ui
 

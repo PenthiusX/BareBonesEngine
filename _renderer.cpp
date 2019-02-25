@@ -7,7 +7,7 @@
  * Created: 8_02_2019
  * Author: Aditya,Saurabh
 */
-/* Constructor for the renderer class
+/* Constructor: _Renderer Class
  * The "QOpenGLExtraFunctions(QOpenGLContext::currentContext())" is passed by parameter
  * to avoid using initialiseopenglfunction() in the initcallback.
  * Create:11_02_2019
@@ -26,7 +26,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	timer.start();
 }
 /*
- * Class Distructor
+ *Distructor: _Renderer Class
 */
 _Renderer::~_Renderer()
 {
@@ -34,7 +34,7 @@ _Renderer::~_Renderer()
 	delete shdr;
 }
 /*
- * Set Shader Function(no params)
+ * Function: setShader(no params)
  * Sets a dafault hardfed shader
  * on the render object
  * Is being used by the _glWidget class
@@ -45,8 +45,8 @@ void _Renderer::setShader()
 	shdr->attachShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
 }
 /*
- * SetShadr function (Qstring , Q string)
- * takes the path to the relative qrc aided directory
+ * Function: setShader(QString vSh, QString fSh)
+ * Takes the path to the relative qrc aided directory
  * to set shader paths externaly on the render object.
  * Is being used by the _glWidget class
  * Create:11_02_2019
@@ -56,10 +56,12 @@ void _Renderer::setShader(QString vSh, QString fSh)
 	shdr->attachShaders(vSh,fSh);
 }
 /*
- * SetBUffers set Vertex and Index data into
+ * Function: setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
+ * set Vertex and Index data into
  * the GPU buffers to use for the current model.
- * The functions takes two parameters.
- * Is being used by the _glWidget class
+ * May have extended implementation for inclusion of UV for texture and Normals for 
+ * lighting.
+ * Used by: the _glWidget class initializeGL().
  * Created: 11_02_2019
 */
 void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
@@ -80,19 +82,26 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> inde
     glEnableVertexAttribArray(0);
 }
 /*
- * 
+ * Function: setTexture(char *texBitmap)
+ * Implementation pending
 */
 void _Renderer::setTexture(char *texBitmap)
 {
 
 }
 /*
+* Function: setMatrices(int w,int h)
+* sets the Model,View and Projection matrix into the vertex shader,
+* Passing information for 
+* Model - positon,translation,scaling,rotation
+* Camera - postion,translation,rotation, lookat,upDirection 
+* Projection - Aspect ratio , Near/Far clipping, Field of view. 
+* Used by: the _glWidget class resizeGL()
 */
 void _Renderer::setMatrices(int w,int h)
 {
-	//z += 0.005;
-	//model4x4.setToIdentity();
-	model4x4.translate(0.0, 0.0, 0.0);
+	model4x4.setToIdentity();
+	model4x4.translate(0.0, -20.0, 0.0);
 	model4x4.scale(1.0);
 	//const QQuaternion q = QQuaternion(QVector3D(3.0,0.0,0.3));
 	//model4x4.rotate(q);
@@ -105,7 +114,7 @@ void _Renderer::setMatrices(int w,int h)
 	// Calculate aspect ratio
 	qreal aspect = qreal(w)/qreal(h ? h : 1);
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	const qreal zNear = 3.0, zFar = 7.0, fov = 90.0;
+	const qreal zNear = 2.0, zFar = 10.0, fov = 45.0;
 	projection4x4.setToIdentity();
 	projection4x4.perspective(fov, aspect, zNear, zFar);
 	//
@@ -117,11 +126,54 @@ void _Renderer::setMatrices(int w,int h)
 	this->mvpUniform = shdr->getUniformLocation("mvp");
 }
 /*
+* Function: setModelMatrix 
+* Sets the values matrices for the model matrix 
+* works in implementing translation , rotation and scaling
+* Used by: the _glWidget class initialiseGl() or paintGl() 
+*/
+void _Renderer::setModelMatrix(QVector3D position,int scale,QQuaternion rotation)
+{
+	model4x4.setToIdentity();
+	model4x4.translate(position);
+	model4x4.scale(scale);
+	model4x4.rotate(rotation);
+}
+/*
+* Function: setCamViewMatrix()
+* sets the camera view for the scen through this matrix
+* helps set the camera , eye positon , rotation, lookat.
+* Used by: the _glWidget class initialiseGl() or paintGl() 
+* depending if the camra needs to update its position in  realtime
+*/
+void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
+{
+	view4x4.lookAt(
+		QVector3D(0.0, 0.0, 5.0), // Eye
+		QVector3D(0.0, 0.0, 0.0),  // Focal Point
+		QVector3D(0.0, 1.0, 0.0)); // Up vector
+}
+/*
+* Function: setProjectionMatrix(int w, int h)
+* takes thew width and height of the window and sets the relative 
+* field of view and the aspect ration bindings. will update itself each time the 
+* window is resized.and needs to be called in the resizeGl function.
+* Used by: the _glWidget class resizeGL()
+*/
+void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear )
+{
+	// Calculate aspect ratio
+	qreal aspect = qreal(resW) / qreal(resH ? resH : 1);
+	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
+	projection4x4.setToIdentity();
+	projection4x4.perspective(fov, aspect, zNear, zFar);
+}
+/*
+ * Function: draw()
  * This is your proprietory draw function 
- * Is being used by the _glWidget class
+ * Used by: the _glWidget class paintGl()
  * Create:11_02_2019
 */
-void _Renderer::draw()
+void _Renderer::_Renderer::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //Using the shader program in the current context
@@ -143,3 +195,4 @@ void _Renderer::draw()
 	//
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
+

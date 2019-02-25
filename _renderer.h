@@ -24,6 +24,9 @@ public:
     void setBuffers(std::vector<float>vertexArray,std::vector<int> indexArray);//take vertex and index data and binds it to object buffer
     void setTexture(char* texBitmap);//takes am image and binds it to object
 	void setMatrices(int w,int h);
+	void setModelMatrix(QVector3D position, int scale, QQuaternion rotation);
+	void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);
+	void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);
     void draw();//Draws everything bound in the scene
 
 private:
