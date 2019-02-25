@@ -20,8 +20,7 @@ _Shader::_Shader() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 _Shader::~_Shader(){}
 /*
  * Function: getShaderProgram() retrun the shaderprogram 
- * unsigned int variable.
- * Is being used by the _renderer class
+ * unsigned int variable.Is being used by the _renderer class
  * Created: 14_02_2019
 */
 uint _Shader::getShaderProgram()
@@ -56,9 +55,9 @@ void _Shader::setFragmentShader(QString f)
     }
 }
 /*
- * Function: setVertexShader(QString v) copiles and 
- * binds the vertex shader passed in from a Qstring parameter,
- * and returns an unsigned int;
+ * Function: setVertexShader(QString v) 
+ * copiles and binds the vertex shader passed in from  
+ * a Qstring parameter, and returns an unsigned int;
  * Is being used by the _renderer class
  * Created: 14_02_2019
 */
