@@ -97,6 +97,7 @@ void _Renderer::setTexture(char *texBitmap)
 * Camera - postion,translation,rotation, lookat,upDirection 
 * Projection - Aspect ratio , Near/Far clipping, Field of view. 
 * Used by: the _glWidget class resizeGL()
+* Created: 22_02_2019
 */
 void _Renderer::setMatrices(int w,int h)
 {
@@ -130,6 +131,7 @@ void _Renderer::setMatrices(int w,int h)
 * Sets the values matrices for the model matrix 
 * works in implementing translation , rotation and scaling
 * Used by: the _glWidget class initialiseGl() or paintGl() 
+* Created: 25_02_2019
 */
 void _Renderer::setModelMatrix(QVector3D position,int scale,QQuaternion rotation)
 {
@@ -143,7 +145,8 @@ void _Renderer::setModelMatrix(QVector3D position,int scale,QQuaternion rotation
 * sets the camera view for the scen through this matrix
 * helps set the camera , eye positon , rotation, lookat.
 * Used by: the _glWidget class initialiseGl() or paintGl() 
-* depending if the camra needs to update its position in  realtime
+* depending if the camra needs to update its position in  realtime.
+* Created: 25_02_2019
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
@@ -158,6 +161,7 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
 * field of view and the aspect ration bindings. will update itself each time the 
 * window is resized.and needs to be called in the resizeGl function.
 * Used by: the _glWidget class resizeGL()
+* Created: 25_02_2019
 */
 void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear )
 {

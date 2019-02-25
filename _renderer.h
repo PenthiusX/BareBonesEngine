@@ -10,7 +10,7 @@
  * The Renderer class
  * To create an abstraction for randering data
  * Extends the _glwidget class, will be included in the _glwidget class
- *  * Created: 8_02_2019
+ * Created: 8_02_2019
  * Author: Aditya,Saurabh
 */
 class _Renderer : protected QOpenGLExtraFunctions
@@ -37,7 +37,6 @@ unsigned int EBO;//index buffer object
 //Shader class object sets the shaders and passes
 //the program to the current context
 _Shader* shdr;
-
 //Matrices for Translation and view
 //will be multiplied with the position to set translation
 //rotaion ,scaling witrespect to view.
@@ -45,13 +44,12 @@ QMatrix4x4 model4x4;
 QMatrix4x4 projection4x4;
 QMatrix4x4 view4x4;
 QMatrix4x4 mvp;
-//Stores the uniform location in the shader
+//Stores the uniform location allocated in the shader
 int colorUniform, mvpUniform;
 //Holds the vertex and index data
 std::vector<float> vertices;
 std::vector<int> indices;
 QElapsedTimer timer;
-
 };
 
 #endif // _RENDERER_H
