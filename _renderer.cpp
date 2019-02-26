@@ -172,14 +172,6 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	projection4x4.perspective(fov, aspect, zNear, zFar);
 }
 /*
-*
-*/
-void _Renderer::addToScene(_SceneEntity sceneObject)
-{
-	setModelMatrix(sceneObject.getPostion(), sceneObject.getScale(),sceneObject.getRotation());
-	setBuffers(sceneObject.getvertexData(), sceneObject.getIndexData());
-}
-/*
  * Function: draw()
  * This is your proprietory draw function 
  * Used by: the _glWidget class paintGl()
@@ -187,6 +179,8 @@ void _Renderer::addToScene(_SceneEntity sceneObject)
 */
 void _Renderer::_Renderer::draw()
 {
+	//updates the model matrix as the scene 
+	//setModelMatrix(sceneEntityObject.getPostion(), sceneEntityObject.getScale(), sceneEntityObject.getRotation());
 	//clears the color and depth buffer before new frame draw.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //Using the shader program in the current context

@@ -6,9 +6,9 @@
 class _SceneEntity
 {
 public:
+    _SceneEntity(QVector3D pos,QQuaternion rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
-	//
 	void setId(int id);//sets the iD either externaly or internally generated
 	int getId();// call to retrieve unique id for the object instance.
 	//
@@ -29,7 +29,7 @@ public:
 	std::vector<float> getNormalData();
 	//
 	void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//Implemntation pending
-	void setShader(char* qrcVetexshaderLocation, char* qrcFragmentshaderLocation);//Implementation pending
+	void setShaderPath(QString vshader, QString fshader);//Implementation pending
 
 private:
 	int id;
@@ -41,9 +41,8 @@ private:
 	std::vector<int> uvData;//
 	std::vector<float> normalData;//
 
-	char* vShaderPath;
-	char* fShaderPath;
-
+	QString vShaderPath;
+	QString fShaderPath;
 	void calculateNormals();//Runs after Vertices have been fed , Implementation pending.
 };
 

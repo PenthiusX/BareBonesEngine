@@ -2,7 +2,6 @@
 #define _RENDERER_H
 #include <vector>
 #include "_shader.h"
-#include "_sceneentity.h"
 #include <qopenglextrafunctions.h>
 #include <qmatrix4x4.h>
 #include <qelapsedtimer.h>//for timer
@@ -27,7 +26,6 @@ public:
 	void setModelMatrix(QVector3D position, int scale, QQuaternion rotation);
 	void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);
 	void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);
-	void addToScene(_SceneEntity sceneObject);//adds a sceneEntityType object to scene
     void draw();//Draws everything bound in the scene
 
 private:
@@ -53,6 +51,8 @@ int colorUniform, mvpUniform;
 std::vector<float> vertices;
 std::vector<unsigned int> indices;
 QElapsedTimer timer;
+//
+//_SceneEntity sceneEntityObject;
 };
 
 #endif // _RENDERER_H
