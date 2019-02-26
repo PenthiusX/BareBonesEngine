@@ -19,7 +19,6 @@ void mousePressEvent(QMouseEvent *e) override;
 void mouseReleaseEvent(QMouseEvent *e) override;
 
 private:
-
 unsigned int VBO;
 unsigned int VAO;
 unsigned int EBO;
@@ -30,6 +29,7 @@ int width;
 int height;
 
 std::vector<_Renderer> sceneObject;
+
 };
 
 #endif // _GLWIDGET_H

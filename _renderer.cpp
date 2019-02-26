@@ -64,7 +64,7 @@ void _Renderer::setShader(QString vSh, QString fSh)
  * Used by: the _glWidget class initializeGL().
  * Created: 11_02_2019
 */
-void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
+void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<unsigned int> indexArray)
 {
     //  Initialization code (done once (unless your object frequently changes))
     glGenBuffers(1, &VBO);
@@ -172,6 +172,14 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	projection4x4.perspective(fov, aspect, zNear, zFar);
 }
 /*
+*
+*/
+void _Renderer::addToScene(_SceneEntity sceneObject)
+{
+	setModelMatrix(sceneObject.getPostion(), sceneObject.getScale(),sceneObject.getRotation());
+	setBuffers(sceneObject.getvertexData(), sceneObject.getIndexData());
+}
+/*
  * Function: draw()
  * This is your proprietory draw function 
  * Used by: the _glWidget class paintGl()
@@ -179,6 +187,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 */
 void _Renderer::_Renderer::draw()
 {
+	//clears the color and depth buffer before new frame draw.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //Using the shader program in the current context
     //can be called once in the init or every frame
@@ -194,6 +203,7 @@ void _Renderer::_Renderer::draw()
 	float r = abs(cos(timer.elapsed()* 0.002));
 	float g = abs(sin(timer.elapsed() * 0.003));
 	float b = abs(cos(timer.elapsed() * 0.005));
+	//glmaintex(0,dasasd);
 	glUniform4f(colorUniform, r,g,b, 1.0f);
 	glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, mvp.constData());
 	//

@@ -41,7 +41,7 @@ void _GLWidget::initializeGL()
         -0.5f,  0.5f, 0.0f  // top left
     };
 	/*Hard coded Indices*/
-    std::vector<int> indiceV = {// note that we start from 0!
+    std::vector<unsigned int> indiceV = {// note that we start from 0!
                                 0, 1, 3,   // first triangle
                                 1, 2, 3    // second triangle
                                };
