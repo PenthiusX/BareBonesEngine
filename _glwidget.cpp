@@ -1,5 +1,8 @@
-#include "_glwidget.h"
 #include <iostream>
+#include "_glwidget.h"
+
+
+
 /*
  * The _GLWidget Class:
  * This class is the Controller is a typical MVC where the 
@@ -9,7 +12,6 @@
  * Created: 5_02_2019
  * Author: Aditya,Saurabh
 */
-
 /*
 * Constructor:_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 * sets and passes the context for the Qopengl widget here for use.
@@ -27,28 +29,36 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 */
 void _GLWidget::initializeGL()
 {
+	/*Hard coded vertices*/
+	std::vector<float> vertsV =
+	{
+		0.5,  0.5f, 0.0f,	// top right
+		0.5f, -0.5f, 0.0f,  // bottom right
+		-0.5f, -0.5f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f  // top left
+	};
+	/*Hard coded Indices*/
+	std::vector<unsigned int> indiceV = {// note that we start from 0!
+								0, 1, 3,   // first triangle
+								1, 2, 3    // second triangle
+	};
+
+
+//    s->setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+//    s->setPosition(QVector3D(0.0, 0.0, 0.0));
+//    s->setScale(1.0);
+//    s->setModelData(vertsV, indiceV);
+
+    s = new _SceneEntity();
     sceneObject.push_back(_Renderer());
     sceneObject.push_back(_Renderer());
     sceneObject[0].setShader();//takes a default shader
     sceneObject[1].setShader(":/shaders/vshader1.glsl",":/shaders/fshader1.glsl");//loads an explicitly defined shader
 
-	/*Hard coded vertices*/
-    std::vector<float> vertsV = 
-	{
-        0.5,  0.5f, 0.0f,	// top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f  // top left
-    };
-	/*Hard coded Indices*/
-    std::vector<unsigned int> indiceV = {// note that we start from 0!
-                                0, 1, 3,   // first triangle
-                                1, 2, 3    // second triangle
-                               };
-
     sceneObject[0].setBuffers(vertsV,indiceV);
     vertsV[0] = 1.0f;
     sceneObject[1].setBuffers(vertsV,indiceV);
+
 }
 /*
  * Function: resizeGL(int w, int h) overides the

@@ -3,7 +3,7 @@
 
 #include <QOpenGLWidget>
 #include "_renderer.h"
-
+#include "_sceneentity.h"
 
 class _GLWidget :  public QOpenGLWidget
 {
@@ -29,6 +29,7 @@ int width;
 int height;
 
 std::vector<_Renderer> sceneObject;
+_SceneEntity* s;
 
 };
 
