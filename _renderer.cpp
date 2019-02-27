@@ -107,10 +107,7 @@ void _Renderer::setMatrices(int w,int h)
 	//const QQuaternion q = QQuaternion(QVector3D(3.0,0.0,0.3));
 	//model4x4.rotate(q);
 	//
-	view4x4.lookAt(
-		QVector3D(0.0, 0.0, 5.0), // Eye
-		QVector3D(0.0, 0.0, 0.0),  // Focal Point
-		QVector3D(0.0, 1.0, 0.0)); // Up vector
+	setCamViewMatrix(QVector3D(0.0, 0.0, 5.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
 	//
 	// Calculate aspect ratio
 	qreal aspect = qreal(w)/qreal(h ? h : 1);
@@ -150,10 +147,11 @@ void _Renderer::setModelMatrix(QVector3D position,int scale,QQuaternion rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
+	view4x4.setToIdentity();
 	view4x4.lookAt(
-		QVector3D(0.0, 0.0, 5.0), // Eye
-		QVector3D(0.0, 0.0, 0.0),  // Focal Point
-		QVector3D(0.0, 1.0, 0.0)); // Up vector
+		QVector3D(eyePos),//Eye
+		QVector3D(focalPoint),// Focal Point
+		QVector3D(upVector));// Up vector
 }
 /*
 * Function: setProjectionMatrix(int w, int h)

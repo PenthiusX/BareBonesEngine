@@ -30,6 +30,8 @@ public:
 	//
 	void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//Implemntation pending
 	void setShaderPath(QString vshader, QString fshader);//Implementation pending
+	QString getVertexShaderPath();
+	QString getFragmentShaderPath();
 
 private:
 	int id;

@@ -152,3 +152,13 @@ void _SceneEntity::setShaderPath(QString vSh, QString fSh)
 	this->vShaderPath = vSh;
 	this->fShaderPath = fSh;
 }
+
+QString _SceneEntity::getVertexShaderPath()
+{
+	return this->vShaderPath;
+}
+
+QString _SceneEntity::getFragmentShaderPath()
+{
+	return this->fShaderPath;
+}
