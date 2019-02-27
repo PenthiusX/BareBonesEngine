@@ -20,14 +20,16 @@ SOURCES += main.cpp\
             _renderer.cpp \
             tools.cpp \
             _shader.cpp \
-            _sceneentity.cpp
+            _sceneentity.cpp \
+    _scene.cpp
 
 HEADERS  += mainwindow.h \
             _glwidget.h \
             _renderer.h \
             tools.h \
             _shader.h \
-            _sceneentity.h
+            _sceneentity.h \
+    _scene.h
 
 FORMS    += mainwindow.ui
 

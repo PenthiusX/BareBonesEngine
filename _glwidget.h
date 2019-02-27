@@ -2,9 +2,10 @@
 #define _GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include "_renderer.h"
 #include "_sceneentity.h"
+#include "_scene.h"
 
+#include "_renderer.h"
 class _GLWidget :  public QOpenGLWidget
 {
 public:

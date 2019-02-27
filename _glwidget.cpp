@@ -1,8 +1,6 @@
 #include <iostream>
 #include "_glwidget.h"
 
-
-
 /*
  * The _GLWidget Class:
  * This class is the Controller is a typical MVC where the 
@@ -19,7 +17,6 @@
 */
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
-
 }
 /*
 * Function: initializeGL() overrides the 
@@ -43,22 +40,19 @@ void _GLWidget::initializeGL()
 								1, 2, 3    // second triangle
 	};
 
+	s = new _SceneEntity();
+    s->setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s->setPosition(QVector3D(1.0, 0.0, 0.0));
+    s->setModelData(vertsV,indiceV);
 
-//    s->setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-//    s->setPosition(QVector3D(0.0, 0.0, 0.0));
-//    s->setScale(1.0);
-//    s->setModelData(vertsV, indiceV);
-
-    s = new _SceneEntity();
     sceneObject.push_back(_Renderer());
     sceneObject.push_back(_Renderer());
     sceneObject[0].setShader();//takes a default shader
-    sceneObject[1].setShader(":/shaders/vshader1.glsl",":/shaders/fshader1.glsl");//loads an explicitly defined shader
+    sceneObject[1].setShader();//loads an explicitly defined shader
 
     sceneObject[0].setBuffers(vertsV,indiceV);
     vertsV[0] = 1.0f;
     sceneObject[1].setBuffers(vertsV,indiceV);
-
 }
 /*
  * Function: resizeGL(int w, int h) overides the
