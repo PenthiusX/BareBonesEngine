@@ -1,5 +1,6 @@
 #ifndef _SCENEENTITY_H
 #define _SCENEENTITY_H
+
 #include <qquaternion.h>
 #include <vector>
 
