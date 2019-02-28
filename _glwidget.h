@@ -2,15 +2,17 @@
 #define _GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include "_sceneentity.h"
+//#include "_renderer.h"
+//#include "_sceneentity.h"
 #include "_scene.h"
+#include "_camera.h"
 
-#include "_renderer.h"
 class _GLWidget :  public QOpenGLWidget
 {
 public:
 _GLWidget();
 explicit _GLWidget(QWidget *parent = 0);
+~_GLWidget();
 protected:
 void initializeGL() Q_DECL_OVERRIDE;
 void resizeGL(int w, int h)Q_DECL_OVERRIDE;
@@ -29,8 +31,10 @@ unsigned int shaderProgram;
 int width;
 int height;
 
-std::vector<_Renderer> sceneObject;
-_SceneEntity* s;
+//std::vector<_Renderer> sceneObject;
+_SceneEntity s;
+_Scene* sc;
+_Camera cam;
 
 };
 

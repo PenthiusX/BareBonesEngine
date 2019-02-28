@@ -18,6 +18,10 @@
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 }
+_GLWidget::~_GLWidget()
+{
+	delete sc;
+}
 /*
 * Function: initializeGL() overrides the 
 * function initializeGL() in the OpopenglFunctions class
@@ -40,11 +44,21 @@ void _GLWidget::initializeGL()
 								1, 2, 3    // second triangle
 	};
 
-	s = new _SceneEntity();
-    s->setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-    s->setPosition(QVector3D(1.0, 0.0, 0.0));
-    s->setModelData(vertsV,indiceV);
+    s.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s.setPosition(QVector3D(0.0, 0.0, -10.0));
+    s.setScale(1.0);
+    s.setModelData(vertsV,indiceV);
 
+	cam.setEyePosition(QVector3D(0.0, 0.0, 5.0));
+
+
+	sc = new _Scene();
+	sc->addCamera(cam);
+
+	sc->add(s);
+
+
+	/*
     sceneObject.push_back(_Renderer());
     sceneObject.push_back(_Renderer());
     sceneObject[0].setShader();//takes a default shader
@@ -53,6 +67,7 @@ void _GLWidget::initializeGL()
     sceneObject[0].setBuffers(vertsV,indiceV);
     vertsV[0] = 1.0f;
     sceneObject[1].setBuffers(vertsV,indiceV);
+	*/
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -65,8 +80,9 @@ void _GLWidget::resizeGL(int w, int h)
 {
 	this->width = w;
 	this->height = h;
-	sceneObject[0].setMatrices(w,h);
-	sceneObject[1].setMatrices(w, h);
+	sc->onResize(w,h);
+	//sceneObject[0].setMatrices(w,h);
+	//sceneObject[1].setMatrices(w, h);
 }
 /*
  * Function: paintGl() 
@@ -77,8 +93,9 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-	sceneObject[0].draw();
+	//sceneObject[0].draw();
 	//sceneObject[1].draw();
+	sc->render();
 	this->update();
 }
 /*

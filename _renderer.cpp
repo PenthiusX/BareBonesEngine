@@ -16,7 +16,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRONT_AND_BACK);
-	glClearColor(0.0, 0.1, 0.1, 1.0);//sets the bckground color of the openglContext.
+	glClearColor(0.0, 0.3, 0.3, 1.0);//sets the bckground color of the openglContext.
 	shdr = new _Shader();//initialising the _shader() class * object
 	setShader();//will run this shader by default
 	//
@@ -100,24 +100,12 @@ void _Renderer::setTexture(char *texBitmap)
 * Created: 22_02_2019
 */
 void _Renderer::setMatrices(int w,int h)
-{
-	model4x4.setToIdentity();
-	model4x4.translate(0.0, -20.0, 0.0);
-	model4x4.scale(1.0);
-	//const QQuaternion q = QQuaternion(QVector3D(3.0,0.0,0.3));
-	//model4x4.rotate(q);
-	//
+{	
+	setModelMatrix(QVector3D(0.0, -20.0, 0.0), 1.0, QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 	setCamViewMatrix(QVector3D(0.0, 0.0, 5.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
-	//
-	// Calculate aspect ratio
-	qreal aspect = qreal(w)/qreal(h ? h : 1);
-	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	const qreal zNear = 2.0, zFar = 10.0, fov = 45.0;
-	projection4x4.setToIdentity();
-	projection4x4.perspective(fov, aspect, zNear, zFar);
+	setProjectionMatrix(w, h, 45.0, 10.0, 2.0);
 	//
 	mvp = (projection4x4 * view4x4 * model4x4);
-	//
 	//For uniform with a position of 1 pass the value as colors
 	this->colorUniform = shdr->getUniformLocation("aColor");
 	//pass the mvp4x4 matrix to the vertex shader uniform mvp
@@ -139,7 +127,7 @@ void _Renderer::setModelMatrix(QVector3D position,int scale,QQuaternion rotation
 }
 /*
 * Function: setCamViewMatrix()
-* sets the camera view for the scen through this matrix
+* sets the camera view for the scene through this matrix
 * helps set the camera , eye positon , rotation, lookat.
 * Used by: the _glWidget class initialiseGl() or paintGl() 
 * depending if the camra needs to update its position in  realtime.
@@ -168,6 +156,16 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
 	projection4x4.setToIdentity();
 	projection4x4.perspective(fov, aspect, zNear, zFar);
+}
+/*
+* 
+*/
+void _Renderer::generateMVP()
+{
+	mvp = (projection4x4 * view4x4 * model4x4);
+
+	this->colorUniform = shdr->getUniformLocation("aColor");//For uniform with a position of 1 pass the value as colors
+	this->mvpUniform = shdr->getUniformLocation("mvp");	//Pass the mvp4x4 matrix to the vertex shader uniform mvp
 }
 /*
  * Function: draw()

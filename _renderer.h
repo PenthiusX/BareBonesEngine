@@ -26,6 +26,7 @@ public:
 	void setModelMatrix(QVector3D position, int scale, QQuaternion rotation);
 	void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);
 	void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);
+	void generateMVP();
     void draw();//Draws everything bound in the scene
 
 private:
@@ -48,8 +49,8 @@ QMatrix4x4 mvp;
 //Stores the uniform location allocated in the shader
 int colorUniform, mvpUniform;
 //Holds the vertex and index data
-std::vector<float> vertices;
-std::vector<unsigned int> indices;
+std::vector<float> vertices;//not allocated yet
+std::vector<unsigned int> indices;//not allocated yet
 QElapsedTimer timer;
 //
 //_SceneEntity sceneEntityObject;
