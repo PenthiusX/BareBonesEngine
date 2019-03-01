@@ -6,10 +6,14 @@ _Scene::_Scene()
 	isCamera = false;
 }
 _Scene::~_Scene(){}
+std::vector<_Renderer> _Scene::getSceneObjects()
+{
+	return this->sceneObjects;
+}
 /*
 *
 */
-void _Scene::add(_SceneEntity s)
+void _Scene::addSceneObject(_SceneEntity s)
 {
 	if (isCamera == true)
 	{
@@ -17,10 +21,8 @@ void _Scene::add(_SceneEntity s)
 		r.setBuffers(s.getvertexData(), s.getIndexData());
 		r.setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 		r.setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-		r.generateMVP();
-		rendererVector.push_back(r);
+		sceneObjects.push_back(r);
 	}
-
 }
 void _Scene::addCamera(_Camera c)
 {
@@ -31,15 +33,15 @@ void _Scene::addCamera(_Camera c)
 void _Scene::onResize(int w,int h)
 {
 	//Harcoded values for resW,resH,fov,zFar,zNear
-	r.setProjectionMatrix(w, h, 45.0, 10.0, 2.0);
+	r.setProjectionMatrix(w, h, 45.0, 50.0, 0.1);
 }
 /*
-*
+* need to implemt upadte on modelmatrix and camera matrix
 */
 void _Scene::render()
 {
-	for (int i = 0; i < rendererVector.size(); i++)
+	for (int i = 0; i < sceneObjects.size(); i++)
 	{
-		rendererVector[i].draw();
+		sceneObjects[i].draw();
 	}
 }

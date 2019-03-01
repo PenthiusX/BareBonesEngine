@@ -47,13 +47,12 @@ QMatrix4x4 view4x4;
 QMatrix4x4 mvp;
 
 //Stores the uniform location allocated in the shader
-int colorUniform, mvpUniform;
+int colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform;
 //Holds the vertex and index data
 std::vector<float> vertices;//not allocated yet
 std::vector<unsigned int> indices;//not allocated yet
-QElapsedTimer timer;
 //
-//_SceneEntity sceneEntityObject;
+QElapsedTimer timer;
 };
 
 #endif // _RENDERER_H

@@ -11,13 +11,16 @@ class _Scene : protected QOpenGLExtraFunctions
 public:
     _Scene();
     ~_Scene();
-        void add(_SceneEntity s);
+		
+	std::vector<_Renderer> getSceneObjects();
+
+        void addSceneObject(_SceneEntity s);
         void addCamera(_Camera c);
 		void onResize(int w,int h);
         void render();
 private:
 	std::vector<_SceneEntity> sceneEntityVector;
-	std::vector<_Renderer> rendererVector;
+	std::vector<_Renderer> sceneObjects;
 	_Renderer r;
 	_Camera cam;
 	bool isCamera;

@@ -17,6 +17,7 @@
 */
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
+	x = 0;
 }
 _GLWidget::~_GLWidget()
 {
@@ -33,30 +34,37 @@ void _GLWidget::initializeGL()
 	/*Hard coded vertices*/
 	std::vector<float> vertsV =
 	{
-		0.5,  0.5f, 0.0f,	// top right
-		0.5f, -0.5f, 0.0f,  // bottom right
+		 0.5,   0.5f, 0.0f,  // top right
+		 0.5f, -0.5f, 0.0f, // bottom right
 		-0.5f, -0.5f, 0.0f, // bottom left
 		-0.5f,  0.5f, 0.0f  // top left
 	};
 	/*Hard coded Indices*/
-	std::vector<unsigned int> indiceV = {// note that we start from 0!
+	std::vector<unsigned int> indiceV = {  // note that we start from 0!
 								0, 1, 3,   // first triangle
 								1, 2, 3    // second triangle
 	};
 
-    s.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-    s.setPosition(QVector3D(0.0, 0.0, -10.0));
-    s.setScale(1.0);
-    s.setModelData(vertsV,indiceV);
 
-	cam.setEyePosition(QVector3D(0.0, 0.0, 5.0));
+	cam.setEyePosition(QVector3D(0.0, 0.0, 0.0));
+	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
+	s.setId(1);
+	s.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+	s.setPosition(QVector3D(0.0, 0.0, 0.0));
+	s.setScale(1);
+	s.setModelData(vertsV, indiceV);
+
+	s1.setId(2);
+	s1.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+	s1.setPosition(QVector3D(0.0, 5.0, -10.0));
+	s1.setScale(1.0);
+	s1.setModelData(vertsV, indiceV);
 
 	sc = new _Scene();
 	sc->addCamera(cam);
-
-	sc->add(s);
-
+	sc->addSceneObject(s);
+	//sc->add(s1);
 
 	/*
     sceneObject.push_back(_Renderer());
@@ -106,7 +114,7 @@ void _GLWidget::paintGL()//the renderloop
 */
 void _GLWidget::mousePressEvent(QMouseEvent *e)
 {
-	std::cout << e << std::endl;
+	mousePressPosition = QVector2D(e->localPos());
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
@@ -116,5 +124,16 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-	std::cout << e << std::endl;
+	QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+}
+/*
+*
+*/
+void _GLWidget::keyPressEvent(QKeyEvent * event)
+{
+	if (event->text() == "d" || event->text() == "D")
+	{
+		x += 1.0;
+		sc->getSceneObjects()[0].setModelMatrix(QVector3D(x,0.0,0.0),1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
+	}
 }

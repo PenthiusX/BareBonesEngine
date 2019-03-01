@@ -2,8 +2,8 @@
 #define _GLWIDGET_H
 
 #include <QOpenGLWidget>
-//#include "_renderer.h"
-//#include "_sceneentity.h"
+#include <qvector2d.h>
+#include <QMouseEvent>
 #include "_scene.h"
 #include "_camera.h"
 
@@ -20,6 +20,7 @@ void paintGL()Q_DECL_OVERRIDE;
 //
 void mousePressEvent(QMouseEvent *e) override;
 void mouseReleaseEvent(QMouseEvent *e) override;
+virtual void  keyPressEvent(QKeyEvent *event) override;
 
 private:
 unsigned int VBO;
@@ -32,10 +33,12 @@ int width;
 int height;
 
 //std::vector<_Renderer> sceneObject;
-_SceneEntity s;
+_SceneEntity s,s1;
 _Scene* sc;
 _Camera cam;
+ QVector2D mousePressPosition;
 
+ float x;
 };
 
 #endif // _GLWIDGET_H
