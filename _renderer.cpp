@@ -14,14 +14,20 @@
  */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_FRONT_AND_BACK);
+	//glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_FRONT_AND_BACK);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glClearColor(0.0, 0.3, 0.3, 1.0);//sets the bckground color of the openglContext.
 	shdr = new _Shader();//initialising the _shader() class * object
 	setShader();//will run this shader by default
 	//
 	view4x4.setToIdentity();
 	model4x4.setToIdentity();
+	projection4x4.setToIdentity();
+	//
+	view4x4.transposed();
+	model4x4.transposed();
+	projection4x4.transposed();
 	//
 	timer.start();
 }
@@ -76,10 +82,16 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<unsigned 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //
     glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof (float), &vertexArray[0], GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size()* sizeof(int), &indexArray[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(int), &indexArray[0], GL_STATIC_DRAW);
     //
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+	//
+	this->colorUniform = shdr->getUniformLocation("aColor");//For uniform with a position of 1 pass the value as colors
+	//this->mvpUniform = shdr->getUniformLocation("mvp");	//Pass the mvp4x4 matrix to the vertex shader uniform mvp
+	this->modelUnifrom = shdr->getUniformLocation("model");
+	this->viewUniform  = shdr->getUniformLocation("view");
+	this->projectionUniform = shdr->getUniformLocation("projection");
 }
 /*
  * Function: setTexture(char *texBitmap)
@@ -104,12 +116,6 @@ void _Renderer::setMatrices(int w,int h)
 	setModelMatrix(QVector3D(0.0, -20.0, 0.0), 1.0, QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 	setCamViewMatrix(QVector3D(0.0, 0.0, 5.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
 	setProjectionMatrix(w, h, 45.0, 10.0, 2.0);
-	//
-	mvp = (projection4x4 * view4x4 * model4x4);
-	//For uniform with a position of 1 pass the value as colors
-	this->colorUniform = shdr->getUniformLocation("aColor");
-	//pass the mvp4x4 matrix to the vertex shader uniform mvp
-	this->mvpUniform = shdr->getUniformLocation("mvp");
 }
 /*
 * Function: setModelMatrix 
@@ -120,11 +126,11 @@ void _Renderer::setMatrices(int w,int h)
 */
 void _Renderer::setModelMatrix(QVector3D position,int scale,QQuaternion rotation)
 {
-	model4x4.setToIdentity();
 	model4x4.translate(position);
 	model4x4.scale(scale);
 	model4x4.rotate(rotation);
 }
+
 /*
 * Function: setCamViewMatrix()
 * sets the camera view for the scene through this matrix
@@ -135,7 +141,6 @@ void _Renderer::setModelMatrix(QVector3D position,int scale,QQuaternion rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
-	view4x4.setToIdentity();
 	view4x4.lookAt(
 		QVector3D(eyePos),//Eye
 		QVector3D(focalPoint),// Focal Point
@@ -154,18 +159,19 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	// Calculate aspect ratio
 	qreal aspect = qreal(resW) / qreal(resH ? resH : 1);
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	projection4x4.setToIdentity();
 	projection4x4.perspective(fov, aspect, zNear, zFar);
 }
 /*
 * 
 */
+float i = 0;
 void _Renderer::generateMVP()
 {
-	mvp = (projection4x4 * view4x4 * model4x4);
-
-	this->colorUniform = shdr->getUniformLocation("aColor");//For uniform with a position of 1 pass the value as colors
-	this->mvpUniform = shdr->getUniformLocation("mvp");	//Pass the mvp4x4 matrix to the vertex shader uniform mvp
+	//float n = abs(cos(timer.elapsed() * 0.0002)) * 0.05;
+	//the z axis is not being set properly
+	//model4x4.translate(QVector3D(0.0, 0.01, 0.01));
+	//model4x4.rotate(QQuaternion(QVector3D(0.1, 0.1, 0.0)));
+	
 }
 /*
  * Function: draw()
@@ -176,7 +182,7 @@ void _Renderer::generateMVP()
 void _Renderer::_Renderer::draw()
 {
 	//updates the model matrix as the scene 
-	//setModelMatrix(sceneEntityObject.getPostion(), sceneEntityObject.getScale(), sceneEntityObject.getRotation());
+	generateMVP();
 	//clears the color and depth buffer before new frame draw.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //Using the shader program in the current context
@@ -190,12 +196,54 @@ void _Renderer::_Renderer::draw()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
 	//Setting the uniform each frame.
 	//Depends if the need is to update the values
-	float r = abs(cos(timer.elapsed()* 0.002));
+	float r = abs(cos(timer.elapsed() * 0.002));
 	float g = abs(sin(timer.elapsed() * 0.003));
 	float b = abs(cos(timer.elapsed() * 0.005));
 	//glmaintex(0,dasasd);
 	glUniform4f(colorUniform, r,g,b, 1.0f);
-	glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, mvp.constData());
+
+	/*
+	i -= 0.01;
+	float a[] = {1.0,0.0, 0.0, 0.0,
+				 0.0, 1.0, 0.0, 0.0,
+				 0.0, 0.0, 1.0, 0.0,
+				 0.0, 0.0, 0.0, 1.0};
+	*/
+	QVector4D rM1 = model4x4.row(0);
+	QVector4D rM2 = model4x4.row(1);
+	QVector4D rM3 = model4x4.row(2);
+	QVector4D rM4 = model4x4.row(3);
+	float aM[] = {
+				 rM1.x(),rM1.y(),rM1.z(),rM1.w(),
+				 rM2.x(),rM2.y(),rM2.z(),rM2.w(),
+				 rM3.x(),rM3.y(),rM3.z(),rM3.w(),
+				 rM4.x(),rM4.y(),rM4.z(),rM4.w()
+	};
+	glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, aM);
+	//
+	QVector4D rV1 = view4x4.row(0);
+	QVector4D rV2 = view4x4.row(1);
+	QVector4D rV3 = view4x4.row(2);
+	QVector4D rV4 = view4x4.row(3);
+	float aV[] = {
+				 rV1.x(),rV1.y(),rV1.z(),rV1.w(),
+				 rV2.x(),rV2.y(),rV2.z(),rV2.w(),
+				 rV3.x(),rV3.y(),rV3.z(),rV3.w(),
+				 rV4.x(),rV4.y(),rV4.z(),rV4.w()
+	};
+	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, aV);
+	//
+	QVector4D rP1 = view4x4.row(0);
+	QVector4D rP2 = view4x4.row(1);
+	QVector4D rP3 = view4x4.row(2);
+	QVector4D rP4 = view4x4.row(3);
+	float aP[] = {
+				 rP1.x(),rP1.y(),rP1.z(),rP1.w(),
+				 rP2.x(),rP2.y(),rP2.z(),rP2.w(),
+				 rP3.x(),rP3.y(),rP3.z(),rP3.w(),
+				 rP4.x(),rP4.y(),rP4.z(),rP4.w()
+	};
+	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, aP);
 	//
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
