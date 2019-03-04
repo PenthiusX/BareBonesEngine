@@ -2,10 +2,8 @@
 #define _GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include <qvector2d.h>
 #include <QMouseEvent>
 #include "_scene.h"
-#include "_camera.h"
 
 class _GLWidget :  public QOpenGLWidget
 {
@@ -33,8 +31,9 @@ int width;
 int height;
 
 //std::vector<_Renderer> sceneObject;
-_SceneEntity s,s1;
-_Scene* sc;
+
+_Scene* sc;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
+_SceneEntity s, s1;
 _Camera cam;
  QVector2D mousePressPosition;
 

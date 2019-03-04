@@ -31,8 +31,9 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-	/*Hard coded vertices*/
-	std::vector<float> vertsV =
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//does not work
+	///*Hard coded vertices*/
+	std::vector<float> vertsV1 =
 	{
 		 0.5,   0.5f, 0.0f,  // top right
 		 0.5f, -0.5f, 0.0f, // bottom right
@@ -40,30 +41,68 @@ void _GLWidget::initializeGL()
 		-0.5f,  0.5f, 0.0f  // top left
 	};
 	/*Hard coded Indices*/
-	std::vector<unsigned int> indiceV = {  // note that we start from 0!
+	std::vector<unsigned int> indiceV1 = {// note that we start from 0!
 								0, 1, 3,   // first triangle
 								1, 2, 3    // second triangle
 	};
 
+	/*Hard coded vertices*/
+std::vector<float> vertsV = 
+{
+	-0.50000,-0.500000, 0.500000,//0
+	-0.50000,-0.500000,-0.500000,//1
+	0.500000,-0.500000,-0.500000,//2
+	0.500000,-0.500000, 0.500000,//3
+	-0.50000, 0.500000, 0.500000,//4
+	0.500000, 0.500000, 0.500000,//5
+	0.500000, 0.500000,-0.500000,//6
+	-0.50000, 0.500000,-0.500000,//7
+	-0.50000,-0.500000, 0.500000,//8
+	-0.50000, 0.500000, 0.500000,//9
+	-0.50000, 0.500000,-0.500000,//10
+	-0.50000,-0.500000,-0.500000,//11
+	-0.50000,-0.500000,-0.500000,//12
+	-0.50000, 0.500000,-0.500000,//13
+	0.500000, 0.500000,-0.500000,//14
+	0.500000,-0.500000,-0.500000,//15
+	0.500000,-0.500000,-0.500000,//16
+	0.500000, 0.500000,-0.500000,//17
+	0.500000, 0.500000, 0.500000,//18
+	0.500000,-0.500000, 0.500000,//19
+	-0.50000, 0.500000, 0.500000,//20
+	-0.50000,-0.500000, 0.500000,//21
+	0.500000,-0.500000, 0.500000,//22
+	0.500000, 0.500000, 0.500000 //23								
+};
+//	/*Hard coded Indices*/
+	std::vector<unsigned int> indiceV = 
+	{// note that we start from 0!
+		4, 0 ,  1, 2 ,  3,
+		4, 4 ,  5, 6 ,  7,
+		4, 8 ,  9, 10, 11,
+		4, 12, 13, 14, 15,
+		4, 16, 17, 18, 19,
+		4, 20, 21, 22, 23
+	};
 
-	cam.setEyePosition(QVector3D(0.0, 0.0, 0.0));
+	cam.setEyePosition(QVector3D(0.0, 0.0, -2.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
 	s.setId(1);
 	s.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	s.setPosition(QVector3D(0.0, 0.0, 0.0));
+	s.setPosition(QVector3D(0.0,0.0, 0.0));
 	s.setScale(1);
 	s.setModelData(vertsV, indiceV);
 
 	s1.setId(2);
 	s1.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	s1.setPosition(QVector3D(0.0, 5.0, -10.0));
+	s1.setPosition(QVector3D(0.0, 0.0, 0.0));
 	s1.setScale(1.0);
-	s1.setModelData(vertsV, indiceV);
+	s1.setModelData(vertsV1, indiceV1);
 
 	sc = new _Scene();
 	sc->addCamera(cam);
-	sc->addSceneObject(s);
+	sc->addSceneObject(s1);
 	//sc->add(s1);
 
 	/*
@@ -134,6 +173,6 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 	if (event->text() == "d" || event->text() == "D")
 	{
 		x += 1.0;
-		sc->getSceneObjects()[0].setModelMatrix(QVector3D(x,0.0,0.0),1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
+		//sc->getSceneObjects()[0].setModelMatrix(QVector3D(x,0.0,0.0),1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
 	}
 }

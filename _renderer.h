@@ -5,6 +5,10 @@
 #include <qopenglextrafunctions.h>
 #include <qmatrix4x4.h>
 #include <qelapsedtimer.h>//for timer
+//
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 /*
  * The Renderer class
  * To create an abstraction for randering data
@@ -22,16 +26,16 @@ public:
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     void setBuffers(std::vector<float>vertexArray,std::vector<unsigned int> indexArray);//take vertex and index data and binds it to object buffer
     void setTexture(char* texBitmap);//takes am image and binds it to object
-	void setMatrices(int w,int h);
-	void setModelMatrix(QVector3D position, int scale, QQuaternion rotation);
-	void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);
-	void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);
-	void generateMVP();
+    void setMatrices(int w,int h);
+    void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);
+    void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);
+    void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);
+    void generateMVP();
     void draw();//Draws everything bound in the scene
 
 private:
 unsigned int VBO;//vertex buffer object
-unsigned int VAO;//attribute buffer object 
+unsigned int VAO;//attribute buffer object
 unsigned int EBO;//index buffer object
 
 //Shader class object sets the shaders and passes
@@ -45,7 +49,11 @@ QMatrix4x4 model4x4;
 QMatrix4x4 projection4x4;
 QMatrix4x4 view4x4;
 QMatrix4x4 mvp;
-
+//
+glm::mat4 glm_model4x4;
+glm::mat4 glm_projection4x4;
+glm::mat4 glm_view4x4;
+glm::mat4 glm_mvp;
 //Stores the uniform location allocated in the shader
 int colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform;
 //Holds the vertex and index data
