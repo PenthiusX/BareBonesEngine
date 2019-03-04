@@ -20,6 +20,7 @@ void _Scene::addSceneObject(_SceneEntity s)
 		r.setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
 		r.setBuffers(s.getvertexData(), s.getIndexData());
 		r.setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
+		r.setProjectionMatrix(800,600, 60.0, 100, 0.0001);
 		r.setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
 		sceneObjects.push_back(r);
 	}
