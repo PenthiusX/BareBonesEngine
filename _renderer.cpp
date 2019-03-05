@@ -16,15 +16,11 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRONT_AND_BACK);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glClearColor(0.0, 0.3, 0.3, 1.0);//sets the bckground color of the openglContext.
-	shdr = new _Shader();//initialising the _shader() class * object
-	setShader();//will run this shader by default
 	//
-	view4x4.setToIdentity();
-	model4x4.setToIdentity();
-	projection4x4.setToIdentity();
-	//
+	shdr = new _Shader();//initialising the _shader() class * object.
+	setShader();//will run this shader by default.
+	//initialise the matrices as an identity matrix.
 	glm_model4x4 = glm::mat4(1.0f);
 	glm_projection4x4 = glm::mat4(1.0f);
 	glm_view4x4 = glm::mat4(1.0f);
@@ -113,11 +109,7 @@ void _Renderer::setTexture(char *texBitmap)
 */
 void _Renderer::setMatrices(int w,int h)
 {	
-	setModelMatrix(QVector3D(0.0, 0.0, 0.0), 1.0, QQuaternion(QVector3D(0.0, 0.0, 0.0)));
-	setCamViewMatrix(QVector3D(0.0, 0.0, 5.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
-	setProjectionMatrix(w, h, 45.0, 10.0, 2.0);
-	//
-	glm_model4x4 = glm::mat4();
+	glm_model4x4 = glm::mat4(1.0f);
 	glm_view4x4 = glm::lookAt(
 		glm::vec3(2.5f, 2.5f, 2.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
@@ -187,10 +179,10 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 float i = 0;
 void _Renderer::generateMVP()
 {
-	i -= 0.0005;
-	//float n = abs(cos(timer.elapsed() * 0.0002)) * 0.05;
-	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.0,0.0,0.0 ));
-
+	i += 0.0055;
+	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.00,-0.00,0.00 ));
+	glm_model4x4 = glm::rotate(glm_model4x4, ((float)timer.elapsed() * 0.000005f), glm::vec3(0.0f, 1.0f, 1.0f));
+	glm_view4x4 = glm::lookAt(glm::vec3(0.0f,0.0f,-2.0f - i),glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
 }
 /*
  * Function: draw()
@@ -218,24 +210,12 @@ void _Renderer::_Renderer::draw()
 	float r = abs(cos(timer.elapsed() * 0.002));
 	float g = abs(sin(timer.elapsed() * 0.003));
 	float b = abs(cos(timer.elapsed() * 0.005));
-	//glmaintex(0,dasasd);
 	glUniform4f(colorUniform, r,g,b, 1.0f);
-
-	//----Debug Use
-	//i -= 0.01;
-	//float a[] = {1.0,0.0, 0.0,  i,
-	//			 0.0, 1.0, 0.0, 0,
-	//			 0.0, 0.0, 1.0, 0.0,
-	//			 0.0, 0.0, 0.0, 1.0};
-	//----
-	//glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, model4x4.transposed().data());
-	//glUniformMatrix4fv(viewUniform, 1, GL_FALSE, view4x4.data());
-	//glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, projection4x4.data());
-	//
+	//sets the values for the MVP matrix in the vertex shader
 	glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
 	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
-	//
+	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 

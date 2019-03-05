@@ -20,7 +20,7 @@ void _Scene::addSceneObject(_SceneEntity s)
 		r.setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
 		r.setBuffers(s.getvertexData(), s.getIndexData());
 		r.setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
-		r.setProjectionMatrix(800,600, 60.0, 100, 0.0001);
+		r.setProjectionMatrix(800,600, 45.0f, 100.0f, 1.0f);
 		r.setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
 		sceneObjects.push_back(r);
 	}
@@ -34,7 +34,7 @@ void _Scene::addCamera(_Camera c)
 void _Scene::onResize(int w,int h)
 {
 	//Harcoded values for resW,resH,fov,zFar,zNear
-	r.setProjectionMatrix(w, h, 45.0, 50.0, 0.1);
+	r.setProjectionMatrix(w, h, 45.0f, 10.0f, 1.0f);
 }
 /*
 * need to implemt upadte on modelmatrix and camera matrix
