@@ -11,8 +11,6 @@ out vec4 ourColor;
 void main()
 {
 	mat4 mvpx = projection * view * model;
-	mat4 mvpy = model * view * projection;
-    gl_Position =  vec4(aPos, 1.0) * mvpx;
-	//gl_Position =  mvpy * vec4(aPos, 1.0);
+    gl_Position =  mvpx * vec4(aPos, 1.0);
 	ourColor = aColor;
 }

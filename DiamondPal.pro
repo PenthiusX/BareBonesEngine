@@ -41,14 +41,14 @@ RESOURCES += \
 
 linux-g++ { #check if platform is linux
 message(Linux)
-INCLUDEPATH += $$PWD/../glm-0.9.9.3/glm
-DEPENDPATH += $$PWD/../glm-0.9.9.3/glm
+INCLUDEPATH += $$PWD/deps/glm-0.9.9.3/glm
+DEPENDPATH += $$PWD/deps/glm-0.9.9.3/glm
 LIBS += 
 }
 
 win32 { #check if platform is windows
-INCLUDEPATH += $$PWD/../glm-0.9.9.3/glm
-DEPENDPATH += $$PWD/../glm-0.9.9.3/glm
+INCLUDEPATH += $$PWD/deps/glm-0.9.9.3/glm
+DEPENDPATH += $$PWD/deps/glm-0.9.9.3/glm
 LIBS +=
 }
 
