@@ -24,8 +24,7 @@ _SceneEntity::_SceneEntity(QVector3D pos, QQuaternion rot, float scale)
 }
 /*
 */
-_SceneEntity::~_SceneEntity()
-{
+_SceneEntity::~_SceneEntity(){
 
 }
 /*
@@ -152,12 +151,20 @@ void _SceneEntity::setShaderPath(QString vSh, QString fSh)
 	this->vShaderPath = vSh;
 	this->fShaderPath = fSh;
 }
-
+/*
+* Function: getVertexShaderPath()
+* returns the Vertex shader path set in the object via set shader Path
+ * Created:26_02_2019
+*/
 QString _SceneEntity::getVertexShaderPath()
 {
 	return this->vShaderPath;
 }
-
+/*
+* Function: getFragmentShaderPath()
+* returns the fragment shader path set in the object via set shader Path
+ * Created:26_02_2019
+*/
 QString _SceneEntity::getFragmentShaderPath()
 {
 	return this->fShaderPath;

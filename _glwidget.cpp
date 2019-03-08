@@ -168,6 +168,6 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 {
 	if (event->text() == "d" || event->text() == "D")
 	{
-	
+
 	}
 }

@@ -4,7 +4,7 @@
 #include "_renderer.h"
 #include "_camera.h"
 #include <vector>
-//#include <qopenglextrafunctions.h>
+
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -12,7 +12,7 @@
  * Autor: Aditya
  * Created:26_02_2019
 */
-class _Scene /*: protected QOpenGLExtraFunctions*/
+class _Scene
 {
 public:
     _Scene();
