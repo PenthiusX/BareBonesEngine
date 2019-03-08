@@ -98,30 +98,6 @@ void _Renderer::setTexture(char *texBitmap)
 
 }
 /*
-* Function: setMatrices(int w,int h)
-* sets the Model,View and Projection matrix into the vertex shader,
-* Passing information for 
-* Model - positon,translation,scaling,rotation
-* Camera - postion,translation,rotation, lookat,upDirection 
-* Projection - Aspect ratio , Near/Far clipping, Field of view. 
-* Used by: the _glWidget class resizeGL()
-* Created: 22_02_2019
-*/
-void _Renderer::setMatrices(int w,int h)
-{	
-
-	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.0f,0.0f,0.0f));
-	//glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(1.0, 1.0, 1.0));
-	//
-	glm_view4x4 = glm::lookAt(
-	glm::vec3(2.5f, 2.5f, 2.0f),
-	glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3(0.0f, 0.0f, 1.0f));
-	//
-	glm_projection4x4 = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
-}
-/*
 * Function: setModelMatrix 
 * Sets the values matrices for the model matrix 
 * works in implementing translation , rotation and scaling
@@ -171,10 +147,10 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 * 
 */
 float i = 0;
-void _Renderer::generateMVP()
+void _Renderer::updateTrasformations()
 {
 	i += 0.0055;
-	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.00,0.01,0.00 ));
+	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.00,0.0,0.00 ));
 	glm_model4x4 = glm::rotate(glm_model4x4, ((float)timer.elapsed() * 0.000005f), glm::vec3(0.0f, 1.0f, 1.0f));
 }
 /*
@@ -185,8 +161,8 @@ void _Renderer::generateMVP()
 */
 void _Renderer::_Renderer::draw()
 {
-	//updates the model matrix as the scene 
-	generateMVP();
+	//updates all trasformations each frame
+	updateTrasformations();
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
@@ -208,6 +184,5 @@ void _Renderer::_Renderer::draw()
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 }
 

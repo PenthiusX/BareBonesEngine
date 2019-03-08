@@ -190,7 +190,9 @@ void _Shader::useShaderProgram()
 	glUseProgram(this->shaderProgram);
 }
 /*
-*
+* Function: resetShader()
+* resets the shader pointer value to 0;
+* Created: 08_03_2019
 */
 void _Shader::resetShader()
 {
