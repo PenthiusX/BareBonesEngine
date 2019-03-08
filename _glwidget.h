@@ -30,8 +30,6 @@ unsigned int shaderProgram;
 int width;
 int height;
 
-//std::vector<_Renderer> sceneObject;
-
 _Scene* sc;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
 _SceneEntity s, s1;
 _Camera cam;

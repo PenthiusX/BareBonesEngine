@@ -22,6 +22,7 @@ public:
     void attachShaders(QString vertexInfo , QString fragmentInfo);
 	uint getUniformLocation(const char* nameOfUniform);
     void useShaderProgram();
+	void resetShader();
 	
 private:
     //Shader Program

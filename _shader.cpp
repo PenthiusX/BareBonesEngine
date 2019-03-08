@@ -189,3 +189,10 @@ void _Shader::useShaderProgram()
 {
 	glUseProgram(this->shaderProgram);
 }
+/*
+*
+*/
+void _Shader::resetShader()
+{
+	glUseProgram(0);
+}
