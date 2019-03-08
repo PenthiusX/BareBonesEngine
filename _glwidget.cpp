@@ -35,15 +35,30 @@ void _GLWidget::initializeGL()
 	///*Hard coded vertices*/
 	std::vector<float> vertsV1 =
 	{
-		 0.5,   0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f, // bottom right
+		0.5,   0.5f, 0.0f,  // top right
+		0.5f, -0.5f, 0.0f, // bottom right
 		-0.5f, -0.5f, 0.0f, // bottom left
 		-0.5f,  0.5f, 0.0f  // top left
 	};
 	/*Hard coded Indices*/
-	std::vector<unsigned int> indiceV1 = {// note that we start from 0!
-								0, 1, 3,   // first triangle
-								1, 2, 3    // second triangle
+	std::vector<unsigned int> indiceV1 = 
+	{// note that we start from 0!
+		0, 1, 3,   // first triangle  
+		1, 2, 3    // second triangle
+	};
+
+	std::vector<float> vertsV2 =
+	{
+		1.0,   1.0f, 0.0f,  // top right
+		1.0f, -1.0f, 0.0f, // bottom right
+	   -0.5f, -1.0f, 0.0f, // bottom left
+	   -1.0f,  1.0f, 0.0f  // top left
+	};
+	/*Hard coded Indices*/
+	std::vector<unsigned int> indiceV2 =
+	{// note that we start from 0!
+		0, 1, 3,   // first triangle  
+		1, 2, 3    // second triangle
 	};
 
 /*Hard coded vertices*/
@@ -80,36 +95,26 @@ for (int i = 0; i < indiceV.size(); i++)
 {
 	indiceV[i] = indiceV[i] - 1;
 }
-	cam.setEyePosition(QVector3D(0.0, 0.0, -2.0));
+	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
 	s.setId(1);
 	s.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	s.setPosition(QVector3D(0.0,2.0, 0.0));
-	s.setScale(1);
-	s.setModelData(vertsV, indiceV);
+	s.setPosition(QVector3D(0.0,-0.3f, 0.0));
+	s.setScale(1.5);
+	s.setModelData(vertsV1, indiceV1);
 
 	s1.setId(2);
-	s1.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	s1.setPosition(QVector3D(2.0, -2.0, 0.0));
+	s1.setShaderPath(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
+	s1.setPosition(QVector3D(0.0, 0.3, 1.0));
 	s1.setScale(1.0);
-	s1.setModelData(vertsV1, indiceV1);
+	s1.setModelData(vertsV2, indiceV2);
 
 	sc = new _Scene();
 	sc->addCamera(cam);
-	sc->addSceneObject(s1);
-	sc->addSceneObject(s1);
 
-	/*
-    sceneObject.push_back(_Renderer());
-    sceneObject.push_back(_Renderer());
-    sceneObject[0].setShader();//takes a default shader
-    sceneObject[1].setShader();//loads an explicitly defined shader
-
-    sceneObject[0].setBuffers(vertsV,indiceV);
-    vertsV[0] = 1.0f;
-    sceneObject[1].setBuffers(vertsV,indiceV);
-	*/
+	sc->addSceneObject(s);
+	sc->addSceneObject(s1);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -123,8 +128,6 @@ void _GLWidget::resizeGL(int w, int h)
 	this->width = w;
 	this->height = h;
 	sc->onResize(w,h);
-	//sceneObject[0].setMatrices(w,h);
-	//sceneObject[1].setMatrices(w, h);
 }
 /*
  * Function: paintGl() 
@@ -135,8 +138,6 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-	//sceneObject[0].draw();
-	//sceneObject[1].draw();
 	sc->render();
 	this->update();
 }
@@ -167,7 +168,6 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 {
 	if (event->text() == "d" || event->text() == "D")
 	{
-		x += 1.0;
-		//sc->getSceneObjects()[0].setModelMatrix(QVector3D(x,0.0,0.0),1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
+	
 	}
 }

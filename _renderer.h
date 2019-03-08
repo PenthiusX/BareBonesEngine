@@ -27,9 +27,9 @@ public:
     void setBuffers(std::vector<float>vertexArray,std::vector<unsigned int> indexArray);//take vertex and index data and binds it to object buffer
     void setTexture(char* texBitmap);//takes am image and binds it to object
     void setMatrices(int w,int h);
-    void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);
-    void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);
-    void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);
+    void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix
+    void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
+    void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
     void generateMVP();
     void draw();//Draws everything bound in the scene
 
@@ -37,25 +37,18 @@ private:
 unsigned int VBO;//vertex buffer object
 unsigned int VAO;//attribute buffer object
 unsigned int EBO;//index buffer object
-
 //Shader class object sets the shaders and passes
 //the program to the current context
 _Shader* shdr;
-
 //Matrices for Translation and view
 //will be multiplied with the position to set translation
 //rotaion ,scaling witrespect to view.
-QMatrix4x4 model4x4;
-QMatrix4x4 projection4x4;
-QMatrix4x4 view4x4;
-QMatrix4x4 mvp;
-//
 glm::mat4 glm_model4x4;
 glm::mat4 glm_projection4x4;
 glm::mat4 glm_view4x4;
-glm::mat4 glm_mvp;
 //Stores the uniform location allocated in the shader
 int colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform;
+std::vector<_Renderer> sceneObject;
 //Holds the vertex and index data
 std::vector<float> vertices;//not allocated yet
 std::vector<unsigned int> indices;//not allocated yet

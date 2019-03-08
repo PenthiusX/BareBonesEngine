@@ -16,16 +16,15 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRONT_AND_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.3, 0.3, 1.0);//sets the bckground color of the openglContext.
 	//
 	shdr = new _Shader();//initialising the _shader() class * object.
 	setShader();//will run this shader by default.
-	//initialise the matrices as an identity matrix.
-	glm_model4x4 = glm::mat4(1.0f);
-	glm_projection4x4 = glm::mat4(1.0f);
-	glm_view4x4 = glm::mat4(1.0f);
-	//
 	timer.start();
+	//
+	glm_projection4x4 = glm::mat4(1.0f);
+	glm_model4x4 = glm::mat4(1.0f);
 }
 /*
  *Distructor: _Renderer Class
@@ -68,6 +67,8 @@ void _Renderer::setShader(QString vSh, QString fSh)
 */
 void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<unsigned int> indexArray)
 {
+	this->vertices = vertexArray;
+	this->indices = indexArray;
     //  Initialization code (done once (unless your object frequently changes))
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
@@ -77,14 +78,13 @@ void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<unsigned 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //
-    glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof (float), &vertexArray[0], GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(int), &indexArray[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (float), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
     //
+	glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 	//
-	this->colorUniform = shdr->getUniformLocation("aColor");//For uniform with a position of 1 pass the value as colors
-	//this->mvpUniform = shdr->getUniformLocation("mvp");	//Pass the mvp4x4 matrix to the vertex shader uniform mvp
+	this->colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture
 	this->modelUnifrom = shdr->getUniformLocation("model");
 	this->viewUniform  = shdr->getUniformLocation("view");
 	this->projectionUniform = shdr->getUniformLocation("projection");
@@ -109,13 +109,17 @@ void _Renderer::setTexture(char *texBitmap)
 */
 void _Renderer::setMatrices(int w,int h)
 {	
-	glm_model4x4 = glm::mat4(1.0f);
-	glm_view4x4 = glm::lookAt(
-		glm::vec3(2.5f, 2.5f, 2.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f));
-	glm_projection4x4 = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
 
+	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.0f,0.0f,0.0f));
+	//glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(1.0, 1.0, 1.0));
+	//
+	glm_view4x4 = glm::lookAt(
+	glm::vec3(2.5f, 2.5f, 2.0f),
+	glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 0.0f, 1.0f));
+	//
+	glm_projection4x4 = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
 }
 /*
 * Function: setModelMatrix 
@@ -126,12 +130,9 @@ void _Renderer::setMatrices(int w,int h)
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 {
-	model4x4.translate(position);
-	model4x4.scale(scale);
-	model4x4.rotate(rotation);
-	//
-	//glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
-	//glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	glm_model4x4 = glm::mat4(1.0f);
+	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
+	glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
@@ -145,16 +146,11 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
-	view4x4.lookAt(
-		QVector3D(eyePos),//Eye
-		QVector3D(focalPoint),// Focal Point
-		QVector3D(upVector));// Up vector
-
+	glm_view4x4 = glm::mat4(1.0f);
 	glm_view4x4 = glm::lookAt(
-		glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
-		glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
-		glm::vec3(upVector.x(), upVector.y(), upVector.z()));
-
+	glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
+	glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
+	glm::vec3(upVector.x(), upVector.y(), upVector.z()));
 }
 /*
 * Function: setProjectionMatrix(int w, int h)
@@ -169,8 +165,6 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	// Calculate aspect ratio
 	qreal aspect = qreal(resW) / qreal(resH ? resH : 1);
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	projection4x4.perspective(fov, aspect, zNear, zFar);
-	//
 	glm_projection4x4 = glm::perspective(fov, float(aspect), zNear, zFar);
 }
 /*
@@ -180,9 +174,8 @@ float i = 0;
 void _Renderer::generateMVP()
 {
 	i += 0.0055;
-	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.00,-0.00,0.00 ));
+	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.00,0.01,0.00 ));
 	glm_model4x4 = glm::rotate(glm_model4x4, ((float)timer.elapsed() * 0.000005f), glm::vec3(0.0f, 1.0f, 1.0f));
-	glm_view4x4 = glm::lookAt(glm::vec3(0.0f,0.0f,-2.0f - i),glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
 }
 /*
  * Function: draw()
@@ -194,8 +187,6 @@ void _Renderer::_Renderer::draw()
 {
 	//updates the model matrix as the scene 
 	generateMVP();
-	//clears the color and depth buffer before new frame draw.
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
@@ -217,5 +208,6 @@ void _Renderer::_Renderer::draw()
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 }
 
