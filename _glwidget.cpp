@@ -64,14 +64,14 @@ void _GLWidget::initializeGL()
 /*Hard coded vertices*/
 std::vector<float> vertsV = 
 {
--0.500,-0.5000,  0.500,
--0.500,-0.5000, -0.500,
-0.5000,-0.5000, -0.500,
-0.5000,-0.5000, 0.5000,
--0.500,0.50000, 0.5000,
-0.5000,0.50000, 0.5000,
-0.5000,0.50000, -0.500,
--0.500,0.50000, -0.500
+ 0.500000,-0.500000,-0.500000,
+ 0.500000,-0.500000, 0.500000,
+-0.500000,-0.500000, 0.500000,
+-0.500000,-0.500000,-0.500000,
+ 0.500000, 0.500000,-0.500000,
+ 0.500000, 0.500000, 0.500000,
+-0.500000, 0.500000, 0.500000,
+-0.500000, 0.500000,-0.500000
 };
 
 /*Hard coded Indices*/
@@ -95,20 +95,22 @@ for (int i = 0; i < indiceV.size(); i++)
 {
 	indiceV[i] = indiceV[i] - 1;
 }
+
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
 	s.setId(1);
-	s.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	s.setPosition(QVector3D(0.0,-0.3f, 0.0));
+	s.setShaderPath(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
+	s.setPosition(QVector3D(1.0,-0.3f, 0.0));
+	s.setRotation(QQuaternion(90,0.0,0.1,0.0));
 	s.setScale(1.5);
 	s.setModelData(vertsV1, indiceV1);
 
 	s1.setId(2);
-	s1.setShaderPath(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-	s1.setPosition(QVector3D(0.0, 0.3, 1.0));
+	s1.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+	s1.setPosition(QVector3D(0.0, 0.7, 1.0));
 	s1.setScale(1.0);
-	s1.setModelData(vertsV2, indiceV2);
+	s1.setModelData(vertsV, indiceV);
 
 	sc = new _Scene();
 	sc->addCamera(cam);
@@ -130,7 +132,7 @@ void _GLWidget::resizeGL(int w, int h)
 	sc->onResize(w,h);
 }
 /*
- * Function: paintGl() 
+ * Function: paintGl() 7
  * ovveriding thes function in OpopenglFunctions
  * Your proprietory Draw function this run in a loop 
  * till the application ends.

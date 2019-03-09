@@ -25,11 +25,8 @@ public:
 		void onResize(int w,int h);
         void render();
 private:
-	std::vector<_Renderer> sceneObject;
 	std::vector<_SceneEntity> sceneEntityVector;
-	//old
 	std::vector<_Renderer*> sceneObjects;
-	//
 	_Renderer* r;
 	_Camera cam;
 	bool isCamera;

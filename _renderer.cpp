@@ -65,8 +65,9 @@ void _Renderer::setShader(QString vSh, QString fSh)
  * Used by: the _glWidget class initializeGL().
  * Created: 11_02_2019
 */
-void _Renderer::setBuffers(std::vector<float> vertexArray, std::vector<unsigned int> indexArray)
+void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<unsigned int> indexArray)
 {
+	//copy the vertex and index data locally for use in the current drawcall.
 	this->vertices = vertexArray;
 	this->indices = indexArray;
     //  Initialization code (done once (unless your object frequently changes))
@@ -98,25 +99,31 @@ void _Renderer::setTexture(char *texBitmap)
 
 }
 /*
-* Function: setModelMatrix 
+* Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 * Sets the values matrices for the model matrix 
 * works in implementing translation , rotation and scaling
-* Used by: the _glWidget class initialiseGl() or paintGl() 
+* Used by: the _glWidget class initialiseGl() or paintGl().
 * Created: 25_02_2019
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 {
 	glm_model4x4 = glm::mat4(1.0f);
+
+
+	float x = rotation.x();
+	x = rotation.y();
+	x = rotation.z();
+	QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
 	glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
 /*
-* Function: setCamViewMatrix()
+* Function: setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 * sets the camera view for the scene through this matrix
 * helps set the camera , eye positon , rotation, lookat.
-* Used by: the _glWidget class initialiseGl() or paintGl() 
+* Used by: the _glWidget class initialiseGl() or paintGl().
 * depending if the camra needs to update its position in  realtime.
 * Created: 25_02_2019
 */
@@ -133,7 +140,7 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
 * takes thew width and height of the window and sets the relative 
 * field of view and the aspect ration bindings. will update itself each time the 
 * window is resized.and needs to be called in the resizeGl function.
-* Used by: the _glWidget class resizeGL()
+* Used by: the _glWidget class resizeGL().
 * Created: 25_02_2019
 */
 void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear )
@@ -144,7 +151,10 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	glm_projection4x4 = glm::perspective(fov, float(aspect), zNear, zFar);
 }
 /*
-* 
+* Function: updateTransformations()
+* updates the trasformations of the matrices of the individual object per frame.
+* Used by: _render class in draw().
+* Created: 25_02_2019
 */
 float i = 0;
 void _Renderer::updateTrasformations()
@@ -156,7 +166,7 @@ void _Renderer::updateTrasformations()
 /*
  * Function: draw()
  * This is your proprietory draw function 
- * Used by: the _glWidget class paintGl()
+ * Used by: the _glWidget class paintGl().
  * Create:11_02_2019
 */
 void _Renderer::_Renderer::draw()
@@ -177,12 +187,12 @@ void _Renderer::_Renderer::draw()
 	float r = abs(cos(timer.elapsed() * 0.002));
 	float g = abs(sin(timer.elapsed() * 0.003));
 	float b = abs(cos(timer.elapsed() * 0.005));
-	glUniform4f(colorUniform, r,g,b, 1.0f);
+	glUniform4f(colorUniform, r,g,b, 1.0f);//will be replaced by Texture
 	//sets the values for the MVP matrix in the vertex shader
 	glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
 	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
 	//The Final draw call for each frame
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
 }
 
