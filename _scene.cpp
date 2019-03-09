@@ -39,7 +39,7 @@ void _Scene::addSceneObject(_SceneEntity s)
 	{
 		r = new _Renderer();
 		r->setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
-		r->setBuffers(s.getvertexData(), s.getIndexData());
+		r->setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 		r->setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 		r->setProjectionMatrix(800,600, 45.0f, 100.0f, 1.0f);
 		r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
@@ -48,10 +48,10 @@ void _Scene::addSceneObject(_SceneEntity s)
 	else //used default values
 	{
 		r->setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
-		r->setBuffers(s.getvertexData(), s.getIndexData());
+		r->setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 		r->setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 		r->setProjectionMatrix(800, 600, 45.0f, 100.0f, 1.0f);
-		r->setCamViewMatrix(QVector3D(0.0,0.0,-5.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,1.0,0.0));
+		r->setCamViewMatrix(QVector3D(0.0,0.0,-5.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,1.0,0.0));//set a default camera value
 		sceneObjects.push_back(r);
 	}
 }
@@ -77,7 +77,7 @@ void _Scene::onResize(int w,int h)
 {
 	for (int i = 0; i < sceneObjects.size(); i++)
 	{
-		sceneObjects[0]->setProjectionMatrix(w,h,45,50.0f,1.0f);
+		sceneObjects[i]->setProjectionMatrix(w,h,45,50.0f,1.0f);
 	}
 }
 /*
