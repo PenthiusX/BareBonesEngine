@@ -38,7 +38,7 @@ private:
 	int id;
 	QVector3D postion;//
 	QQuaternion rotation;//
-	int scale;//
+	float scale;//
 	std::vector<float>vertexData;//
 	std::vector<unsigned int> indexData;//
 	std::vector<int> uvData;//

@@ -17,9 +17,9 @@ class _Scene
 public:
     _Scene();
     ~_Scene();
-		
-	std::vector<_Renderer*> getSceneObjects();
 
+		//
+	std::vector<_Renderer*> getSceneObjects();
         void addSceneObject(_SceneEntity s);
         void addCamera(_Camera c);
 		void onResize(int w,int h);
@@ -28,6 +28,7 @@ private:
 	std::vector<_SceneEntity> sceneEntityVector;
 	std::vector<_Renderer*> sceneObjects;
 	_Renderer* r;
+	//std::unique_ptr<_Renderer> rUP;
 	_Camera cam;
 	bool isCamera;
 };

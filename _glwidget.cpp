@@ -103,13 +103,14 @@ for (int i = 0; i < indiceV.size(); i++)
 	s.setShaderPath(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
 	s.setPosition(QVector3D(1.0,-0.3f, 0.0));
 	s.setRotation(QQuaternion(90,0.0,0.1,0.0));
-	s.setScale(1.5);
+	s.setScale(0.5);
 	s.setModelData(vertsV1, indiceV1);
 
 	s1.setId(2);
 	s1.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
 	s1.setPosition(QVector3D(0.0, 0.7, 1.0));
-	s1.setScale(1.0);
+	s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+	s1.setScale(1.5);
 	s1.setModelData(vertsV, indiceV);
 
 	sc = new _Scene();

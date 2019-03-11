@@ -22,7 +22,8 @@ SOURCES += main.cpp\
             _shader.cpp \
             _sceneentity.cpp \
     _scene.cpp \
-    _camera.cpp
+    _camera.cpp \
+    _assetloader.cpp
 
 HEADERS  += mainwindow.h \
             _glwidget.h \
@@ -31,7 +32,8 @@ HEADERS  += mainwindow.h \
             _shader.h \
             _sceneentity.h \
     _scene.h \
-    _camera.h
+    _camera.h \
+    _assetloader.h
 
 FORMS    += mainwindow.ui
 
