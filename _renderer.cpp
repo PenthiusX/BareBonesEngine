@@ -17,7 +17,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRONT_AND_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0, 0.3, 0.3, 1.0);//sets the bckground color of the openglContext.
+	glClearColor(0.1, 0.1, 0.3, 1.0);//sets the bckground color of the openglContext.
 	//
 	shdr = new _Shader();//initialising the _shader() class * object.
 	setShader();//will run this shader by default.
@@ -109,13 +109,12 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 {
 	glm_model4x4 = glm::mat4(1.0f);
 
-
 	float x = rotation.x();
 	x = rotation.y();
 	x = rotation.z();
 	QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
-	glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
@@ -160,8 +159,8 @@ float i = 0;
 void _Renderer::updateTrasformations()
 {
 	i += 0.0055;
-	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(0.00,0.0,0.00 ));
-	glm_model4x4 = glm::rotate(glm_model4x4, ((float)timer.elapsed() * 0.000005f), glm::vec3(0.0f, 1.0f, 1.0f));
+	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3),0.0,0.00 ));
+	glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
 }
 /*
  * Function: draw()

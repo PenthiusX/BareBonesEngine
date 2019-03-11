@@ -13,8 +13,11 @@
 _Scene::_Scene()
 {
 	isCamera = false;
+
 }
-_Scene::~_Scene(){}
+_Scene::~_Scene(){
+	sceneObjects.clear();
+}
 /*
  * Function: getSceneObjects()
  * returns the vector array of sceneObjects.
@@ -47,11 +50,12 @@ void _Scene::addSceneObject(_SceneEntity s)
 	}
 	else //used default values
 	{
+		r = new _Renderer();
 		r->setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
 		r->setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 		r->setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 		r->setProjectionMatrix(800, 600, 45.0f, 100.0f, 1.0f);
-		r->setCamViewMatrix(QVector3D(0.0,0.0,-5.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,1.0,0.0));//set a default camera value
+		r->setCamViewMatrix(QVector3D(0.0,0.0,-10.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,0.0,0.0));//set a default camera value
 		sceneObjects.push_back(r);
 	}
 }
