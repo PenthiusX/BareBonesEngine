@@ -15,8 +15,9 @@ _Scene::_Scene()
 	isCamera = false;
 
 }
-_Scene::~_Scene(){
-	sceneObjects.clear();
+_Scene::~_Scene()
+{
+	renderObjects.clear();
 }
 /*
  * Function: getSceneObjects()
@@ -24,9 +25,9 @@ _Scene::~_Scene(){
  * this is being called by the _GlWidget class.
  * Created:26_02_2019
 */
-std::vector<_Renderer*> _Scene::getSceneObjects()
+std::vector<_Renderer*> _Scene::getRenderObjects()
 {
-	return this->sceneObjects;
+	return this->renderObjects;
 }
 /*
 * Function: addSceneObject(_SceneEntity s)
@@ -41,22 +42,16 @@ void _Scene::addSceneObject(_SceneEntity s)
 	if (isCamera == true)
 	{
 		r = new _Renderer();
-		r->setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
-		r->setModelDataInBuffers(s.getvertexData(), s.getIndexData());
-		r->setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
-		r->setProjectionMatrix(800,600, 45.0f, 100.0f, 1.0f);
 		r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-		sceneObjects.push_back(r);
+		r->setSceneEntityInRenderer(s);
+		renderObjects.push_back(r); 
 	}
-	else //used default values
+	else //use default values for camera if no camera set.
 	{
 		r = new _Renderer();
-		r->setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
-		r->setModelDataInBuffers(s.getvertexData(), s.getIndexData());
-		r->setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
-		r->setProjectionMatrix(800, 600, 45.0f, 100.0f, 1.0f);
-		r->setCamViewMatrix(QVector3D(0.0,0.0,-10.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,0.0,0.0));//set a default camera value
-		sceneObjects.push_back(r);
+		r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
+		r->setSceneEntityInRenderer(s);
+		renderObjects.push_back(r);
 	}
 }
 /*
@@ -79,9 +74,9 @@ void _Scene::addCamera(_Camera c)
 */
 void _Scene::onResize(int w,int h)
 {
-	for (int i = 0; i < sceneObjects.size(); i++)
+	for (int i = 0; i < renderObjects.size(); i++)
 	{
-		sceneObjects[i]->setProjectionMatrix(w,h,45,50.0f,1.0f);
+		renderObjects[i]->setProjectionMatrix(w,h,45.0f,100.0f,1.0f);
 	}
 }
 /*
@@ -93,10 +88,8 @@ void _Scene::onResize(int w,int h)
 */
 void _Scene::render()
 {
-	
-	for (int i = 0; i < sceneObjects.size(); i++)
+	for (int i = 0; i < renderObjects.size(); i++)
 	{
-		sceneObjects[i]->draw();
+		renderObjects[i]->draw();
 	}
-
 }

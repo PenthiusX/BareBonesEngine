@@ -1,8 +1,6 @@
 #ifndef _ASSETLOADER_H
 #define _ASSETLOADER_H
-
 #include <vector>
-
 
 
 class _AssetLoader

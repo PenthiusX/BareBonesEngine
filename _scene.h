@@ -19,14 +19,14 @@ public:
     ~_Scene();
 
 		//
-	std::vector<_Renderer*> getSceneObjects();
+	std::vector<_Renderer*> getRenderObjects();
         void addSceneObject(_SceneEntity s);
         void addCamera(_Camera c);
 		void onResize(int w,int h);
         void render();
 private:
 	std::vector<_SceneEntity> sceneEntityVector;
-	std::vector<_Renderer*> sceneObjects;
+	std::vector<_Renderer*> renderObjects;
 	_Renderer* r;
 	//std::unique_ptr<_Renderer> rUP;
 	_Camera cam;

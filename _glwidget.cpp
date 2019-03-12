@@ -21,7 +21,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 }
 _GLWidget::~_GLWidget()
 {
-	delete sc;
+	delete scene;
 }
 /*
 * Function: initializeGL() overrides the 
@@ -99,25 +99,25 @@ for (int i = 0; i < indiceV.size(); i++)
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
-	s.setId(1);
+	s.setId(0);
 	s.setShaderPath(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-	s.setPosition(QVector3D(1.0,-0.3f, 0.0));
+	s.setPosition(QVector3D(1.0,-0.3f, -3.0));
 	s.setRotation(QQuaternion(90,0.0,0.1,0.0));
 	s.setScale(0.5);
-	s.setModelData(vertsV1, indiceV1);
+	s.setModelData(vertsV, indiceV);
 
-	s1.setId(2);
+	s1.setId(1);
 	s1.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	s1.setPosition(QVector3D(0.0, 0.7, 1.0));
+	s1.setPosition(QVector3D(0.0, 0.7, 4.0));
 	s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 	s1.setScale(1.5);
 	s1.setModelData(vertsV, indiceV);
 
-	sc = new _Scene();
-	sc->addCamera(cam);
+	scene = new _Scene();
+	scene->addCamera(cam);
 
-	sc->addSceneObject(s);
-	sc->addSceneObject(s1);
+	scene->addSceneObject(s);
+	scene->addSceneObject(s1);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -130,7 +130,7 @@ void _GLWidget::resizeGL(int w, int h)
 {
 	this->width = w;
 	this->height = h;
-	sc->onResize(w,h);
+	scene->onResize(w,h);
 }
 /*
  * Function: paintGl() 7
@@ -141,7 +141,7 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-	sc->render();
+	scene->render();
 	this->update();
 }
 /*
@@ -165,12 +165,68 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 	QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 }
 /*
-*
+* Function: keyPressEvent(QKeyEvent * event)
+* runns anytime a key is presses and returns which key through the
+* event pointer of QKeyEvent object.
+* Created: 25_02_2019
 */
+int id = 0;
 void _GLWidget::keyPressEvent(QKeyEvent * event)
 {
+	if (event->text() == "q" || event->text() == "Q")
+	{
+		id += 1;
+		if (id > 1)
+		{
+			id = 0;
+		}
+	}
+
 	if (event->text() == "d" || event->text() == "D")
 	{
+		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
+		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		{
+			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			{
+				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(0.0,0.1,0.0));
+			}
+		}
+	}
 
+	if (event->text() == "a" || event->text() == "A")
+	{
+		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
+		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		{
+			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			{
+				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(0.0, -0.1, 0.0));
+			}
+		}
+	}
+
+	if (event->text() == "w" || event->text() == "W")
+	{
+		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
+		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		{
+			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			{
+				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(0.1, 0.0, 0.0));
+			}
+		}
+	}
+
+	if (event->text() == "s" || event->text() == "S")
+	{
+		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
+		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		{
+			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			{
+				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(-0.1, 0.0, 0.0));
+			}
+		}
 	}
 }
