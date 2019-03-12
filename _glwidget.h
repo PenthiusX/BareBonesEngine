@@ -30,7 +30,7 @@ unsigned int shaderProgram;
 int width;
 int height;
 
-_Scene* sc;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
+_Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
 _SceneEntity s, s1;
 _Camera cam;
  QVector2D mousePressPosition;

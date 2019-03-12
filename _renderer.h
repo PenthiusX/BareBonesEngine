@@ -9,6 +9,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+//
+#include "_sceneentity.h"
 /*
  * The Renderer class
  * To create an abstraction for randering data
@@ -29,7 +31,11 @@ public:
     void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
-    void updateTrasformations();
+    void updateTrasformations(QVector3D pos,QQuaternion, float scale);
+	void updateTrasformations(QVector3D pos, QQuaternion rot);
+	void updateTrasformations(QVector3D pos);
+	void setSceneEntityInRenderer(_SceneEntity s);
+	_SceneEntity getSceneEntity();
     void draw();//Draws everything bound in the scene
 
 private:
@@ -53,6 +59,9 @@ std::vector<float> vertices;//not allocated yet
 std::vector<unsigned int> indices;//not allocated yet
 //
 QElapsedTimer timer;
+//
+_SceneEntity sceneEntity;
+
 };
 
 #endif // _RENDERER_H
