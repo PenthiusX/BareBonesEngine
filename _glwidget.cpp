@@ -95,7 +95,6 @@ for (int i = 0; i < indiceV.size(); i++)
 {
 	indiceV[i] = indiceV[i] - 1;
 }
-
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
