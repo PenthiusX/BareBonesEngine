@@ -54,6 +54,7 @@ win32 { #check if platform is windows
 INCLUDEPATH += $$PWD/deps/windows/glm-0.9.9.3/glm \
                 $$PWD/deps/windows/assimp-4.0.1/include
 DEPENDPATH += $$PWD/deps/windows/glm-0.9.9.3/glm
-LIBS +=
+              $$PWD/deps/windows/assimp-4.0.1
+LIBS += $$PWD/deps/windows/assimp-4.0.1
 }
 
