@@ -67,14 +67,14 @@ void _Renderer::setShader(QString vSh, QString fSh)
 */
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<unsigned int> indexArray)
 {
-	//copy the vertex and index data locally for use in the current drawcall.
+	// Copy the vertex and index data locally for use in the current drawcall.
 	this->vertices = vertexArray;
 	this->indices = indexArray;
-    //  Initialization code (done once (unless your object frequently changes))
+    // Initialization code (done once (unless your object frequently changes))
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
-    //
+    // 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -193,7 +193,11 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 	setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());//needs change
 }
-
+/*
+* Function: getSceneEntity()
+* returns the current scene entity object.
+* Dated:11_02_2019
+*/
 _SceneEntity _Renderer::getSceneEntity()
 {
 	return this->sceneEntity;

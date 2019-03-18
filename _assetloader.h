@@ -2,10 +2,13 @@
 #define _ASSETLOADER_H
 #include <vector>
 #include <qstring.h>
-//Assimp headers
-#include <assimp/scene.h>;
-#include <assimp/postprocess.h>;
-#include <assimp/Importer.hpp>;
+//
+//#include <Qt3DCore>
+//#include <Qt3DRender>
+//#include <Qt3DInput>
+//#include <Qt3DLogic>
+//#include <Qt3DExtras>
+//#include <Qt3DAnimation>
 
 class _AssetLoader
 {
@@ -15,11 +18,16 @@ public:
 
     std::vector<float> getAssetVertices();
     std::vector<unsigned int> getAssetIndices();
-	bool modelLoader(QString pathToFile);
+	bool objLoader(QString pathToFile);
 
 private:
 std::vector<float> vertices;
 std::vector<unsigned int> indices;
+std::vector<float> uvs;
+
+
+    //Qt3DRender::QMesh* qmesh;
+
 };
 
 #endif // _ASSETLOADER_H

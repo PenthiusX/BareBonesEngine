@@ -32,69 +32,7 @@ _GLWidget::~_GLWidget()
 void _GLWidget::initializeGL()
 {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//does not work
-	///*Hard coded vertices*/
-	std::vector<float> vertsV1 =
-	{
-		0.5,   0.5f, 0.0f,  // top right
-		0.5f, -0.5f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f  // top left
-	};
-	/*Hard coded Indices*/
-	std::vector<unsigned int> indiceV1 = 
-	{// note that we start from 0!
-		0, 1, 3,   // first triangle  
-		1, 2, 3    // second triangle
-	};
 
-	std::vector<float> vertsV2 =
-	{
-		1.0,   1.0f, 0.0f,  // top right
-		1.0f, -1.0f, 0.0f, // bottom right
-	   -0.5f, -1.0f, 0.0f, // bottom left
-	   -1.0f,  1.0f, 0.0f  // top left
-	};
-	/*Hard coded Indices*/
-	std::vector<unsigned int> indiceV2 =
-	{// note that we start from 0!
-		0, 1, 3,   // first triangle  
-		1, 2, 3    // second triangle
-	};
-
-/*Hard coded vertices*/
-std::vector<float> vertsV = 
-{
- 0.500000,-0.500000,-0.500000,
- 0.500000,-0.500000, 0.500000,
--0.500000,-0.500000, 0.500000,
--0.500000,-0.500000,-0.500000,
- 0.500000, 0.500000,-0.500000,
- 0.500000, 0.500000, 0.500000,
--0.500000, 0.500000, 0.500000,
--0.500000, 0.500000,-0.500000
-};
-
-/*Hard coded Indices*/
-std::vector<unsigned int> indiceV = 
-{
-	2, 4, 1,
-	8, 6, 5,
-	5, 2, 1,
-	6, 3, 2,
-	3, 8, 4,
-	1, 8, 5,
-	2, 3, 4,
-	8, 7, 6,
-	5, 6, 2,
-	6, 7, 3,
-	3, 7, 8,
-	1, 4, 8
-};
-
-for (int i = 0; i < indiceV.size(); i++)
-{
-	indiceV[i] = indiceV[i] - 1;
-}
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
@@ -103,20 +41,29 @@ for (int i = 0; i < indiceV.size(); i++)
 	s.setPosition(QVector3D(1.0,-0.3f, -3.0));
 	s.setRotation(QQuaternion(90,0.0,0.1,0.0));
 	s.setScale(0.5);
-	s.setModelData(vertsV, indiceV);
+	s.setModelData(":/models/cube.obj");
 
 	s1.setId(1);
 	s1.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
 	s1.setPosition(QVector3D(0.0, 0.7, 4.0));
 	s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 	s1.setScale(1.5);
-	s1.setModelData(vertsV, indiceV);
+	s1.setModelData(":/models/torus.obj");
+
+	s2.setId(3);
+	s2.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+	s2.setPosition(QVector3D(0.0, 0.7, 4.0));
+	s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+	s2.setScale(1.5);
+    s2.setModelData(":/models/cone.obj");
 
 	scene = new _Scene();
 	scene->addCamera(cam);
 
 	scene->addSceneObject(s);
 	scene->addSceneObject(s1);
+	scene->addSceneObject(s2);
+
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -184,11 +131,11 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 	if (event->text() == "d" || event->text() == "D")
 	{
 		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
-		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 		{
-			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
 			{
-				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(0.0,0.1,0.0));
+				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0,0.1,0.0));
 			}
 		}
 	}
@@ -196,11 +143,11 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 	if (event->text() == "a" || event->text() == "A")
 	{
 		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
-		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 		{
-			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
 			{
-				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(0.0, -0.1, 0.0));
+				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0, -0.1, 0.0));
 			}
 		}
 	}
@@ -208,11 +155,11 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 	if (event->text() == "w" || event->text() == "W")
 	{
 		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
-		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 		{
-			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
 			{
-				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(0.1, 0.0, 0.0));
+				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.1, 0.0, 0.0));
 			}
 		}
 	}
@@ -220,12 +167,14 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 	if (event->text() == "s" || event->text() == "S")
 	{
 		//sc->getSceneObjects()[0]->setModelMatrix(QVector3D(+0.0,+0.01,+0.0), 1.0,QQuaternion(QVector3D(0.0,0.0,0.0)));
-		for (int i = 0; i < scene->getRenderObjects().size(); i++)
+		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 		{
-			if (scene->getRenderObjects()[i]->getSceneEntity().getId() == id)
+			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
 			{
-				scene->getRenderObjects()[i]->updateTrasformations(QVector3D(-0.1, 0.0, 0.0));
+				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1, 0.0, 0.0));
 			}
 		}
 	}
+
+
 }

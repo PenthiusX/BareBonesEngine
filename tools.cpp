@@ -3,7 +3,6 @@
 #include <QString>
 #include <QDebug>
 
-//Commonly used Functions
 
 QString ReadStringFromQrc(QString Filename)
 {
