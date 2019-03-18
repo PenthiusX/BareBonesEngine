@@ -2,15 +2,18 @@
 #define _RENDERER_H
 #include <vector>
 #include "_shader.h"
+#include "_sceneentity.h"
+//
 #include <qopenglextrafunctions.h>
 #include <qmatrix4x4.h>
 #include <qelapsedtimer.h>//for timer
-//
+
+//GLM math Library
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-//
-#include "_sceneentity.h"
+
+
 /*
  * The Renderer class
  * To create an abstraction for randering data

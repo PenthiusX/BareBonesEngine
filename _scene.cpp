@@ -25,7 +25,7 @@ _Scene::~_Scene()
  * this is being called by the _GlWidget class.
  * Created:26_02_2019
 */
-std::vector<_Renderer*> _Scene::getRenderObjects()
+std::vector<_Renderer*> _Scene::getSceneObjectsArray()
 {
 	return this->renderObjects;
 }

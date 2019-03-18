@@ -6,10 +6,11 @@
 #
 #-------------------------------------------------
 
-QT       += core
-QT       += gui
-QT       += opengl
-QT       += widgets
+QT += core
+QT += gui
+QT += opengl
+QT += widgets
+QT += 3dcore 3drender 3dinput 3dlogic 3dextras 3danimation
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -41,20 +42,19 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     shaders.qrc \
-    textures.qrc
+    textures.qrc \
+    models.qrc
 
 linux-g++ { #check if platform is linux
 message(Linux)
-INCLUDEPATH += $$PWD/deps/linux/glm-0.9.9.3/glm
-DEPENDPATH += $$PWD/deps/linux/glm-0.9.9.3/glm
+INCLUDEPATH += $$PWD/deps/linux/glm-0.9.9.3/glm/
+DEPENDPATH += $$PWD/deps/linux/glm-0.9.9.3/glm/
 LIBS += -lOpenGL32
 }
 
 win32 { #check if platform is windows
-INCLUDEPATH += $$PWD/deps/windows/glm-0.9.9.3/glm \
-                $$PWD/deps/windows/assimp-4.0.1/include
-DEPENDPATH += $$PWD/deps/windows/glm-0.9.9.3/glm
-              $$PWD/deps/windows/assimp-4.0.1
-LIBS += $$PWD/deps/windows/assimp-4.0.1
+INCLUDEPATH += $$PWD/deps/windows/glm-0.9.9.3/glm/
+DEPENDPATH += $$PWD/deps/windows/glm-0.9.9.3/glm/
+LIBS +=
 }
 

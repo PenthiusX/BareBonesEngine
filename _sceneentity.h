@@ -3,6 +3,8 @@
 
 #include <qquaternion.h>
 #include <vector>
+#include <_assetloader.h>
+
 
 class _SceneEntity
 {
@@ -29,7 +31,8 @@ public:
 	void setnormalData(std::vector<float> normalData);
 	std::vector<float> getNormalData();
 	//
-	void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//Implemntation pending
+	void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);
+	void _SceneEntity::setModelData(QString path);
 	void setShaderPath(QString vshader, QString fshader);//Implementation pending
 	QString getVertexShaderPath();
 	QString getFragmentShaderPath();

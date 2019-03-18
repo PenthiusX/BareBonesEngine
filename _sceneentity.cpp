@@ -142,6 +142,21 @@ void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigne
 	this->indexData = indices;
 }
 /*
+ * Function: setModelData(Qstring path)
+ * sets the vertex and index data in one function, for the current object.
+ * takes data as a path and uses the assetloader class to load in the obj data from
+ * a path to the obj File.
+ * Created:26_02_2019
+*/
+void _SceneEntity::setModelData(QString path)
+{
+	_AssetLoader a;
+	a.objLoader(path);
+
+	this->vertexData = a.getAssetVertices();
+	this->indexData = a.getAssetIndices();
+}
+/*
  * Function: setShaderPath(QString vSh, QString fSh)
  * sets the path  for the shadert to be loaded ,for the current object.
  * Created:26_02_2019
