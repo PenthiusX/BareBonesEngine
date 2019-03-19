@@ -1,4 +1,5 @@
 #include "_scene.h"
+#include <iostream>
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -38,20 +39,28 @@ std::vector<_Renderer*> _Scene::getSceneObjectsArray()
 */
 void _Scene::addSceneObject(_SceneEntity s)
 {
-// Only sets the scene object if the camera has been set already
-	if (isCamera == true)
+// Only sets the scene object if the camera has been set already and scene object is active
+	if (s.getIsActive() == true)
 	{
-		r = new _Renderer();
-		r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-		r->setSceneEntityInRenderer(s);
-		renderObjects.push_back(r); 
+		if (isCamera == true)
+		{
+			r = new _Renderer();
+			r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+			r->setSceneEntityInRenderer(s);
+			renderObjects.push_back(r);
+		}
+		else //use default values for camera if no camera set.
+		{
+			r = new _Renderer();
+			r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
+			r->setSceneEntityInRenderer(s);
+			renderObjects.push_back(r);
+		}
 	}
-	else //use default values for camera if no camera set.
+	else
 	{
-		r = new _Renderer();
-		r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
-		r->setSceneEntityInRenderer(s);
-		renderObjects.push_back(r);
+		exit;
+		std::cout << "scene object has not been set Properly" << std::endl;
 	}
 }
 /*

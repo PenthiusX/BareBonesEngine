@@ -15,11 +15,9 @@
 */
 _AssetLoader::_AssetLoader()
 {
-
 }
 _AssetLoader::~_AssetLoader()
 {
-
 }
 /*
 * Function:getAssetVertices()

@@ -112,7 +112,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 	x = rotation.z();
 	QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
-	glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
+	//glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work --------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
@@ -161,10 +161,9 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale
 	QVector3D p = sceneEntity.getPostion();
 
 	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
-	glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
+	glm_model4x4 = glm::rotate(glm_model4x4, (0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//Note : needs work --------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 
-	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
 }
 void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot)
 {
@@ -190,7 +189,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 	this->sceneEntity = s;	
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
 	setModelDataInBuffers(s.getvertexData(), s.getIndexData());
-	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());//needs change
+	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
 /*
 * Function: getSceneEntity()
@@ -210,7 +209,10 @@ _SceneEntity _Renderer::getSceneEntity()
 */
 void _Renderer::_Renderer::draw()
 {
+	//----------------------DebugUse----------------------------------------------------
 	//glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
+	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
+	//----------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
