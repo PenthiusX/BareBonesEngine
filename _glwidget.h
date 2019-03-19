@@ -36,7 +36,8 @@ _AssetLoader assetLoader;
 _Camera cam;
  QVector2D mousePressPosition;
 
- float x;
+ //Varible for keyboardCallbakc
+ int id;
 };
 
 #endif // _GLWIDGET_H
