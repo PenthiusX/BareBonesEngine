@@ -173,7 +173,7 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot)
 	this->sceneEntity.setRotation(rot);
 	QVector3D p = sceneEntity.getPostion();
 	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
-	//glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f);
+
 }
 void _Renderer::updateTrasformations(QVector3D pos)
 {
@@ -211,6 +211,7 @@ _SceneEntity _Renderer::getSceneEntity()
 */
 void _Renderer::_Renderer::draw()
 {
+	glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects

@@ -184,7 +184,7 @@ uint _Shader::getUniformLocation(const char* nameOfUniform)
  * Needs to be called before draw everyloop for multiple
  * sets which shader needs to be used in the current context
  * Created: 14_02_2019
- */
+*/
 void _Shader::useShaderProgram()
 {
 	glUseProgram(this->shaderProgram);

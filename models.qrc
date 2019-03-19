@@ -1,9 +1,8 @@
 <RCC>
     <qresource prefix="/">
-	   <file>models/cube.obj</file>
+		   <file>models/cube.obj</file>
            <file>models/torus.obj</file>
            <file>models/cone.obj</file>
-           <file>models/1.ply</file>
-	   <file>models/untitled.ply</file>
+           <file>models/monkey.obj</file>
     </qresource>
 </RCC>
