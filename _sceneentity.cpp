@@ -9,6 +9,7 @@ _SceneEntity::_SceneEntity()
 	this->rotation = QQuaternion::fromAxisAndAngle(QVector3D(0.0,0.0,0.0),0.0);
 	this->postion = QVector3D(0.0, 0.0, 0.0);
 	this->scale = 1.0;
+	this->isActive = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -131,6 +132,10 @@ std::vector<float> _SceneEntity::getNormalData()
 {
 	return this->normalData;
 }
+bool _SceneEntity::getIsActive()
+{
+	return this->isActive;
+}
 /*
  * Function: setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
  * sets the vertex and index data in one function, for the current object.
@@ -150,9 +155,9 @@ void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigne
 */
 void _SceneEntity::setModelData(QString path)
 {
+	this->isActive = true;
 	_AssetLoader a;
 	a.objLoader(path);
-
 	this->vertexData = a.getAssetVertices();
 	this->indexData = a.getAssetIndices();
 }
@@ -161,7 +166,7 @@ void _SceneEntity::setModelData(QString path)
  * sets the path  for the shadert to be loaded ,for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setShaderPath(QString vSh, QString fSh)
+void _SceneEntity::setShader(QString vSh, QString fSh)
 {
 	this->vShaderPath = vSh;
 	this->fShaderPath = fSh;
