@@ -3,7 +3,7 @@
 #include <QString>
 #include <QOpenGLExtraFunctions>
 /*
- * Shader class:
+ * Class: _Shader
  * Holds functonality to bind shader to a shaderprogram
  * and use it the current opengl Context.
  * Created: 14_02_2019

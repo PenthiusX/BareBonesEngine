@@ -15,7 +15,7 @@
 
 
 /*
- * The Renderer class
+ * Class: _Renderer
  * To create an abstraction for randering data
  * Extends the _glwidget class, will be included in the _glwidget class
  * Created: 8_02_2019

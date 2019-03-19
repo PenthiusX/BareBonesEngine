@@ -2,13 +2,13 @@
 #define _ASSETLOADER_H
 #include <vector>
 #include <qstring.h>
-//
-//#include <Qt3DCore>
-//#include <Qt3DRender>
-//#include <Qt3DInput>
-//#include <Qt3DLogic>
-//#include <Qt3DExtras>
-//#include <Qt3DAnimation>
+/*
+ * Class: _AssetLoader
+ * class sets values needed by the viewMatrix
+ * for setting of values on Init or realtime
+ * Created: 15_03_2019
+ * Author: Aditya
+*/
 
 class _AssetLoader
 {
@@ -24,10 +24,6 @@ private:
 std::vector<float> vertices;
 std::vector<unsigned int> indices;
 std::vector<float> uvs;
-
-
-    //Qt3DRender::QMesh* qmesh;
-
 };
 
 #endif // _ASSETLOADER_H
