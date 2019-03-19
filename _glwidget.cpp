@@ -17,7 +17,7 @@
 */
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
-	x = 0;
+	id = 0;
 }
 _GLWidget::~_GLWidget()
 {
@@ -25,13 +25,12 @@ _GLWidget::~_GLWidget()
 }
 /*
 * Function: initializeGL() overrides the 
-* function initializeGL() in the OpopenglFunctions class
+* same function in the OpopenglFunctions class
 * runs once the opengl context is initialised.
 * Created: 5_02_2019
 */
 void _GLWidget::initializeGL()
 {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//does not work
 
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
@@ -39,7 +38,7 @@ void _GLWidget::initializeGL()
 	s.setId(0);
 	s.setShaderPath(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
 	s.setPosition(QVector3D(1.0,-0.3f, -3.0));
-	s.setRotation(QQuaternion(90,0.0,0.1,0.0));
+	s.setRotation(QQuaternion(90,0.0,0.0,0.0));
 	s.setScale(0.5);
 	s.setModelData(":/models/torus.obj");
 
@@ -50,10 +49,10 @@ void _GLWidget::initializeGL()
 	s1.setScale(1.5);
     s1.setModelData(":/models/cone.obj");
 
-	s2.setId(3);
+	s2.setId(2);
 	s2.setShaderPath(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	s2.setPosition(QVector3D(0.0, 0.7, 4.0));
-	s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+	s2.setPosition(QVector3D(0.0, 1.7, 2.0));
+	//s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 	s2.setScale(1.5);
     s2.setModelData(":/models/monkey.obj");
 
@@ -115,17 +114,16 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 * event pointer of QKeyEvent object.
 * Created: 25_02_2019
 */
-int id = 0;
 void _GLWidget::keyPressEvent(QKeyEvent * event)
 {
 	if (event->text() == "q" || event->text() == "Q")
 	{
 		id += 1;
-		
-        if (id > scene->getSceneObjectsArray().size())
+        if (id >= scene->getSceneObjectsArray().size())
 		{
 			id = 0;
 		}
+
 	}
 
 	if (event->text() == "d" || event->text() == "D")
@@ -175,6 +173,4 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 			}
 		}
 	}
-
-
 }
