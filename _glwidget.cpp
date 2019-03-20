@@ -31,7 +31,6 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 
@@ -41,12 +40,12 @@ void _GLWidget::initializeGL()
 	s.setScale(0.5);
 	s.setModelData(":/models/torus.obj");
 
-	//s1.setId(1);
-	//s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	//s1.setPosition(QVector3D(0.0, 0.7, 4.0));
-	//s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
-	//s1.setScale(1.5);
-    //s1.setModelData(":/models/cone.obj");
+	s1.setId(1);
+	s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+	s1.setPosition(QVector3D(0.0, 0.7, 4.0));
+	s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+	s1.setScale(1.5);
+    s1.setModelData(":/models/cone.obj");
 
 	//s2.setId(2);
 	//s2.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
