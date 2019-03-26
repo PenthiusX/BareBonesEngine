@@ -137,10 +137,9 @@ void _Scanner::scan_generate_model()
         texture_out.bindForFramebuffer();
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
         glViewport(0, 0, rttWidth, rttHeight);
-
         glReadPixels(0, 0, rttWidth, rttHeight,GL_RED, GL_UNSIGNED_BYTE,colours);
-
         imagefile=fopen(filename.toLocal8Bit(), "wb");
 
         if( imagefile == NULL) {
@@ -151,6 +150,5 @@ void _Scanner::scan_generate_model()
         fclose(imagefile);
 
         qDebug() << "wrote: " << filename;
-
     }
 }

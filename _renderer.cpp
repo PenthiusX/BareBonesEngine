@@ -87,7 +87,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	//
 	this->colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture
 	this->modelUnifrom = shdr->getUniformLocation("model");
-	this->viewUniform  = shdr->getUniformLocation("view");
+	this->viewUniform  = shdr->getUniformLocation("view");  
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
 /*
@@ -112,7 +112,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 	x = rotation.z();
 	QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
-	//glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work --------------------!!!!
+    //glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
@@ -161,7 +161,7 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale
 	QVector3D p = sceneEntity.getPostion();
 
 	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
-	glm_model4x4 = glm::rotate(glm_model4x4, (0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//Note : needs work --------------------!!!!
+    glm_model4x4 = glm::rotate(glm_model4x4, (0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 
 }
@@ -171,7 +171,6 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot)
 	this->sceneEntity.setRotation(rot);
 	QVector3D p = sceneEntity.getPostion();
 	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
-
 }
 void _Renderer::updateTrasformations(QVector3D pos)
 {
@@ -209,7 +208,7 @@ _SceneEntity _Renderer::getSceneEntity()
 */
 void _Renderer::_Renderer::draw()
 {
-	//----------------------DebugUse----------------------------------------------------
+	//----------------------TestUse----------------------------------------------------
 	//glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
 	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
 	//----------------------------------------------------------------------------------

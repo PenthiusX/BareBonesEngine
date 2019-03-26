@@ -203,7 +203,6 @@ void _Shader::resetShader()
 */
 void _Shader::setChildShader(QString s, unsigned int typ)
 {
-
     unsigned int shader = compile_shader(ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
@@ -232,12 +231,10 @@ unsigned int _Shader::compile_shader(QString src, unsigned int typ)
     unsigned int shader;
     QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
     const char *shader_src = source_utf.data(); //convert to const char*
-
     //shader
     shader = glCreateShader(typ);
     glShaderSource(shader, 1, &shader_src, NULL);
     glCompileShader(shader);
-
     //check for compile success
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if(!success)
