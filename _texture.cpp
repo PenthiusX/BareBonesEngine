@@ -55,7 +55,7 @@ void _Texture::setImage(char* img,unsigned int iwidth,unsigned int iheight)
     setImage(img);
 }
 
-void _Texture::set_slot_uniform_name(QString name)
+void _Texture::setSlotUniformName(QString name)
 {
     slot_uniform_name = name;
     slot_uniform = glGetUniformLocation(shaderProgram,slot_uniform_name.toStdString().c_str());

@@ -169,7 +169,12 @@ void _SceneEntity::setModelData(QString path)
 void _SceneEntity::setShader(QString vSh, QString fSh)
 {
 	this->vShaderPath = vSh;
-	this->fShaderPath = fSh;
+    this->fShaderPath = fSh;
+}
+
+void _SceneEntity::setTexture(QString texPath)
+{
+    this->texturePath = texPath;
 }
 /*
 * Function: getVertexShaderPath()
@@ -183,7 +188,7 @@ QString _SceneEntity::getVertexShaderPath()
 /*
 * Function: getFragmentShaderPath()
 * returns the fragment shader path set in the object via set shader Path
- * Created:26_02_2019
+* Created:26_02_2019
 */
 QString _SceneEntity::getFragmentShaderPath()
 {

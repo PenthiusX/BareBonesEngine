@@ -3,6 +3,7 @@
 #include <vector>
 #include "_shader.h"
 #include "_sceneentity.h"
+#include "_texture.h"
 //
 #include <qopenglextrafunctions.h>
 #include <qmatrix4x4.h>
@@ -31,6 +32,7 @@ public:
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<unsigned int> indexArray);//take vertex and index data and binds it to object buffer
     void setTexture(char* texBitmap);//takes am image and binds it to object
+     void setupTexture();//takes am image and binds it to object
     void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
@@ -64,6 +66,8 @@ std::vector<unsigned int> indices;//not allocated yet
 QElapsedTimer timer;
 //
 _SceneEntity sceneEntity;
+//
+std::vector<_Texture> textures;
 
 };
 

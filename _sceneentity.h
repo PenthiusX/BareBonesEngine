@@ -24,7 +24,9 @@ public:
 	//
 	void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
 	void _SceneEntity::setModelData(QString path);//takes the relative path via a qrc file path
-	void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the renderer
+    void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
+    void setTexture(QString texPath);
+
 	QString getVertexShaderPath();//returns the vertexshader path
 	QString getFragmentShaderPath();//returns the fragment shader path
 
@@ -51,6 +53,8 @@ private:
 	QString vShaderPath;
 	QString fShaderPath;
 	//
+    QString texturePath;
+    //
 	void setVertexData(std::vector<float> vertices);//sets the Vertex data.
 	void setIndexData(std::vector<unsigned int> indices);//sets the Index data.
 	void setuvData(std::vector<int> uvCoords);//sets the UV data.

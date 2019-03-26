@@ -18,7 +18,7 @@ public:
     void setImage(char* img,unsigned int iwidth,unsigned int iheight);
     inline unsigned int setShader(unsigned int prog){ shaderProgram = prog; }
     inline unsigned int GetID(){ return m_ID;}
-    void set_slot_uniform_name(QString name);//(self, slot=0, shader=None):
+    void setSlotUniformName(QString name);//(self, slot=0, shader=None):
 
     void bind();
     void bind(unsigned int index);
@@ -41,7 +41,6 @@ protected:
     unsigned int slot_uniform;
     unsigned int width = 1360;
     unsigned int height = 1024;
-
     QString slot_uniform_name;
 };
 
