@@ -1,7 +1,7 @@
 #ifndef _AVT_CAMERA_H
 #define _AVT_CAMERA_H
 
-#include <IO/_camera.h>
+#include <IO/_hwdcamera.h>
 #include <QString>
 
 #   ifdef PLATFORM_WIN
@@ -19,7 +19,7 @@
  * Created: 02_03_2019
  * Author: Saurabh
 */
-class _AVT_Camera :public _Camera
+class _AVT_Camera :public _HWDCamera
 {
 public:
     CFGCamera  Camera;

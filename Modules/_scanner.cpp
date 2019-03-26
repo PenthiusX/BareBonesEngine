@@ -91,7 +91,6 @@ void _Scanner::scan_generate_model()
     //texture.unbind();
 
     _Shader compute_shader;
-
     compute_shader.setChildShader(":/shaders/compute_edge.glsl",GL_COMPUTE_SHADER);
 
     compute_shader.attachShaders();

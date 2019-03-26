@@ -1,12 +1,12 @@
-#ifndef _CAMERA_H
-#define _CAMERA_H
+#ifndef __HWDCAMERA_H
+#define __HWDCAMERA_H
 
 #include <QString>
 
-class _Camera
+class _HWDCamera
 {
 public:
-    _Camera();
+    _HWDCamera();
     virtual int init(int v); //initialize camera
     virtual char* get_frame(); //return frame
     virtual int stop_camera(); //
@@ -18,4 +18,4 @@ private:
     virtual int camera_setup_defaults();
 };
 
-#endif // _CAMERA_H
+#endif // _HWDCAMERA_H

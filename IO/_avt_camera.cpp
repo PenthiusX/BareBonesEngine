@@ -17,7 +17,7 @@
  * Created: 02_03_2019
  * Author: Saurabh
 */
-_AVT_Camera::_AVT_Camera() : _Camera()
+_AVT_Camera::_AVT_Camera() : _HWDCamera()
 {
 
 }
