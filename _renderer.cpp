@@ -90,13 +90,21 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->viewUniform  = shdr->getUniformLocation("view");  
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
+
+void _Renderer::setupTexture()
+{
+    char *colours=new char[1360*1024];
+    _Texture texture(colours,1360,1024);
+    texture.load(GL_RED,GL_UNSIGNED_BYTE);
+    textures.push_back(texture);
+}
 /*
  * Function: setTexture(char *texBitmap)
  * Implementation pending
 */
 void _Renderer::setTexture(char *texBitmap)
 {
-
+  textures[0].setImage(texBitmap);
 }
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
@@ -216,8 +224,12 @@ void _Renderer::_Renderer::draw()
     //can be called once in the init or every frame
     //if the shader is switching between objects
 	shdr->useShaderProgram();
-	//Bind the Buffers data of the respective buffer object
-	//in the context each frame.
+    //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector
+    for (int t=0;t<textures.size();t++){
+        textures[t].bind();
+    }
+    //Bind the Buffers data of the respective buffer object
+    //in the context each frame.
 	glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);

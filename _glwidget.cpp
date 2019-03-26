@@ -47,12 +47,13 @@ void _GLWidget::initializeGL()
 	s1.setScale(1.5);
     s1.setModelData(":/models/cone.obj");
 
-	//s2.setId(2);
-	//s2.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-	//s2.setPosition(QVector3D(0.0, 1.7, 2.0));
-	//s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
-	//s2.setScale(1.5);
-    //s2.setModelData(":/models/monkey.obj");
+    s2.setId(2);
+    s2.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s2.setPosition(QVector3D(0.0, 1.7, 2.0));
+    s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+    s2.setScale(1.5);
+    s2.setModelData(":/models/monkey.obj");
+    s2.setTexture(":textures/cube.png");
 
 	scene = new _Scene();
 	scene->addCamera(cam);
