@@ -1,13 +1,13 @@
 #ifndef _DC_1394_CAMERA_H
 #define _DC_1394_CAMERA_H
 
-#include <IO/_camera.h>
+#include <IO/_hwdcamera.h>
 #include <QString>
 
 #   ifdef PLATFORM_LINUX
 
 #include <dc1394/dc1394.h>
-class _DC_1394_Camera : public _Camera
+class _DC_1394_Camera : public _HWDCamera
 {
 public:
     _DC_1394_Camera();

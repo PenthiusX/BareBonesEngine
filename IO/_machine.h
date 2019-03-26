@@ -2,7 +2,7 @@
 #define _MACHINE_H
 
 #include <IO/_hardwareserial.h>
-#include <IO/_camera.h>
+#include <IO/_hwdcamera.h>
 
 /*
  * The Machine class
@@ -43,7 +43,7 @@ public slots:
 
 public:
     _HardwareSerial *hardware_serial = nullptr;
-    _Camera *camera = nullptr;
+    _HWDCamera *camera = nullptr;
 };
 
 #endif // _MACHINE_H

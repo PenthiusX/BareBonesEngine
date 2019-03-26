@@ -20,6 +20,8 @@ public:
     void setVertexShader(QString vertexShaderPath);
     void attachShaders();
     void attachShaders(QString vertexInfo , QString fragmentInfo);
+    void setChildShader(QString s,unsigned int typ);
+    void setChildShader(std::vector<QString>, unsigned int typ);
 	uint getUniformLocation(const char* nameOfUniform);
     void useShaderProgram();
 	void resetShader();
@@ -32,6 +34,9 @@ private:
      //Error checking
      int success;
      char infoLog[512];
+
+       std::map<unsigned int,unsigned int> child_shaders;
+      unsigned int compile_shader(QString src_path,unsigned int typ);
 };
 
 #endif // _SHADER_H

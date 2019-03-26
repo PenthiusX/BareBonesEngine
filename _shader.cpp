@@ -198,3 +198,53 @@ void _Shader::resetShader()
 {
 	glUseProgram(0);
 }
+/*
+ * Sau feature , needs checking
+*/
+void _Shader::setChildShader(QString s, unsigned int typ)
+{
+
+    unsigned int shader = compile_shader(ReadStringFromQrc(s),typ);
+    child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
+}
+/*
+ * Sau feature , needs checking
+*/
+void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
+{
+    QString combined_src;
+
+    for (auto const& shader_part : shader_parts)
+    {
+        combined_src = combined_src + ReadStringFromQrc(shader_part);//second specifies value at key in map(dictionary)
+    }
+
+    //tools.ReadStringFromQrc(s);
+
+    unsigned int shader = compile_shader(combined_src,typ);
+    child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
+}
+/*
+ * Sau feature , needs checking
+ */
+unsigned int _Shader::compile_shader(QString src, unsigned int typ)
+{
+    unsigned int shader;
+    QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
+    const char *shader_src = source_utf.data(); //convert to const char*
+
+    //shader
+    shader = glCreateShader(typ);
+    glShaderSource(shader, 1, &shader_src, NULL);
+    glCompileShader(shader);
+
+    //check for compile success
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(shader, 512, NULL, infoLog);
+        std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
+    }
+
+    return shader;
+}

@@ -174,7 +174,7 @@ void _Machine::set_hardware_serial_defaults()
  * */
 void _Machine::set_camera()
 {
-    camera = new _Camera();
+    camera = new _HWDCamera();
 #ifdef PLATFORM_LINUX
     camera = new _DC_1394_Camera();
 
@@ -193,7 +193,7 @@ void _Machine::set_camera()
     if(camera->init(0)==0)
     {
         //base camera if no special camera found
-        camera = new _Camera();
+        camera = new _HWDCamera();
     }
 
     /* camera->init(0) function of camera will reopen camera module hence it
