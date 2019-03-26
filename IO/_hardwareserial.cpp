@@ -57,7 +57,6 @@ _HardwareSerial::~_HardwareSerial()
  * */
 void _HardwareSerial::openSerialPort()
 {
-
     m_serial = new QSerialPort();
 
     if(!virtual_serial){
