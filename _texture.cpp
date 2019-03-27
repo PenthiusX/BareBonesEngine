@@ -7,7 +7,8 @@
  * documentation and slots functions will be completed later
 */
 _Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext()){
-
+    width = 1360;
+    height = 1024;
 }
 _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext()){
     image = img;
@@ -18,7 +19,6 @@ _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorF
     addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
-
 /*
  *
 */
@@ -54,6 +54,9 @@ void _Texture::setImage(char* img)
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
     updated = true;
 }
+/*
+ *
+*/
 void _Texture::setImage(char* img,unsigned int iwidth,unsigned int iheight)
 {
     width = iwidth;

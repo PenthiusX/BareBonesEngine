@@ -6,27 +6,135 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>641</width>
-    <height>461</height>
+    <width>851</width>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="_GLWidget" name="centralWidget">
-   <widget class="QPushButton" name="Quit">
-    <property name="geometry">
-     <rect>
-      <x>542</x>
-      <y>11</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Quit</string>
-    </property>
-   </widget>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="2">
+       <widget class="QPushButton" name="laser_focus_in">
+        <property name="text">
+         <string>Laser Focus In</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="backlight_on">
+        <property name="text">
+         <string>BackLight On</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="marking_laser_on">
+        <property name="text">
+         <string>Mark Laser On</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QPushButton" name="marking_laser_off">
+        <property name="text">
+         <string>Mark Laser Off</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="backlight_off">
+        <property name="text">
+         <string>BackLight Off</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="line_laser_off">
+        <property name="text">
+         <string>Line Laser Off</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="stage_right">
+        <property name="text">
+         <string>Stage Right</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="motors_setup">
+        <property name="text">
+         <string>motors</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="laser_height_up">
+        <property name="text">
+         <string>Laser ZUp</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="line_laser_on">
+        <property name="text">
+         <string>Line Laser On</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="laser_height_down">
+        <property name="text">
+         <string>Laser Z Down</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="stage_left">
+        <property name="text">
+         <string>Satge Left</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="laser_focus_out">
+        <property name="text">
+         <string>Laser Focus Out</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QPushButton" name="mark_sine_wave">
+        <property name="text">
+         <string>sine wave</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QPushButton" name="grab_frame">
+        <property name="text">
+         <string>grab frame</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QPushButton" name="scan">
+        <property name="text">
+         <string>Scan</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="_GLWidget" name="widget" native="true"/>
+    </item>
+   </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -42,26 +150,9 @@
   <customwidget>
    <class>_GLWidget</class>
    <extends>QWidget</extends>
-   <header location="global">_glwidget.h</header>
+   <header>_glwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>Quit</sender>
-   <signal>released()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>48</x>
-     <y>364</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>45</x>
-     <y>246</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

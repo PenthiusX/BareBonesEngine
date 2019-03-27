@@ -39,8 +39,8 @@ protected:
     unsigned int color_format = GL_RGBA;
     unsigned int slot;
     unsigned int slot_uniform;
-    unsigned int width = 1360;
-    unsigned int height = 1024;
+    unsigned int width;
+    unsigned int height;
 };
 
 #endif // _TEXTURE_H
