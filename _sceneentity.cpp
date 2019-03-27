@@ -171,8 +171,14 @@ void _SceneEntity::setShader(QString vSh, QString fSh)
 	this->vShaderPath = vSh;
     this->fShaderPath = fSh;
 }
-
-void _SceneEntity::setTexture(QString texPath)
+/*
+ *
+*/
+QString _SceneEntity::getTexturePath()
+{
+    return this->texturePath;
+}
+void _SceneEntity::setTexturePath(QString texPath)
 {
     this->texturePath = texPath;
 }

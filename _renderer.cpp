@@ -91,7 +91,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
 /*
- *
+ * Function:setupTexture()
  */
 void _Renderer::setupTexture()
 {
@@ -101,17 +101,15 @@ void _Renderer::setupTexture()
     textures.push_back(texture);
 }
 /*
- * Function: setTexture(char *texBitmap)
- * Implementation pending
+ * Function: setTexture(char *texBitmap)/setTexture(QString pathtoTexture)
 */
 void _Renderer::setTexture(char *texBitmap)
 {
     textures[0].setImage(texBitmap);
 }
-
 void _Renderer::setTexture(QString pathtoTexture)
 {
-//     textures[0].setImage(texBitmap);
+     textures[0].setImage(pathtoTexture);
 }
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
@@ -202,8 +200,11 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
 	this->sceneEntity = s;	
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
-//    setTexture();
-	setModelDataInBuffers(s.getvertexData(), s.getIndexData());
+    //
+    setupTexture();
+//    setTexture(s.getTexturePath());
+    //
+    setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
 /*
