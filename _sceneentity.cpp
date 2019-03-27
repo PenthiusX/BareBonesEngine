@@ -33,11 +33,11 @@ _SceneEntity::~_SceneEntity(){
  * sets/gets the id for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setId(int id)
+void _SceneEntity::setId(unsigned int id)
 {
 	this->id = id;
 }
-int _SceneEntity::getId()
+unsigned int _SceneEntity::getId()
 {
 	return this->id;
 }

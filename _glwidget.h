@@ -37,7 +37,7 @@ _Camera cam;
  QVector2D mousePressPosition;
 
  //Varible for keyboardCallbakc
- int id;
+ unsigned int id;
 };
 
 #endif // _GLWIDGET_H

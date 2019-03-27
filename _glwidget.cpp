@@ -121,22 +121,22 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 			id = 0;
 
 	if (event->text() == "d" || event->text() == "D")
-		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0,0.1,0.0));
+                scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0,0.1f,0.0));
 
 	if (event->text() == "a" || event->text() == "A")
-		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0, -0.1, 0.0));
+                scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0, -0.1f, 0.0));
 
 	if (event->text() == "w" || event->text() == "W")
-		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.1, 0.0, 0.0));
+                scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.1f, 0.0, 0.0));
 
 	if (event->text() == "s" || event->text() == "S")
-		for (int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-				scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1, 0.0, 0.0));
+                scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1f, 0.0, 0.0));
 }
