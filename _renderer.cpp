@@ -255,9 +255,9 @@ void _Renderer::_Renderer::draw()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
 	//Setting the uniform each frame.
 	//Depends if the need is to update the values
-	float r = abs(cos(timer.elapsed() * 0.002));
-	float g = abs(sin(timer.elapsed() * 0.003));
-	float b = abs(cos(timer.elapsed() * 0.005));
+    GLfloat r = abs(cos(timer.elapsed() * 0.002));
+    GLfloat g = abs(sin(timer.elapsed() * 0.003));
+    GLfloat b = abs(cos(timer.elapsed() * 0.005));
 	glUniform4f(colorUniform, r,g,b, 1.0f);//will be replaced by Texture
 	//sets the values for the MVP matrix in the vertex shader
 	glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
