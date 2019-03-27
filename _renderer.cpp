@@ -90,7 +90,9 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->viewUniform  = shdr->getUniformLocation("view");  
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
-
+/*
+ *
+ */
 void _Renderer::setupTexture()
 {
     char *colours=new char[1360*1024];
@@ -104,7 +106,12 @@ void _Renderer::setupTexture()
 */
 void _Renderer::setTexture(char *texBitmap)
 {
-  textures[0].setImage(texBitmap);
+    textures[0].setImage(texBitmap);
+}
+
+void _Renderer::setTexture(QString pathtoTexture)
+{
+//     textures[0].setImage(texBitmap);
 }
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
@@ -120,7 +127,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 	x = rotation.z();
 	QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
-    //glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work rotation is not proper--------------------!!!!
+  //glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
@@ -195,6 +202,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
 	this->sceneEntity = s;	
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
+//    setTexture();
 	setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
@@ -219,12 +227,12 @@ void _Renderer::_Renderer::draw()
 	//----------------------TestUse----------------------------------------------------
 	//glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
 	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
-	//----------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
 	shdr->useShaderProgram();
-    //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector
+    //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
     for (int t=0;t<textures.size();t++){
         textures[t].bind();
     }
@@ -244,6 +252,6 @@ void _Renderer::_Renderer::draw()
 	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
 	//The Final draw call for each frame
-    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 

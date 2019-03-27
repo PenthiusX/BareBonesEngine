@@ -10,10 +10,10 @@ class _Texture : private QOpenGLExtraFunctions
 public:
     _Texture();
     _Texture(unsigned int  typ);
-    _Texture(QString texfile);
     _Texture(QImage& img); //texture from file
     _Texture(char *img,unsigned int w, unsigned int h,unsigned int colorFormat = GL_RGBA);
 
+    void setImage(QString qrcPathtoFile);
     void setImage(char* img);
     void setImage(char* img,unsigned int iwidth,unsigned int iheight);
     inline unsigned int setShader(unsigned int prog){ shaderProgram = prog; }

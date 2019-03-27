@@ -9,10 +9,6 @@ _Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
 }
-_Texture::_Texture(QString texfile) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
-{
-
-}
 
 _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {

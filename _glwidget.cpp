@@ -48,7 +48,7 @@ void _GLWidget::initializeGL()
     s1.setModelData(":/models/cone.obj");
 
     s2.setId(2);
-    s2.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");
     s2.setPosition(QVector3D(0.0, 1.7, 2.0));
     s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
     s2.setScale(1.5);
