@@ -12,8 +12,8 @@ public:
     _SceneEntity(QVector3D pos,QQuaternion rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
-	void setId(int id);//sets the iD either externaly or internally generated
-	int getId();// call to retrieve unique id for the object instance.
+    void setId(unsigned int id);//sets the iD either externaly or internally generated
+    unsigned int getId();// call to retrieve unique id for the object instance.
 	//
 	void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
 	QVector3D getPostion();//get the current position of the relvant object instace
@@ -40,7 +40,7 @@ public:
 	
 
 private:
-	int id;
+    unsigned int id;
 	QVector3D postion;
 	QQuaternion rotation;
 	float scale;

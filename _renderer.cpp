@@ -134,7 +134,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 	float x = rotation.x();
 	x = rotation.y();
 	x = rotation.z();
-	QVector3D q = rotation.toEulerAngles();
+//	QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
   //glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
@@ -245,7 +245,7 @@ void _Renderer::_Renderer::draw()
     //if the shader is switching between objects
 	shdr->useShaderProgram();
     //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
-    for (int t=0;t<textures.size();t++){
+    for (unsigned int t=0;t<textures.size();t++){
         textures[t].bind();
     }
     //Bind the Buffers data of the respective buffer object
