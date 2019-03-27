@@ -17,19 +17,17 @@ class _Scene
 public:
     _Scene();
     ~_Scene();
-
-		//
-	std::vector<_Renderer*> getSceneObjectsArray();
-        void addSceneObject(_SceneEntity s);
-        void addCamera(_Camera c);
-		void onResize(int w,int h);
-        void render();
+    std::vector<_Renderer*> getSceneObjectsArray();
+    void addSceneObject(_SceneEntity s);
+    void addCamera(_Camera c);
+    void onResize(int w,int h);
+    void render();
 private:
-	std::vector<_SceneEntity> sceneEntityVector;
-	std::vector<_Renderer*> renderObjects;
-	_Renderer* r;
-	_Camera cam;
-	bool isCamera;
+    std::vector<_SceneEntity> sceneEntityVector;
+    std::vector<_Renderer*> renderObjects;
+    _Renderer* r;
+    _Camera cam;
+    bool isCamera;
 };
 
 #endif // _SCENE_H

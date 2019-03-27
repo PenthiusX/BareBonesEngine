@@ -78,7 +78,7 @@ void _Scanner::scan_generate_model()
     unsigned int rttWidth = 1360;
     unsigned int rttHeight = 1024;
 
-    char *colours=new char[rttWidth*rttHeight];
+    char *colours = new char[rttWidth*rttHeight];
 
     _Texture texture(colours,rttWidth,rttHeight);
     _Texture texture_out(colours,rttWidth,rttHeight);
@@ -122,33 +122,28 @@ void _Scanner::scan_generate_model()
         emit set_image(machine->camera->get_frame(),1360,1024);
 
         //Do the Processing
-
         texture.setImage(machine->camera->get_frame(),1360,1024);
-
         texture.bindForCompute(0,GL_R8,GL_READ_ONLY);
         texture_out.bindForCompute(1,GL_R8,GL_WRITE_ONLY);
-
+        //
         compute_shader.useShaderProgram();
-
         glDispatchCompute(rttWidth / 16, rttHeight / 16, 1);
-
         glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
         texture_out.bindForFramebuffer();
-
+        //
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
+        //
         glViewport(0, 0, rttWidth, rttHeight);
         glReadPixels(0, 0, rttWidth, rttHeight,GL_RED, GL_UNSIGNED_BYTE,colours);
         imagefile=fopen(filename.toLocal8Bit(), "wb");
-
+        //
         if( imagefile == NULL) {
             qDebug() << "Can't create:" << filename;
         }
         fprintf(imagefile,"P5\n%u %u 255\n", rttWidth, rttHeight);
         fwrite(colours, 1, rttWidth*rttHeight, imagefile);
         fclose(imagefile);
-
+        //
         qDebug() << "wrote: " << filename;
     }
 }

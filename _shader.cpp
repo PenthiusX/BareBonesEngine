@@ -199,7 +199,7 @@ void _Shader::resetShader()
 	glUseProgram(0);
 }
 /*
- * Sau feature , needs checking
+ * Sau feature , needs checking-----!!
 */
 void _Shader::setChildShader(QString s, unsigned int typ)
 {
@@ -207,7 +207,7 @@ void _Shader::setChildShader(QString s, unsigned int typ)
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
 /*
- * Sau feature , needs checking
+ * Sau feature , needs checking-----!!
 */
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
@@ -224,7 +224,7 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
 /*
- * Sau feature , needs checking
+ * Sau feature , needs checking-----!!
  */
 unsigned int _Shader::compile_shader(QString src, unsigned int typ)
 {
@@ -242,6 +242,5 @@ unsigned int _Shader::compile_shader(QString src, unsigned int typ)
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
     }
-
     return shader;
 }
