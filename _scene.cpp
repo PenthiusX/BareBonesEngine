@@ -40,28 +40,27 @@ std::vector<_Renderer*> _Scene::getSceneObjectsArray()
 void _Scene::addSceneObject(_SceneEntity s)
 {
 // Only sets the scene object if the camera has been set already and scene object is active
-	if (s.getIsActive() == true)
-	{
-		if (isCamera == true)
-		{
-			r = new _Renderer();
-			r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-			r->setSceneEntityInRenderer(s);
-			renderObjects.push_back(r);
-		}
-		else //use default values for camera if no camera set.
-		{
-			r = new _Renderer();
-			r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
-			r->setSceneEntityInRenderer(s);
-			renderObjects.push_back(r);
-		}
-	}
-	else
-	{
-		exit;
-		std::cout << "scene object has not been set Properly" << std::endl;
-	}
+    if (s.getIsActive() == true)
+    {
+        if (isCamera == true)
+        {
+            r = new _Renderer();
+            r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+            r->setSceneEntityInRenderer(s);
+            renderObjects.push_back(r);
+        }
+        else //use default values for camera if no camera set.
+        {
+            r = new _Renderer();
+            r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
+            r->setSceneEntityInRenderer(s);
+            renderObjects.push_back(r);
+        }
+    }
+    else
+    {
+        std::cout << "scene object has not been set Properly" << std::endl;
+    }
 }
 /*
  * Function: addCamera(_Camera c)
@@ -83,7 +82,7 @@ void _Scene::addCamera(_Camera c)
 */
 void _Scene::onResize(int w,int h)
 {
-	for (int i = 0; i < renderObjects.size(); i++)
+    for (unsigned int i = 0; i < renderObjects.size(); i++)
 	{
 		renderObjects[i]->setProjectionMatrix(w,h,45.0f,100.0f,1.0f);
 	}
@@ -97,8 +96,8 @@ void _Scene::onResize(int w,int h)
 */
 void _Scene::render()
 {
-	for (int i = 0; i < renderObjects.size(); i++)
-	{
-		renderObjects[i]->draw();
-	}
+    for (unsigned int i = 0; i < renderObjects.size(); i++)
+    {
+        renderObjects[i]->draw();
+    }
 }
