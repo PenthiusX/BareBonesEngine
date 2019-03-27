@@ -39,12 +39,11 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
 */
 void _Texture::setImage(QString qrcPathtoFile)
 {
-    QByteArray t = ReadStringFromQrc(qrcPathtoFile).toLocal8Bit(); // get shader source from qrc file
-    char *img = t.data(); //convert to const char*
-    image = img;
+    QImage img(qrcPathtoFile);
+
     qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, color_format, img.width(), img.height(), 0, color_format, GL_UNSIGNED_BYTE, img.constBits());
     updated = true;
 }
 void _Texture::setImage(char* img)

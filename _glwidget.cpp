@@ -53,7 +53,7 @@ void _GLWidget::initializeGL()
     s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
     s2.setScale(1.5);
     s2.setModelData(":/models/monkey.obj");
-    s2.setTexturePath(":textures/cube.png");//needs a texture compliable shader attached too
+    s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
 
 	scene = new _Scene();
 	scene->addCamera(cam);

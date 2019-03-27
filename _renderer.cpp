@@ -91,10 +91,12 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
 /*
- * Function:setupTexture()
+ * Function:setupTexture()---------------------------------!!!NEEDS WORK!!!
+ * Created:
  */
 void _Renderer::setupTexture()
 {
+
     char *colours=new char[1360*1024];
     _Texture texture(colours,1360,1024);
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
@@ -102,13 +104,22 @@ void _Renderer::setupTexture()
 }
 /*
  * Function: setTexture(char *texBitmap)/setTexture(QString pathtoTexture)
+ * Created:
 */
-void _Renderer::setTexture(char *texBitmap)
+void _Renderer::setTexture(char* texBitmap)
 {
-    textures[0].setImage(texBitmap);
+    if(!textures.empty())
+        textures[0].setImage(texBitmap);
+}
+
+void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
+{
+    if(!textures.empty())
+        textures[0].setImage(texBitmap,iwidth,iheight);
 }
 void _Renderer::setTexture(QString pathtoTexture)
 {
+     if(!textures.empty())
      textures[0].setImage(pathtoTexture);
 }
 /*
@@ -163,7 +174,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 /*
 * Function: updateTransformations()
 * updates the trasformations of the matrices of the individual object per frame.
-* Used by: _render class in draw().
+* Used by: _render class in draw().!!!Atention: needs rework were one only need to set the local seneEntityobject to make changes to the Object in Scene!!!
 * Created: 25_02_2019
 */
 void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale)
@@ -202,7 +213,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     //
     setupTexture();
-//    setTexture(s.getTexturePath());
+    setTexture(s.getTexturePath());
     //
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
