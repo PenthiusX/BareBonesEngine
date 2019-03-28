@@ -8,31 +8,41 @@
 class _Texture : private QOpenGLExtraFunctions
 {
 public:
+    //constructors to set texture
     _Texture();
-    _Texture(unsigned int  typ);
-    _Texture(QImage& img); //texture from file
-    _Texture(char *img,unsigned int w, unsigned int h,unsigned int colorFormat = GL_RGBA);
+    _Texture(QImage& img); //texture from QImage
+    _Texture(QString qrcPathtoFile); //texture from image file path
+    _Texture(char *img,unsigned int w, unsigned int h,unsigned int colorFormat = GL_RGBA); //texture from char pointer array
 
-    void setImage(QString qrcPathtoFile);
-    void setImage(char* img);
-    void setImage(char* img,unsigned int iwidth,unsigned int iheight);
+    //update texture image
+    void setImage(QString qrcPathtoFile); //from image file path
+    void setImage(char* img); //from char pointer array and resolution of last image
+    void setImage(char* img,unsigned int iwidth,unsigned int iheight);//from char pointer array with updated given resolution
+    void setImage(QImage &img);//from QImage
+
+    //setShader used if multiple texture bindings require differant slots
     inline unsigned int setShader(unsigned int prog){ shaderProgram = prog; }
-    inline unsigned int GetID(){ return m_ID;}
-//    void setSlotUniformName(QString name);//(self, slot=0, shader=None):
 
-    void bind();
-    void bind(unsigned int index);
-    void bindForCompute(unsigned int index = 0,GLenum format = GL_RGBA8,GLenum access = GL_READ_WRITE);
-    void bindForFramebuffer(unsigned int index = 0,GLenum operation = GL_FRAMEBUFFER);
+    inline unsigned int GetID(){ return m_ID;}
+//    void setSlotUniformName(QString name);//used if multiple texture bindings require differant slots get slot location of the given uniform name
+
+    void bind();//bind texture to default slot(0)
+    void bind(unsigned int index);//bind texture default given slot index
+    void bindForCompute(unsigned int index = 0,GLenum format = GL_RGBA8,GLenum access = GL_READ_WRITE); //bind texture for compute shader operation
+    void bindForFramebuffer(unsigned int index = 0,GLenum operation = GL_FRAMEBUFFER);//bind texture for framebuffer drawing target
 
     void unbind();
-    void addParameter(unsigned int pname,unsigned int param);
+    void addParameter(unsigned int pname,unsigned int param);//setup texture parameters
+
+    //initialized texture loads texture image
     void load(GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
+
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
 
 protected:
     std::map<unsigned int,unsigned int> parameters;
     char* image;
-    bool updated=true;
 
     unsigned int m_ID = 0;
     unsigned int shaderProgram;

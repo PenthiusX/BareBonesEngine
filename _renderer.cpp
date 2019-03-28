@@ -91,37 +91,79 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
 /*
- * Function:setupTexture()---------------------------------!!!NEEDS WORK!!!
- * Created:
+ * Function: setupTexture()
+ * Created: 28_3_2019
+ * Contributor : saurabh
+ * creates new texture and adds into list(vector) of textures
+ * current context should be active while calling these functions
+ * use makeCurrent() to make context current
+ * set a default 8bit single color texture of size 1360 x 1024
  */
 void _Renderer::setupTexture()
 {
-
-    char *colours=new char[1360*1024];
-    _Texture texture(colours,1360,1024);
+    char* img = new char[1360*1024];
+    _Texture texture(img,1360,1024);
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
 }
+
 /*
- * Function: setTexture(char *texBitmap)/setTexture(QString pathtoTexture)
- * Created:
-*/
+ * Function: setupTexture()
+ * Created: 28_3_2019
+ * Contributor : saurabh
+ * creates new texture from texfile image path and adds into list(vector) of textures
+ * current context should be active while calling these function
+ */
+void _Renderer::setupTexture(QString texfile)
+{
+    QImage img = QImage(texfile);
+    _Texture texture(img);
+    texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
+    textures.push_back(texture);
+}
+
+/*
+ * Function: setTexture(char* texBitmap)
+ * Created: 28_3_2019
+ * Contributor : saurabh
+ * updates the first texture image from char pointer array
+ * resolution of previous image is used
+ * current context should be active while calling this function
+ */
 void _Renderer::setTexture(char* texBitmap)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap);
 }
 
+/*
+ * Function: setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
+ * Created: 28_3_2019
+ * Contributor : saurabh
+ * updates the first texture image from char pointer array
+ * resolution of texture is updated to given values
+ * current context should be active while calling this function
+ */
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap,iwidth,iheight);
 }
+
+/*
+ * Function: setTexture(QString pathtoTexture)
+ * Created: 28_3_2019
+ * Contributor : saurabh
+ * updates the first texture image from a texfile
+ * current context should be active while calling this function
+ */
 void _Renderer::setTexture(QString pathtoTexture)
 {
+
      if(!textures.empty())
      textures[0].setImage(pathtoTexture);
 }
+
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 * Sets the values matrices for the model matrix 
@@ -212,8 +254,10 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 	this->sceneEntity = s;	
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     //
-    setupTexture();
-    setTexture(s.getTexturePath());
+    setupTexture(s.getTexturePath());
+    //setupTexture should load initial texture from image file path
+    //use setTexture function only to update image
+    //setTexture(s.getTexturePath());
     //
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());

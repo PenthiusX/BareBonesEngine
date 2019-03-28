@@ -32,10 +32,15 @@ public:
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
 
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<unsigned int> indexArray);//take vertex and index data and binds it to object buffer
+
+    //setting image of existing texture, current context should be active while calling these functions, use makeCurrent() to make context current
+    void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object
-    void setTexture(QString pathtoTexture);//takes am image and binds it to object
-    void setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight);////takes am image and binds it to object
+    void setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight);////takes am image and binds it to object\
+
+    //generating new texture from texfile path or default , context should be active to call tese function
     void setupTexture();//takes am image and binds it to object
+    void setupTexture(QString texfile); //initializes texture from file
 
     void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix

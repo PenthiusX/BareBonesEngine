@@ -152,7 +152,7 @@ void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigne
  * takes data as a path and uses the assetloader class to load in the obj data from
  * a path to the obj File.
  * Created:26_02_2019
-*/
+ */
 void _SceneEntity::setModelData(QString path)
 {
 	this->isActive = true;
