@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     //machine,marker,scanner should be in same thread -
     hardwareInteractionThread = new QThread;
     //setup hardware interacting obejcts
