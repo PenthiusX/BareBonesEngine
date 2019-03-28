@@ -15,7 +15,6 @@ TEMPLATE = app
 HEADERS  += mainwindow.h \
             _glwidget.h \
             _renderer.h \
-            tools.h \
             _shader.h \
             _sceneentity.h \
             _scene.h \
@@ -28,13 +27,13 @@ HEADERS  += mainwindow.h \
            IO/_dc_1394_camera.h \
            IO/_avt_camera.h \
            Modules/_marker.h \
-           Modules/_scanner.h
+           Modules/_scanner.h \
+    _tools.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
             _glwidget.cpp \
             _renderer.cpp \
-            tools.cpp \
             _shader.cpp \
             _sceneentity.cpp \
             _scene.cpp \
@@ -47,7 +46,8 @@ SOURCES += main.cpp\
            IO/_dc_1394_camera.cpp \
            IO/_avt_camera.cpp \
            Modules/_marker.cpp \
-           Modules/_scanner.cpp
+           Modules/_scanner.cpp \
+    _tools.cpp
 
 FORMS    += mainwindow.ui
 

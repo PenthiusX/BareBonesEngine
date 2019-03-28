@@ -1,5 +1,5 @@
 #include "_shader.h"
-#include "tools.h"
+#include "_tools.h"
 #include <iostream>
 /*
  * The _Shader class
@@ -7,20 +7,20 @@
  * Author: Aditya
 */
 /*
-* Constructor 
+* Constructor
 * Object initialised in _renderer class
 * Created: 14_02_2019
 */
 _Shader::_Shader() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    vertexShader = 0;
-    fragmentShader = 0;
+
 }
 /*Distructor*/
 _Shader::~_Shader(){}
 /*
- * Function: getShaderProgram() retrun the shaderprogram 
- * unsigned int variable.Is being used by the _renderer class
+ * Function: getShaderProgram() retrun the shaderprogram
+ * unsigned int variable.
+ * Is being used by the _renderer class
  * Created: 14_02_2019
 */
 uint _Shader::getShaderProgram()
@@ -36,186 +36,100 @@ uint _Shader::getShaderProgram()
 */
 void _Shader::setFragmentShader(QString f)
 {
-    QByteArray v_source_utf = ReadStringFromQrc(f).toLocal8Bit(); // get shader source from qrc file
-    const char *fshader = v_source_utf.data(); //convert to const char*
-
-    //Vertex Shader
-    fragmentShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(fragmentShader, 1, &fshader, NULL);
-    glCompileShader(fragmentShader);
-
-    //check for compile success
-    int success;
-    char infoLog[512];
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+    //Fragment Shader
+    setChildShader(f,GL_FRAGMENT_SHADER);
 }
 /*
- * Function: setVertexShader(QString v) 
- * copiles and binds the vertex shader passed in from  
- * a Qstring parameter, and returns an unsigned int;
+ * Function: setVertexShader(QString v) copiles and
+ * binds the vertex shader passed in from a Qstring parameter,
+ * and returns an unsigned int;
  * Is being used by the _renderer class
  * Created: 14_02_2019
 */
 void _Shader::setVertexShader(QString v)
 {
-    QByteArray v_source_utf = ReadStringFromQrc(v).toLocal8Bit(); // get shader source from qrc file
-    const char *vshader = v_source_utf.data(); //convert to const char*
-
-    //Vertex Shader
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vshader, NULL);
-    glCompileShader(vertexShader);
-
-    //check for compile success
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+    setChildShader(v,GL_VERTEX_SHADER);
 }
 /*
  * Function: attachShaders(), attaches the shaders to the GLProgram
  * this will only work if the fragment and vertex shader
- * have been compiled before this function.
+ * have been compiled before this function.\
  * Created: 14_02_2019
 */
 void _Shader::attachShaders()
 {
-    if(vertexShader > 0 && fragmentShader > 0)
-    {
-        //shader program is a uint in the header
+
+    //check for child shaders
+    if(child_shaders.size()!=0){
+
+        //create Shader Program
         shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, vertexShader);
-        glAttachShader(shaderProgram, fragmentShader);
+
+        //attatch child shaders to program
+        for (auto const& child_shader : child_shaders)
+        {
+            glAttachShader(shaderProgram, child_shader.second);//second specifies value at key in map(dictionary)
+        }
         glLinkProgram(shaderProgram);
 
+        //check for link error
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
         if(!success)
         {
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADERPROGRAM::COMPILATION_FAILED." << infoLog << std::endl;
+            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;
+        }
+
+        //delete shader
+        for (auto const& child_shader : child_shaders)
+        {
+            glDeleteShader( child_shader.second);
         }
     }
-    else
+    else//if no child shaders attatched
     {
-       std::cerr << "ERROR::SHADERCLASS::NEED_VERTEX_FRAGMENT_SHADERS_FIRST." << std::endl;
+       std::cerr << "ERROR::SHADERCLASS::NO_CHILD_SHADERS_ATTATCHED." << std::endl;
        exit(0);
     }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 }
 /*
- * Function: attachShaders(QString v,QString f), 
- * takes the qrc aided path to the vertex and fragment 
- * shader files and compiles them for linking
+ * Function: attachShaders(QString v,QString f),
+ * this then binds the
  * Created: 14_02_2019
 */
 void _Shader::attachShaders(QString v,QString f)
 {
-    //shader string literals
-    QByteArray v_source_utf = ReadStringFromQrc(v).toLocal8Bit(); // get shader source from qrc file
-    QByteArray f_source_utf = ReadStringFromQrc(f).toLocal8Bit(); // get shader source from qrc file
-
-    const char *vshader = v_source_utf.data(); //convert to const char*
-    const char *fShader = f_source_utf.data(); //convert to const char*
-
-    //Vertex Shader
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vshader, NULL);
-    glCompileShader(vertexShader);
-    //check for compile success
-    int success;
-    char infoLog[512];
-
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    //Fragment Shader
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fShader, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if(!fragmentShader)
-    {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    //shader program is a uint in the header
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if(!success)
-    {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADERPROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    //delete shaders after linking
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    setVertexShader(v);
+    setFragmentShader(f);
+    attachShaders();
 }
+
 /*
 * Function: getUniformLocation(char* nameOfUniform)
-* returns a uint representing the loaction index of 
+* returns a uint representing the loaction index of
 * the uniform in the shader takes the name of the uniform
 * as the parameter
 * Created: 18_02_2019
 */
-uint _Shader:: getUniformLocation(const char* nameOfUniform)
+uint _Shader::getUniformLocation(const char* nameOfUniform)
 {
-	return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
+    return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
 }
-/*
- * Function: useShaderProgram()
- * Needs to be called before draw everyloop for multiple
- * sets which shader needs to be used in the current context
- * Created: 14_02_2019
-*/
-void _Shader::useShaderProgram()
-{
-	glUseProgram(this->shaderProgram);
-}
-/*
-* Function: resetShader()
-* resets the shader pointer value to 0;
-* Created: 08_03_2019
-*/
-void _Shader::resetShader()
-{
-	glUseProgram(0);
-}
-/*
- * Sau feature , needs checking-----!!
-*/
+
 void _Shader::setChildShader(QString s, unsigned int typ)
 {
-    unsigned int shader = compile_shader(ReadStringFromQrc(s),typ);
+
+    unsigned int shader = compile_shader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-/*
- * Sau feature , needs checking-----!!
-*/
+
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;
 
     for (auto const& shader_part : shader_parts)
     {
-        combined_src = combined_src + ReadStringFromQrc(shader_part);//second specifies value at key in map(dictionary)
+        combined_src = combined_src + tools.ReadStringFromQrc(shader_part);//second specifies value at key in map(dictionary)
     }
 
     //tools.ReadStringFromQrc(s);
@@ -223,18 +137,30 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ
     unsigned int shader = compile_shader(combined_src,typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
+
 /*
- * Sau feature , needs checking-----!!
+ * Function: useShaderProgram() Needs to be called before draw
+ * everyloop for multiple
+ * sets which shader needs to be used in the
+ * current context
+ * Created: 14_02_2019
  */
+void _Shader::useShaderProgram()
+{
+    glUseProgram(this->shaderProgram);
+}
+
 unsigned int _Shader::compile_shader(QString src, unsigned int typ)
 {
     unsigned int shader;
     QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
     const char *shader_src = source_utf.data(); //convert to const char*
+
     //shader
     shader = glCreateShader(typ);
     glShaderSource(shader, 1, &shader_src, NULL);
     glCompileShader(shader);
+
     //check for compile success
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if(!success)
@@ -242,5 +168,6 @@ unsigned int _Shader::compile_shader(QString src, unsigned int typ)
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
     }
+
     return shader;
 }

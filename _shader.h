@@ -2,8 +2,9 @@
 #define _SHADER_H
 #include <QString>
 #include <QOpenGLExtraFunctions>
+#include <_tools.h>
 /*
- * Class: _Shader
+ * Shader class:
  * Holds functonality to bind shader to a shaderprogram
  * and use it the current opengl Context.
  * Created: 14_02_2019
@@ -16,27 +17,39 @@ public:
     ~_Shader();
 
     uint getShaderProgram();
-    void setFragmentShader(QString fragmentshaderPath);
-    void setVertexShader(QString vertexShaderPath);
+    void setFragmentShader(QString fshader);
+    void setVertexShader(QString vShader);
     void attachShaders();
-    void attachShaders(QString vertexInfo , QString fragmentInfo);
+    void attachShaders(QString v , QString f);//should be deprecated
     void setChildShader(QString s,unsigned int typ);
     void setChildShader(std::vector<QString>, unsigned int typ);
-	uint getUniformLocation(const char* nameOfUniform);
     void useShaderProgram();
-	void resetShader();
-	
+    uint getUniformLocation(const char *nameOfUniform);
+
+//    struct Child_Shader
+//    {
+//        unsigned int type;
+//        unsigned int ID;
+//    };
+
+
+
 private:
     //Shader Program
-     uint shaderProgram;
-     unsigned int vertexShader;
-     unsigned int fragmentShader;
+     uint shaderProgram = 0;
+
+     // map(dictionary) of shader
+     //key : shader typ enum eg. GL_VERTEX_SHADER
+     //value : shader ID returned by glCreateShader
+     std::map<unsigned int,unsigned int> child_shaders;
+
+     unsigned int compile_shader(QString src_path,unsigned int typ);
+
+     _Tools tools;
+
      //Error checking
      int success;
      char infoLog[512];
-
-       std::map<unsigned int,unsigned int> child_shaders;
-      unsigned int compile_shader(QString src_path,unsigned int typ);
 };
 
 #endif // _SHADER_H

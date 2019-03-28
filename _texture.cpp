@@ -1,6 +1,6 @@
 #include "_texture.h"
 #include <QDebug>
-#include <tools.h>
+#include <_tools.h>
 
 /*
  * Texture Class currently working for single texture per shader

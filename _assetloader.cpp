@@ -1,6 +1,6 @@
 #include "_assetloader.h"
 #include <iostream>
-#include <tools.h>
+#include <_tools.h>
 #include <string>
 #include <stdlib.h>
 #include <sstream>
@@ -47,7 +47,7 @@ std::vector<unsigned int> _AssetLoader::getAssetIndices()
 */
 bool _AssetLoader::objLoader(QString pathToFile)
 {
-	QByteArray qba = ReadStringFromQrc(pathToFile).toLocal8Bit();
+    QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
 	const char* p = qba;
 
 	std::string objData = p;

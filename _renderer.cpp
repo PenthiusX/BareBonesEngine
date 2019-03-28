@@ -1,6 +1,6 @@
 #include "_renderer.h"
 #include <iostream>
-#include <tools.h>
+#include <_tools.h>
 #include <qquaternion.h>
 /*
  * The Renderer class
