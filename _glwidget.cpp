@@ -32,7 +32,9 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-    setFocusPolicy(Qt::StrongFocus);//needs this to make the GL widgit have the strongest focus when switching widgets
+    //needs this to make the GL widgit have the strongest focus when switching widgets.
+    //keeps the event callbacks working for the GL widget
+    setFocusPolicy(Qt::StrongFocus);
 
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
@@ -51,7 +53,7 @@ void _GLWidget::initializeGL()
     s1.setModelData(":/models/cone.obj");
 
     s2.setId(2);
-    s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");
+    s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     s2.setPosition(QVector3D(0.0, 1.7f, 2.0));
     s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
     s2.setScale(1.5);
@@ -133,7 +135,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0, -0.1f, 0.0));
 
-	if (event->text() == "w" || event->text() == "W")
+    if (event->text() == "w" || event->text() == "W")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.1f, 0.0, 0.0));
