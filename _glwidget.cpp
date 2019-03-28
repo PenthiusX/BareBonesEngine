@@ -18,6 +18,7 @@
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 	id = 0;
+
 }
 _GLWidget::~_GLWidget()
 {
@@ -31,6 +32,8 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
+    setFocusPolicy(Qt::StrongFocus);//needs this to make the GL widgit have the strongest focus when switching widgets
+
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
 

@@ -175,7 +175,7 @@ void _Shader::attachShaders(QString v,QString f)
 * as the parameter
 * Created: 18_02_2019
 */
-uint _Shader::getUniformLocation(const char* nameOfUniform)
+uint _Shader:: getUniformLocation(const char* nameOfUniform)
 {
 	return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
 }
