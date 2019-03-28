@@ -18,9 +18,7 @@ void _Marker::mark_sine_wave()
 
     //switch on the laser
     machine->MarkingLaser(2);
-
     qDebug() << "laser inside sine";
-
     for(int t = 0;t<320;t++)
     {
         absolute_height = (int)(1000*sin((10*M_PI*t/320)));
