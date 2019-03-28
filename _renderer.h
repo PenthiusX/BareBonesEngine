@@ -6,13 +6,12 @@
 #include "_texture.h"
 //
 #include <qopenglextrafunctions.h>
-#include <qmatrix4x4.h>
 #include <qelapsedtimer.h>//for timer
-
 //GLM math Library
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 
 
 /*

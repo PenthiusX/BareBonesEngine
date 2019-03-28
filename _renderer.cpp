@@ -1,7 +1,6 @@
 #include "_renderer.h"
 #include <iostream>
 #include <tools.h>
-#include <qquaternion.h>
 /*
  * The Renderer class
  * Created: 8_02_2019
@@ -85,7 +84,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	//
-	this->colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture
+    this->colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture and UVs
 	this->modelUnifrom = shdr->getUniformLocation("model");
 	this->viewUniform  = shdr->getUniformLocation("view");  
 	this->projectionUniform = shdr->getUniformLocation("projection");
@@ -187,7 +186,6 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale
 	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
     glm_model4x4 = glm::rotate(glm_model4x4, (0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
-
 }
 void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot)
 {
@@ -238,6 +236,8 @@ void _Renderer::_Renderer::draw()
 {
 	//----------------------TestUse----------------------------------------------------
     glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
+    glm::quat quat = glm::quat(0.0,90.0,45.0,0.0);
+
 	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
