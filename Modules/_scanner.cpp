@@ -3,7 +3,15 @@
 #include <_texture.h>
 #include <_shader.h>
 
-
+/*
+ * Scanner Class
+ * used for converting from camera images to 3d model
+ * contains a seperate GL context in thread
+ * moveToThread should be called after object creation and signal slots assigning
+ * does image preprocessing operations from texture to texture in compute shader
+ *
+ * Author : Saurabh
+*/
 _Scanner::_Scanner(QObject *parent) : QObject(parent) , QOpenGLExtraFunctions()
 {
 
@@ -84,9 +92,9 @@ void _Scanner::scan_generate_model()
     char *colours=new char[rttWidth*rttHeight];
 
     //initialise textures for processing
-    _Texture texture(colours,rttWidth,rttHeight);
-    _Texture texture_out(0,rttWidth,rttHeight);
-    _Texture texture_outt(0,rttWidth,rttHeight);
+    static _Texture texture(0,rttWidth,rttHeight);
+    static _Texture texture_out(0,rttWidth,rttHeight);
+    static _Texture texture_outt(0,rttWidth,rttHeight);
 
     unsigned int framebuffer;
 
@@ -157,4 +165,6 @@ void _Scanner::scan_generate_model()
         //qDebug() << "wrote: " << filename;
 
     }
+
+    delete [] colours;
 }

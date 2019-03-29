@@ -178,3 +178,9 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1f, 0.0, 0.0));
 }
+
+void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h)
+{
+    qDebug() << "updating background";
+    //update background image here
+}

@@ -236,6 +236,10 @@ void _Machine::set_camera()
 #endif //PLATFORM_WIN
 }
 
+/* Function : set_hardware_serial()
+ * this function finds the hardware serial port which is connected to machine
+ *
+*/
 void _Machine::set_hardware_serial()
 {
     //list serial ports and check if returns machine
@@ -272,6 +276,7 @@ void _Machine::set_hardware_serial()
 
 void _Machine::set_hardware_serial(QJsonObject hardware_config)
 {
+    //send the nested config objects to necessary hradware objects
     QJsonObject serial_config = hardware_config["Communication"].toObject()["RS232"].toObject();
     QJsonObject command_config = hardware_config["Commands"].toObject();
 
@@ -308,6 +313,12 @@ void _Machine::set_hardware_serial(QJsonObject hardware_config)
     }
 }
 
+/*
+ * Function : init()
+ * should be called when thread starts
+ * sets the hardware serial and camera objects according to configuration
+ * sets defaults for hardware interation
+*/
 void _Machine::init()
 {
     set_hardware_serial();
@@ -330,6 +341,5 @@ void _Machine::init()
 
 void _Machine::set_image_dir(QString dir)
 {
-    qDebug() << "inside set image";
     camera->set_image_dir(dir);
 }

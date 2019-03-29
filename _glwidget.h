@@ -11,6 +11,8 @@ public:
 _GLWidget();
 explicit _GLWidget(QWidget *parent = 0);
 ~_GLWidget();
+public slots:
+void update_background_image(char *img, unsigned int w, unsigned int h);
 protected:
 void initializeGL() Q_DECL_OVERRIDE;
 void resizeGL(int w, int h)Q_DECL_OVERRIDE;

@@ -56,7 +56,8 @@ FORMS    += mainwindow.ui
 RESOURCES += \
     shaders.qrc \
     textures.qrc \
-    models.qrc
+    models.qrc \
+    data.qrc
 
 INCLUDEPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
