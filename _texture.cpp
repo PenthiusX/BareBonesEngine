@@ -7,21 +7,24 @@
 /* Texture Class currently working for single texture per shader
  * documentation and slots functions will be completed later
  * Created: 28_03_2019
- * Author:Saurabh
+ * Author:Saurabh, Aditya
  */
 
-/* Texture Class constructor
+/* Constructor/Distructor:Texture Class constructor
  * initialize empty texture
+ * Date:28_03_2019
 */
 _Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
 }
 
-/* Texture Class constructor
+/*
+ * Constructor: _Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from char pointer array with given resolution
  * Created: 21_02_2019
  * sets defualt parameters
+ * Date:28_03_2019
 */
 _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
@@ -33,13 +36,13 @@ _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorF
     //addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
     addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 }
 
-/* Texture Class constructor
+/* Constructor: _Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from QImage
  * Created: 21_02_2019
  * sets defualt parameters
+ * Date:28_03_2019
 */
 _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
@@ -53,11 +56,9 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
 //    addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
     addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
 }
-
-/* Updates texture image from image file path
+/* Function: setImage(QString pathtoTexture)
+ *  Updates texture image from image file path
  * Created: 28_03_2019
 */
 void _Texture::setImage(QString pathtoTexture)
@@ -72,11 +73,10 @@ void _Texture::setImage(QString pathtoTexture)
     qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
-
 }
 
-
-/* Updates texture from QImage
+/* Function:setImage(QImage& img)
+ *
  * Created: 21_02_2019
 */
 void _Texture::setImage(QImage& img)
@@ -191,7 +191,6 @@ void _Texture::load( GLenum format, GLenum datatype)
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
         //glGenerateMipmap(GL_TEXTURE_2D);
 }
-
 
 //return width of loaded texture image
 unsigned int _Texture::getWidth() const

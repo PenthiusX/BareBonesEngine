@@ -35,25 +35,21 @@ void _GLWidget::initializeGL()
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     //keeps the event callbacks working for the GL widget
     setFocusPolicy(Qt::StrongFocus);
-
+    //
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
     //
     background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    //background quad is not affected by mvp hence this functions will not work :-
     background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
     background_quad.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
     background_quad.setScale(1.0);
-    /*Hard coded vertices of background quad the vertices are
-     * directly asiigned to gl_Position(screen cordinates)
-     * such that position of background always remain same*/
+    //Hard coded vertices and indices
     std::vector<float> vertsV = {
         1.0,  1.0, 0.999f,	// top right
         1.0f, -1.0f, 0.999f,  // bottom right
         -1.0f, -1.0f, 0.999f, // bottom left
         -1.0f,  1.0f, 0.999f  // top left
        };
-    /*Hard coded Indices*/
     std::vector<unsigned int> indiceV = {// note that we start from 0!
                                 0, 1, 3,   // first triangle
                                 1, 2, 3    // second triangle
