@@ -38,7 +38,29 @@ void _GLWidget::initializeGL()
 
 	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
 	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
-
+    //
+    background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    //background quad is not affected by mvp hence this functions will not work :-
+    background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
+    background_quad.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+    background_quad.setScale(1.0);
+    /*Hard coded vertices of background quad the vertices are
+     * directly asiigned to gl_Position(screen cordinates)
+     * such that position of background always remain same*/
+    std::vector<float> vertsV = {
+        1.0,  1.0, 0.999f,	// top right
+        1.0f, -1.0f, 0.999f,  // bottom right
+        -1.0f, -1.0f, 0.999f, // bottom left
+        -1.0f,  1.0f, 0.999f  // top left
+       };
+    /*Hard coded Indices*/
+    std::vector<unsigned int> indiceV = {// note that we start from 0!
+                                0, 1, 3,   // first triangle
+                                1, 2, 3    // second triangle
+                               };
+    background_quad.setModelData(vertsV,indiceV);
+    background_quad.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
+    //
 	s.setId(0);
 	s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
 	s.setPosition(QVector3D(1.0,-0.3f, -3.0));
@@ -60,45 +82,13 @@ void _GLWidget::initializeGL()
     s2.setModelData(":/models/monkey.obj");
     s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
 
-
-    background_quad.setId(3);
-    background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-
-    //background quad is not affected by mvp hence this functions will not work :-
-    background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
-    background_quad.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
-
-    background_quad.setScale(1.0);
-
-    /*Hard coded vertices of background quad the vertices are
-     * directly asiigned to gl_Position(screen cordinates)
-     * such that position of background always remain same*/
-    std::vector<float> vertsV = {
-        1.0,  1.0, 0.999f,	// top right
-        1.0f, -1.0f, 0.999f,  // bottom right
-        -1.0f, -1.0f, 0.999f, // bottom left
-        -1.0f,  1.0f, 0.999f  // top left
-       };
-    /*Hard coded Indices*/
-    std::vector<unsigned int> indiceV = {// note that we start from 0!
-                                0, 1, 3,   // first triangle
-                                1, 2, 3    // second triangle
-                               };
-
-
-    background_quad.setModelData(vertsV,indiceV);
-    //background_quad.setModelData(":/models/monkey.obj");
-    background_quad.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
-
 	scene = new _Scene();
 	scene->addCamera(cam);
 
     scene->addSceneObject(background_quad);
-
 	scene->addSceneObject(s);
 	scene->addSceneObject(s1);
 	scene->addSceneObject(s2);
-
 }
 /*
  * Function: resizeGL(int w, int h) overides the

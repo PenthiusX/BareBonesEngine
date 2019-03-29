@@ -11,30 +11,24 @@ _Scanner::_Scanner(QObject *parent) : QObject(parent) , QOpenGLExtraFunctions()
 _Scanner::_Scanner(_Machine *global_machine,QObject *parent) : QObject(parent) ,QOpenGLExtraFunctions()
 {
     machine = global_machine;
-
     QSurfaceFormat format;
 
     //create the context
-    if (!context) {
+    if (!context){
         context = new QOpenGLContext(this);
         context->setFormat(format);
     }
 
-    if(!context->isValid())
-    {
+    if(!context->isValid()){
         qDebug() << "GL context not Valid";
     }
 
     surface = new QOffscreenSurface();
     surface->setFormat(context->format());
-
     //if glWidget's context need to be shared with scanner context, make glwidget's context current first and uncomment following line
     //context->setShareContext(QOpenGLContext::currentContext());
-
     surface->create();
-
-    qDebug() << "offscreen render init" ;
-
+    qDebug() << "offscreen render init";
 }
 
 void _Scanner::init()
