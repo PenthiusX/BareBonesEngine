@@ -145,6 +145,7 @@ void _Renderer::setTexture(char* texBitmap)
  * resolution of texture is updated to given values
  * current context should be active while calling this function
  */
+
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
     if(!textures.empty())
@@ -160,7 +161,6 @@ void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int ihei
  */
 void _Renderer::setTexture(QString pathtoTexture)
 {
-
      if(!textures.empty())
      textures[0].setImage(pathtoTexture);
 }
@@ -199,6 +199,7 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
 	glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
 	glm::vec3(upVector.x(), upVector.y(), upVector.z()));
 }
+
 /*
 * Function: setProjectionMatrix(int w, int h)
 * takes thew width and height of the window and sets the relative 
@@ -214,6 +215,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
 	glm_projection4x4 = glm::perspective(fov, float(aspect), zNear, zFar);
 }
+
 /*
 * Function: updateTransformations()
 * updates the trasformations of the matrices of the individual object per frame.
@@ -231,6 +233,7 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale
     glm_model4x4 = glm::rotate(glm_model4x4, (0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
+
 void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot)
 {
 	this->sceneEntity.setPosition(pos);
@@ -244,6 +247,7 @@ void _Renderer::updateTrasformations(QVector3D pos)
 	QVector3D p = sceneEntity.getPostion();
 	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
 }
+
 /*
 * Function: setSceneEntity(_SceneEntity s)
 * Sets the sceen entity object locally and sets the 
@@ -262,6 +266,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
+
 /*
 * Function: getSceneEntity()
 * returns the current scene entity object.
@@ -281,8 +286,10 @@ _SceneEntity _Renderer::getSceneEntity()
 void _Renderer::_Renderer::draw()
 {
 	//----------------------TestUse----------------------------------------------------
-    glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
-    glm::quat quat = glm::quat(0.0,90.0,45.0,0.0);
+    //glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
+	glm::quat rot = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 0.05f, 0.0f));
+	glm::mat4x4 rmat = glm::mat4_cast(rot);
+	glm_model4x4 = glm_model4x4 * rmat;
 	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
@@ -291,9 +298,9 @@ void _Renderer::_Renderer::draw()
 	shdr->useShaderProgram();
 	//Setting the uniform each frame.
 	//Depends if the need is to update the values
-	GLfloat r = abs(cos(timer.elapsed() * 0.002));
-	GLfloat g = abs(sin(timer.elapsed() * 0.003));
-	GLfloat b = abs(cos(timer.elapsed() * 0.005));
+    double r = abs(cos(timer.elapsed() * 0.002));
+    double g = abs(sin(timer.elapsed() * 0.003));
+    double b = abs(cos(timer.elapsed() * 0.005));
 	glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
     //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
     for (unsigned int t=0;t<textures.size();t++){
