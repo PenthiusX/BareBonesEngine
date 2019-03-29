@@ -11,12 +11,23 @@
  * does image preprocessing operations from texture to texture in compute shader
  *
  * Author : Saurabh
+ * created : 23_02_2019
 */
+
+/*
+ * Scanner class empty costructor
+ */
 _Scanner::_Scanner(QObject *parent) : QObject(parent) , QOpenGLExtraFunctions()
 {
 
 }
 
+/* Scanner class constructor
+ * takes machine object as input which is common to while application
+ * creates a offscreen surface to do the compute operations
+ * surface will be created in parent thread when instance is created
+ *
+ */
 _Scanner::_Scanner(_Machine *global_machine,QObject *parent) : QObject(parent) ,QOpenGLExtraFunctions()
 {
     machine = global_machine;
@@ -46,24 +57,37 @@ _Scanner::_Scanner(_Machine *global_machine,QObject *parent) : QObject(parent) ,
 
 }
 
+/*
+ * Function : init
+ * should be called when thread starts inside hardware interaction thread
+ * creates context and initializes _GPU_Compute object to d compute operations
+ * sets defaults for hardware interation
+*/
 void _Scanner::init()
 {
+    //creating context
     if (!context->create())
         qFatal("Cannot create the requested OpenGL context!");
     else {
-
+        //make context active
         bool success = context->makeCurrent(surface);
         qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
         initializeOpenGLFunctions();
 
-        gpu_compute = new _GPU_Compute();
+        //this object will handle all compute operations
+        gpu_compute = new _GPU_Compute();//should be created when context is active
 
+        //checking if gl context is working
         qDebug() << QString::fromUtf8((char*)glGetString(GL_VERSION));
 
     }
 }
 
+
+/* Function : scan_save_images()
+ * this function only saves the images captured by camera
+*/
 void _Scanner::scan_save_images()
 {
     for(int t = 0;t<200;t++)
@@ -79,19 +103,25 @@ void _Scanner::scan_save_images()
     }
 }
 
+
+/* Function : scan_generate_model()
+ * this function scans the stone by rotating stage by 1.8 degrees every step
+ * captures the image and does preprocessing on the image(currently)
+ * this function should generate a 3d model of stone-- afterwards
+*/
 void _Scanner::scan_generate_model()
 {
     bool success = context->makeCurrent(surface);
     qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
-    FILE* imagefile;
+    //FILE* imagefile;
 
     unsigned int rttWidth = 1360;
     unsigned int rttHeight = 1024;
 
     char *colours=new char[rttWidth*rttHeight];
 
-    //initialise textures for processing
+    //initialise empty textures for processing
     static _Texture texture(0,rttWidth,rttHeight);
     static _Texture texture_out(0,rttWidth,rttHeight);
     static _Texture texture_outt(0,rttWidth,rttHeight);
@@ -105,6 +135,7 @@ void _Scanner::scan_generate_model()
 
     //texture.unbind();
 
+    //create framebuffer to get processed image from texture should use glGetTexImage afterwards
     glGenFramebuffers(1,&framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
 
@@ -136,7 +167,7 @@ void _Scanner::scan_generate_model()
         //send the image to gpu texture
         texture.setImage(machine->camera->get_frame(),1360,1024);
 
-        //compute operation
+        //compute operation(edge detection currently)
         //gpu_compute->compute_sobel_edge(texture,texture_out);
         gpu_compute->compute_threshold(texture,texture_outt);
         gpu_compute->compute_sobel_edge(texture_outt,texture_out);
@@ -153,6 +184,7 @@ void _Scanner::scan_generate_model()
         //send signal to update display texture
         emit set_image(colours,1360,1024);
 
+        //For saving processed image
 //        imagefile=fopen(filename.toLocal8Bit(), "wb");
 
 //        if( imagefile == NULL) {
@@ -166,5 +198,5 @@ void _Scanner::scan_generate_model()
 
     }
 
-    delete [] colours;
+    //delete imagefile;
 }

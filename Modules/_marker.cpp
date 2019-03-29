@@ -2,16 +2,29 @@
 #include <QDebug>
 #include <QThread>
 
+
+/* Marker Class
+*  used to mark a path of points on the stone
+* currently marking sine wave on the paper
+* Author : Saurabh
+*/
 _Marker::_Marker()
 {
 
 }
 
+/*
+ * Marker class constructor
+ * should be passed a machine object which is common to whole application
+*/
 _Marker::_Marker(_Machine *global_machine)
 {
     machine = global_machine;
 }
 
+/* Function : mark_sine_wave
+ * marks a procedural sine wave on the cylindrical paper
+*/
 void _Marker::mark_sine_wave()
 {
     int last_height = 0,absolute_height=0;
@@ -31,6 +44,8 @@ void _Marker::mark_sine_wave()
     machine->MarkingLaser(0);
 }
 
+
+//checking the rotatin and focus motors
 void _Marker::motors_setup()
 {
     //_Marker and _Machine is in same thread so we can call its slots directly

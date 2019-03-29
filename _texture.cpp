@@ -36,6 +36,11 @@ _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorF
 
 }
 
+_Texture::~_Texture()
+{
+    //delete image;
+}
+
 
 /* Texture Class constructor
  * initialize texture from QImage

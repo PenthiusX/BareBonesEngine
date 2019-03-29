@@ -13,6 +13,7 @@ public:
     _Texture(QImage& img); //texture from QImage
     _Texture(QString qrcPathtoFile); //texture from image file path
     _Texture(char *img,unsigned int w, unsigned int h,unsigned int colorFormat = GL_RGBA); //texture from char pointer array
+    ~_Texture();
 
     //update texture image
     void setImage(QString qrcPathtoFile); //from image file path

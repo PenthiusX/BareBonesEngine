@@ -203,7 +203,7 @@ void _Machine::set_hardware_serial_defaults()
 void _Machine::set_camera()
 {
 
-    QJsonObject camera_config = config["Camera"].toObject();
+    //QJsonObject camera_config = config["Camera"].toObject();
 
     camera = new _HWDCamera();
 
@@ -273,12 +273,16 @@ void _Machine::set_hardware_serial()
             // code to be executed if more than one machine found
     }
 }
-
+/* Function : set_hardware_serial(QJsonObject hardware_config)
+ * this function finds the machine connected to computer
+ * and sets the defualts as given in the config
+*/
 void _Machine::set_hardware_serial(QJsonObject hardware_config)
 {
-    //send the nested config objects to necessary hradware objects
-    QJsonObject serial_config = hardware_config["Communication"].toObject()["RS232"].toObject();
-    QJsonObject command_config = hardware_config["Commands"].toObject();
+    //send the nested config objects to necessary hardware objects (should be used by nested objects afterwards)
+    //QJsonObject serial_config = hardware_config["Communication"].toObject()["RS232"].toObject();
+    //QJsonObject command_config = hardware_config["Commands"].toObject();
+
 
     //list serial ports and check if returns machine
 
@@ -339,6 +343,10 @@ void _Machine::init()
     set_hardware_serial_defaults();
 }
 
+/* Function : set_image_dir(QString dir)
+ * this function sets folder to
+ * save / load images when connected to hardware camera / no camera found respectively
+*/
 void _Machine::set_image_dir(QString dir)
 {
     camera->set_image_dir(dir);

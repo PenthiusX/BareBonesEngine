@@ -4,8 +4,6 @@
 #include <QDebug>
 #include <QFileDialog>
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -72,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(ui->scan, SIGNAL(clicked()),scanner,SLOT(scan_generate_model()));
     connect(ui->scan, &QPushButton::clicked,[this]() {
         QString dir = QFileDialog::getExistingDirectory(this, tr("Open Images Directory"),
-                                                    QCoreApplication::applicationDirPath()+"/../../scan_images",
+                                                    QCoreApplication::applicationDirPath()+"/../scan_images",
                                                     QFileDialog::ShowDirsOnly);
 
         QMetaObject::invokeMethod(machine, "set_image_dir", Qt::QueuedConnection,Q_ARG(QString, dir));

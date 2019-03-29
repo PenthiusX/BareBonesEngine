@@ -28,7 +28,6 @@ signals:
 public:
     _Machine *machine;
     QOpenGLContext *context = nullptr;
-    QOpenGLExtraFunctions *gl = nullptr;
     QOffscreenSurface *surface = nullptr;
     _GPU_Compute *gpu_compute = nullptr;
 

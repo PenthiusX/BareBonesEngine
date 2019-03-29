@@ -4,6 +4,7 @@
 /debug
 /release
 /vs
+/build
 *.vs
 *.vcxproj
 *.vcxproj.filters

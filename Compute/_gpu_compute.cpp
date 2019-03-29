@@ -2,11 +2,25 @@
 #include <_shader.h>
 #include <QDebug>
 
+
+/* _GPU_Compute Class
+ * for handling all compute operations
+ * should be created when a gl context is active
+ * and processing should happen in that same context
+ * created: 20_03_2019
+ * Author : Saurabh
+*/
 _GPU_Compute::_GPU_Compute() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
 }
 
+/* Function : compute_sobel_edge
+ *
+ * computes sobel edge by using 3 x 3 kernal
+ * returns sobel gradient magnitude
+ * requires imput image texture and output image texture
+*/
 void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
@@ -29,6 +43,13 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 }
+
+/* Function : compute_sobel_edge
+ *
+ * computes sobel edge by using 3 x 3 kernal
+ * returns sobel gradient magnitude and gradint angle(range 0:180 degress as 0:255 values)
+ * requires imput image texture , output magnitude image texture ,output angle image texture
+*/
 void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_Texture& output_theta)
 {
 
@@ -53,6 +74,8 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 }
+
+
 void _GPU_Compute::compute_guassian_blur_3_3(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
