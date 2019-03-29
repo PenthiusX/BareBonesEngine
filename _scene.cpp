@@ -14,7 +14,6 @@
 _Scene::_Scene()
 {
 	isCamera = false;
-
 }
 _Scene::~_Scene()
 {

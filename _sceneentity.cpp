@@ -31,6 +31,8 @@ _SceneEntity::~_SceneEntity(){
 /*
  * Function: setId(int id) & getId()
  * sets/gets the id for the current object.
+ * ID is only a tag or name, used only to find and
+ * manupulate the respective object with the relavant ID.
  * Created:26_02_2019
 */
 void _SceneEntity::setId(unsigned int id)
@@ -172,8 +174,9 @@ void _SceneEntity::setShader(QString vSh, QString fSh)
 	this->vShaderPath = vSh;
     this->fShaderPath = fSh;
 }
-/*
- *
+/* Function:gets/sets texture path getTexturePath().
+ * returns the path of the texture that is applied to the sceneObject.
+ * Date: 26_02_2019
 */
 QString _SceneEntity::getTexturePath()
 {

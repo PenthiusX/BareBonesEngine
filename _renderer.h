@@ -64,7 +64,7 @@ private:
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
     //Stores the uniform location allocated in the shader
-    unsigned int colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform;
+    GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform;
     std::vector<_Renderer> sceneObject;
     //Holds the vertex and index data
     std::vector<float> vertices;//not allocated yet

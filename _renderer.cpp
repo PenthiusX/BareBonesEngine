@@ -18,7 +18,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRONT_AND_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.1, 0.1, 0.3, 1.0);//sets the bckground color of the openglContext.
+    glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
 	//
 	shdr = new _Shader();//initialising the _shader() class * object.
 	setShader();//will run this shader by default.
@@ -177,7 +177,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 	float x = rotation.x();
 	x = rotation.y();
 	x = rotation.z();
-//	QVector3D q = rotation.toEulerAngles();
+  //QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
   //glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
@@ -283,13 +283,18 @@ void _Renderer::_Renderer::draw()
 	//----------------------TestUse----------------------------------------------------
     glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
     glm::quat quat = glm::quat(0.0,90.0,45.0,0.0);
-
 	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
 	shdr->useShaderProgram();
+	//Setting the uniform each frame.
+	//Depends if the need is to update the values
+	GLfloat r = abs(cos(timer.elapsed() * 0.002));
+	GLfloat g = abs(sin(timer.elapsed() * 0.003));
+	GLfloat b = abs(cos(timer.elapsed() * 0.005));
+	glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
     //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
     for (unsigned int t=0;t<textures.size();t++){
         textures[t].bind();
@@ -299,12 +304,6 @@ void _Renderer::_Renderer::draw()
 	glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
-	//Setting the uniform each frame.
-	//Depends if the need is to update the values
-    GLfloat r = abs(cos(timer.elapsed() * 0.002));
-    GLfloat g = abs(sin(timer.elapsed() * 0.003));
-    GLfloat b = abs(cos(timer.elapsed() * 0.005));
-	glUniform4f(colorUniform, r,g,b, 1.0f);//will be replaced by Texture
 	//sets the values for the MVP matrix in the vertex shader
 	glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
 	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
