@@ -143,6 +143,7 @@ bool _SceneEntity::getIsActive()
 */
 void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
 {
+    this->isActive = true;
 	this->vertexData = vertices;
 	this->indexData = indices;
 }

@@ -32,6 +32,7 @@ int height;
 
 _Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
 _SceneEntity s, s1,s2;
+_SceneEntity background_quad;
 _AssetLoader assetLoader;
 _Camera cam;
  QVector2D mousePressPosition;
