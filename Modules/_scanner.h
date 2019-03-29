@@ -7,6 +7,7 @@
 #include <QOffscreenSurface>
 #include <QOpenGLContext>
 #include <QWidget>
+#include <Compute/_gpu_compute.h>
 
 
 class _Scanner : public QObject , protected QOpenGLExtraFunctions
@@ -29,6 +30,7 @@ public:
     QOpenGLContext *context = nullptr;
     QOpenGLExtraFunctions *gl = nullptr;
     QOffscreenSurface *surface = nullptr;
+    _GPU_Compute *gpu_compute = nullptr;
 
     unsigned int framebuffer;
     unsigned int renderbuffer;

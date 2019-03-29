@@ -3,6 +3,7 @@
 #include <_texture.h>
 #include <_shader.h>
 
+
 _Scanner::_Scanner(QObject *parent) : QObject(parent) , QOpenGLExtraFunctions()
 {
 
@@ -48,6 +49,8 @@ void _Scanner::init()
 
         initializeOpenGLFunctions();
 
+        gpu_compute = new _GPU_Compute();
+
         qDebug() << QString::fromUtf8((char*)glGetString(GL_VERSION));
 
     }
@@ -61,7 +64,7 @@ void _Scanner::scan_save_images()
         machine->TurnTableMotorDiff(80);
 
         //grab new frame from camera
-        machine->camera->grab_frame(QString("scan_image_stage_%1").arg(t));
+        machine->GrabFrame(QString("scan_image_stage_%1").arg(t));
 
         //send the grabbed frame to gui widget for display
         emit set_image(machine->camera->get_frame(),1360,1024);
@@ -78,22 +81,21 @@ void _Scanner::scan_generate_model()
     unsigned int rttWidth = 1360;
     unsigned int rttHeight = 1024;
 
-    char *colours = new char[rttWidth*rttHeight];
+    char *colours=new char[rttWidth*rttHeight];
 
+    //initialise textures for processing
     _Texture texture(colours,rttWidth,rttHeight);
-    _Texture texture_out(colours,rttWidth,rttHeight);
+    _Texture texture_out(0,rttWidth,rttHeight);
+    _Texture texture_outt(0,rttWidth,rttHeight);
 
     unsigned int framebuffer;
 
+    //load texture
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_out.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_outt.load(GL_RED,GL_UNSIGNED_BYTE);
 
     //texture.unbind();
-
-    _Shader compute_shader;
-    compute_shader.setChildShader(":/shaders/compute_edge.glsl",GL_COMPUTE_SHADER);
-
-    compute_shader.attachShaders();
 
     glGenFramebuffers(1,&framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
@@ -116,34 +118,43 @@ void _Scanner::scan_generate_model()
         machine->TurnTableMotorDiff(80);
 
         //grab new frame from camera
-        machine->camera->grab_frame(QString("processed_image_stage_%1").arg(t));
+        machine->GrabFrame(filename);
 
         //send the grabbed frame to gui widget for display
-        emit set_image(machine->camera->get_frame(),1360,1024);
+        //emit set_image(machine->camera->get_frame(),1360,1024);
 
         //Do the Processing
+
+        //send the image to gpu texture
         texture.setImage(machine->camera->get_frame(),1360,1024);
-        texture.bindForCompute(0,GL_R8,GL_READ_ONLY);
-        texture_out.bindForCompute(1,GL_R8,GL_WRITE_ONLY);
-        //
-        compute_shader.useShaderProgram();
-        glDispatchCompute(rttWidth / 16, rttHeight / 16, 1);
-        glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+        //compute operation
+        //gpu_compute->compute_sobel_edge(texture,texture_out);
+        gpu_compute->compute_threshold(texture,texture_outt);
+        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
+
+        //bind to framebuffer for grabbing
         texture_out.bindForFramebuffer();
-        //
+
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        //
         glViewport(0, 0, rttWidth, rttHeight);
+
+        //get image from gpu texture
         glReadPixels(0, 0, rttWidth, rttHeight,GL_RED, GL_UNSIGNED_BYTE,colours);
-        imagefile=fopen(filename.toLocal8Bit(), "wb");
-        //
-        if( imagefile == NULL) {
-            qDebug() << "Can't create:" << filename;
-        }
-        fprintf(imagefile,"P5\n%u %u 255\n", rttWidth, rttHeight);
-        fwrite(colours, 1, rttWidth*rttHeight, imagefile);
-        fclose(imagefile);
-        //
-        qDebug() << "wrote: " << filename;
+
+        //send signal to update display texture
+        emit set_image(colours,1360,1024);
+
+//        imagefile=fopen(filename.toLocal8Bit(), "wb");
+
+//        if( imagefile == NULL) {
+//            qDebug() << "Can't create:" << filename;
+//        }
+//        fprintf(imagefile,"P5\n%u %u 255\n", rttWidth, rttHeight);
+//        fwrite(colours, 1, rttWidth*rttHeight, imagefile);
+//        fclose(imagefile);
+
+        //qDebug() << "wrote: " << filename;
+
     }
 }

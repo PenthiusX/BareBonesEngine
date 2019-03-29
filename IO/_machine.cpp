@@ -2,9 +2,15 @@
 #include <QDebug>
 #include <QTimer>
 #include <QThread>
-//
+#include <QJsonDocument>
+#include <QJsonValue>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+#include <_tools.h>
 #include <IO/_avt_camera.h>
 #include <IO/_dc_1394_camera.h>
+
 
 /*
  * The Machine class
@@ -26,7 +32,17 @@
 _Machine::_Machine()
 {
 
+}
 
+/* Constructor for the Machine class
+ * Read all defualts and configuration from given json file
+ *
+ * list and select serial ports connected to machine
+ * list and select camera connected to machine
+ * Created: 27_03_2019
+ */
+_Machine::_Machine(QString json_file) : config(_Tools::ReadJsonFromQrc(json_file))
+{
 
 }
 
@@ -82,6 +98,17 @@ void _Machine::LaserHeightMotorDiff(int steps)
  * zero intensity specifies off condition
  * intensity varies from 0 to 255
  * */
+void _Machine::Vaccum(int state)
+{
+    //command for on:Q
+    //command for off:R
+    hardware_serial->waitAndWriteData((state) ? "N":"Y");
+}
+
+/* Set Line Laser intensity and switch on/off
+ * zero intensity specifies off condition
+ * intensity varies from 0 to 255
+ * */
 void _Machine::LineLaser(int intensity)
 {
     hardware_serial->waitAndWriteData(QString("L%1").arg(intensity));
@@ -99,6 +126,7 @@ void _Machine::BackLight(int intensity)
 void _Machine::GrabFrame(QString filename)
 {
     camera->grab_frame(filename);
+    emit cameraFrameReturned(camera->get_frame(),1360,1024);
 }
 
 /* Set Marking Laser intensity and switch on/off
@@ -106,14 +134,14 @@ void _Machine::GrabFrame(QString filename)
  * recieved from 1 above hence intensity is subtracted by 1
  * zero intensity specifies off condition
  * */
-void _Machine::MarkingLaser(int intensity)
+void _Machine::MarkingLaser(float intensity)
 {
     if (intensity > 0)
     {
         // command : E<intensity>
         hardware_serial->waitAndWriteData(QString("E%1").arg(intensity-1));//set the intesity @
         MarkingLaserDiode(1);//switch on the laser diode
-        QThread::sleep(3);
+        QThread::sleep(5);
         MarkingLaserOut(1);
         //QTimer::singleShot(3000,[this]() {MarkingLaserOut(1);});//switch on the laser out after 2 seconds
     }
@@ -174,7 +202,11 @@ void _Machine::set_hardware_serial_defaults()
  * */
 void _Machine::set_camera()
 {
+
+    QJsonObject camera_config = config["Camera"].toObject();
+
     camera = new _HWDCamera();
+
 #ifdef PLATFORM_LINUX
     camera = new _DC_1394_Camera();
 
@@ -238,6 +270,44 @@ void _Machine::set_hardware_serial()
     }
 }
 
+void _Machine::set_hardware_serial(QJsonObject hardware_config)
+{
+    QJsonObject serial_config = hardware_config["Communication"].toObject()["RS232"].toObject();
+    QJsonObject command_config = hardware_config["Commands"].toObject();
+
+    //list serial ports and check if returns machine
+
+    QStringList ports = _HardwareSerial::list_serial_ports();
+
+    QStringList machine_ports;
+
+    for (int i = 0; i < ports.size(); ++i){
+
+        _HardwareSerial port(ports.at(i));
+
+        port.openSerialPort();
+
+        port.writeDataAndWait("?");
+
+        //if acknowledgement("=" character) recieved then machine is connected
+        if(port.writeDataAndWait("?")=="=\n")
+            machine_ports << ports.at(i);
+    }
+    switch (machine_ports.size())
+    {
+        case 0: // if no Serial ports found;
+            qDebug() << "machine not detected functionality will be limited";
+            hardware_serial = new _HardwareSerial();
+            break;
+        case 1: //if one machine found;
+            hardware_serial = new _HardwareSerial(machine_ports.at(0));
+            break;
+        default:
+            qDebug() << "more than one machine detected select one";
+            // code to be executed if more than one machine found
+    }
+}
+
 void _Machine::init()
 {
     set_hardware_serial();
@@ -256,4 +326,10 @@ void _Machine::init()
 
     //setup commands
     set_hardware_serial_defaults();
+}
+
+void _Machine::set_image_dir(QString dir)
+{
+    qDebug() << "inside set image";
+    camera->set_image_dir(dir);
 }

@@ -2,13 +2,14 @@
 #define TOOLS_H
 
 #include <QString>
-
+#include <QJsonObject>
 
 class _Tools
 {
 public:
     _Tools();
     static QString ReadStringFromQrc(QString Filename);
+    static QJsonObject ReadJsonFromQrc(QString Filename);
 };
 
 

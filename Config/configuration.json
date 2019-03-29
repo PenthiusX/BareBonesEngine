@@ -1,0 +1,167 @@
+{
+	"HardwareCommands": {
+
+	},
+	"RoughOrg": {
+
+	},
+	"RoughAcquisition": {
+
+	},
+	"Hardware": {
+		"Commands": {
+			"Acceleration": {
+				"COMMAND": "A"
+			},
+			"FinalSpeed": {
+				"COMMAND": "H"
+			},
+			"GetVersion": {
+				"COMMAND": "T"
+			},
+			"Info": {
+				"COMMAND": "?"
+			},
+			"isLaserMarkingSupported": {
+				"COMMAND": false
+			},
+			"LaserMarkingOn": {
+				"COMMAND": "Q"
+			},
+			"LaserMarkingOff": {
+				"COMMAND": "R"
+			},
+			"LaserDiodeOn": {
+				"COMMAND": "V"
+			},
+			"LaserDiodeOff": {
+				"COMMAND": "W"
+			},
+			"LaserMarkingPower": {
+				"COMMAND": "E"
+			},
+			"LaserMarkingTimer": {
+				"COMMAND": "K"
+			},
+			"MoveAcceleration": {
+				"COMMAND": "G"
+			},
+			"SetDistance": {
+				"COMMAND": "M"
+			},
+			"SetLaserIlluminationPower": {
+				"PortIO": {
+					"COMMAND": "Z",
+					"MAX": 255,
+					"MIN": 0
+				},
+				"RS2322": {
+					"COMMAND": "L",
+					"MAX": 255,
+					"MIN": 0
+				}
+			},
+			"SetMotorsDelay": {
+				"COMMAND": "M"
+			},
+			"SetSynchronizeMoving": {
+				"COMMAND": "["
+			},
+			"SetTopLightPower": {
+				"COMMAND": "I",
+				"MAX": 255,
+				"MIN": 0
+			},
+			"StartSpeed": {
+				"COMMAND": "B"
+			},
+			"StartSynchronizedMovement": {
+				"COMMAND": "U"
+			},
+			"StartSynchronizedMovementData": {
+				"COMMAND": "["
+			},
+			"Stop": {
+				"COMMAND": "S"
+			},
+			"VaccumOff": {
+				"COMMAND": "Y"
+			},
+			"VaccumOn": {
+				"COMMAND": "N"
+			}
+		},
+		"Communication": {
+			"RS232": {
+				"RS232": {
+					"DATABITS": 8,
+					"INPUT_BUFFER_SIZE": 5000,
+					"OUTPUT_BUFFER_SIZE": 5000,
+					"PARITY": 3,
+					"STOP_BITS": 1,
+					"BAUDRATE": 115200
+				}
+			},
+			"IOCommunication": {
+				"MSRIO": {
+					"STATUS_PORT_ADDR": 780,
+					"RESET_PORT_ADDR": 782,
+					"OUT_PORT_ADDR": 776,
+					"IN_PORT_ADDR": 778
+				},
+				"PortIO": {
+					"STATUS_PORT_ADDR": 780,
+					"RESET_PORT_ADDR": 782,
+					"OUT_PORT_ADDR": 776,
+					"IN_PORT_ADDR": 778
+				}
+			}
+		}
+	},
+	"Laser": {
+
+	},
+	"LaserMarking": {
+
+	},
+	"LensStageDetector": {
+
+	},
+	"LiveVideoProvider": {
+
+	},
+	"ManualMarking": {
+
+	},
+	"MotorType": {
+
+	},
+	"MovingPanel": {
+
+	},
+	"Pump": {
+
+	},
+	"Configuration": {
+		"MACHINE_TYPE": "DiaExpert-ML",
+		"LASER_MARKING": false
+	},
+	"Camera": {
+		"ROI": [
+			0,
+			0,
+			1360,
+			1024
+		],
+		"CAMERA_CONTRAST": 50,
+		"CAMERA_GAIN": 20,
+		"CAMERA_BRIGHTNESS": 100,
+		"CAMERA_EXPOSURE": 85,
+		"CAMERA_TIMEOUT": 200,
+		"MINIMAL_GAIN": 0,
+		"MINIMAL_OFFSET": 0,
+		"CAMERA_CHANNEL": 0,
+		"CAMERA_NAME": "M_CCIR",
+		"CAMERA_TYPE": "Picolo5"
+	}
+}

@@ -34,6 +34,7 @@ public:
 
 
 
+    QString shader_parser(QString shader_file);
 private:
     //Shader Program
      uint shaderProgram = 0;

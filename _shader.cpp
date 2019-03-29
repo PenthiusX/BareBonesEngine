@@ -1,10 +1,11 @@
 #include "_shader.h"
-#include "_tools.h"
+#include <_tools.h>
 #include <iostream>
+#include <QDebug>
 /*
  * The _Shader class
  * Created: 14_02_2019
- * Author: Aditya
+ * Author: Aditya ,Saurabh
 */
 /*
 * Constructor
@@ -105,24 +106,100 @@ void _Shader::attachShaders(QString v,QString f)
 }
 
 /*
-* Function: getUniformLocation(char* nameOfUniform)
-* returns a uint representing the loaction index of
-* the uniform in the shader takes the name of the uniform
-* as the parameter
-* Created: 18_02_2019
+ * Function: shader_parser(QString shader_file)
+ * this function solves all #include dependancies
+ * eg. if shader source:
+ *
+ *   vshader_uniforms.glsl:
+ *                      uniform mat4 model;
+ *                      uniform mat4 view;
+ *                      uniform mat4 projection;
+ *                      uniform mat4 mvp;
+ *
+ *   vshader_main.glsl :
+ *                      #version 330 core
+ *                      layout (location = 0) in vec3 aPos;
+ *                      out vec2 TexCoord;
+ *
+ *                      #include vshader_uniforms.glsl// <<<<< shader source of vshader_uniforms.glsl will be inserted here
+ *
+ *                      void main()
+ *                      {
+ *                          gl_Position = vec4(aPos, 1.0);
+ *                          TexCoord = vec2(aPos.x/2.0+0.5, 0.5-aPos.y/2.0);
+ *                      }
+ *   use fnction as :
+ *   setChildshader(std::vector<QString> parts{"path_to/vshader_head.glsl","path_to/vshader_uniforms.glsl","path_to/vshader_main.glsl"})
 */
-uint _Shader::getUniformLocation(const char* nameOfUniform)
-{
-    return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
+QString _Shader::shader_parser(QString shader_file){
+
+    //for dealing with #include statements
+    QStringList included_files;
+
+    QString shader_src = tools.ReadStringFromQrc(shader_file);
+
+    int pos = shader_file.lastIndexOf(QChar('/'));
+    QString shader_folder = shader_file.left(pos) + "/";
+
+    while (true) {
+        pos = shader_src.indexOf("#include");
+        if(pos != -1){
+            QString src = shader_src.left(pos);
+            //file_name_should be less than 30 characters
+            QString include_line = shader_src.mid(pos+9,40);
+
+            int f_pos = include_line.indexOf(".glsl");
+            if(f_pos == -1) f_pos = include_line.indexOf(' ');
+            else f_pos+=5;
+            if(f_pos == -1) f_pos = include_line.indexOf('\n');
+            QString include_file = shader_folder + include_line.left(f_pos);
+            src = src + tools.ReadStringFromQrc(include_file);
+            src = src + shader_src.right(shader_src.length()-(pos+9+f_pos));
+            shader_src = src;
+        }
+        else break;
+    }
+    return shader_src;
 }
 
+/* Function : setChildShader(QString s, unsigned int typ)
+ * vertex , fragment , geometry etc are child shaders of shader program object
+ * this function addds these shaders to the shader program objects
+ * takes path to shader file and typ of shader ie. GL_VERTEX_SHADER
+*/
 void _Shader::setChildShader(QString s, unsigned int typ)
 {
+    //solve shader dependancies and create final shader source
+    QString shader_src = shader_parser(s);
 
-    unsigned int shader = compile_shader(tools.ReadStringFromQrc(s),typ);
+
+    unsigned int shader = compile_shader(shader_src,typ);
+
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
 
+/* Function : setChildShader(QString s, unsigned int typ)
+ * this function takes child shader in seprated parts and create combined shader source
+ * eg if shader is seprated in 3 parts:
+ *   vshader_head.glsl :     #version 330 core
+ *                      layout (location = 0) in vec3 aPos;
+ *                      out vec2 TexCoord;
+ *
+ *   vshader_uniforms.glsl:
+ *                      uniform mat4 model;
+ *                      uniform mat4 view;
+ *                      uniform mat4 projection;
+ *                      uniform mat4 mvp;
+ *
+ *   vshader_main.glsl :
+ *                      void main()
+ *                      {
+ *                          gl_Position = vec4(aPos, 1.0);
+ *                          TexCoord = vec2(aPos.x/2.0+0.5, 0.5-aPos.y/2.0);
+ *                      }
+ *   use fnction as :
+ *   setChildshader(std::vector<QString> parts{"path_to/vshader_head.glsl","path_to/vshader_uniforms.glsl","path_to/vshader_main.glsl"})
+*/
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;
@@ -150,6 +227,11 @@ void _Shader::useShaderProgram()
     glUseProgram(this->shaderProgram);
 }
 
+/*
+ * Function: compile_shader(QString src, unsigned int typ)
+ * compiles given shader source src and type eg. GL_VERTEX_SHADER
+ * returns ID of shader
+ */
 unsigned int _Shader::compile_shader(QString src, unsigned int typ)
 {
     unsigned int shader;
@@ -171,3 +253,18 @@ unsigned int _Shader::compile_shader(QString src, unsigned int typ)
 
     return shader;
 }
+
+/*
+* Function: getUniformLocation(char* nameOfUniform)
+* returns a uint representing the loaction index of
+* the uniform in the shader takes the name of the uniform
+* as the parameter
+* Created: 18_02_2019
+*/
+uint _Shader::getUniformLocation(const char* nameOfUniform)
+{
+    return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
+}
+
+
+

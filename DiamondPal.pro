@@ -28,7 +28,8 @@ HEADERS  += mainwindow.h \
            IO/_avt_camera.h \
            Modules/_marker.h \
            Modules/_scanner.h \
-    _tools.h
+    _tools.h \
+    Compute/_gpu_compute.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -47,7 +48,8 @@ SOURCES += main.cpp\
            IO/_avt_camera.cpp \
            Modules/_marker.cpp \
            Modules/_scanner.cpp \
-    _tools.cpp
+    _tools.cpp \
+    Compute/_gpu_compute.cpp
 
 FORMS    += mainwindow.ui
 
