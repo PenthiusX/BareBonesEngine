@@ -29,7 +29,8 @@ HEADERS  += mainwindow.h \
            Modules/_marker.h \
            Modules/_scanner.h \
     _tools.h \
-    Compute/_gpu_compute.h
+    Compute/_gpu_compute.h \
+    IO/_configcontrolentity.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -49,7 +50,8 @@ SOURCES += main.cpp\
            Modules/_marker.cpp \
            Modules/_scanner.cpp \
     _tools.cpp \
-    Compute/_gpu_compute.cpp
+    Compute/_gpu_compute.cpp \
+    IO/_configcontrolentity.cpp
 
 FORMS    += mainwindow.ui
 
