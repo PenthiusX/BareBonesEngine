@@ -229,6 +229,13 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale
 	this->sceneEntity.setScale(scale);
 	QVector3D p = sceneEntity.getPostion();
 
+    glm::quat quat1;
+    float w, x, y, z;
+    quat1 = glm::quat(5.0,x,y,z);
+    glm::vec3 EulerAngles(.0f, 0.005f, .0f);
+    quat1 = glm::quat(EulerAngles);
+    glm_model4x4 *= glm::mat4_cast(quat1);
+
 	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
     glm_model4x4 = glm::rotate(glm_model4x4, (0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//Note : needs work rotation is not proper--------------------!!!!
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
@@ -257,12 +264,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
 	this->sceneEntity = s;	
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
-    //
     setupTexture(s.getTexturePath());
-    //setupTexture should load initial texture from image file path
-    //use setTexture function only to update image
-    //setTexture(s.getTexturePath());
-    //
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
@@ -285,12 +287,9 @@ _SceneEntity _Renderer::getSceneEntity()
 */
 void _Renderer::_Renderer::draw()
 {
-	//----------------------TestUse----------------------------------------------------
-    //glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
-	glm::quat rot = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 0.05f, 0.0f));
-	glm::mat4x4 rmat = glm::mat4_cast(rot);
-	glm_model4x4 = glm_model4x4 * rmat;
-	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
+    //----------------------TestUse----------------------------------------------------
+      glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
+      glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame

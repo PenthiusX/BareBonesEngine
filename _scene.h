@@ -20,6 +20,7 @@ public:
     std::vector<_Renderer*> getSceneObjectsArray();
     void addSceneObject(_SceneEntity s);
     void addCamera(_Camera c);
+    void updateCamera(_Camera c);
     void onResize(int w,int h);
     void render();
 private:

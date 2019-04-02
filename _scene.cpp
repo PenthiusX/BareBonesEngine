@@ -71,7 +71,14 @@ void _Scene::addSceneObject(_SceneEntity s)
 void _Scene::addCamera(_Camera c)
 {
 	isCamera = true;
-	cam = c;
+    cam = c;
+}
+/*
+ * Function:
+*/
+void _Scene::updateCamera(_Camera c)
+{
+
 }
 /*
  * Function: onResize(int w,int h)
