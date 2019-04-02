@@ -9,7 +9,7 @@
 class _SceneEntity
 {
 public:
-    _SceneEntity(QVector3D pos,QQuaternion rot , float scale);
+    _SceneEntity(QVector3D pos,QVector3D rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
     void setId(unsigned int id);//sets the iD either externaly or internally generated
@@ -17,8 +17,8 @@ public:
 	//
 	void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
 	QVector3D getPostion();//get the current position of the relvant object instace
-	void setRotation(QQuaternion rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
-	QQuaternion getRotation();//get the Quaternian value of the rottion of the relavant object instance.
+    void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
+    QVector3D getRotation();//get the Quaternian value of the rottion of the relavant object instance.
 	void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
 	float getScale();//get the float  value of the rotation of the relavant object instance.
 	//
@@ -42,7 +42,7 @@ public:
 private:
     unsigned int id;
 	QVector3D postion;
-	QQuaternion rotation;
+    QVector3D rotation;
 	float scale;
 	//
 	std::vector<float>vertexData;

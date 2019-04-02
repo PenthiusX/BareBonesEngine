@@ -41,11 +41,11 @@ public:
     void setupTexture();//takes am image and binds it to object
     void setupTexture(QString texfile); //initializes texture from file
 
-    void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix
+    void setModelMatrix(QVector3D position, float scale, QVector3D rotation);//set the model matrix
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
-    void updateTrasformations(QVector3D pos,QQuaternion, float scale);//
-    void updateTrasformations(QVector3D pos, QQuaternion rot);//
+    void updateTrasformations(QVector3D pos,QVector3D rot, float scale);//
+    void updateTrasformations(QVector3D pos, QVector3D rot);//
     void updateTrasformations(QVector3D pos);//
 
     void setSceneEntityInRenderer(_SceneEntity s);//
