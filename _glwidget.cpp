@@ -163,4 +163,12 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1f, 0.0, 0.0));
+
+
+    if (event->text() == "c" || event->text() == "C")
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == 2)
+                cam.setFocalPoint(scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion());
+                scene->addCamera(cam);
+
 }
