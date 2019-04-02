@@ -6,7 +6,7 @@
 */
 _SceneEntity::_SceneEntity()
 {	//sets the rotation value at init and uses the from axis angle 
-	this->rotation = QQuaternion::fromAxisAndAngle(QVector3D(0.0,0.0,0.0),0.0);
+    this->rotation = QVector3D(0.0,0.0,0.0);
 	this->postion = QVector3D(0.0, 0.0, 0.0);
 	this->scale = 1.0;
 	this->isActive = false;
@@ -17,7 +17,7 @@ _SceneEntity::_SceneEntity()
  * Author: Aditya
  * Created:26_02_2019
 */
-_SceneEntity::_SceneEntity(QVector3D pos, QQuaternion rot, float scale)
+_SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale)
 {
 	this->postion = pos;
 	this->rotation = rot;
@@ -61,11 +61,11 @@ QVector3D _SceneEntity::getPostion()
  * sets/gets the rotation for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setRotation(QQuaternion rot)
+void _SceneEntity::setRotation(QVector3D rot)
 {
 	this->rotation = rot;
 }
-QQuaternion _SceneEntity::getRotation()
+QVector3D _SceneEntity::getRotation()
 {
 	return this->rotation;
 }

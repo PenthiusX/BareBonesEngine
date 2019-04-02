@@ -41,7 +41,7 @@ void _GLWidget::initializeGL()
     //
     background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
-    background_quad.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+    background_quad.setRotation(QVector3D(0.0, 0.0, 0.0));
     background_quad.setScale(1.0);
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
@@ -66,14 +66,14 @@ void _GLWidget::initializeGL()
 	s1.setId(1);
 	s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setPosition(QVector3D(0.0, 0.7f, 4.0));
-	s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+    s1.setRotation(QVector3D(0.0, 0.0, 0.0));
 	s1.setScale(1.5);
     s1.setModelData(":/models/cone.obj");
 
     s2.setId(2);
     s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     s2.setPosition(QVector3D(0.0, 1.7f, 2.0));
-    s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
+    s2.setRotation(QVector3D(0.0, 0.0, 0.0));
     s2.setScale(1.5);
     s2.setModelData(":/models/monkey.obj");
     s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too

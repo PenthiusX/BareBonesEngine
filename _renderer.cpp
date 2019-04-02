@@ -172,7 +172,7 @@ void _Renderer::setTexture(QString pathtoTexture)
 * Used by: the _glWidget class initialiseGl() or paintGl().
 * Created: 25_02_2019
 */
-void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
+void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
 {
 	float x = rotation.x();
 	x = rotation.y();
@@ -222,7 +222,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 * Used by: _render class in draw().!!!Atention: needs rework were one only need to set the local seneEntityobject to make changes to the Object in Scene!!!
 * Created: 25_02_2019
 */
-void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale)
+void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot, float scale)
 {
 	this->sceneEntity.setPosition(pos);
 	this->sceneEntity.setRotation(rot);
@@ -241,7 +241,7 @@ void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot, float scale
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
-void _Renderer::updateTrasformations(QVector3D pos, QQuaternion rot)
+void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot)
 {
 	this->sceneEntity.setPosition(pos);
 	this->sceneEntity.setRotation(rot);
@@ -288,8 +288,8 @@ _SceneEntity _Renderer::getSceneEntity()
 void _Renderer::_Renderer::draw()
 {
     //----------------------TestUse----------------------------------------------------
-      glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
-      glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
+//      glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
+//      glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame
