@@ -294,7 +294,7 @@ void _Renderer::_Renderer::draw()
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
-	shdr->useShaderProgram();
+    shdr->useShaderProgram();
 	//Setting the uniform each frame.
 	//Depends if the need is to update the values
     double r = abs(cos(timer.elapsed() * 0.002));
