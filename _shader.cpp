@@ -4,7 +4,7 @@
 /*
  * The _Shader class
  * Created: 14_02_2019
- * Author: Aditya
+ * Author: Aditya , Suarabh
 */
 /*
 * Constructor
@@ -60,7 +60,8 @@ void _Shader::attachShaders()
 {
 
     //check for child shaders
-    if(child_shaders.size()!=0){
+    if(child_shaders.size()!=0)
+    {
 
         //create Shader Program
         shaderProgram = glCreateProgram();
@@ -115,14 +116,19 @@ uint _Shader::getUniformLocation(const char* nameOfUniform)
 {
     return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
 }
-
+/*
+ *
+ *
+*/
 void _Shader::setChildShader(QString s, unsigned int typ)
 {
-
-    unsigned int shader = compile_shader(tools.ReadStringFromQrc(s),typ);
+    unsigned int shader = compileShader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-
+/*
+ *
+ *
+*/
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;
@@ -134,7 +140,7 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ
 
     //tools.ReadStringFromQrc(s);
 
-    unsigned int shader = compile_shader(combined_src,typ);
+    unsigned int shader = compileShader(combined_src,typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
 
@@ -149,8 +155,12 @@ void _Shader::useShaderProgram()
 {
     glUseProgram(this->shaderProgram);
 }
-
-unsigned int _Shader::compile_shader(QString src, unsigned int typ)
+/*
+ * Function: compileShader()
+ * everyloop for multiple
+ * Created: 26_02_2019
+ */
+unsigned int _Shader::compileShader(QString src, unsigned int typ)
 {
     unsigned int shader;
     QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
@@ -168,6 +178,5 @@ unsigned int _Shader::compile_shader(QString src, unsigned int typ)
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
     }
-
     return shader;
 }
