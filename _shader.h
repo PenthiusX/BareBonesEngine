@@ -35,7 +35,7 @@ private:
      //value : shader ID returned by glCreateShader
      std::map<unsigned int,unsigned int> child_shaders;
 
-     unsigned int compile_shader(QString src_path,unsigned int typ);
+     unsigned int compileShader(QString src_path,unsigned int typ);
 
      _Tools tools;
 

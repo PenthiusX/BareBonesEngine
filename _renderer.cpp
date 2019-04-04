@@ -96,7 +96,6 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->viewUniform  = shdr->getUniformLocation("view");  
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
-
 /*
  * Function: setupTexture()
  * Created: 28_3_2019
@@ -323,7 +322,8 @@ void _Renderer::_Renderer::draw()
     double b = abs(cos(timer.elapsed() * 0.005));
 	glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
     //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
-    for (unsigned int t=0;t<textures.size();t++){
+    for (unsigned int t=0;t<textures.size();t++)
+    {
         textures[t].bind();
     }
     //Bind the Buffers data of the respective buffer object

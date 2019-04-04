@@ -3,8 +3,8 @@
 
 /*
  * The _GLWidget Class:
- * This class is the Controller is a typical MVC where the 
- * View and Controller are being handeled by the QT GUI frameowrk and 
+ * This class is the Controller is a typical MVC where the
+ * View and Controller are being handeled by the QT GUI frameowrk and
  * its wrapper functions for creating Opengl and GUI windowing context.
  * its wrapper functions for creating Opengl and GUI windowing context.
  * Created: 5_02_2019
@@ -17,15 +17,15 @@
 */
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
-	id = 0;
+    id = 0;
 
 }
 _GLWidget::~_GLWidget()
 {
-	delete scene;
+    delete scene;
 }
 /*
-* Function: initializeGL() overrides the 
+* Function: initializeGL() overrides the
 * same function in the OpopenglFunctions class
 * runs once the opengl context is initialised.
 * Created: 5_02_2019
@@ -36,10 +36,11 @@ void _GLWidget::initializeGL()
     //keeps the event callbacks working for the GL widget
     setFocusPolicy(Qt::StrongFocus);
     //
-	cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
-	cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
+    cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
+    cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
     //
     background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    background_quad.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
     background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
     background_quad.setRotation(QVector3D(0.0, 0.0, 0.0));
     background_quad.setScale(1.0);
@@ -55,19 +56,18 @@ void _GLWidget::initializeGL()
                                 1, 2, 3    // second triangle
                                };
     background_quad.setModelData(vertsV,indiceV);
-    background_quad.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
     //
-	s.setId(0);
-	s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
+    s.setId(0);
+    s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
     s.setPosition(QVector3D(0.0,-0.0f, -0.0));
-	s.setScale(1.0f);
+    s.setScale(1.0f);
     s.setModelData(":/models/cube.obj");
     //
-	s1.setId(1);
-	s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s1.setId(1);
+    s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setPosition(QVector3D(0.0, 0.7f, 4.0));
     s1.setRotation(QVector3D(0.0, 0.0, 0.0));
-	s1.setScale(1.f);
+    s1.setScale(1.f);
     s1.setModelData(":/models/cone.obj");
     //
     s2.setId(2);
@@ -78,37 +78,37 @@ void _GLWidget::initializeGL()
     s2.setModelData(":/models/monkey.obj");
     s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
     //
-	scene = new _Scene();
-	scene->addCamera(cam);
+    scene = new _Scene();
+    scene->addCamera(cam);
     //
     scene->addSceneObject(background_quad);
-	scene->addSceneObject(s);
-	scene->addSceneObject(s1);
-	scene->addSceneObject(s2);
+    scene->addSceneObject(s);
+    scene->addSceneObject(s1);
+    scene->addSceneObject(s2);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
  * function in OpopenglFunctions class.
- * pasees the current width and height 
+ * pasees the current width and height
  * of the layout via - int w and int h
  * Created: 5_02_2019
 */
 void _GLWidget::resizeGL(int w, int h)
 {
-	this->width = w;
-	this->height = h;
-	scene->onResize(w, h);
+    this->width = w;
+    this->height = h;
+    scene->onResize(w, h);
 }
 /*
  * Function: paintGl() 7
  * ovveriding thes function in OpopenglFunctions
- * Your proprietory Draw function this run in a loop 
+ * Your proprietory Draw function this run in a loop
  * till the application ends.
  * Created: 5_02_2019
 */
 void _GLWidget::paintGL()//the renderloop
 {
-	scene->render();
+    scene->render();
     this->update();
 }
 /*
@@ -119,7 +119,7 @@ void _GLWidget::paintGL()//the renderloop
 */
 void _GLWidget::mousePressEvent(QMouseEvent *e)
 {
-	mousePressPosition = QVector2D(e->localPos());
+    mousePressPosition = QVector2D(e->localPos());
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
@@ -129,7 +129,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-	QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 }
 /*
 * Function: keyPressEvent(QKeyEvent * event)
@@ -139,29 +139,29 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 */
 void _GLWidget::keyPressEvent(QKeyEvent * event)
 {
-	if (event->text() == "q" || event->text() == "Q")
-		id += 1;
+    if (event->text() == "q" || event->text() == "Q")
+        id += 1;
         if (id >= scene->getSceneObjectsArray().size())
-			id = 0;
+            id = 0;
 
-	if (event->text() == "d" || event->text() == "D")
+    if (event->text() == "d" || event->text() == "D")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateRotation(QVector3D(0.0,-0.1f,0.0));
 
-	if (event->text() == "a" || event->text() == "A")
+    if (event->text() == "a" || event->text() == "A")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateRotation(QVector3D(0.0, 0.1f, 0.0));
 
     if (event->text() == "w" || event->text() == "W")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.1f, 0.0, 0.0));
 
-	if (event->text() == "s" || event->text() == "S")
+    if (event->text() == "s" || event->text() == "S")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1f, 0.0, 0.0));
 
     if (event->text() == "c" || event->text() == "C")
