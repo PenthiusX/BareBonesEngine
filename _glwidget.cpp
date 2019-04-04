@@ -59,22 +59,22 @@ void _GLWidget::initializeGL()
     //
 	s.setId(0);
 	s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-	s.setPosition(QVector3D(1.0,-0.3f, -3.0));
-	s.setScale(0.5);
-	s.setModelData(":/models/torus.obj");
-
+    s.setPosition(QVector3D(0.0,-0.0f, -0.0));
+	s.setScale(1.0f);
+    s.setModelData(":/models/cube.obj");
+    //
 	s1.setId(1);
 	s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setPosition(QVector3D(0.0, 0.7f, 4.0));
     s1.setRotation(QVector3D(0.0, 0.0, 0.0));
-	s1.setScale(1.5);
+	s1.setScale(1.f);
     s1.setModelData(":/models/cone.obj");
-
+    //
     s2.setId(2);
     s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     s2.setPosition(QVector3D(0.0, 1.7f, 2.0));
     s2.setRotation(QVector3D(0.0, 0.0, 0.0));
-    s2.setScale(1.5);
+    s2.setScale(1.f);
     s2.setModelData(":/models/monkey.obj");
     s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
     //
@@ -147,12 +147,12 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 	if (event->text() == "d" || event->text() == "D")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0,0.1f,0.0));
+                scene->getSceneObjectsArray()[i]->updateRotation(QVector3D(0.0,-0.1f,0.0));
 
 	if (event->text() == "a" || event->text() == "A")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(0.0, -0.1f, 0.0));
+                scene->getSceneObjectsArray()[i]->updateRotation(QVector3D(0.0, 0.1f, 0.0));
 
     if (event->text() == "w" || event->text() == "W")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
@@ -167,5 +167,5 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
     if (event->text() == "c" || event->text() == "C")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->updateRotation(QVector3D(0.1f, 0.0, 0.0));
+                scene->getSceneObjectsArray()[i]->updateRotation(QVector3D(0.0f, 0.5, 0.0));
 }
