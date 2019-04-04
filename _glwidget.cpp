@@ -77,10 +77,10 @@ void _GLWidget::initializeGL()
     s2.setScale(1.5);
     s2.setModelData(":/models/monkey.obj");
     s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
-
+    //
 	scene = new _Scene();
 	scene->addCamera(cam);
-
+    //
     scene->addSceneObject(background_quad);
 	scene->addSceneObject(s);
 	scene->addSceneObject(s1);
@@ -164,11 +164,8 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 			if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1f, 0.0, 0.0));
 
-
     if (event->text() == "c" || event->text() == "C")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == 2)
-                cam.setFocalPoint(scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion());
-                scene->addCamera(cam);
-
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+                scene->getSceneObjectsArray()[i]->updateRotation(QVector3D(0.1f, 0.0, 0.0));
 }
