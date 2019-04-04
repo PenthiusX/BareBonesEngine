@@ -22,7 +22,6 @@ _AVT_Camera::_AVT_Camera() : _HWDCamera()
 
 }
 
-
 /* find and return number of cameras connected
  * Created: 02_03_2019
  */

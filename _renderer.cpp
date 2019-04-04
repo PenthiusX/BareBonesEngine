@@ -26,6 +26,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	//
 	glm_projection4x4 = glm::mat4(1.0f);
 	glm_model4x4 = glm::mat4(1.0f);
+    glm_view4x4 = glm::mat4(1.0f);
 }
 
 /*
@@ -39,7 +40,7 @@ _Renderer::~_Renderer()
 
 /*
  * Function: setShader(no params)
- * Sets a dafault hardfed shader
+ * Sets a dafault hard-fed shader
  * on the render object
  * Is being used by the _glWidget class
  * Create:11_02_2019 
@@ -178,9 +179,8 @@ void _Renderer::setTexture(QString pathtoTexture)
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
 {
-    glm::quat quat = glm::quat(5.0,.0f,.0f,.0f);
     glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
-    quat = glm::quat(EulerAngles);
+    glm::quat quat = glm::quat(EulerAngles);
 
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
     glm_model4x4 *= glm::mat4_cast(quat);
@@ -233,9 +233,8 @@ void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot, float scale)
 	this->sceneEntity.setScale(scale);
     QVector3D p = sceneEntity.getPostion();
 
-    glm::quat quat = glm::quat(0.0f,.0f,.0f,.0f);
     glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
-    quat = glm::quat(EulerAngles);
+    glm::quat quat = glm::quat(EulerAngles);
 
     glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z()));
     glm_model4x4 *= glm::mat4_cast(quat);
@@ -271,7 +270,7 @@ void _Renderer::updateRotation(QVector3D rot)
     glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
     glm::quat quat = glm::quat(EulerAngles);
 
-      glm_model4x4 *= glm::mat4_cast(quat);
+    glm_model4x4 *= glm::mat4_cast(quat);
 }
 void _Renderer::updateScale(float scale)
 {
@@ -310,7 +309,7 @@ _SceneEntity _Renderer::getSceneEntity()
 void _Renderer::_Renderer::draw()
 {
     //----------------------TestUse----------------------------------------------------
-    // glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
+    // glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 1.5f, 0.0f));
     // glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
