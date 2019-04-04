@@ -27,6 +27,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	glm_projection4x4 = glm::mat4(1.0f);
 	glm_model4x4 = glm::mat4(1.0f);
 }
+
 /*
  *Distructor: _Renderer Class
 */
@@ -35,6 +36,7 @@ _Renderer::~_Renderer()
 	shdr = NULL;
 	delete shdr;
 }
+
 /*
  * Function: setShader(no params)
  * Sets a dafault hardfed shader
@@ -46,6 +48,7 @@ void _Renderer::setShader()
 {
 	shdr->attachShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
 }
+
 /*
  * Function: setShader(QString vSh, QString fSh)
  * Takes the path to the relative qrc aided directory
@@ -57,6 +60,7 @@ void _Renderer::setShader(QString vSh, QString fSh)
 {
 	shdr->attachShaders(vSh,fSh);
 }
+
 /*
  * Function: setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
  * set Vertex and Index data into
@@ -91,6 +95,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->viewUniform  = shdr->getUniformLocation("view");  
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
+
 /*
  * Function: setupTexture()
  * Created: 28_3_2019
@@ -145,7 +150,6 @@ void _Renderer::setTexture(char* texBitmap)
  * resolution of texture is updated to given values
  * current context should be active while calling this function
  */
-
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
     if(!textures.empty())
@@ -174,12 +178,12 @@ void _Renderer::setTexture(QString pathtoTexture)
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
 {
-	float x = rotation.x();
-	x = rotation.y();
-	x = rotation.z();
-  //QVector3D q = rotation.toEulerAngles();
+    glm::quat quat = glm::quat(5.0,.0f,.0f,.0f);
+    glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
+    quat = glm::quat(EulerAngles);
+
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
-  //glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work rotation is not proper--------------------!!!!
+    glm_model4x4 *= glm::mat4_cast(quat);
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 
@@ -227,20 +231,16 @@ void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot, float scale)
 	this->sceneEntity.setPosition(pos);
 	this->sceneEntity.setRotation(rot);
 	this->sceneEntity.setScale(scale);
-	QVector3D p = sceneEntity.getPostion();
+    QVector3D p = sceneEntity.getPostion();
 
-    glm::quat quat1;
-    float w, x, y, z;
-    quat1 = glm::quat(5.0,x,y,z);
-    glm::vec3 EulerAngles(.0f, 0.005f, .0f);
-    quat1 = glm::quat(EulerAngles);
-    glm_model4x4 *= glm::mat4_cast(quat1);
+    glm::quat quat = glm::quat(0.0f,.0f,.0f,.0f);
+    glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
+    quat = glm::quat(EulerAngles);
 
-	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
-    glm_model4x4 = glm::rotate(glm_model4x4, (0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//Note : needs work rotation is not proper--------------------!!!!
+    glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z()));
+    glm_model4x4 *= glm::mat4_cast(quat);
 	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
-
 void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot)
 {
 	this->sceneEntity.setPosition(pos);
@@ -252,9 +252,32 @@ void _Renderer::updateTrasformations(QVector3D pos)
 {
 	this->sceneEntity.setPosition(pos);
 	QVector3D p = sceneEntity.getPostion();
-	glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
+    glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
 }
+/*
+ * Function: updatePosition/Rotation/Scale
+ *
+ *
+*/
+void _Renderer::updatePosition(QVector3D pos)
+{
+    this->sceneEntity.setPosition(pos);
+    QVector3D p = sceneEntity.getPostion();
+    glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(p.x(), p.y(), p.z()));
+}
+void _Renderer::updateRotation(QVector3D rot)
+{
+    this->sceneEntity.setRotation(rot);
+    glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
+    glm::quat quat = glm::quat(EulerAngles);
 
+      glm_model4x4 *= glm::mat4_cast(quat);
+}
+void _Renderer::updateScale(float scale)
+{
+    this->sceneEntity.setScale(scale);
+    glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(sceneEntity.getScale(), sceneEntity.getScale(),sceneEntity.getScale()));
+}
 /*
 * Function: setSceneEntity(_SceneEntity s)
 * Sets the sceen entity object locally and sets the 
@@ -268,7 +291,6 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
-
 /*
 * Function: getSceneEntity()
 * returns the current scene entity object.
@@ -288,8 +310,8 @@ _SceneEntity _Renderer::getSceneEntity()
 void _Renderer::_Renderer::draw()
 {
     //----------------------TestUse----------------------------------------------------
-//      glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
-//      glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
+    // glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 5.0001f, 0.0f));
+    // glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame
