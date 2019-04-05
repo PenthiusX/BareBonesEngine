@@ -103,7 +103,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
  * current context should be active while calling these functions
  * use makeCurrent() to make context current
  * set a default 8bit single color texture of size 1360 x 1024
- * Created: 28_3_2019
+ * Created: 2_3_2019
  */
 void _Renderer::setupTexture()
 {
@@ -115,7 +115,7 @@ void _Renderer::setupTexture()
 
 /*
  * Function: setupTexture()
- * Contributor : saurabh
+ * Contributor : Aditya
  * creates new texture from texfile image path and adds into list(vector) of textures
  * current context should be active while calling these function
  * Created: 28_3_2019
@@ -134,7 +134,7 @@ void _Renderer::setupTexture(QString texfile)
  * updates the first texture image from char pointer array
  * resolution of previous image is used
  * current context should be active while calling this function
- * Created: 28_3_2019
+ * Created: 2_3_2019
  */
 void _Renderer::setTexture(char* texBitmap)
 {
@@ -148,7 +148,7 @@ void _Renderer::setTexture(char* texBitmap)
  * updates the first texture image from char pointer array
  * resolution of texture is updated to given values
  * current context should be active while calling this function
- * Created: 28_3_2019
+ * Created: 2_3_2019
  */
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
@@ -161,7 +161,7 @@ void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int ihei
  * Contributor : Saurabh
  * updates the first texture image from a texfile
  * current context should be active while calling this function
- * Created: 28_3_2019
+ * Created: 2_3_2019
  */
 void _Renderer::setTexture(QString pathtoTexture)
 {
@@ -180,12 +180,16 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
 {
     glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
     glm::quat quat = glm::quat(EulerAngles);
-
-    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
-    glm_model4x4 *= glm::mat4_cast(quat);
-	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
+    //
+    glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(0.0, 0.0, 0.0));
+    // glm_model4x4 *= glm::mat4_cast(quat);
+    glm_model4x4 = glm::rotate(glm_model4x4,glm::radians(45.f),glm::vec3(1.f,0.f,0.f));
+    glm_model4x4 = glm::rotate(glm_model4x4,glm::radians(0.f),glm::vec3(0.f,1.f,0.f));
+    glm_model4x4 = glm::rotate(glm_model4x4,glm::radians(0.f),glm::vec3(0.f,0.f,1.f));
+    //
+    glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
+    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
 }
-
 /*
 * Function: setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 * sets the camera view for the scene through this matrix
@@ -275,7 +279,7 @@ void _Renderer::updateRotation(QVector3D rot)
 void _Renderer::updateScale(float scale)
 {
     this->sceneEntity.setScale(scale);
-    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale(), sceneEntity.getScale(), sceneEntity.getScale()));
+    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale(), sceneEntity.getScale(), sceneEntity.getScale()));//scale equally on all sides
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)

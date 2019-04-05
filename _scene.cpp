@@ -74,7 +74,8 @@ void _Scene::addCamera(_Camera c)
     cam = c;
 }
 /*
- * Function:
+ * Function: updateCamera(_Camera c)
+ * !!Needs implemntation!!
 */
 void _Scene::updateCamera(_Camera c)
 {
