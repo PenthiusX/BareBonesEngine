@@ -45,12 +45,10 @@ public:
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
     //
-    void updateTrasformations(QVector3D pos,QVector3D rot, float scale);//
-    void updateTrasformations(QVector3D pos, QVector3D rot);//
-    void updateTrasformations(QVector3D pos);//
     void updatePosition(QVector3D pos);
-    void updateRotation(QVector3D rot);
-    void updateScale(float scale);
+    void translate(QVector3D pos);
+    void rotate(QVector3D rot);
+    void scale(float scale);
     //
     void setSceneEntityInRenderer(_SceneEntity s);//
     _SceneEntity getSceneEntity();//
