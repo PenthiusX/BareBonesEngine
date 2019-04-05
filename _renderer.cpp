@@ -98,12 +98,12 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 }
 /*
  * Function: setupTexture()
- * Created: 28_3_2019
- * Contributor : saurabh
+ * Contributor : Saurabh
  * creates new texture and adds into list(vector) of textures
  * current context should be active while calling these functions
  * use makeCurrent() to make context current
  * set a default 8bit single color texture of size 1360 x 1024
+ * Created: 28_3_2019
  */
 void _Renderer::setupTexture()
 {
@@ -115,10 +115,10 @@ void _Renderer::setupTexture()
 
 /*
  * Function: setupTexture()
- * Created: 28_3_2019
  * Contributor : saurabh
  * creates new texture from texfile image path and adds into list(vector) of textures
  * current context should be active while calling these function
+ * Created: 28_3_2019
  */
 void _Renderer::setupTexture(QString texfile)
 {
@@ -130,11 +130,11 @@ void _Renderer::setupTexture(QString texfile)
 
 /*
  * Function: setTexture(char* texBitmap)
- * Created: 28_3_2019
  * Contributor : saurabh
  * updates the first texture image from char pointer array
  * resolution of previous image is used
  * current context should be active while calling this function
+ * Created: 28_3_2019
  */
 void _Renderer::setTexture(char* texBitmap)
 {
@@ -144,11 +144,11 @@ void _Renderer::setTexture(char* texBitmap)
 
 /*
  * Function: setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
- * Created: 28_3_2019
- * Contributor : saurabh
+ * Contributor : Saurabh
  * updates the first texture image from char pointer array
  * resolution of texture is updated to given values
  * current context should be active while calling this function
+ * Created: 28_3_2019
  */
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
@@ -158,10 +158,10 @@ void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int ihei
 
 /*
  * Function: setTexture(QString pathtoTexture)
- * Created: 28_3_2019
- * Contributor : saurabh
+ * Contributor : Saurabh
  * updates the first texture image from a texfile
  * current context should be active while calling this function
+ * Created: 28_3_2019
  */
 void _Renderer::setTexture(QString pathtoTexture)
 {
@@ -181,9 +181,9 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
     glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
     glm::quat quat = glm::quat(EulerAngles);
 
-	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
+    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
     glm_model4x4 *= glm::mat4_cast(quat);
-	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
+	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
 }
 
 /*
@@ -222,7 +222,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 /*
 * Function: updateTransformations()
 * updates the trasformations of the matrices of the individual object per frame.
-* Used by: _render class in draw().!!!Atention: needs rework were one only need to set the local seneEntityobject to make changes to the Object in Scene!!!
+* Used by: _render class in draw()
 * Created: 25_02_2019
 */
 void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot, float scale)
@@ -235,9 +235,9 @@ void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot, float scale)
     glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
     glm::quat quat = glm::quat(EulerAngles);
 
+    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
     glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z()));
     glm_model4x4 *= glm::mat4_cast(quat);
-	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
 }
 void _Renderer::updateTrasformations(QVector3D pos, QVector3D rot)
 {
@@ -254,8 +254,10 @@ void _Renderer::updateTrasformations(QVector3D pos)
 }
 /*
  * Function: updatePosition/Rotation/Scale
- *
- *
+ * updates the specific trasformations that affect the model matrix
+ * of the matrices of the individual object per frame.
+ * Used by: _render class in draw()
+ * Created: 1_03_2019
 */
 void _Renderer::updatePosition(QVector3D pos)
 {
@@ -266,20 +268,20 @@ void _Renderer::updatePosition(QVector3D pos)
 void _Renderer::updateRotation(QVector3D rot)
 {
     this->sceneEntity.setRotation(rot);
-    glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
+    glm::vec3 EulerAngles(sceneEntity.getRotation().x(),sceneEntity.getRotation().y(),sceneEntity.getRotation().z());
     glm::quat quat = glm::quat(EulerAngles);
-
     glm_model4x4 *= glm::mat4_cast(quat);
 }
 void _Renderer::updateScale(float scale)
 {
     this->sceneEntity.setScale(scale);
-    glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(sceneEntity.getScale(), sceneEntity.getScale(),sceneEntity.getScale()));
+    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale(), sceneEntity.getScale(), sceneEntity.getScale()));
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
 * Sets the sceen entity object locally and sets the 
 * Model and projection matrix as well 
+* Created: 1_03_2019
 */
 void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
@@ -292,7 +294,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 /*
 * Function: getSceneEntity()
 * returns the current scene entity object.
-* Dated:11_02_2019
+* Created:11_02_2019
 */
 _SceneEntity _Renderer::getSceneEntity()
 {
@@ -303,13 +305,10 @@ _SceneEntity _Renderer::getSceneEntity()
  * Function: draw()
  * This is your proprietory draw function 
  * Used by: the _glWidget class paintGl().
- * Create:11_02_2019
+ * Created:11_02_2019
 */
 void _Renderer::_Renderer::draw()
 {
-    //----------------------TestUse----------------------------------------------------
-    // glm_model4x4 = glm::rotate(glm_model4x4, 0.01f, glm::vec3(0.0f, 1.5f, 0.0f));
-    // glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame

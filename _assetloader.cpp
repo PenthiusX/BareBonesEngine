@@ -45,7 +45,7 @@ std::vector<unsigned int> _AssetLoader::getAssetIndices()
 * a string array to get the approptie onfo to render the model
 * Created:15_03_2019
 */
-bool _AssetLoader::objLoader(QString pathToFile)
+void _AssetLoader::objLoader(QString pathToFile)
 {
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
 	const char* p = qba;
@@ -81,5 +81,4 @@ bool _AssetLoader::objLoader(QString pathToFile)
 		}
 		temp2 = "";
 	}
-	return false;
 }
