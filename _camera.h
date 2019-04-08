@@ -19,17 +19,18 @@ public:
     //
     void setEyePosition(QVector3D epos);
     QVector3D getEyePosition();
-    //
     void setFocalPoint(QVector3D focalPos);
     QVector3D getFocalPoint();
-    //
     void setUpVector(QVector3D upVec);
     QVector3D getUpVector();
+    void setFOV(unsigned fov);
+    unsigned int getFOV();
 
 private:
  QVector3D eyePosition;
  QVector3D focalPoint;
  QVector3D upVector;
+ unsigned int fov;
 };
 
 #endif // _CAMERA_H

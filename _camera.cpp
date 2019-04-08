@@ -20,6 +20,7 @@ _Camera::_Camera(){
 	this->focalPoint = QVector3D(0.0, 0.0, 0.0);
 }
 _Camera::~_Camera(){
+
 }
 /*
 * Function: set/get Eye postition
@@ -53,6 +54,7 @@ QVector3D _Camera::getFocalPoint()
 * Function: set/get UpVector()
 * sets the up vector for the camera
 * the direction in which the camera orents itself.
+* Created: 01_03_2019
 */
 void _Camera::setUpVector(QVector3D upVec)
 {
@@ -60,5 +62,21 @@ void _Camera::setUpVector(QVector3D upVec)
 }
 QVector3D _Camera::getUpVector()
 {
-	return this->upVector;
+    return this->upVector;
+}
+
+/*
+ * Function:get/setFOV
+ * gets sets the variable used in
+ * field of view setting
+ * Created: 08_04_2019
+*/
+void _Camera::setFOV(unsigned int fove)
+{
+    this->fov = fove;
+}
+
+unsigned int _Camera::getFOV()
+{
+    return this->fov;
 }

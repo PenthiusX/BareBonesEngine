@@ -18,7 +18,6 @@ _Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 
 }
-
 /*
  * Constructor: _Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from char pointer array with given resolution
@@ -37,7 +36,6 @@ _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorF
     addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
-
 /* Constructor: _Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from QImage
  * Created: 21_02_2019
