@@ -184,6 +184,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
     glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
     glm_model4x4 *= glm::mat4_cast(quat);
 }
+
 /*
 * Function: setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 * sets the camera view for the scene through this matrix
@@ -209,36 +210,36 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
 * Used by: the _glWidget class resizeGL().
 * Created: 25_02_2019
 */
-void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear )
+void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar )
 {
 	// Calculate aspect ratio
-	qreal aspect = qreal(resW) / qreal(resH ? resH : 1);
+    float aspect = float(resW) / float(resH ? resH : 1);
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	glm_projection4x4 = glm::perspective(fov, float(aspect), zNear, zFar);
+    glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
 }
 /*
- * Function: updatePosition/Rotation/Scale/Translate
+ * Function: setPosition/Rotation/Scale/Translate
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.
  * Used by: _render class in draw()
  * Created: 1_03_2019
 */
-void _Renderer::updatePosition(QVector3D pos)
+void _Renderer::setPosition(QVector3D pos)
 {
     glm_model4x4 = glm::mat4(1.f);
     glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
     glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale()));
+    sceneEntity.setPosition(pos);
 }
 void _Renderer::translate(QVector3D pos)
 {
-    this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);
     glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(pos.x(),pos.y(), pos.z()));
+    this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);
 }
 void _Renderer::rotate(QVector3D rot)
 {
-    this->sceneEntity.setRotation(rot);
-    glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(0.f));
-    glm::vec3 EulerAngles(sceneEntity.getRotation().x(),sceneEntity.getRotation().y(),sceneEntity.getRotation().z());
+    this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);
+    glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
     glm::quat quat = glm::quat(EulerAngles);
     glm_model4x4 *= glm::mat4_cast(quat);
 }
@@ -270,7 +271,6 @@ _SceneEntity _Renderer::getSceneEntity()
 {
 	return this->sceneEntity;
 }
-
 /*
  * Function: draw()
  * This is your proprietory draw function 
@@ -279,7 +279,6 @@ _SceneEntity _Renderer::getSceneEntity()
 */
 void _Renderer::_Renderer::draw()
 {
-    //---------------------------------------------------------------------------------
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
@@ -291,7 +290,7 @@ void _Renderer::_Renderer::draw()
     double b = abs(cos(timer.elapsed() * 0.005));
 	glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
     //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
-    for (unsigned int t=0;t<textures.size();t++)
+    for(unsigned int t=0;t<textures.size();t++)
     {
         textures[t].bind();
     }

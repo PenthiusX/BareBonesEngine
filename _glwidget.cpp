@@ -38,6 +38,7 @@ void _GLWidget::initializeGL()
     //
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
+    cam.setFOV(60);
     //
     background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     background_quad.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
@@ -164,8 +165,13 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.1f, 0.0, 0.0));
 
+    if (event->text() == "r" || event->text() == "R")
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+                scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
+
     if (event->text() == "c" || event->text() == "C")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->updatePosition(QVector3D(0.0f, 0.0, 0.0));
+               qDebug() << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().x() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().y() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().z();
 }
