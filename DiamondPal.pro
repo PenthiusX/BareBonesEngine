@@ -21,7 +21,6 @@ HEADERS  += mainwindow.h \
             _camera.h \
             _assetloader.h \
             _texture.h\
-           YaPLY.h \
            IO/_hwdcamera.h \
            IO/_hardwareserial.h \
            IO/_machine.h \

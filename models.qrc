@@ -5,6 +5,7 @@
            <file>models/cone.obj</file>
            <file>models/monkey.obj</file>
            <file>models/sphere.obj</file>
+           <file>models/sphere1.obj</file>
            <file>models/stickman.obj</file>
     </qresource>
 </RCC>

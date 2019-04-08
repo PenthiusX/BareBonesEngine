@@ -68,7 +68,7 @@ void _GLWidget::initializeGL()
     s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setPosition(QVector3D(0.0f, 0.0f, 0.0f));
     s1.setRotation(QVector3D(0.0, 0.0, 0.0));
-    s1.setScale(0.01f);
+    s1.setScale(.09f);
     s1.setModelData(":/models/stickman.obj");
     //
 //    s2.setId(2);
@@ -83,9 +83,9 @@ void _GLWidget::initializeGL()
     scene->addCamera(cam);
     //
     scene->addSceneObject(background_quad);
-    scene->addSceneObject(s);
+//    scene->addSceneObject(s);
     scene->addSceneObject(s1);
-    scene->addSceneObject(s2);
+//    scene->addSceneObject(s2);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -133,6 +133,51 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 }
 /*
+* Function: mouseMoveEvent(QMouseEvent *e)
+* This is a overriden function from the QWidget parent
+* runs each time the mouse is pressed and moved.
+* Created: 5_02_2019
+*/
+void _GLWidget::mouseMoveEvent(QMouseEvent *e)
+{
+    if(e->buttons() == Qt::RightButton){
+          qDebug() << "Only right button";
+    }
+
+    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+        if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+            scene->getSceneObjectsArray()[i]->rotate(QVector3D(diff.y() * 0.0005,diff.x() * 0.0005,0.f));
+}
+/*
+* Function: wheelEvent(QWheelEvent *e)
+* This is a overriden function from the QWidget parent
+* runs each time the mouse wheel is scrolled.
+* Created: 5_02_2019
+*/
+void _GLWidget::wheelEvent(QWheelEvent *e)
+{
+    int numDegrees = e->delta() / 8;
+    int numSteps = numDegrees / 15;
+    if (e->orientation() == Qt::Horizontal){
+        scroolScale = numSteps * 0.05;
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id){
+                scene->getSceneObjectsArray()[i]->scale(scroolScale);
+            }
+        }
+    }
+    else
+    {
+         scroolScale += numSteps * 0.05;
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id){
+                scene->getSceneObjectsArray()[i]->scale(scroolScale);
+            }
+        }
+    }
+}
+/*
 * Function: keyPressEvent(QKeyEvent * event)
 * runns anytime a key is presses and returns which key through the
 * event pointer of QKeyEvent object.
@@ -148,12 +193,12 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
     if (event->text() == "d" || event->text() == "D")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->rotate(QVector3D(-0.1,-0.1f,0.0));
+                scene->getSceneObjectsArray()[i]->rotate(QVector3D(0.0f,-0.1f,0.0));
 
     if (event->text() == "a" || event->text() == "A")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->rotate(QVector3D(0.1, 0.1f, 0.0));
+                scene->getSceneObjectsArray()[i]->rotate(QVector3D(0.f, 0.1f, 0.0));
 
     if (event->text() == "w" || event->text() == "W")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
@@ -167,8 +212,12 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 
     if (event->text() == "r" || event->text() == "R")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+        {
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
+                scene->getSceneObjectsArray()[i]->scale(0.09);
+        }
+
 
     if (event->text() == "c" || event->text() == "C")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
