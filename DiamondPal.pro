@@ -21,6 +21,7 @@ HEADERS  += mainwindow.h \
             _camera.h \
             _assetloader.h \
             _texture.h\
+           YaPLY.h \
            IO/_hwdcamera.h \
            IO/_hardwareserial.h \
            IO/_machine.h \
@@ -28,7 +29,7 @@ HEADERS  += mainwindow.h \
            IO/_avt_camera.h \
            Modules/_marker.h \
            Modules/_scanner.h \
-    _tools.h
+           _tools.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -47,7 +48,7 @@ SOURCES += main.cpp\
            IO/_avt_camera.cpp \
            Modules/_marker.cpp \
            Modules/_scanner.cpp \
-    _tools.cpp
+           _tools.cpp
 
 FORMS    += mainwindow.ui
 

@@ -19,6 +19,7 @@ public:
     std::vector<float> getAssetVertices();
     std::vector<unsigned int> getAssetIndices();
     void objLoader(QString pathToFile);
+    void plyLoader(QString pathToFile);
 
 private:
 std::vector<float> vertices;
