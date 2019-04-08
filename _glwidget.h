@@ -16,8 +16,10 @@ void initializeGL() Q_DECL_OVERRIDE;
 void resizeGL(int w, int h)Q_DECL_OVERRIDE;
 void paintGL()Q_DECL_OVERRIDE;
 //
-void mousePressEvent(QMouseEvent *e) override;
-void mouseReleaseEvent(QMouseEvent *e) override;
+virtual void mousePressEvent(QMouseEvent *e) override;
+virtual void mouseReleaseEvent(QMouseEvent *e) override;
+virtual void mouseMoveEvent(QMouseEvent *e) override;
+virtual void wheelEvent(QWheelEvent *e) override;
 virtual void  keyPressEvent(QKeyEvent *event) override;
 
 private:
@@ -37,8 +39,9 @@ _AssetLoader assetLoader;
 _Camera cam;
  QVector2D mousePressPosition;
 
- //Varible for keyboardCallbakc
+ //Varible for InputCallbackFunctions
  unsigned int id;
+  float scroolScale;
 };
 
 #endif // _GLWIDGET_H

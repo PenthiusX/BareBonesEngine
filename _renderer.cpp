@@ -249,6 +249,7 @@ void _Renderer::rotate(QVector3D rot)
 void _Renderer::scale(float scale)
 {
     this->sceneEntity.setScale(scale);
+     glm_model4x4 = glm::mat4(1.f);
     glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale(), sceneEntity.getScale(), sceneEntity.getScale()));//scale equally on all sides
 }
 /*

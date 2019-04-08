@@ -8,8 +8,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-//
-#include "YaPLY.hpp"
 
 /*
 * Constructor/Distructor:
@@ -83,28 +81,4 @@ void _AssetLoader::objLoader(QString pathToFile)
 		}
 		temp2 = "";
     }
-}
-/*
- * Pending
-*/
-void _AssetLoader::plyLoader(QString pathToFile)
-{
-    QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
-    const char* p = qba;
-    yaply::PlyFile plyFile(p);
-
-        std::cout << "loaded file " << p << ":" << std::endl;
-        for (const auto& el : plyFile.elements_) {
-            std::cout << "element " << el.name << " " << el.nrElements << std::endl;
-            for (const auto& p : el.properties)
-                std::cout << "property " << p->name << std::endl;
-        }
-
-        auto& vertices = plyFile["vertex"];
-        if (vertices.nrElements <= 0) {
-            std::cerr << "could not find vertex attribute in the plyfile" << std::endl;
-//            return EXIT_FAILURE;
-        }
-
-
 }
