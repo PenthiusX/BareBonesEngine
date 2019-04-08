@@ -38,7 +38,7 @@ void _GLWidget::initializeGL()
     //
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
-    cam.setFOV(60);
+    cam.setFOV(30);
     //
     background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     background_quad.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
@@ -58,25 +58,25 @@ void _GLWidget::initializeGL()
                                };
     background_quad.setModelData(vertsV,indiceV);
     //
-//    s.setId(0);
+//    s.setId(1);
 //    s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
 //    s.setPosition(QVector3D(0.0,-0.0f, -0.0));
 //    s.setScale(1.0f);
-//  s.setModelData(":/models/cube.obj");
+//    s.setModelData(":/models/cube.obj");
     //
-    s1.setId(1);
+    s1.setId(0);
     s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setPosition(QVector3D(0.0f, 0.0f, 0.0f));
     s1.setRotation(QVector3D(0.0, 0.0, 0.0));
-    s1.setScale(1.f);
-    s1.setModelData(":/models/sphere.obj");
+    s1.setScale(0.01f);
+    s1.setModelData(":/models/stickman.obj");
     //
 //    s2.setId(2);
 //    s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 //    s2.setPosition(QVector3D(0.0, 0.0f, 2.0));
 //    s2.setRotation(QVector3D(0.0, 0.0, 0.0));
 //    s2.setScale(1.f);
-//  s2.setModelData(":/models/monkey.obj");
+//    s2.setModelData(":/models/monkey.obj");
 //    s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
     //
     scene = new _Scene();
@@ -148,12 +148,12 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
     if (event->text() == "d" || event->text() == "D")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->rotate(QVector3D(0.0,-0.1f,0.0));
+                scene->getSceneObjectsArray()[i]->rotate(QVector3D(-0.1,-0.1f,0.0));
 
     if (event->text() == "a" || event->text() == "A")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->rotate(QVector3D(0.0, 0.1f, 0.0));
+                scene->getSceneObjectsArray()[i]->rotate(QVector3D(0.1, 0.1f, 0.0));
 
     if (event->text() == "w" || event->text() == "W")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)

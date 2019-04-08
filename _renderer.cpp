@@ -25,7 +25,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	timer.start();
 	//
 	glm_projection4x4 = glm::mat4(1.0f);
-	glm_model4x4 = glm::mat4(1.0f);
+    glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
 }
 
@@ -178,11 +178,12 @@ void _Renderer::setTexture(QString pathtoTexture)
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
 {
+    glm_model4x4 = glm::mat4(1.0f);
+    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
     glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
     glm::quat quat = glm::quat(EulerAngles);
-    glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
-    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
     glm_model4x4 *= glm::mat4_cast(quat);
+    glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
 }
 
 /*
@@ -214,7 +215,6 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 {
 	// Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
-	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
     glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
 }
 /*
@@ -238,10 +238,13 @@ void _Renderer::translate(QVector3D pos)
 }
 void _Renderer::rotate(QVector3D rot)
 {
+    //Quat
     this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);
     glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
     glm::quat quat = glm::quat(EulerAngles);
     glm_model4x4 *= glm::mat4_cast(quat);
+    //Euler
+//    glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(45.0f), glm::vec3(rot.x(),rot.y(),rot.z()));
 }
 void _Renderer::scale(float scale)
 {
@@ -278,7 +281,7 @@ _SceneEntity _Renderer::getSceneEntity()
  * Created:11_02_2019
 */
 void _Renderer::_Renderer::draw()
-{
+{ 
     //Using the shader program in the current context
     //can be called once in the init or every frame
     //if the shader is switching between objects
@@ -300,9 +303,9 @@ void _Renderer::_Renderer::draw()
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
 	//sets the values for the MVP matrix in the vertex shader
-	glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
 	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
+    glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
