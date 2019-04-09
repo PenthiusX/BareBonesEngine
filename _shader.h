@@ -19,6 +19,7 @@ public:
     uint getShaderProgram();
     void setFragmentShader(QString fshader);
     void setVertexShader(QString vShader);
+    void setGeometryShader(QString geoS);
     void attachShaders();
     void attachShaders(QString v , QString f);//should be deprecated
     void setChildShader(QString s,unsigned int typ);

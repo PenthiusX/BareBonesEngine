@@ -58,13 +58,11 @@ void _Shader::setVertexShader(QString v)
 */
 void _Shader::attachShaders()
 {
-
     //check for child shaders
     if(child_shaders.size()!=0)
     {
-
         //create Shader Program
-        shaderProgram = glCreateProgram();
+        this->shaderProgram = glCreateProgram();
 
         //attatch child shaders to program
         for (auto const& child_shader : child_shaders)
@@ -104,7 +102,22 @@ void _Shader::attachShaders(QString v,QString f)
     setFragmentShader(f);
     attachShaders();
 }
+/*
+ * Function: attachGeometryShader(QString geoS)
+ * takes in a qrc path to the geometry shader for this
+ * shaderprogram instance
+*/
+void _Shader::setGeometryShader(QString geoS)
+{
+    QByteArray source_utf = geoS.toLocal8Bit(); // get shader source from qrc file
+    const char *shader_src = source_utf.data(); //convert to const char*
 
+    auto geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+    glShaderSource(geometryShader, 1, &shader_src, nullptr);
+    glCompileShader(geometryShader);
+    glAttachShader(this->shaderProgram, geometryShader);
+    glLinkProgram(this->shaderProgram);
+}
 /*
 * Function: getUniformLocation(char* nameOfUniform)
 * returns a uint representing the loaction index of
@@ -168,14 +181,14 @@ unsigned int _Shader::compileShader(QString src, unsigned int typ)
 
     //shader
     shader = glCreateShader(typ);
-    glShaderSource(shader, 1, &shader_src, NULL);
+    glShaderSource(shader, 1, &shader_src, nullptr);
     glCompileShader(shader);
 
     //check for compile success
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if(!success)
     {
-        glGetShaderInfoLog(shader, 512, NULL, infoLog);
+        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
         std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
     }
     return shader;

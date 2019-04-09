@@ -15,6 +15,9 @@
  */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRONT_AND_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -244,7 +247,7 @@ void _Renderer::rotate(QVector3D rot)
     glm::quat quat = glm::quat(EulerAngles);
     glm_model4x4 *= glm::mat4_cast(quat);
     //Euler
-//    glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(45.0f), glm::vec3(rot.x(),rot.y(),rot.z()));
+//  glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(45.0f), glm::vec3(rot.x(),rot.y(),rot.z()));
 }
 void _Renderer::scale(float scale)
 {
