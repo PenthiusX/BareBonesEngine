@@ -91,7 +91,7 @@ void _Scene::onResize(int w,int h)
 {
     for (unsigned int i = 0; i < renderObjects.size(); i++)
 	{
-        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
+       renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
 	}
 }
 /*
