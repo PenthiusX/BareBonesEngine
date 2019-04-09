@@ -160,7 +160,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
     if (e->orientation() == Qt::Horizontal){
-        scroolScale = numSteps * 0.05;
+        scroolScale = numSteps * 0.005;
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id){
                 scene->getSceneObjectsArray()[i]->scale(scroolScale);
@@ -169,7 +169,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     }
     else
     {
-         scroolScale += numSteps * 0.05;
+         scroolScale += numSteps * 0.005;
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id){
                 scene->getSceneObjectsArray()[i]->scale(scroolScale);
