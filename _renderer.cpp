@@ -99,6 +99,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->viewUniform  = shdr->getUniformLocation("view");  
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
+
 /*
  * Function: setupTexture()
  * Contributor : Saurabh
@@ -239,6 +240,16 @@ void _Renderer::translate(QVector3D pos)
     glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(pos.x(),pos.y(), pos.z()));
     this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);
 }
+/*
+*/
+void _Renderer::setRotation(QVector3D rot)
+{
+	glm_model4x4 = glm::mat4x4(1.f);
+	this->sceneEntity.setRotation(rot);
+	glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
+	glm::quat quat = glm::quat(EulerAngles);
+	glm_model4x4 *= glm::mat4_cast(quat);
+}
 void _Renderer::rotate(QVector3D rot)
 {
     //Quat
@@ -249,11 +260,16 @@ void _Renderer::rotate(QVector3D rot)
     //Euler
 //  glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(45.0f), glm::vec3(rot.x(),rot.y(),rot.z()));
 }
+void _Renderer::setscale(float scale)
+{
+	glm_model4x4 = glm::mat4(1.f);
+	this->sceneEntity.setScale(scale);
+	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
+}
 void _Renderer::scale(float scale)
 {
-    glm_model4x4 = glm::mat4(1.f);
-    this->sceneEntity.setScale(scale);
-    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale(), sceneEntity.getScale(), sceneEntity.getScale()));//scale equally on all sides
+	this->sceneEntity.setScale(sceneEntity.getScale() + scale);
+	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)

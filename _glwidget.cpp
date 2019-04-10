@@ -1,5 +1,6 @@
 #include <iostream>
 #include "_glwidget.h"
+#include "_tools.h"
 
 /*
  * The _GLWidget Class:
@@ -144,6 +145,12 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
           qDebug() << "Only right button";
     }
 
+    QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
+    if(e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y())
+    {
+        mousePressPosition = maxpoint;
+    }
+
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
         if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
@@ -159,20 +166,25 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 {
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
-    if (e->orientation() == Qt::Horizontal){
+    if (e->orientation() == Qt::Horizontal)
+	{
         scroolScale = numSteps * 0.005;
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id){
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+		{
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
                 scene->getSceneObjectsArray()[i]->scale(scroolScale);
-            }
         }
     }
     else
     {
-         scroolScale += numSteps * 0.005;
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id){
-                scene->getSceneObjectsArray()[i]->scale(scroolScale);
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+		{
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+			{
+				scroolScale = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
+                scene->getSceneObjectsArray()[i]->setscale(scroolScale);
+				//float a = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale();
+				//a = 0;
             }
         }
     }
@@ -216,13 +228,12 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
 			{
 				scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
-				scene->getSceneObjectsArray()[i]->scale(0.1);
+				//scene->getSceneObjectsArray()[i]->setscale(0.1);
 			}
         }
-
 
     if (event->text() == "c" || event->text() == "C")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-               qDebug() << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().x() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().y() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().z();
+               qDebug() << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().x() << "_" << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().y() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().z();
 }

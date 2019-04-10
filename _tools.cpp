@@ -27,3 +27,18 @@ QString _Tools::ReadStringFromQrc(QString Filename)
         mFile.close();
         return mText;
 }
+
+QVector2D _Tools::retunrnMaxPoint(QVector2D mousepos)
+{
+    QVector2D max;
+    if(mousepos.x() > max.x())
+    {
+        max.setX(max.x());
+    }
+    if(mousepos.y() > max.y())
+    {
+         max.setY(max.y());
+    }
+
+    return max;
+}

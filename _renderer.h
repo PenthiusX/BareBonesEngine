@@ -47,8 +47,10 @@ public:
     //
     void setPosition(QVector3D pos);
     void translate(QVector3D pos);
+	void setRotation(QVector3D rot);
     void rotate(QVector3D rot);
-    void scale(float scale);
+    void setscale(float scale);
+	void scale(float scale);
     //
     void setSceneEntityInRenderer(_SceneEntity s);//
     _SceneEntity getSceneEntity();//
@@ -62,7 +64,7 @@ private:
     //Shader class object sets the shaders and passes the program to the current context
     _Shader* shdr;
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
-    glm::mat4 glm_model4x4;
+    glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix;
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
     //Stores the uniform location allocated in the shader
