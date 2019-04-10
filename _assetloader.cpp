@@ -71,7 +71,7 @@ void _AssetLoader::objLoader(QString pathToFile)
 	std::string ai = objData.substr(objData.find("f ") + 1);
 	std::stringstream ss;
 	ss << ai;
-	int foundi;
+    unsigned int foundi;
 	while (!ss.eof()) 
 	{
 		ss >> temp2;
