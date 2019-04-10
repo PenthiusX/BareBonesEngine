@@ -13,11 +13,15 @@ _HWDCamera::_HWDCamera(QJsonObject cnfg) : config(cnfg)
     qDebug() <<"fallback camera contructor";
 
 }
+
+_HWDCamera::~_HWDCamera()
+{
+    stop_camera();
+}
 int _HWDCamera::init(int v)
 {
-    byteframe = new char[1392640];
+    byteframe = new char[Width*Height];
     image_header = new char[17];
-
     return 0;
 }
 
@@ -49,7 +53,7 @@ int _HWDCamera::grab_frame(QString filename)
     }
 
     fread(image_header, 17, 1, imagefile);
-    fread(byteframe, 1360*1024, 1, imagefile);
+    fread(byteframe, Width*Height, 1, imagefile);
     fclose(imagefile);
 
     qDebug() << "opened avt: " << filename;
@@ -60,6 +64,16 @@ void _HWDCamera::set_image_dir(QString dir)
 {
     qDebug() << "setting image dir";
     images_dir = dir+"/";
+}
+
+int _HWDCamera::getWidth() const
+{
+    return Width;
+}
+
+int _HWDCamera::getHeight() const
+{
+    return Height;
 }
 
 int _HWDCamera::select_camera(int v)

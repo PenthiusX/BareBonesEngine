@@ -4,11 +4,15 @@
 #include <QString>
 #include <QJsonObject>
 
+#define MAX_FRAME_WIDTH 1360
+#define MAX_FRAME_HEIGHT 1024
+
 class _HWDCamera
 {
 public:
     _HWDCamera();
     _HWDCamera(QJsonObject cnfg);
+    virtual ~_HWDCamera();
     virtual int init(int v); //initialize camera
     virtual char* get_frame(); //return frame
     virtual int stop_camera(); //
@@ -17,9 +21,14 @@ public:
     virtual void set_image_dir(QString);
 
 
+    int getWidth() const;
+    int getHeight() const;
+
 protected:
     char *byteframe = nullptr;
     char *image_header = nullptr;
+    int Width = MAX_FRAME_WIDTH;
+    int Height = MAX_FRAME_HEIGHT;
     FILE* imagefile;
     QString images_dir;
 
