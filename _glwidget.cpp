@@ -88,7 +88,7 @@ void _GLWidget::initializeGL()
 
     background_quad.setModelData(vertsV,indiceV);
     //background_quad.setModelData(":/models/monkey.obj");
-    background_quad.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
+    //background_quad.setTexturePath(":textures/eye.png");//do not set texture from file since format mismatch will occur
 
 	scene = new _Scene();
 	scene->addCamera(cam);
@@ -181,6 +181,31 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 
 void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h)
 {
+    static bool present = false;
+    static _Renderer *render_object =nullptr;
     qDebug() << "updating background";
     //update background image here
+    qDebug() << "back ground quad id" << background_quad.getId();
+    for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+    {
+        render_object = scene->getSceneObjectsArray()[i];
+
+        if (render_object->getSceneEntity().getId() == background_quad.getId())
+        {
+            //make context active
+            makeCurrent();
+
+            if(present){
+                qDebug() << "setting predined texture";
+                render_object->setTexture(img,w,h);
+            }
+            else {
+                qDebug() << "setting up new texture";
+                render_object->setupTexture(img,w,h,GL_RED);
+                present = true;
+            }
+
+            doneCurrent();
+        }
+    }
 }

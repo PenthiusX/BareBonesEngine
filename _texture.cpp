@@ -196,9 +196,8 @@ void _Texture::load( GLenum format, GLenum datatype)
     {
         glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
     }
-
-
         color_format = format;
+        qDebug() << "setting image in load" << GL_RED << color_format;
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
 
         //glGenerateMipmap(GL_TEXTURE_2D);

@@ -92,19 +92,18 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 	this->projectionUniform = shdr->getUniformLocation("projection");
 }
 /*
- * Function: setupTexture()
+ * Function: setupTexture(char* img,unsigned int width,unsigned int height,GLenum format=GL_RED)
  * Created: 28_3_2019
  * Contributor : saurabh
  * creates new texture and adds into list(vector) of textures
  * current context should be active while calling these functions
  * use makeCurrent() to make context current
- * set a default 8bit single color texture of size 1360 x 1024
+ * set a 8bit single color texture of size width x height
  */
-void _Renderer::setupTexture()
+void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GLenum format)
 {
-    char* img = new char[1360*1024];
-    _Texture texture(img,1360,1024);
-    texture.load(GL_RED,GL_UNSIGNED_BYTE);
+    _Texture texture(img,width,height);
+    texture.load(format,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
 }
 
@@ -149,6 +148,11 @@ void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int ihei
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap,iwidth,iheight);
+}
+
+bool _Renderer::isTexturePresent()
+{
+    return !textures.empty();
 }
 
 /*
@@ -311,5 +315,6 @@ void _Renderer::_Renderer::draw()
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
+
 }
 

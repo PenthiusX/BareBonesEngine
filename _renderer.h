@@ -35,10 +35,11 @@ public:
     //setting image of existing texture, current context should be active while calling these functions, use makeCurrent() to make context current
     void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object
-    void setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight);////takes am image and binds it to object\
+    void setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight);////takes am image and binds it to object
+    bool isTexturePresent();
 
-    //generating new texture from texfile path or default , context should be active to call tese function
-    void setupTexture();//takes am image and binds it to object
+    //generating new texture from texfile path or img data pointer, context should be active to call tese function
+    void setupTexture(char *img, unsigned int width, unsigned int height, GLenum format = GL_RED);//takes am image and binds it to object
     void setupTexture(QString texfile); //initializes texture from file
 
     void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix
@@ -52,6 +53,7 @@ public:
     _SceneEntity getSceneEntity();//
 
     void draw();//Draws everything bound in the scene
+
 
 private:
     unsigned int VBO;//vertex buffer object
