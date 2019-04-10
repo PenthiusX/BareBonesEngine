@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>851</width>
-    <height>470</height>
+    <width>847</width>
+    <height>486</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -113,6 +113,9 @@
         <property name="text">
          <string>Laser ZUp</string>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="0" column="4">
@@ -131,8 +134,15 @@
       </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="vaccum_on">
+        <property name="styleSheet">
+         <string notr="true">QPushButton{color:yellow;}
+    QPushButton:checked{color:green;}</string>
+        </property>
         <property name="text">
          <string>vaccum On</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

@@ -81,6 +81,23 @@ void _Scanner::init()
         //checking if gl context is working
         qDebug() << QString::fromUtf8((char*)glGetString(GL_VERSION));
 
+        //GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS
+
+                int workGroupSizes[3] = { 0 };
+                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &workGroupSizes[0]);
+                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &workGroupSizes[1]);
+                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &workGroupSizes[2]);
+                int workGroupCounts[3] = { 0 };
+                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &workGroupCounts[0]);
+                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &workGroupCounts[1]);
+                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &workGroupCounts[2]);
+                int max_compute_workgroup_invocations;
+                glGetIntegeri(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS,&max_compute_workgroup_invocations);
+
+        qDebug()<< "workGroupSizes" << workGroupSizes[0] << " " << workGroupSizes[1]<< " " << workGroupSizes[2];
+        qDebug()<< "workGroupCounts" << workGroupCounts[0] << " " << workGroupCounts[1]<< " " << workGroupCounts[2];
+        qDebug()<< "max_compute_workgroup_invocations" << max_compute_workgroup_invocations;
+
     }
 }
 

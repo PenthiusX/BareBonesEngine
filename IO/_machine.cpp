@@ -280,8 +280,8 @@ void _Machine::set_hardware_serial()
 void _Machine::set_hardware_serial(QJsonObject hardware_config)
 {
     //send the nested config objects to necessary hardware objects (should be used by nested objects afterwards)
-    //QJsonObject serial_config = hardware_config["Communication"].toObject()["RS232"].toObject();
-    //QJsonObject command_config = hardware_config["Commands"].toObject();
+    QJsonObject serial_config = hardware_config["Communication"].toObject()["RS232"].toObject();
+    QJsonObject command_config = hardware_config["Commands"].toObject();
 
 
     //list serial ports and check if returns machine

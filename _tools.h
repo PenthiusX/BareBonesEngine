@@ -10,6 +10,7 @@ public:
     _Tools();
     static QString ReadStringFromQrc(QString Filename);
     static QJsonObject ReadJsonFromQrc(QString Filename);
+    static void SaveImageToPgm(char *img, unsigned int rttWidth, unsigned int rttHeight, QString filename);
 };
 
 

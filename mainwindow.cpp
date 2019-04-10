@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //setup hardware interacting obejcts
     //machine to be intialised first
 
-    machine = new _Machine();
+    machine = new _Machine(":/Config/configuration.json");
     machine->moveToThread(hardwareInteractionThread);
 
     marker = new _Marker(machine);

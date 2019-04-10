@@ -13,10 +13,11 @@ _ConfigControlEntity::_ConfigControlEntity(QJsonObject cnfg)
 
 bool _ConfigControlEntity::loadFromJson(QJsonObject cnfg)
 {
-
+    return true;
 }
 
 QJsonObject _ConfigControlEntity::toJson()
 {
-
+    QJsonObject ret;
+    return ret;
 }
