@@ -26,6 +26,7 @@ public:
     void useShaderProgram();
     uint getUniformLocation(const char *nameOfUniform);
 
+
 //    struct Child_Shader
 //    {
 //        unsigned int type;

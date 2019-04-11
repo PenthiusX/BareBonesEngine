@@ -61,7 +61,7 @@ void _GLWidget::initializeGL()
     s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
 
 
-    background_quad.setId(3);
+    background_quad.setId(3);//keep the id it will be required while updating texture
     background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
@@ -179,13 +179,19 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
                 scene->getSceneObjectsArray()[i]->updateTrasformations(QVector3D(-0.1f, 0.0, 0.0));
 }
 
+
+/* Function : update_background_image(char *img, unsigned int w, unsigned int h)
+ * upadtes the texture when new camera image is grabbed or saved image is to be displayed
+ * to upadte the texture image 8 bit grayscale image is required hence do not set the texure
+ * while creating scenentity else color format mismatch will occur between GL_RGBA and GL_RED
+ * since default texture format is GL_RGBA
+ *
+ * created: 11_04_2019
+ * Contributor : Saurabh
+*/
 void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h)
 {
-    static bool present = false;
     static _Renderer *render_object =nullptr;
-    qDebug() << "updating background";
-    //update background image here
-    qDebug() << "back ground quad id" << background_quad.getId();
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
     {
         render_object = scene->getSceneObjectsArray()[i];
@@ -195,14 +201,13 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
             //make context active
             makeCurrent();
 
-            if(present){
-                qDebug() << "setting predined texture";
+            if(render_object->isTexturePresent()){
+                //updating predefined texture
                 render_object->setTexture(img,w,h);
             }
             else {
-                qDebug() << "setting up new texture";
+                //setting up new 8 bit grayscale GL_RED texture for firs time
                 render_object->setupTexture(img,w,h,GL_RED);
-                present = true;
             }
 
             doneCurrent();

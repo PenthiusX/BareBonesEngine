@@ -257,8 +257,10 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
 	this->sceneEntity = s;	
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
-    //
-    setupTexture(s.getTexturePath());
+
+    if(s.getTexturePath()!="")//set texture only if it is mentioned in the scenentity
+            setupTexture(s.getTexturePath());
+
     //setupTexture should load initial texture from image file path
     //use setTexture function only to update image
     //setTexture(s.getTexturePath());
@@ -296,7 +298,7 @@ void _Renderer::_Renderer::draw()
 	shdr->useShaderProgram();
     //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
     for (unsigned int t=0;t<textures.size();t++){
-        textures[t].bind();
+        textures[t].bind();//bug:if last objects texture is not unbind it is getting used in the next object
     }
     //Bind the Buffers data of the respective buffer object
     //in the context each frame.
@@ -315,6 +317,12 @@ void _Renderer::_Renderer::draw()
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
+
+
+    //unbinding is necessary otherwise last object's data will interfere in the next object
+    for (unsigned int t=0;t<textures.size();t++){
+        textures[t].unbind();//if last objects texture is not unbind it is getting used in the next object
+    }
 
 }
 
