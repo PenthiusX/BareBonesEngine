@@ -49,7 +49,6 @@ _Texture::~_Texture()
 */
 _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    qDebug() << "tex contruct";
     image = (char*)img.bits();
 
     width = img.width();
@@ -70,12 +69,10 @@ void _Texture::setImage(QString pathtoTexture)
 {
     QImage img = QImage(pathtoTexture);
 
-    qDebug() << "tex contruct";
-
     image = (char*)img.bits();
     width = img.width();
     height = img.height();
-    qDebug() << "setting image" << GL_RED << color_format;
+    //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
 
@@ -90,7 +87,7 @@ void _Texture::setImage(QImage& img)
     image = (char*)img.bits();
     width = img.width();
     height = img.height();
-    qDebug() << "setting image" << GL_RED << color_format;
+    //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
 }
@@ -101,7 +98,7 @@ void _Texture::setImage(QImage& img)
 void _Texture::setImage(char* img)
 {
     image = img;
-    qDebug() << "setting image" << GL_RED << color_format;
+    //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
 
@@ -181,13 +178,9 @@ void _Texture::addParameter(unsigned int pname, unsigned int param)
 */
 void _Texture::load( GLenum format, GLenum datatype)
 {
-    qDebug() << "tex load";
-
     if(m_ID==0){
-        qDebug() << "tex gen b" << m_ID;
         unsigned int t;
         glGenTextures(1,&m_ID);
-        qDebug() << "tex gen" << m_ID;
     }
 
     bind();
@@ -197,7 +190,7 @@ void _Texture::load( GLenum format, GLenum datatype)
         glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
     }
         color_format = format;
-        qDebug() << "setting image in load" << GL_RED << color_format;
+        //qDebug() << "setting image in load" << GL_RED << color_format;
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
 
         //glGenerateMipmap(GL_TEXTURE_2D);

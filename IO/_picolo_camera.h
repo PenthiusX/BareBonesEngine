@@ -39,14 +39,19 @@ public:
     int grab_frame();
     int grab_frame(QString filename);
 
-public:
+    void setBrightness(int value);
+    void setGain(int value);
+    void setExposure(int value);
+    void setContrast(int value);
+    void setOffset(int value);
+
+protected:
     MCHANDLE_1 m_Channel;
     int m_BufferPitch;
     static void* Drv_Img_Ptr;
     static volatile int failed_grab;
     static volatile int m_bChannelActive;
 
-    FILE* imagefile;
 
 };
 

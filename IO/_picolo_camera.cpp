@@ -5,6 +5,7 @@
 #define EURESYS_SURFACE_COUNT 3
 #define filename2 "image.pgm"
 #include <multicam.h>
+#include <_tools.h>
 
 PVOID _Picolo_Camera::Drv_Img_Ptr = nullptr;
 volatile BOOL _Picolo_Camera::failed_grab = FALSE;
@@ -34,6 +35,7 @@ _Picolo_Camera::~_Picolo_Camera()
 {
     qDebug() << "inside destructor";
     stop_camera();
+    delete Drv_Img_Ptr;
 }
 
 int _Picolo_Camera::init(int v)
@@ -86,7 +88,7 @@ int _Picolo_Camera::init(int v)
 
     McSetParamInt(m_Channel, MC_ChannelState, MC_ChannelState_ACTIVE);
 
-    qDebug() << "img resolution" << Width <<" " << Height;
+    //qDebug() << "img resolution" << Width <<" " << Height;
 
     byteframe = new char[Width*Height];
 
@@ -122,7 +124,7 @@ int _Picolo_Camera::stop_camera()
  * Static callback functions which is called by camera driver when new camera frame is grabbed
  * new frame is grabbed 25 times per second in loop by driver
  * this function stores the pointer to image data in static variable Drv_Img_Ptr when new frame grabbed
- * image data is in fromat R8_G8_B8 bits as a 3 byte per pixel
+ * image data is in fromat R8 bits as a 1 byte per pixel
 */
 void _Picolo_Camera::callbackfunc(PMCSIGNALINFO_1 SigInfo)
 {
@@ -132,15 +134,7 @@ void _Picolo_Camera::callbackfunc(PMCSIGNALINFO_1 SigInfo)
             // Update "current" surface address pointer
             McGetParamInt (SigInfo->SignalInfo, MC_SurfaceAddr, (PINT32) &Drv_Img_Ptr);
 
-            qDebug() << "pointer" << Drv_Img_Ptr;
-
-            //----------------------------------------
-            //
-            // Insert the eVision code here.
-            //
-            //----------------------------------------
-
-            // Post screen refresh message only if previous refresh completed
+            //qDebug() << "pointer" << Drv_Img_Ptr;
 
             //_Tools::SaveImage(Drv_Img_Ptr,768,576,3,"picolo_grabbed_frame.pgm");
 
@@ -158,9 +152,13 @@ void _Picolo_Camera::callbackfunc(PMCSIGNALINFO_1 SigInfo)
             break;
 
     }
-    qDebug() << "callbackfunc";
 }
 
+/* Function : list_cameras()
+ * since the picolo driver library does not provide a way to count number of cameras
+ * we have to connect to a camera and check if a frame is recieved succesfully
+ * Created : 10_04_2019
+*/
 int _Picolo_Camera::list_cameras()
 {
     //check if first frame recieved succesfully
@@ -179,6 +177,11 @@ int _Picolo_Camera::grab_frame(){
     return grab_frame(filename2);
 }
 
+/* Function grab_frame(QString filename)
+ * Capture frame from camera and store inside given file name
+ *
+ * Created: 10_04_2019
+ */
 int _Picolo_Camera::grab_frame(QString filename)
 {
     if(!Drv_Img_Ptr) return 0; //no frame grabbed uptil now
@@ -188,21 +191,7 @@ int _Picolo_Camera::grab_frame(QString filename)
     if (!failed_grab){
 
         memcpy(byteframe,Drv_Img_Ptr,Width*Height);
-
-        //printf("Frame received (%02X %02X %02X %02X ...)\n",Frame.pData[0], Frame.pData[1], Frame.pData[2], Frame.pData[3]);
-
-        //save image
-        imagefile=fopen(filename.toLocal8Bit(), "wb");
-
-        if( imagefile == NULL) {
-            qDebug() << "Can't create:" << filename;
-        }
-        fprintf(imagefile,"P5\n%u %u 255\n", Width,Height);
-        fwrite(byteframe, 1, Width*Height, imagefile);
-        //QImage(Drv_Img_Ptr,768, int height, QImage::Format format)
-        fclose(imagefile);
-
-        qDebug() << "wrote avt: " << filename;
+        _Tools::SaveImageToPgm(byteframe,Width,Height,filename);
     }
     else {
         qDebug() <<"failed: grab frame";
@@ -210,5 +199,30 @@ int _Picolo_Camera::grab_frame(QString filename)
     }
 
     return 1;
+}
+
+void _Picolo_Camera::setBrightness(int value)
+{
+    //McSetParamInt(m_Channel, MC_Brightness, value);
+}
+
+void _Picolo_Camera::setGain(int value)
+{
+    //McSetParamInt(m_Channel, MC_BEC_Gain_Y, value);
+}
+
+void _Picolo_Camera::setExposure(int value)
+{
+    //McSetParamInt(m_Channel, MC_Exposure, value);
+}
+
+void _Picolo_Camera::setContrast(int value)
+{
+    //McSetParamInt(m_Channel, MC__Contrast, value);
+}
+
+void _Picolo_Camera::setOffset(int value)
+{
+    //McSetParamInt(m_Channel, MC_BEC_Offset_Y, value);
 }
 

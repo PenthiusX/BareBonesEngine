@@ -44,6 +44,10 @@ int _DC_1394_Camera::init(int v)
     err=dc1394_video_set_transmission(camera, DC1394_ON);
     DC1394_ERR_CLN_RTN(err,cleanup_and_exit(camera),"Could not start camera iso transmission");
 
+
+    dc1394_get_image_size_from_video_mode(camera, video_mode, &Width, &Height);
+
+    byteframe = new char[Width*Height];
     return success;
 }
 
@@ -73,20 +77,9 @@ int _DC_1394_Camera::grab_frame(QString filename)
     if( dc1394_capture_is_frame_corrupt( camera, frame) )
     printf("\n[DEBUG] frame is corrupt!\n");
 
-    //save image as 'Image.pgm'
-    imagefile=fopen(filename.toLocal8Bit(), "wb");
+    memcpy(byteframe,frame->image,Width*Height);
 
-    if( imagefile == NULL) {
-        qDebug() << "Can't create:" << filename;
-        cleanup_and_exit(camera);
-    }
-
-    dc1394_get_image_size_from_video_mode(camera, video_mode, &width, &height);
-    fprintf(imagefile,"P5\n%u %u 255\n", width, height);
-    fwrite(frame->image, 1, height*width, imagefile);
-    fclose(imagefile);
-
-    qDebug() << "wrote: " << filename;
+    _Tools::SaveImageToPgm(byteframe,Width,Height,filename);
 
     //Give back frame to queue
     dc1394_capture_enqueue(camera,frame);

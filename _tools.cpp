@@ -49,7 +49,7 @@ QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
 
 void _Tools::SaveImageToPgm(char* img,unsigned int rttWidth, unsigned int rttHeight, QString filename)
 {
-    FILE* imagefile;
+    static FILE* imagefile;
     //For saving processed image
             imagefile=fopen(filename.toLocal8Bit(), "wb");
 
@@ -61,4 +61,6 @@ void _Tools::SaveImageToPgm(char* img,unsigned int rttWidth, unsigned int rttHei
             fclose(imagefile);
 
     qDebug() << "wrote: " << filename;
+    //delete imagefile;
+    //deleting file pointer is giving error
 }

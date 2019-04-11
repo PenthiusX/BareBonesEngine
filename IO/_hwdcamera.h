@@ -20,6 +20,10 @@ public:
     virtual int grab_frame(QString filename);
     virtual void set_image_dir(QString);
 
+    virtual void setBrightness(int value);
+    virtual void setGain(int value);
+    virtual void setExposure(int value);
+    virtual void setContrast(int value);
 
     int getWidth() const;
     int getHeight() const;

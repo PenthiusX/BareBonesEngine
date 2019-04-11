@@ -5,13 +5,11 @@
 _HWDCamera::_HWDCamera()
 {
     qDebug() <<"fallback camera contructor";
-
 }
 
 _HWDCamera::_HWDCamera(QJsonObject cnfg) : config(cnfg)
 {
     qDebug() <<"fallback camera contructor";
-
 }
 
 _HWDCamera::~_HWDCamera()
@@ -62,8 +60,27 @@ int _HWDCamera::grab_frame(QString filename)
 
 void _HWDCamera::set_image_dir(QString dir)
 {
-    qDebug() << "setting image dir";
     images_dir = dir+"/";
+}
+
+void _HWDCamera::setBrightness(int value)
+{
+
+}
+
+void _HWDCamera::setGain(int value)
+{
+
+}
+
+void _HWDCamera::setExposure(int value)
+{
+
+}
+
+void _HWDCamera::setContrast(int value)
+{
+
 }
 
 int _HWDCamera::getWidth() const

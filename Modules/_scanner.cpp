@@ -71,7 +71,7 @@ void _Scanner::init()
     else {
         //make context active
         bool success = context->makeCurrent(surface);
-        qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
+        //qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
         initializeOpenGLFunctions();
 
@@ -79,6 +79,7 @@ void _Scanner::init()
         gpu_compute = new _GPU_Compute();//should be created when context is active
 
         //checking if gl context is working
+
         qDebug() << QString::fromUtf8((char*)glGetString(GL_VERSION));
 
         //GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS
