@@ -10,6 +10,7 @@
 #include <_tools.h>
 #include <IO/_avt_camera.h>
 #include <IO/_dc_1394_camera.h>
+#include <IO/_picolo_camera.h>
 
 
 /*
@@ -44,6 +45,12 @@ _Machine::_Machine()
 _Machine::_Machine(QString json_file) : config(_Tools::ReadJsonFromQrc(json_file))
 {
 
+}
+
+_Machine::~_Machine()
+{
+    delete camera;
+    delete hardware_serial;
 }
 
 // ------------ command functions ----------
@@ -126,7 +133,7 @@ void _Machine::BackLight(int intensity)
 void _Machine::GrabFrame(QString filename)
 {
     camera->grab_frame(filename);
-    emit cameraFrameReturned(camera->get_frame(),1360,1024);
+    emit cameraFrameReturned(camera->get_frame(),camera->getWidth(),camera->getHeight());
 }
 
 /* Set Marking Laser intensity and switch on/off
@@ -208,23 +215,34 @@ void _Machine::set_camera()
     camera = new _HWDCamera();
 
 #ifdef PLATFORM_LINUX
+    delete camera;
     camera = new _DC_1394_Camera();
 
     if(camera->list_cameras()==0)
     {
         //base camera if no dc1394 camera found
-        camera = new _Camera();
+        camera = new _HWDCamera();
     }
 #endif //PLATFORM_LINUX
 
 #ifdef PLATFORM_WIN
 
     //
+    delete camera;
     camera = new _AVT_Camera();
 
     if(camera->init(0)==0)
     {
         //base camera if no special camera found
+        camera = new _HWDCamera();
+    }
+
+    delete camera;
+    camera = new _Picolo_Camera();
+
+    if(camera->list_cameras()==0)
+    {
+        //base camera if no dc1394 camera found
         camera = new _HWDCamera();
     }
 

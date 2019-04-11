@@ -19,7 +19,8 @@
 */
 _AVT_Camera::_AVT_Camera() : _HWDCamera()
 {
-
+    Width = 1360;
+    Height = 1024;
 }
 
 
@@ -157,7 +158,7 @@ int _AVT_Camera::grab_frame(QString filename){
         }
 
         qDebug() << Frame.Length <<"\n";
-        fprintf(imagefile,"P5\n%u %u 255\n", 1360, 1024);
+        fprintf(imagefile,"P5\n%u %u 255\n", Width, Height);
         fwrite(&Frame.pData[0], 1, Frame.Length, imagefile);
         fclose(imagefile);
 

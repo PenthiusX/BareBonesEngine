@@ -22,6 +22,7 @@ class _Machine :public QObject
 public:
     _Machine(); //constructor initializes camera and hradware_serial
     _Machine(QString json_file);
+    ~_Machine();
 
     void set_hardware_serial_defaults(); //setup commands
     void set_camera();

@@ -116,7 +116,7 @@ void _Scanner::scan_save_images()
         machine->GrabFrame(QString("scan_image_stage_%1").arg(t));
 
         //send the grabbed frame to gui widget for display
-        emit set_image(machine->camera->get_frame(),1360,1024);
+        emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
     }
 }
 
@@ -133,15 +133,12 @@ void _Scanner::scan_generate_model()
 
     //FILE* imagefile;
 
-    unsigned int rttWidth = 1360;
-    unsigned int rttHeight = 1024;
-
-    char *colours=new char[rttWidth*rttHeight];
+    char *colours=new char[machine->camera->getWidth()*machine->camera->getHeight()];
 
     //initialise empty textures for processing
-    static _Texture texture(0,rttWidth,rttHeight);
-    static _Texture texture_out(0,rttWidth,rttHeight);
-    static _Texture texture_outt(0,rttWidth,rttHeight);
+    static _Texture texture(nullptr,machine->camera->getWidth(),machine->camera->getHeight());
+    static _Texture texture_out(nullptr,machine->camera->getWidth(),machine->camera->getHeight());
+    static _Texture texture_outt(nullptr,machine->camera->getWidth(),machine->camera->getHeight());
 
     unsigned int framebuffer;
 
@@ -160,7 +157,7 @@ void _Scanner::scan_generate_model()
 
     glGenRenderbuffers(1,&renderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,rttWidth, rttHeight);
+    glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,machine->camera->getWidth(), machine->camera->getHeight());
     glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
 
 
@@ -177,12 +174,12 @@ void _Scanner::scan_generate_model()
         machine->GrabFrame(filename);
 
         //send the grabbed frame to gui widget for display
-        //emit set_image(machine->camera->get_frame(),1360,1024);
+        //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
         //Do the Processing
 
         //send the image to gpu texture
-        texture.setImage(machine->camera->get_frame(),1360,1024);
+        texture.setImage(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
         //compute operation(edge detection currently)
         //gpu_compute->compute_sobel_edge(texture,texture_out);
@@ -193,13 +190,13 @@ void _Scanner::scan_generate_model()
         texture_out.bindForFramebuffer();
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, rttWidth, rttHeight);
+        glViewport(0, 0, machine->camera->getWidth(), machine->camera->getHeight());
 
         //get image from gpu texture
-        glReadPixels(0, 0, rttWidth, rttHeight,GL_RED, GL_UNSIGNED_BYTE,colours);
+        glReadPixels(0, 0, machine->camera->getWidth(), machine->camera->getHeight(),GL_RED, GL_UNSIGNED_BYTE,colours);
 
         //send signal to update display texture
-        emit set_image(colours,1360,1024);
+        emit set_image(colours,machine->camera->getWidth(),machine->camera->getHeight());
 
         //For saving processed image
 //        imagefile=fopen(filename.toLocal8Bit(), "wb");
@@ -207,8 +204,8 @@ void _Scanner::scan_generate_model()
 //        if( imagefile == NULL) {
 //            qDebug() << "Can't create:" << filename;
 //        }
-//        fprintf(imagefile,"P5\n%u %u 255\n", rttWidth, rttHeight);
-//        fwrite(colours, 1, rttWidth*rttHeight, imagefile);
+//        fprintf(imagefile,"P5\n%u %u 255\n", machine->camera->getWidth(), machine->camera->getHeight());
+//        fwrite(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), imagefile);
 //        fclose(imagefile);
 
         //qDebug() << "wrote: " << filename;

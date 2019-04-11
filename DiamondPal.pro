@@ -30,7 +30,8 @@ HEADERS  += mainwindow.h \
            Modules/_scanner.h \
     _tools.h \
     Compute/_gpu_compute.h \
-    IO/_configcontrolentity.h
+    IO/_configcontrolentity.h \
+    IO/_picolo_camera.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -51,7 +52,8 @@ SOURCES += main.cpp\
            Modules/_scanner.cpp \
     _tools.cpp \
     Compute/_gpu_compute.cpp \
-    IO/_configcontrolentity.cpp
+    IO/_configcontrolentity.cpp \
+    IO/_picolo_camera.cpp
 
 FORMS    += mainwindow.ui
 
@@ -84,3 +86,8 @@ DISTFILES +=
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
 
+
+win32: LIBS += -L$$PWD/Dependancies/win/Picolo/Lib/amd64/ -lMultiCam
+
+INCLUDEPATH += $$PWD/Dependancies/win/Picolo/Include
+DEPENDPATH += $$PWD/Dependancies/win/Picolo/Include
