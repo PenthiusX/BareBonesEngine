@@ -174,7 +174,8 @@ void _Texture::addParameter(unsigned int pname, unsigned int param)
 void _Texture::load( GLenum format, GLenum datatype)
 {
     qDebug() << "tex load";
-    if(m_ID==0){
+    if(m_ID==0)
+    {
         qDebug() << "tex gen b" << m_ID;
         unsigned int t;
         glGenTextures(1,&m_ID);
@@ -187,7 +188,7 @@ void _Texture::load( GLenum format, GLenum datatype)
     }
         color_format = format;
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
-        //glGenerateMipmap(GL_TEXTURE_2D);
+       //glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 //return width of loaded texture image

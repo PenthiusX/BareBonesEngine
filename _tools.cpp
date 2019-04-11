@@ -60,8 +60,19 @@ QVector2D _Tools::retunrnMaxPoint(QVector2D mousepos)
 QVector3D _Tools::translateToPoint(QVector3D pointLocation, float stepDistance)
 {
     //implementation pending
-
     QVector3D points;
     return points;
 }
+QVector3D _Tools::pointOfintersectionWithModel(QVector2D mousePosition/*,sceneEntity s*/)
+{
 
+}
+void _Tools::generateAABBforModel(/*sceneEntity s*/)
+{
+
+}
+
+void _Tools::calcualteMaxExtentsOfModel(/*sceneEntity s*/)
+{
+
+}
