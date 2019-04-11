@@ -59,11 +59,11 @@ void _GLWidget::initializeGL()
                                };
     background_quad.setModelData(vertsV,indiceV);
     //
-//    s.setId(1);
-//    s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-//    s.setPosition(QVector3D(0.0,-0.0f, -0.0));
-//    s.setScale(1.0f);
-//    s.setModelData(":/models/cube.obj");
+    s.setId(1);
+    s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
+    s.setPosition(QVector3D(0.0,-0.0f, -0.0));
+    s.setScale(1.0f);
+    s.setModelData(":/models/sphere.obj");
     //
     s1.setId(0);
     s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
@@ -97,12 +97,10 @@ void _GLWidget::initializeGL()
 */
 void _GLWidget::resizeGL(int w, int h)
 {
-    this->width = w;
-    this->height = h;
     scene->onResize(w, h);
 }
 /*
- * Function: paintGl() 7
+ * Function: paintGl()
  * ovveriding thes function in OpopenglFunctions
  * Your proprietory Draw function this run in a loop
  * till the application ends.
@@ -111,7 +109,7 @@ void _GLWidget::resizeGL(int w, int h)
 void _GLWidget::paintGL()//the renderloop
 {
     scene->render();
-    this->update();
+    this->update();//is to send QtOpenglGl a flag to update openglFrames
 }
 /*
 * Function: mousePressEvent(QMouseEvent *e)
@@ -141,15 +139,12 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {
-    if(e->buttons() == Qt::RightButton){
+    if(e->buttons() == Qt::RightButton)
           qDebug() << "Only right button";
-    }
 
     QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
     if(e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y())
-    {
         mousePressPosition = maxpoint;
-    }
 
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
@@ -183,8 +178,6 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 			{
 				scroolScale = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
                 scene->getSceneObjectsArray()[i]->setscale(scroolScale);
-				//float a = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale();
-				//a = 0;
             }
         }
     }

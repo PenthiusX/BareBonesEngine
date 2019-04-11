@@ -23,7 +23,7 @@ _Camera::~_Camera(){
 
 }
 /*
-* Function: set/get Eye postition
+* Function: set/get Eye postition(QVector3D epos)
 * sets and gets the postion for the camera object 
 * in opengl space. these values get fed into the renderer 
 * into the viewMatrix.
