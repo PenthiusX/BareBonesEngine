@@ -60,26 +60,20 @@ void _GLWidget::initializeGL()
                                };
     background_quad.setModelData(vertsV,indiceV);
     //
-    s.setId(1);
-    s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-    s.setPosition(QVector3D(0.0,-0.0f, -0.0));
-    s.setScale(1.0f);
-    s.setModelData(":/models/sphere.obj");
+    s.setId(0);
+    s.setIsTransfomationLocal(false);
+    s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s.setPosition(QVector3D(1.5,-0.0f, -0.0));
+    s.setScale(0.09f);
+    s.setModelData(":/models/stickman.obj");
     //
-    s1.setId(0);
+    s1.setId(1);
+    s1.setIsTransfomationLocal(false);
     s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setPosition(QVector3D(0.0f, 0.0f, 0.0f));
     s1.setRotation(QVector3D(0.0, 0.0, 0.0));
     s1.setScale(.09f);
     s1.setModelData(":/models/stickman.obj");
-    //
-//    s2.setId(2);
-//    s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-//    s2.setPosition(QVector3D(0.0, 0.0f, 2.0));
-//    s2.setRotation(QVector3D(0.0, 0.0, 0.0));
-//    s2.setScale(1.f);
-//    s2.setModelData(":/models/monkey.obj");
-//    s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
     //
     scene = new _Scene();
     scene->addCamera(cam);
@@ -87,7 +81,6 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(background_quad);
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-    scene->addSceneObject(s2);
 }
 /*
  * Function: resizeGL(int w, int h) overides the

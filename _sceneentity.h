@@ -27,17 +27,17 @@ public:
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
     QString getTexturePath();
-
+    //
 	QString getVertexShaderPath();//returns the vertexshader path
 	QString getFragmentShaderPath();//returns the fragment shader path
-
+    //
 	std::vector<float> getvertexData();//can get  the array of verterticess for refrence
 	std::vector<unsigned int> getIndexData();//can get the array of indices for refrence
 	std::vector<int> getUvData();// can get the array of UVs for refrence
 	std::vector<float> getNormalData();// can get the Array of normals for refrence
-
+    //
 	bool getIsActive();
-
+    //
     void setIsTransfomationLocal(bool isLoc);
     bool getIsTransfomationLocal();
 	
@@ -63,6 +63,7 @@ private:
 	void setIndexData(std::vector<unsigned int> indices);//sets the Index data.
 	void setuvData(std::vector<int> uvCoords);//sets the UV data.
 	void setnormalData(std::vector<float> normalData);//sets the normal data.
+    //
     bool isTransfomationLocal;
 };
 
