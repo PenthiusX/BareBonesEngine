@@ -42,6 +42,19 @@ _HardwareSerial::_HardwareSerial(QString port_name)
     settings.timeout = 1000;
 }
 
+_HardwareSerial::_HardwareSerial(QString port_name,_ConfigControlEntity& serial_config)
+{
+    settings.name = port_name;
+    settings.baudRate = (int)serial_config.getFloatEntity("BAUDRATE");
+    settings.dataBits = (QSerialPort::DataBits)(int)serial_config.getFloatEntity("DATABITS");
+    settings.parity = (QSerialPort::Parity)(int)serial_config.getFloatEntity("PARITY");
+    settings.stopBits = (QSerialPort::StopBits)(int)serial_config.getFloatEntity("STOP_BITS");
+    settings.flowControl = QSerialPort::NoFlowControl;
+    settings.readBufferSize = (qint64)serial_config.getFloatEntity("INPUT_BUFFER_SIZE");
+    settings.timeout = (int)serial_config.getFloatEntity("TIMEOUT");
+
+}
+
 /* Destructor
  * closes serial port when object is deleted
  * Created: 21_02_2019
@@ -67,6 +80,7 @@ void _HardwareSerial::openSerialPort()
     m_serial->setParity(settings.parity);
     m_serial->setStopBits(settings.stopBits);
     m_serial->setFlowControl(settings.flowControl);
+    m_serial->setReadBufferSize(settings.readBufferSize);
 
     //check if serial opened successfully
     if (m_serial->open(QIODevice::ReadWrite)) {

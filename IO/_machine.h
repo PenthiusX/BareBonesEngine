@@ -49,10 +49,15 @@ public slots:
     void BackLight(int intensity);
     void GrabFrame(QString filename);
     void set_image_dir(QString dir);
+    QString InfoCmd();
+    QString InfoCmd(_HardwareSerial &port);
+    QString getMachineVersion();
 
 public:
     _HardwareSerial *hardware_serial = nullptr;
     _HWDCamera *camera = nullptr;
+
+
 
 };
 

@@ -115,9 +115,11 @@ void _Machine::LaserHeightMotorDiff(int steps)
  * */
 void _Machine::Vaccum(int state)
 {
-    //command for on:Q
-    //command for off:R
-    hardware_serial->waitAndWriteData((state) ? "N":"Y");
+    //command for on:N
+    //command for off:Y
+    static QString on = config["Hardware"]["Controls"]["Vaccum"]["Commands"]["RS232"].getStringEntity("ON");
+    static QString off = config["Hardware"]["Controls"]["Vaccum"]["Commands"]["RS232"].getStringEntity("OFF");
+    hardware_serial->waitAndWriteData((state) ? on:off);
 }
 
 /* Set Line Laser intensity and switch on/off
@@ -126,7 +128,8 @@ void _Machine::Vaccum(int state)
  * */
 void _Machine::LineLaser(int intensity)
 {
-    hardware_serial->waitAndWriteData(QString("L%1").arg(intensity));
+    static QString cmd = config["Hardware"]["Controls"]["LineLaser"]["Commands"]["RS232"].getStringEntity("SET");
+    hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
 }
 
 /* Set BackLight intensity and switch on/off
@@ -135,7 +138,8 @@ void _Machine::LineLaser(int intensity)
  * */
 void _Machine::BackLight(int intensity)
 {
-    hardware_serial->waitAndWriteData(QString("O%1").arg(intensity));
+    static QString cmd = config["Hardware"]["Controls"]["BackLight"]["Commands"]["RS232"].getStringEntity("SET");
+    hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
 }
 
 void _Machine::GrabFrame(QString filename)
@@ -151,12 +155,14 @@ void _Machine::GrabFrame(QString filename)
  * */
 void _Machine::MarkingLaser(float intensity)
 {
+    static QString laser_power_cmd = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("SET");
     if (intensity > 0)
     {
         // command : E<intensity>
-        hardware_serial->waitAndWriteData(QString("E%1").arg(intensity-1));//set the intesity @
-        MarkingLaserDiode(1);//switch on the laser diode
-        QThread::sleep(5);
+
+        hardware_serial->waitAndWriteData(QString(laser_power_cmd+"%1").arg(intensity-1));//set the intesity @
+        MarkingLaserDiode(1); //switch on the laser diode
+        QThread::sleep(5);    //wait 5 seconds
         MarkingLaserOut(1);
         //QTimer::singleShot(3000,[this]() {MarkingLaserOut(1);});//switch on the laser out after 2 seconds
     }
@@ -168,6 +174,43 @@ void _Machine::MarkingLaser(float intensity)
     }
 }
 
+/* Function :getMachineType()
+ * "?"
+ * created: 12_04_2019
+ * */
+QString _Machine::getMachineVersion()
+{
+    //command : "?"
+    static QString info_cmd = config["Hardware"]["Controls"]["GetVersion"]["Commands"]["RS232"].getStringEntity("SET");
+    return hardware_serial->writeDataAndWait(info_cmd);
+}
+
+
+
+/* Function :InfoCmd()
+ * Sends the info command
+ * "?"
+ * created: 12_04_2019
+ * */
+QString _Machine::InfoCmd()
+{
+    //command : "?"
+    static QString info_cmd = config["Hardware"]["Controls"]["Info"]["Commands"]["RS232"].getStringEntity("SET");
+    return hardware_serial->writeDataAndWait(info_cmd);
+}
+
+/* Function : InfoCmd(_HardwareSerial& port)
+ * Sends the info command on the given port
+ * "?"
+ * created: 12_04_2019
+ * */
+QString _Machine::InfoCmd(_HardwareSerial& port)
+{
+    //command : "?"
+    static QString info_cmd = config["Hardware"]["Controls"]["Info"]["Commands"]["RS232"].getStringEntity("SET");
+    return port.writeDataAndWait(info_cmd);
+}
+
 /* Switch Marking Laser Out on or off
  * on | state = 1
  * off | state = 0
@@ -176,7 +219,9 @@ void _Machine::MarkingLaserOut(int state)
 {
     //command for on:Q
     //command for off:R
-    hardware_serial->waitAndWriteData((state) ? "Q":"R");
+    static QString on = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("ON");
+    static QString off = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("OFF");
+    hardware_serial->waitAndWriteData((state) ? on:off);
 }
 
 /* Switch Marking Laser Diode on or off
@@ -187,7 +232,9 @@ void _Machine::MarkingLaserDiode(int state)
 {
     //command for on:V
     //command for off:W
-    hardware_serial->waitAndWriteData((state) ? "V":"W");
+    static QString on = config["Hardware"]["Controls"]["MarkingLaserDiode"]["Commands"]["RS232"].getStringEntity("ON");
+    static QString off = config["Hardware"]["Controls"]["MarkingLaserDiode"]["Commands"]["RS232"].getStringEntity("OFF");
+    hardware_serial->waitAndWriteData((state) ? on:off);
 }
 
 // ------------/command functions ----------
@@ -199,11 +246,12 @@ void _Machine::MarkingLaserDiode(int state)
  * */
 void _Machine::set_hardware_serial_defaults()
 {
-    hardware_serial->writeDataAndWait("?");
-    hardware_serial->writeDataAndWait("?");
+    InfoCmd();
+    InfoCmd();
     hardware_serial->writeDataAndWait("XH8000B4000A32000M400D15");
-    hardware_serial->writeDataAndWait("T");
-    hardware_serial->writeDataAndWait("N");
+    getMachineVersion();
+    Vaccum(1);
+
 }
 
 
@@ -275,21 +323,20 @@ void _Machine::set_hardware_serial(_ConfigControlEntity& hardware_config)
 
     QStringList ports = _HardwareSerial::list_serial_ports();
 
-    static QString& info_cmd = hardware_config["Controls"]["Info"]["Commands"]["RS232"].getStringEntity("SET");
     static QString ack_cmd = hardware_config["Controls"]["Ack"]["Commands"]["RS232"].getStringEntity("SET")+NEWLINE;
 
     QStringList machine_ports;
 
     for (int i = 0; i < ports.size(); ++i){
 
-        _HardwareSerial port(ports.at(i));
+        _HardwareSerial port(ports.at(i),hardware_config["Communication"]["RS232"]);
 
         port.openSerialPort();
 
-        port.writeDataAndWait(info_cmd);
+        InfoCmd(port);//send info command to given port
 
         //if acknowledgement("=" character) recieved then machine is connected
-        if(port.writeDataAndWait(info_cmd)==ack_cmd)
+        if(InfoCmd(port)==ack_cmd)
             machine_ports << ports.at(i);
     }
     switch (machine_ports.size())
@@ -299,7 +346,7 @@ void _Machine::set_hardware_serial(_ConfigControlEntity& hardware_config)
             hardware_serial = new _HardwareSerial();
             break;
         case 1: //if one machine found;
-            hardware_serial = new _HardwareSerial(machine_ports.at(0));
+            hardware_serial = new _HardwareSerial(machine_ports.at(0),hardware_config["Communication"]["RS232"]);
             break;
         default:
             qDebug() << "more than one machine detected select one";

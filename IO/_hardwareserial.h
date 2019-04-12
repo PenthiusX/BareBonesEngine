@@ -4,6 +4,7 @@
 #include <QSerialPort>
 #include <QObject>
 #include <QThread>
+#include <IO/_configcontrolentity.h>
 
 /*
  * The HardwareSerial class
@@ -19,6 +20,7 @@ class _HardwareSerial : public QThread
 public:
     _HardwareSerial();
     _HardwareSerial(QString port_name);//constructor set the settings
+    _HardwareSerial(QString port_name, _ConfigControlEntity& serial_config);
     ~_HardwareSerial();
 
     void openSerialPort();  //initialise serial port with settings
@@ -43,6 +45,7 @@ public:
         QString stringStopBits;
         QSerialPort::FlowControl flowControl;
         QString stringFlowControl;
+        qint64 readBufferSize;
         int timeout;
         bool localEchoEnabled;
     } settings;

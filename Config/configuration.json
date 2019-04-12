@@ -33,14 +33,13 @@
 				}
 			},
 			"RS232" : {
-				"RS232" : {
-					"BAUDRATE" : 115200,
-					"DATABITS" : 8,
-					"INPUT_BUFFER_SIZE" : 5000,
-					"OUTPUT_BUFFER_SIZE" : 5000,
-					"PARITY" : 3,
-					"STOP_BITS" : 1
-				}
+				"BAUDRATE" : 115200,
+				"DATABITS" : 8,
+				"INPUT_BUFFER_SIZE" : 5000,
+				"OUTPUT_BUFFER_SIZE" : 5000,
+				"STOP_BITS" : 1,
+				"PARITY" : 3,
+				"TIMEOUT" : 1000
 			}
 		},
 		"Controls" : {
@@ -49,7 +48,7 @@
 					"RS232" : {
 						"OFF" : "",
 						"ON" : "",
-						"SET" : "A"
+						"SET" : "U"
 					}
 				},
 				"Data" : {
@@ -59,6 +58,44 @@
 					},
 					"Default" : {
 						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"Ack" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "="
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"BackLight" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "O"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 136
+					},
+					"Default" : {
+						"MAX" : 255,
 						"MIN" : 0
 					}
 				}
@@ -120,50 +157,31 @@
 					}
 				}
 			},
-			"LaserDiodeOn" : {
-				"Commands" : {
-					"RS232" : {
-						"OFF" : "W",
-						"ON" : "V",
-						"SET" : ""
-					}
-				},
-				"Data" : {
-					"Calibeartion" : {
-						"STATE" : true,
-						"VALUE" : 0
-					},
-					"Default" : {
-						"MAX" : 0,
-						"MIN" : 0
-					}
-				}
-			},
-			"LaserMarking" : {
-				"Commands" : {
-					"RS232" : {
-						"OFF" : "R",
-						"ON" : "Q",
-						"SET" : ""
-					}
-				},
-				"Data" : {
-					"Calibeartion" : {
-						"STATE" : true,
-						"VALUE" : 0
-					},
-					"Default" : {
-						"MAX" : 0,
-						"MIN" : 0
-					}
-				}
-			},
-			"LaserMarkingPower" : {
+			"LaserFocusMotor" : {
 				"Commands" : {
 					"RS232" : {
 						"OFF" : "",
 						"ON" : "",
-						"SET" : "E"
+						"SET" : "F"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LaserHeightMotor" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "Z"
 					}
 				},
 				"Data" : {
@@ -183,6 +201,63 @@
 						"OFF" : "",
 						"ON" : "",
 						"SET" : "K"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LineLaser" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "L"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 136
+					},
+					"Default" : {
+						"MAX" : 255,
+						"MIN" : 0
+					}
+				}
+			},
+			"MarkingLaser" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "R",
+						"ON" : "Q",
+						"SET" : "E"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"MarkingLaserDiode" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "W",
+						"ON" : "V",
+						"SET" : ""
 					}
 				},
 				"Data" : {
@@ -230,25 +305,6 @@
 					},
 					"Default" : {
 						"MAX" : 0,
-						"MIN" : 0
-					}
-				}
-			},
-			"SetLaserIlluminationPower" : {
-				"Commands" : {
-					"RS232" : {
-						"OFF" : "",
-						"ON" : "",
-						"SET" : "L"
-					}
-				},
-				"Data" : {
-					"Calibeartion" : {
-						"STATE" : true,
-						"VALUE" : 136
-					},
-					"Default" : {
-						"MAX" : 255,
 						"MIN" : 0
 					}
 				}
@@ -306,6 +362,25 @@
 					},
 					"Default" : {
 						"MAX" : 255,
+						"MIN" : 0
+					}
+				}
+			},
+			"StageMotor" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "X"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
 						"MIN" : 0
 					}
 				}
@@ -386,12 +461,11 @@
 					}
 				}
 			},
-			"VaccumOff" : {
+			"Vaccum" : {
 				"Commands" : {
 					"RS232" : {
 						"OFF" : "Y",
-						"ON" : "N",
-						"SET" : "A"
+						"ON" : "N"
 					}
 				},
 				"Data" : {
@@ -421,82 +495,6 @@
 					"Default" : {
 						"MAX" : 0,
 						"MIN" : 0
-					}
-				}
-			},
-			"StageMotor" : {
-				"Commands" : {
-					"RS232" : {
-						"OFF" : "",
-						"ON" : "",
-						"SET" : "X"
-					}
-				},
-				"Data" : {
-					"Calibeartion" : {
-						"STATE" : true,
-						"VALUE" : 0
-					},
-					"Default" : {
-						"MAX" : 0,
-						"MIN" : 0
-					}
-				}
-			},
-			"LaserFocusMotor" : {
-				"Commands" : {
-					"RS232" : {
-						"OFF" : "",
-						"ON" : "",
-						"SET" : "F"
-					}
-				},
-				"Data" : {
-					"Calibeartion" : {
-						"STATE" : true,
-						"VALUE" : 0
-					},
-					"Default" : {
-						"MAX" : 0,
-						"MIN" : 0
-					}
-				}
-			},
-			"LaserHeightMotor" : {
-				"Commands" : {
-					"RS232" : {
-						"OFF" : "",
-						"ON" : "",
-						"SET" : "Z"
-					}
-				},
-				"Data" : {
-					"Calibeartion" : {
-						"STATE" : true,
-						"VALUE" : 0
-					},
-					"Default" : {
-						"MAX" : 0,
-						"MIN" : 0
-					}
-				}
-			},
-			"Ack" : {
-				"Data" : {
-					"Calibeartion" : {
-						"STATE" : true,
-						"VALUE" : 0
-					},
-					"Default" : {
-						"MAX" : 0,
-						"MIN" : 0
-					}
-				},
-				"Commands" : {
-					"RS232" : {
-						"OFF" : "",
-						"ON" : "",
-						"SET" : "="
 					}
 				}
 			}
