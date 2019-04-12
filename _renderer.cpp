@@ -33,7 +33,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
 
-    isTranfomationLocal = true;
+    isTranfomationLocal = false;
 }
 
 /*
@@ -240,6 +240,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 */
 void _Renderer::setPosition(QVector3D pos)
 {
+    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
     if(isTranfomationLocal)
     {
         glm_model4x4 = glm::mat4(1.0f);
@@ -255,9 +256,9 @@ void _Renderer::setPosition(QVector3D pos)
 
     _Tools::Debugmatrix4x4(glm_model4x4);//Debug Use
 }
-
 void _Renderer::translate(QVector3D pos)
 {
+    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
     if(isTranfomationLocal)
     {
         glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
@@ -275,19 +276,27 @@ void _Renderer::translate(QVector3D pos)
 
 void _Renderer::setRotation(QVector3D rot)
 {
-    rotationMatrix = glm::mat4x4(1.f);
-
-	glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
-	glm::quat quat = glm::quat(EulerAngles);
-    rotationMatrix *= glm::mat4_cast(quat);
-    glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
-
+    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
+    if(isTranfomationLocal)
+    {
+        glm_model4x4 = glm::mat4x4(1.f);
+        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
+        glm::quat quat = glm::quat(EulerAngles);
+        glm_model4x4 *= glm::mat4_cast(quat);
+    }
+    else if(!isTranfomationLocal)
+    {
+        rotationMatrix = glm::mat4x4(1.f);
+        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
+        glm::quat quat = glm::quat(EulerAngles);
+        rotationMatrix *= glm::mat4_cast(quat);
+        glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+    }
 //  this->sceneEntity.setRotation(rot);//reimplement
 }
-
 void _Renderer::rotate(QVector3D rot)
 {
-
+    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
     if(isTranfomationLocal)
     {
         glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
@@ -316,7 +325,6 @@ void _Renderer::setscale(float scale)
 
 //  this->sceneEntity.setScale(scale);//reimplemnt
 }
-
 void _Renderer::scale(float scale)
 {
     scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
@@ -335,6 +343,7 @@ void _Renderer::scale(float scale)
 void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
 	this->sceneEntity = s;	
+    this->isTranfomationLocal = s.getIsTransfomationLocal();
 	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
