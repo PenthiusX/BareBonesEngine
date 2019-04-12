@@ -11,9 +11,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-
-
 /*
  * Class: _Renderer
  * To create an abstraction for randering data
@@ -76,6 +73,7 @@ private:
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
     std::vector<_Texture> textures;//Teture array for tetures in use for the respective renderer object
+    bool isTranfomationLocal;
 
     //Debug implentation
     void transitionColors();

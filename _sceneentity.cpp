@@ -136,7 +136,22 @@ std::vector<float> _SceneEntity::getNormalData()
 }
 bool _SceneEntity::getIsActive()
 {
-	return this->isActive;
+    return this->isActive;
+}
+
+/*
+ *Function:isTransfomationLocal()
+ * sets gets the isTranformationlocal boolean object
+ * that flags if this scene object need to tranform on local axis
+ * or global axis
+*/
+void _SceneEntity::setIsTransfomationLocal(bool isLoc)
+{
+    this->isTransfomationLocal = isLoc;
+}
+bool _SceneEntity::getIsTransfomationLocal()
+{
+    return this->isTransfomationLocal;
 }
 /*
  * Function: setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)

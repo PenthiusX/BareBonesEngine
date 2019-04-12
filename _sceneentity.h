@@ -37,6 +37,9 @@ public:
 	std::vector<float> getNormalData();// can get the Array of normals for refrence
 
 	bool getIsActive();
+
+    void setIsTransfomationLocal(bool isLoc);
+    bool getIsTransfomationLocal();
 	
 
 private:
@@ -60,6 +63,7 @@ private:
 	void setIndexData(std::vector<unsigned int> indices);//sets the Index data.
 	void setuvData(std::vector<int> uvCoords);//sets the UV data.
 	void setnormalData(std::vector<float> normalData);//sets the normal data.
+    bool isTransfomationLocal;
 };
 
 #endif // _SCENEENTITY_H
