@@ -7,7 +7,7 @@ uniform mat4 projection;
 //
 uniform mat4 mvp;
 //
-out vec4 ourColor; 
+out vec4 ourColor;
 
 void main()
 {
