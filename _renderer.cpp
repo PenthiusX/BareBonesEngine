@@ -3,7 +3,6 @@
 #include <_tools.h>
 #include <qquaternion.h>
 
-
 /*
  * The Renderer class
  * Created: 8_02_2019
@@ -33,6 +32,8 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	glm_projection4x4 = glm::mat4(1.0f);
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
+
+    isTranfomationLocal = true;
 }
 
 /*
@@ -239,24 +240,39 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 */
 void _Renderer::setPosition(QVector3D pos)
 {
+    if(isTranfomationLocal)
+    {
+        glm_model4x4 = glm::mat4(1.0f);
+        glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+    }
+    else if(!isTranfomationLocal)
+    {
+        translationMatrix = glm::mat4(1.f);
+        translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+        sceneEntity.setPosition(pos);
+    }
+
     _Tools::Debugmatrix4x4(glm_model4x4);//Debug Use
-    //
-    translationMatrix = glm::mat4(1.f);
-    translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
-    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-    sceneEntity.setPosition(pos);
 }
+
 void _Renderer::translate(QVector3D pos)
 {
+    if(isTranfomationLocal)
+    {
+        glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+    }
+    else if(!isTranfomationLocal)
+    {
+        translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+    }
+
     _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
-    //
-    translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
-    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
 
 //  this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);//reimplement
 }
-/*
-*/
+
 void _Renderer::setRotation(QVector3D rot)
 {
     rotationMatrix = glm::mat4x4(1.f);
@@ -268,21 +284,30 @@ void _Renderer::setRotation(QVector3D rot)
 
 //  this->sceneEntity.setRotation(rot);//reimplement
 }
+
 void _Renderer::rotate(QVector3D rot)
 {
-    _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
-    //
-    //Quat
-    glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
-    glm::quat quat = glm::quat(EulerAngles);
-    rotationMatrix *= glm::mat4_cast(quat);
-    //Euler
-//  rotationMatrix = glm::rotate(rotationMatrix, glm::radians(45.0f), glm::vec3(rot.x(),rot.y(),rot.z()));
-    //
-    glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+
+    if(isTranfomationLocal)
+    {
+        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
+        glm::quat quat = glm::quat(EulerAngles);
+        glm_model4x4 *= glm::mat4_cast(quat);
+    }
+    else if(!isTranfomationLocal)
+    {
+        //Quat
+        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
+        glm::quat quat = glm::quat(EulerAngles);
+        rotationMatrix *= glm::mat4_cast(quat);
+        glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+    }
 
 //  this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);//reimplement
-}
+
+    _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
+} 
+
 void _Renderer::setscale(float scale)
 {
     scalingMatrix = glm::mat4(1.f);
@@ -291,6 +316,7 @@ void _Renderer::setscale(float scale)
 
 //  this->sceneEntity.setScale(scale);//reimplemnt
 }
+
 void _Renderer::scale(float scale)
 {
     scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
@@ -298,10 +324,12 @@ void _Renderer::scale(float scale)
 
 //    this->sceneEntity.setScale(sceneEntity.getScale() + scale);//reimplement
 }
+
 /*
 * Function: setSceneEntity(_SceneEntity s)
 * Sets the sceen entity object locally and sets the 
-* Model and projection matrix as well 
+* shader ,Model data , projection matrix, texture,
+* and initialises the modelMatrix.
 * Created: 1_03_2019
 */
 void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
@@ -312,6 +340,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
 	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
+
 /*
 * Function: getSceneEntity()
 * returns the current scene entity object.
@@ -321,6 +350,7 @@ _SceneEntity _Renderer::getSceneEntity()
 {
 	return this->sceneEntity;
 }
+
 /*
  * Function: draw()
  * This is your proprietory draw function 
@@ -353,6 +383,7 @@ void _Renderer::_Renderer::draw()
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
+
 /*
  * Temorrary debugging implemetation, trasitions colors of object
 */

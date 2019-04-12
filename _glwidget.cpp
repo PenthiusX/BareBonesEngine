@@ -223,7 +223,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 			{
 				scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
                 scene->getSceneObjectsArray()[i]->setRotation(QVector3D(0.0f, 0.0, 0.0));
-
+                scene->getSceneObjectsArray()[i]->setscale(scene->getSceneObjectsArray()[i]->getSceneEntity().getScale());
 			}
         }
 
