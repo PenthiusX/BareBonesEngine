@@ -11,6 +11,7 @@
  * Created: 5_02_2019
  * Author: Aditya,Saurabh
 */
+
 /*
 * Constructor:_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 * sets and passes the context for the Qopengl widget here for use.
@@ -228,5 +229,5 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
     if (event->text() == "c" || event->text() == "C")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-               qDebug() << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().x() << "_" << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().y() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().z();
+             qInfo() << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().x() << "_" << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().y() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().z();
 }

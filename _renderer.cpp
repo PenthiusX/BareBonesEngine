@@ -18,7 +18,6 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 //    glEnable(GL_BLEND);
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
     glEnable(GL_PROGRAM_POINT_SIZE);
 
 	glEnable(GL_DEPTH_TEST);
@@ -257,6 +256,8 @@ void _Renderer::rotate(QVector3D rot)
 {
     //Quat
     this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);
+//    this->sceneEntity.setRotation(glm_model4x4[0][0],0.f,0.f);
+
     glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
     glm::quat quat = glm::quat(EulerAngles);
     glm_model4x4 *= glm::mat4_cast(quat);
@@ -311,11 +312,8 @@ void _Renderer::_Renderer::draw()
     shdr->useShaderProgram();
 	//Setting the uniform each frame.
 	//Depends if the need is to update the values
-    double r = abs(cos(timer.elapsed() * 0.002));
-    double g = abs(sin(timer.elapsed() * 0.003));
-    double b = abs(cos(timer.elapsed() * 0.005));
-	glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
-    //bind all textures-->dosent look like more than 1 texture is being pushedback in the vector needs work
+    transitionColors();
+    //Bind Textures
     for(unsigned int t=0;t<textures.size();t++)
     {
         textures[t].bind();
@@ -332,4 +330,13 @@ void _Renderer::_Renderer::draw()
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
-
+/*
+ * Temorrary debugging implemetation, trasitions colors of object
+*/
+void _Renderer::transitionColors()
+{
+    double r = abs(cos(timer.elapsed() * 0.002));
+    double g = abs(sin(timer.elapsed() * 0.003));
+    double b = abs(cos(timer.elapsed() * 0.005));
+    glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
+}
