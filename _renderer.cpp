@@ -186,11 +186,17 @@ void _Renderer::setTexture(QString pathtoTexture)
 void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
 {
     glm_model4x4 = glm::mat4(1.0f);
-    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
+    translationMatrix = glm::mat4(1.f);
+    rotationMatrix = glm::mat4(1.f);
+    scalingMatrix = glm::mat4(1.f);
+    //
+    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
     glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
     glm::quat quat = glm::quat(EulerAngles);
-    glm_model4x4 *= glm::mat4_cast(quat);
-    glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
+    rotationMatrix = glm::mat4_cast(quat);
+    translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
+    //
+    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
 }
 
 /*
@@ -233,52 +239,64 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 */
 void _Renderer::setPosition(QVector3D pos)
 {
-        _Tools::Debugmatrix4x4(glm_model4x4);//Debug Use
-
-    glm_model4x4 = glm::mat4(1.f);
-    glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
-    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale()));
+    _Tools::Debugmatrix4x4(glm_model4x4);//Debug Use
+    //
+    translationMatrix = glm::mat4(1.f);
+    translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     sceneEntity.setPosition(pos);
 }
 void _Renderer::translate(QVector3D pos)
 {
-        _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
+    _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
+    //
+    translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
 
-    glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(pos.x(),pos.y(), pos.z()));
-    this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);
+//  this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);//reimplement
 }
 /*
 */
 void _Renderer::setRotation(QVector3D rot)
 {
-	glm_model4x4 = glm::mat4x4(1.f);
-	this->sceneEntity.setRotation(rot);
+    rotationMatrix = glm::mat4x4(1.f);
+
 	glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
 	glm::quat quat = glm::quat(EulerAngles);
-	glm_model4x4 *= glm::mat4_cast(quat);
+    rotationMatrix *= glm::mat4_cast(quat);
+    glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+
+//  this->sceneEntity.setRotation(rot);//reimplement
 }
 void _Renderer::rotate(QVector3D rot)
 {
-        _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
-
+    _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
+    //
     //Quat
-    this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);
-    glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
+    glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
     glm::quat quat = glm::quat(EulerAngles);
-    glm_model4x4 *= glm::mat4_cast(quat);
+    rotationMatrix *= glm::mat4_cast(quat);
     //Euler
-//  glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(45.0f), glm::vec3(rot.x(),rot.y(),rot.z()));
+//  rotationMatrix = glm::rotate(rotationMatrix, glm::radians(45.0f), glm::vec3(rot.x(),rot.y(),rot.z()));
+    //
+    glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+
+//  this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);//reimplement
 }
 void _Renderer::setscale(float scale)
 {
-	glm_model4x4 = glm::mat4(1.f);
-	this->sceneEntity.setScale(scale);
-	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
+    scalingMatrix = glm::mat4(1.f);
+    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
+    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+
+//  this->sceneEntity.setScale(scale);//reimplemnt
 }
 void _Renderer::scale(float scale)
 {
-	this->sceneEntity.setScale(sceneEntity.getScale() + scale);
-	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));//scale equally on all sides
+    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
+    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+
+//    this->sceneEntity.setScale(sceneEntity.getScale() + scale);//reimplement
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)

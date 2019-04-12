@@ -92,4 +92,5 @@ void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
             qInfo() << i <<","<< j << mat4[i][j];
         }
     }
+    qInfo() << "----------------------------------------------------";
 }
