@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVector3D>
 #include <QVector2D>
+#include <glm/glm.hpp>
 
 /*
  * Class: _Tools
@@ -29,6 +30,7 @@ public:
     static QVector3D pointOfintersectionWithModel(QVector2D mousePosition/*,sceneEntity s*/);
     static void generateAABBforModel(/*sceneEntity s*/);
     static void calcualteMaxExtentsOfModel(/*sceneEntity s*/);
+    static void Debugmatrix4x4(glm::mat4x4 mat4);
 };
 
 

@@ -3,6 +3,7 @@
 #include <_tools.h>
 #include <qquaternion.h>
 
+
 /*
  * The Renderer class
  * Created: 8_02_2019
@@ -232,6 +233,8 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 */
 void _Renderer::setPosition(QVector3D pos)
 {
+        _Tools::Debugmatrix4x4(glm_model4x4);//Debug Use
+
     glm_model4x4 = glm::mat4(1.f);
     glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
     glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(sceneEntity.getScale()));
@@ -239,6 +242,8 @@ void _Renderer::setPosition(QVector3D pos)
 }
 void _Renderer::translate(QVector3D pos)
 {
+        _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
+
     glm_model4x4 = glm::translate(glm_model4x4, glm::vec3(pos.x(),pos.y(), pos.z()));
     this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);
 }
@@ -254,10 +259,10 @@ void _Renderer::setRotation(QVector3D rot)
 }
 void _Renderer::rotate(QVector3D rot)
 {
+        _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
+
     //Quat
     this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);
-//    this->sceneEntity.setRotation(glm_model4x4[0][0],0.f,0.f);
-
     glm::vec3 EulerAngles(rot.x(),rot.y(),rot.z());
     glm::quat quat = glm::quat(EulerAngles);
     glm_model4x4 *= glm::mat4_cast(quat);
@@ -340,3 +345,5 @@ void _Renderer::transitionColors()
     double b = abs(cos(timer.elapsed() * 0.005));
     glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
 }
+
+
