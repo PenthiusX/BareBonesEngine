@@ -3,6 +3,7 @@
 
 #include <IO/_hardwareserial.h>
 #include <IO/_hwdcamera.h>
+#include <IO/_configcontrolentity.h>
 #include <QJsonObject>
 
 /*
@@ -25,9 +26,11 @@ public:
     ~_Machine();
 
     void set_hardware_serial_defaults(); //setup commands
-    void set_camera();
-    void set_hardware_serial();
-    void set_hardware_serial(QJsonObject serial_config);
+    void set_camera(_ConfigControlEntity &camera_config);
+    void set_hardware_serial(_ConfigControlEntity &hardware_config);
+
+    _ConfigControlEntity config;
+
 
 signals:
     void serialReturned(QString responce);
@@ -50,7 +53,7 @@ public slots:
 public:
     _HardwareSerial *hardware_serial = nullptr;
     _HWDCamera *camera = nullptr;
-    QJsonObject config;
+
 };
 
 #endif // _MACHINE_H

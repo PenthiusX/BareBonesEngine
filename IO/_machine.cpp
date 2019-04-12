@@ -12,6 +12,8 @@
 #include <IO/_dc_1394_camera.h>
 #include <IO/_picolo_camera.h>
 
+#define NEWLINE "\n"
+#define NULL_STR ""
 
 /*
  * The Machine class
@@ -42,7 +44,7 @@ _Machine::_Machine()
  * list and select camera connected to machine
  * Created: 27_03_2019
  */
-_Machine::_Machine(QString json_file) : config(_Tools::ReadJsonFromQrc(json_file))
+_Machine::_Machine(QString json_file) : config(_ConfigControlEntity(_Tools::ReadJsonFromQrc(json_file)))
 {
 
 }
@@ -75,7 +77,9 @@ _Machine::~_Machine()
 void _Machine::TurnTableMotorDiff(int steps)
 {
     //command : XM<steps>G
-    hardware_serial->waitAndWriteData(QString("XM%1G").arg(steps));
+    static QString prefix = config["Hardware"]["Controls"]["StageMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
+    static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
+    hardware_serial->waitAndWriteData(QString(prefix+"%1"+postfix).arg(steps));
 }
 
 /* Slide Marking Laser Focus Motor by specified steps
@@ -86,7 +90,9 @@ void _Machine::TurnTableMotorDiff(int steps)
 void _Machine::LaserFocusMotorDiff(int steps)
 {
     //command : FM<steps>G
-    hardware_serial->waitAndWriteData(QString("FM%1G").arg(steps));
+    static QString prefix = config["Hardware"]["Controls"]["LaserFocusMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
+    static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
+    hardware_serial->waitAndWriteData(QString(prefix+"%1"+postfix).arg(steps));
 }
 
 /* Slide Marking Laser Height Motor by specified steps
@@ -97,7 +103,9 @@ void _Machine::LaserFocusMotorDiff(int steps)
 void _Machine::LaserHeightMotorDiff(int steps)
 {
     //command : ZM<steps>G
-    hardware_serial->waitAndWriteData(QString("ZM%1G").arg(steps));
+    static QString prefix = config["Hardware"]["Controls"]["LaserHeightMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
+    static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
+    hardware_serial->waitAndWriteData(QString(prefix+"%1"+postfix).arg(steps));
 }
 
 
@@ -207,7 +215,7 @@ void _Machine::set_hardware_serial_defaults()
  * ** required update: This Function Should set Camera based on configuration file afterwards**
  *
  * */
-void _Machine::set_camera()
+void _Machine::set_camera(_ConfigControlEntity& camera_config)
 {
 
     //QJsonObject camera_config = config["Camera"].toObject();
@@ -254,57 +262,21 @@ void _Machine::set_camera()
 #endif //PLATFORM_WIN
 }
 
-/* Function : set_hardware_serial()
- * this function finds the hardware serial port which is connected to machine
- *
-*/
-void _Machine::set_hardware_serial()
-{
-    //list serial ports and check if returns machine
-    QStringList ports = _HardwareSerial::list_serial_ports();
 
-    QStringList machine_ports;
-
-    for (int i = 0; i < ports.size(); ++i){
-
-        _HardwareSerial port(ports.at(i));
-
-        port.openSerialPort();
-
-        port.writeDataAndWait("?");
-
-        //if acknowledgement("=" character) recieved then machine is connected
-        if(port.writeDataAndWait("?")=="=\n")
-            machine_ports << ports.at(i);
-    }
-    switch (machine_ports.size())
-    {
-        case 0: // if no Serial ports found;
-            qDebug() << "machine not detected functionality will be limited";
-            hardware_serial = new _HardwareSerial();
-            break;
-        case 1: //if one machine found;
-            hardware_serial = new _HardwareSerial(machine_ports.at(0));
-            break;
-        default:
-            qDebug() << "more than one machine detected select one";
-            // code to be executed if more than one machine found
-    }
-}
-/* Function : set_hardware_serial(QJsonObject hardware_config)
+/* Function : set_hardware_serial(_ConfigControlEntity& hardware_config)
  * this function finds the machine connected to computer
  * and sets the defualts as given in the config
 */
-void _Machine::set_hardware_serial(QJsonObject hardware_config)
+void _Machine::set_hardware_serial(_ConfigControlEntity& hardware_config)
 {
     //send the nested config objects to necessary hardware objects (should be used by nested objects afterwards)
-    QJsonObject serial_config = hardware_config["Communication"].toObject()["RS232"].toObject();
-    QJsonObject command_config = hardware_config["Commands"].toObject();
-
 
     //list serial ports and check if returns machine
 
     QStringList ports = _HardwareSerial::list_serial_ports();
+
+    static QString& info_cmd = hardware_config["Controls"]["Info"]["Commands"]["RS232"].getStringEntity("SET");
+    static QString ack_cmd = hardware_config["Controls"]["Ack"]["Commands"]["RS232"].getStringEntity("SET")+NEWLINE;
 
     QStringList machine_ports;
 
@@ -314,10 +286,10 @@ void _Machine::set_hardware_serial(QJsonObject hardware_config)
 
         port.openSerialPort();
 
-        port.writeDataAndWait("?");
+        port.writeDataAndWait(info_cmd);
 
         //if acknowledgement("=" character) recieved then machine is connected
-        if(port.writeDataAndWait("?")=="=\n")
+        if(port.writeDataAndWait(info_cmd)==ack_cmd)
             machine_ports << ports.at(i);
     }
     switch (machine_ports.size())
@@ -343,7 +315,7 @@ void _Machine::set_hardware_serial(QJsonObject hardware_config)
 */
 void _Machine::init()
 {
-    set_hardware_serial();
+    set_hardware_serial(config["Hardware"]);
 
     hardware_serial->openSerialPort();
 
@@ -351,7 +323,7 @@ void _Machine::init()
 
     // init selected camera - currently hardcoded
 
-    set_camera();
+    set_camera(config["Camera"]);
 
     camera->init(0);
 

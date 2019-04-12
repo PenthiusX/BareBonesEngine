@@ -15,6 +15,7 @@ _HWDCamera::_HWDCamera(QJsonObject cnfg) : config(cnfg)
 _HWDCamera::~_HWDCamera()
 {
     stop_camera();
+    //delete byteframe;
 }
 int _HWDCamera::init(int v)
 {

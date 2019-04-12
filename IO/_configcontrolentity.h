@@ -6,16 +6,17 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <map>
+#include <vector>
 
 class _ConfigControlEntity
 {
-    enum EntityType
-    {
-        BOOL,
-        VAL,
-        OBJ,
-        GROUP
-    };
+//    enum EntityType
+//    {
+//        BOOL,
+//        VAL,
+//        OBJ,
+//        GROUP
+//    };
 
 public:
     _ConfigControlEntity();
@@ -24,12 +25,20 @@ public:
     bool loadFromJson(QJsonObject cnfg);
     QJsonObject toJson();
 
-protected:
+    _ConfigControlEntity &operator[](QString key);
 
-    bool state;
-    int value;
-    EntityType typ;
+    _ConfigControlEntity &getChildEntity(QString key);
+    float& getFloatEntity(QString key);
+    QString& getStringEntity(QString key);
+    std::vector<float>& getArrayEntity(QString key);
+
+protected:
+    //EntityType typ;
     std::map<QString,_ConfigControlEntity> child_entities;
+    std::map<QString,bool> bool_child_entities;
+    std::map<QString,float> float_child_entities;
+    std::map<QString,std::vector<float>> array_child_entities;
+    std::map<QString,QString> string_child_entities;
 };
 
 #endif // _CONFIGCONTROLENTITY_H

@@ -1,467 +1,516 @@
 {
-	"HardwareCommands": {
-
+	"Camera" : {
+		"CAMERA_BRIGHTNESS" : 100,
+		"CAMERA_CHANNEL" : 0,
+		"CAMERA_CONTRAST" : 50,
+		"CAMERA_EXPOSURE" : 85,
+		"CAMERA_GAIN" : 20,
+		"CAMERA_NAME" : "M_CCIR",
+		"CAMERA_TIMEOUT" : 200,
+		"CAMERA_TYPE" : "Picolo5",
+		"MINIMAL_GAIN" : 0,
+		"MINIMAL_OFFSET" : 0,
+		"ROI" : [ 0, 0, 1360, 1024 ]
 	},
-	"RoughOrg": {
-
+	"Configuration" : {
+		"LASER_MARKING" : false,
+		"MACHINE_TYPE" : "DiaExpert-ML"
 	},
-	"RoughAcquisition": {
-
-	},
-	"Hardware": {
-		"Controls": {
-			"Acceleration": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
+	"Hardware" : {
+		"Communication" : {
+			"IOCommunication" : {
+				"MSRIO" : {
+					"IN_PORT_ADDR" : 778,
+					"OUT_PORT_ADDR" : 776,
+					"RESET_PORT_ADDR" : 782,
+					"STATUS_PORT_ADDR" : 780
 				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "A"
-					}
+				"PortIO" : {
+					"IN_PORT_ADDR" : 778,
+					"OUT_PORT_ADDR" : 776,
+					"RESET_PORT_ADDR" : 782,
+					"STATUS_PORT_ADDR" : 780
 				}
 			},
-			"FinalSpeed": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "H"
-					}
-				}
-			},
-			"GetVersion": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "T"
-					}
-				}
-			},
-			"Info": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "?"
-					}
-				}
-			},
-			"isLaserMarkingSupported": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": ""
-					}
-				}
-			},
-			"LaserMarking": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "R",
-						"ON": "Q",
-						"SET": ""
-					}
-				}
-			},
-			"LaserDiodeOn": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "W",
-						"ON": "V",
-						"SET": ""
-					}
-				}
-			},
-			"LaserMarkingPower": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "E"
-					}
-				}
-			},
-			"LaserMarkingTimer": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "K"
-					}
-				}
-			},
-			"MoveAcceleration": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "G"
-					}
-				}
-			},
-			"SetDistance": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "M"
-					}
-				}
-			},
-			"SetLaserIlluminationPower": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 136
-					},
-					"Default": {
-						"MAX": 255,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "L"
-					}
-				}
-			},
-			"SetMotorsDelay": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "M"
-					}
-				}
-			},
-			"SetSynchronizeMoving": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "["
-					}
-				}
-			},
-			"SetTopLightPower": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 255,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "I"
-					}
-				}
-			},
-			"StartSpeed": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "B"
-					}
-				}
-			},
-			"StartSynchronizedMovement": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "U"
-					}
-				}
-			},
-			"StartSynchronizedMovementData": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "["
-					}
-				}
-			},
-			"Stop": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "",
-						"ON": "",
-						"SET": "S"
-					}
-				}
-			},
-			"VaccumOff": {
-				"Data": {
-					"Calibeartion": {
-						"STATE": true,
-						"VALUE": 0
-					},
-					"Default": {
-						"MAX": 0,
-						"MIN": 0
-					}
-				},
-				"Commands": {
-					"RS232": {
-						"OFF": "Y",
-						"ON": "N",
-						"SET": "A"
-					}
+			"RS232" : {
+				"RS232" : {
+					"BAUDRATE" : 115200,
+					"DATABITS" : 8,
+					"INPUT_BUFFER_SIZE" : 5000,
+					"OUTPUT_BUFFER_SIZE" : 5000,
+					"PARITY" : 3,
+					"STOP_BITS" : 1
 				}
 			}
 		},
-		"Communication": {
-			"RS232": {
-				"RS232": {
-					"DATABITS": 8,
-					"INPUT_BUFFER_SIZE": 5000,
-					"OUTPUT_BUFFER_SIZE": 5000,
-					"PARITY": 3,
-					"STOP_BITS": 1,
-					"BAUDRATE": 115200
+		"Controls" : {
+			"Acceleration" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "A"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
 				}
 			},
-			"IOCommunication": {
-				"MSRIO": {
-					"STATUS_PORT_ADDR": 780,
-					"RESET_PORT_ADDR": 782,
-					"OUT_PORT_ADDR": 776,
-					"IN_PORT_ADDR": 778
+			"FinalSpeed" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "H"
+					}
 				},
-				"PortIO": {
-					"STATUS_PORT_ADDR": 780,
-					"RESET_PORT_ADDR": 782,
-					"OUT_PORT_ADDR": 776,
-					"IN_PORT_ADDR": 778
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"GetVersion" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "T"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"Info" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "?"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LaserDiodeOn" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "W",
+						"ON" : "V",
+						"SET" : ""
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LaserMarking" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "R",
+						"ON" : "Q",
+						"SET" : ""
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LaserMarkingPower" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "E"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LaserMarkingTimer" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "K"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"MoveAcceleration" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "G"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"SetDistance" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "M"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"SetLaserIlluminationPower" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "L"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 136
+					},
+					"Default" : {
+						"MAX" : 255,
+						"MIN" : 0
+					}
+				}
+			},
+			"SetMotorsDelay" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "M"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"SetSynchronizeMoving" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "["
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"SetTopLightPower" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "I"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 255,
+						"MIN" : 0
+					}
+				}
+			},
+			"StartSpeed" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "B"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"StartSynchronizedMovement" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "U"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"StartSynchronizedMovementData" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "["
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"Stop" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "S"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"VaccumOff" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "Y",
+						"ON" : "N",
+						"SET" : "A"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"isLaserMarkingSupported" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : ""
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"StageMotor" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "X"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LaserFocusMotor" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "F"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"LaserHeightMotor" : {
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "Z"
+					}
+				},
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				}
+			},
+			"Ack" : {
+				"Data" : {
+					"Calibeartion" : {
+						"STATE" : true,
+						"VALUE" : 0
+					},
+					"Default" : {
+						"MAX" : 0,
+						"MIN" : 0
+					}
+				},
+				"Commands" : {
+					"RS232" : {
+						"OFF" : "",
+						"ON" : "",
+						"SET" : "="
+					}
 				}
 			}
 		}
 	},
-	"Laser": {
-
-	},
-	"LaserMarking": {
-
-	},
-	"LensStageDetector": {
-
-	},
-	"LiveVideoProvider": {
-
-	},
-	"ManualMarking": {
-
-	},
-	"MotorType": {
-
-	},
-	"MovingPanel": {
-
-	},
-	"Pump": {
-
-	},
-	"Configuration": {
-		"MACHINE_TYPE": "DiaExpert-ML",
-		"LASER_MARKING": false
-	},
-	"Camera": {
-		"ROI": [
-			0,
-			0,
-			1360,
-			1024
-		],
-		"CAMERA_CONTRAST": 50,
-		"CAMERA_GAIN": 20,
-		"CAMERA_BRIGHTNESS": 100,
-		"CAMERA_EXPOSURE": 85,
-		"CAMERA_TIMEOUT": 200,
-		"MINIMAL_GAIN": 0,
-		"MINIMAL_OFFSET": 0,
-		"CAMERA_CHANNEL": 0,
-		"CAMERA_NAME": "M_CCIR",
-		"CAMERA_TYPE": "Picolo5"
-	}
+	"HardwareCommands" : {},
+	"Laser" : {},
+	"LaserMarking" : {},
+	"LensStageDetector" : {},
+	"LiveVideoProvider" : {},
+	"ManualMarking" : {},
+	"MotorType" : {},
+	"MovingPanel" : {},
+	"Pump" : {},
+	"RoughAcquisition" : {},
+	"RoughOrg" : {}
 }
