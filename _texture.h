@@ -37,6 +37,7 @@ public:
 
     //initialized texture loads texture image
     void load(GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
+    void load(GLenum internal_format, GLenum format, GLenum datatype); //if internal and image format is differant
 
     unsigned int getWidth() const;
     unsigned int getHeight() const;

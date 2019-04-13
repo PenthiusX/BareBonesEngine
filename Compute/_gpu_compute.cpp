@@ -14,6 +14,51 @@ _GPU_Compute::_GPU_Compute() : QOpenGLExtraFunctions(QOpenGLContext::currentCont
 {
 
 }
+void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_img)
+{
+    static _Shader shader;
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_copy_8_to_32.glsl",GL_COMPUTE_SHADER);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R32I,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+void _GPU_Compute::compute_copy_32_to_8(_Texture &input_img, _Texture &output_img)
+{
+    static _Shader shader;
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_copy_32_to_8.glsl",GL_COMPUTE_SHADER);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R32I,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
 
 /* Function : compute_sobel_edge
  *
@@ -63,9 +108,9 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_
         qDebug() << "shader initialized";
     }
 
-    input_img.bindForCompute(0,GL_R8,GL_READ_ONLY);
-    output_mag.bindForCompute(1,GL_R8,GL_WRITE_ONLY);
-    output_theta.bindForCompute(2,GL_R8,GL_WRITE_ONLY);
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_mag.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
+    output_theta.bindForCompute(2,GL_R8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 

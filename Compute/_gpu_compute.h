@@ -16,6 +16,8 @@ public:
     void compute_guassian_blur_3_3(_Texture &input_img, _Texture &output_img);
     void compute_guassian_blur_5_5(_Texture &input_img, _Texture &output_img);
     void compute_threshold(_Texture &input_img, _Texture &output_img);
+    void compute_copy_8_to_32(_Texture &input_img, _Texture &output_img);
+    void compute_copy_32_to_8(_Texture &input_img, _Texture &output_img);
 };
 
 #endif // _GPU_COMPUTE_H

@@ -15,5 +15,7 @@
         <file>shaders/compute_sobel_edge_mag.glsl</file>
         <file>shaders/compute_sobel_edge_mag_theta.glsl</file>
         <file>shaders/compute_threshold.glsl</file>
+        <file>shaders/compute_copy_8_to_32.glsl</file>
+        <file>shaders/compute_copy_32_to_8.glsl</file>
     </qresource>
 </RCC>
