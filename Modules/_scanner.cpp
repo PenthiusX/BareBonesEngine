@@ -146,7 +146,7 @@ void _Scanner::scan_generate_model()
     //load texture
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_out.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+    texture_outt.load(GL_RED,GL_UNSIGNED_BYTE);
 
     //texture.unbind();
 
@@ -170,6 +170,7 @@ void _Scanner::scan_generate_model()
         QString filename = QString("scan_image_stage_%1").arg(t);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
+        //QThread::msleep(100);
 
         //grab new frame from camera
         machine->GrabFrame(filename);
@@ -184,11 +185,11 @@ void _Scanner::scan_generate_model()
 
         //compute operation(edge detecton currently)
         //gpu_compute->compute_sobel_edge(texture,texture_out);
-//        gpu_compute->compute_threshold(texture,texture_outt);
-//        gpu_compute->compute_sobel_edge(texture_outt,texture_out,texture);
-        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
-        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
-
+        gpu_compute->compute_threshold(texture,texture_outt);
+//        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
+//        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
+//        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+        gpu_compute->compute_canny_edge(texture_outt,texture_out);
 
         //bind to framebuffer for grabbing
         texture_out.bindForFramebuffer();

@@ -133,8 +133,8 @@ void _GPU_Compute::compute_guassian_blur_3_3(_Texture& input_img,_Texture& outpu
         qDebug() << "shader initialized";
     }
 
-    input_img.bindForCompute(0,GL_R8,GL_READ_ONLY);
-    output_img.bindForCompute(1,GL_R8,GL_WRITE_ONLY);
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 
@@ -156,8 +156,8 @@ void _GPU_Compute::compute_guassian_blur_5_5(_Texture& input_img,_Texture& outpu
         qDebug() << "shader initialized";
     }
 
-    input_img.bindForCompute(0,GL_R8,GL_READ_ONLY);
-    output_img.bindForCompute(1,GL_R8,GL_WRITE_ONLY);
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 
@@ -174,7 +174,7 @@ void _GPU_Compute::compute_invert(_Texture& input_img,_Texture& output_img)
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_invert.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_uint_invert.glsl",GL_COMPUTE_SHADER);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -215,16 +215,16 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img)
 
 void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
 {
-    _Texture texture_sobel_mag(0,input_img.getWidth(),input_img.getHeight());
-    _Texture texture_sobel_theta(0,input_img.getWidth(),input_img.getHeight());
-    _Texture texture_blur(0,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_blur(nullptr,input_img.getWidth(),input_img.getHeight());
 
-    texture_sobel_mag.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_blur.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_sobel_theta.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
 
-    compute_guassian_blur_5_5(input_img,texture_blur);
-    compute_sobel_edge(texture_blur,texture_sobel_mag,texture_sobel_theta);
+    compute_guassian_blur_3_3(input_img,texture_blur);
+    compute_sobel_edge(texture_blur,texture_sobel_mag_,texture_sobel_theta_);
 
     static _Shader shader;
 
@@ -236,9 +236,9 @@ void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
         qDebug() << "shader initialized";
     }
 
-    texture_sobel_mag.bindForCompute(0,GL_R8,GL_READ_ONLY);
-    texture_sobel_theta.bindForCompute(1,GL_R8,GL_READ_ONLY);
-    output_img.bindForCompute(2,GL_R8,GL_WRITE_ONLY);
+    texture_sobel_mag_.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    texture_sobel_theta_.bindForCompute(1,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(2,GL_R8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 

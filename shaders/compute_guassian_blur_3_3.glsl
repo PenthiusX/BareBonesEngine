@@ -12,8 +12,8 @@ void main()
 
        ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y);
 
-       uint uout = compute_kernal_filter_3_3(inputImage,image_pixel_cord,guassian_kernal);
+       float uout = compute_kernal_filter_3_3(inputImage,image_pixel_cord,guassian_kernal);
 
-       setImagePixel(resultImage,image_pixel_cord,uout);
+       setImagePixel(resultImage,image_pixel_cord,uint(uout));
 
 }

@@ -20,7 +20,7 @@ void main()
        float sobel_x = compute_kernal_filter_3_3(inputImage,image_pixel_cord,sobel_x_kernal);
        float sobel_y = compute_kernal_filter_3_3(inputImage,image_pixel_cord,sobel_y_kernal);
 
-       uint sobel_mag = uint(length(vec2(sobel_x, sobel_y))/8.0);
+       uint sobel_mag = uint(length(vec2(sobel_x, sobel_y))/4.0);
        uint sobel_theta = uint(atan(sobel_y/ sobel_x)*FF_BY_PI);
 
        setImagePixel(sobel_mag_Image,image_pixel_cord,sobel_mag);

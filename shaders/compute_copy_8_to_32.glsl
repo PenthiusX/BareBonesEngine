@@ -6,8 +6,6 @@ layout(binding=1, r32i) uniform mediump iimage2D resultImage;
 
 #include compute_basic_functions.glsl
 
-
-
 void main()
 {
     ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.xy);
