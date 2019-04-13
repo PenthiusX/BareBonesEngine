@@ -7,8 +7,6 @@
  * The HardwareSerial class
  * To create an serial port interface for computer-machine communication
  *
- *    ** Yet to create non blocking preemptive object for threaded operation **
- *
  * Extends the QObject class for slots connections to work
  * Created: 21_02_2019
  * Author:Saurabh
@@ -51,7 +49,7 @@ _HardwareSerial::_HardwareSerial(QString port_name,_ConfigControlEntity& serial_
     settings.stopBits = (QSerialPort::StopBits)(int)serial_config.getFloatEntity("STOP_BITS");
     settings.flowControl = QSerialPort::NoFlowControl;
     settings.readBufferSize = (qint64)serial_config.getFloatEntity("INPUT_BUFFER_SIZE");
-    settings.timeout = (int)serial_config.getFloatEntity("TIMEOUT");
+     settings.timeout = (int)serial_config.getFloatEntity("TIMEOUT");
 
 }
 

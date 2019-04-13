@@ -182,7 +182,7 @@ void _Scanner::scan_generate_model()
         //send the image to gpu texture
         texture.setImage(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
-        //compute operation(edge detection currently)
+        //compute operation(edge detecton currently)
         //gpu_compute->compute_sobel_edge(texture,texture_out);
         gpu_compute->compute_threshold(texture,texture_outt);
         gpu_compute->compute_sobel_edge(texture_outt,texture_out);

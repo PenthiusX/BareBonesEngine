@@ -14,7 +14,7 @@
 int main(int argc, char *argv[])
 {
     QGLFormat glFormat;
-    glFormat.setVersion( 4, 0 );
+    glFormat.setVersion( 4, 3);
     glFormat.setProfile( QGLFormat::CoreProfile ); // Requires >=Qt-4.8.0
     glFormat.setSampleBuffers( true );
 

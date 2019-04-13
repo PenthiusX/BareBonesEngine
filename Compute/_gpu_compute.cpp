@@ -33,8 +33,8 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
         qDebug() << "shader initialized";
     }
 
-    input_img.bindForCompute(0,GL_R8,GL_READ_ONLY);
-    output_img.bindForCompute(1,GL_R8,GL_WRITE_ONLY);
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 
@@ -157,8 +157,8 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img)
         qDebug() << "shader initialized";
     }
 
-    input_img.bindForCompute(0,GL_R8,GL_READ_ONLY);
-    output_img.bindForCompute(1,GL_R8,GL_WRITE_ONLY);
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 
