@@ -1,6 +1,7 @@
 #include "_gpu_compute.h"
 #include <_shader.h>
 #include <QDebug>
+#include <_tools.h>
 
 
 /* _GPU_Compute Class
@@ -31,7 +32,10 @@ void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_im
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -54,10 +58,60 @@ void _GPU_Compute::compute_copy_32_to_8(_Texture &input_img, _Texture &output_im
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
+}
+
+
+/* Function: getWorkGroupSize(int w,int h, COMPUTE_OPERTION operation)
+ * This function calculates number of workgroup and workgroup sizes
+ * to invoke gpu compute operation
+ * barrier in compute shaders work within that workgroup only
+ * ie. barrier waits for all threads in workgroup to reach the same point
+ * so if a row wise operations is to be performed it will require whole row to contain in one workgroup
+ * the third parameter operation specifies the operation type to be performed, default is _DEFAULT_2D_GROUP
+ * created : 15_04_2019
+*/
+_GPU_Compute::GroupSize _GPU_Compute::getWorkGroupSize(int w,int h, COMPUTE_OPERTION operation)
+{
+    GroupSize groupsize;
+    switch (operation) {
+    case _DEFAULT_2D_GROUP:
+    {
+        int level = 16;
+        groupsize.WorkGroupSize.x=level;
+        groupsize.NumWorkGroups.x=glm::ceil(float(w)/level);
+
+        groupsize.WorkGroupSize.y=level;
+        groupsize.NumWorkGroups.y=glm::ceil(float(h)/level);
+
+        groupsize.WorkGroupSize.z = 1;
+        groupsize.NumWorkGroups.z = 1;
+        break;
+    }
+
+    case _ROW_WISE_LOCAL_GROUP:
+    {
+        groupsize.NumWorkGroups=_Tools::GetGroupSize(h);
+        groupsize.WorkGroupSize=_Tools::GetGroupSize(w);//local has row size
+
+        break;
+    }
+    case _COLUMN_WISE_LOCAL_GROUP:
+    {
+        groupsize.NumWorkGroups=_Tools::GetGroupSize(w);
+        groupsize.WorkGroupSize=_Tools::GetGroupSize(h);//local has column size
+
+        break;
+    }
+    }
+
+    return groupsize;
 }
 
 /* Function : compute_sobel_edge
@@ -83,7 +137,10 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -114,7 +171,10 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -138,7 +198,10 @@ void _GPU_Compute::compute_guassian_blur_3_3(_Texture& input_img,_Texture& outpu
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -161,7 +224,9 @@ void _GPU_Compute::compute_guassian_blur_5_5(_Texture& input_img,_Texture& outpu
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -184,7 +249,10 @@ void _GPU_Compute::compute_invert(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -207,7 +275,9 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -242,7 +312,10 @@ void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    glDispatchCompute(input_img.getWidth() / 16, input_img.getHeight() / 16, 1);
+    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
