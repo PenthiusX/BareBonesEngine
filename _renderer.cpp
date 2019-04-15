@@ -12,7 +12,7 @@
  * The "QOpenGLExtraFunctions(QOpenGLContext::currentContext())" is passed by parameter
  * to avoid using initialiseopenglfunction() in the initcallback.
  * Create:11_02_2019
- */
+*/
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 //    glEnable(GL_BLEND);
@@ -32,7 +32,6 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 	glm_projection4x4 = glm::mat4(1.0f);
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
-
     isTranfomationLocal = false;
 }
 
@@ -92,7 +91,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (float), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
     //
 	glEnableVertexAttribArray(0);
@@ -185,19 +184,19 @@ void _Renderer::setTexture(QString pathtoTexture)
 * Created: 25_02_2019
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
-{
-    glm_model4x4 = glm::mat4(1.0f);
-    translationMatrix = glm::mat4(1.f);
-    rotationMatrix = glm::mat4(1.f);
-    scalingMatrix = glm::mat4(1.f);
-    //
-    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
-    glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
-    glm::quat quat = glm::quat(EulerAngles);
-    rotationMatrix = glm::mat4_cast(quat);
-    translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
-    //
-    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+{ 
+        glm_model4x4 = glm::mat4(1.0f);
+        translationMatrix = glm::mat4(1.f);
+        rotationMatrix = glm::mat4(1.f);
+        scalingMatrix = glm::mat4(1.f);
+        //
+        scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
+        glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
+        glm::quat quat = glm::quat(EulerAngles);
+        rotationMatrix = glm::mat4_cast(quat);
+        translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
+        //
+        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
 }
 
 /*
@@ -232,15 +231,16 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
 }
 /*
- * Function: setPosition/Rotation/Scale/Translate
+ * Function: setPosition(QVector3D pos)\translate(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
- * of the matrices of the individual object.
+ * of the matrices of the individual object.In this case the positions
  * Used by: _render class in draw()
  * Created: 1_03_2019
 */
 void _Renderer::setPosition(QVector3D pos)
 {
     this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
+    this->sceneEntity.setPosition(pos);
     if(isTranfomationLocal)
     {
         glm_model4x4 = glm::mat4(1.0f);
@@ -249,12 +249,11 @@ void _Renderer::setPosition(QVector3D pos)
     else if(!isTranfomationLocal)
     {
         translationMatrix = glm::mat4(1.f);
-        translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+        translationMatrix = glm::translate(translationMatrix,glm::vec3( this->sceneEntity.getPostion().x(),
+                                                                        this->sceneEntity.getPostion().y(),
+                                                                        this->sceneEntity.getPostion().z()));
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-        sceneEntity.setPosition(pos);
     }
-
-    _Tools::Debugmatrix4x4(glm_model4x4);//Debug Use
 }
 void _Renderer::translate(QVector3D pos)
 {
@@ -268,71 +267,55 @@ void _Renderer::translate(QVector3D pos)
         translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     }
-
-    _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
-
-//  this->sceneEntity.setPosition(sceneEntity.getPostion() + pos);//reimplement
+  this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
+                                          translationMatrix[3][1], // an alternate implemtation to the norm.
+                                          translationMatrix[3][2]));
 }
 
+/*
+ * Function: setRotation(QVector3D pos)
+ * updates the specific trasformations that affect the model matrix
+ * of the matrices of the individual object.In this case the rotation
+ * Used by: _render class in draw()
+ * Created: 1_03_2019
+*/
 void _Renderer::setRotation(QVector3D rot)
 {
+    this->sceneEntity.setRotation(rot);
     this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
     if(isTranfomationLocal)
-    {
-        glm_model4x4 = glm::mat4x4(1.f);
-        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
+    {//still buggy
+        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(), this->sceneEntity.getRotation().y(), this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         glm_model4x4 *= glm::mat4_cast(quat);
     }
     else if(!isTranfomationLocal)
     {
         rotationMatrix = glm::mat4x4(1.f);
-        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
+        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                              this->sceneEntity.getRotation().y(),
+                              this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
-        rotationMatrix *= glm::mat4_cast(quat);
+        rotationMatrix = glm::mat4_cast(quat);
         glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
     }
-//  this->sceneEntity.setRotation(rot);//reimplement
 }
-void _Renderer::rotate(QVector3D rot)
-{
-    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
-    if(isTranfomationLocal)
-    {
-        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
-        glm::quat quat = glm::quat(EulerAngles);
-        glm_model4x4 *= glm::mat4_cast(quat);
-    }
-    else if(!isTranfomationLocal)
-    {
-        //Quat
-        glm::vec3 EulerAngles(rot.x(), rot.y(), rot.z());
-        glm::quat quat = glm::quat(EulerAngles);
-        rotationMatrix *= glm::mat4_cast(quat);
-        glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
-    }
-
-//  this->sceneEntity.setRotation(this->sceneEntity.getRotation() + rot);//reimplement
-
-    _Tools::Debugmatrix4x4(glm_model4x4);//Debug use
-} 
-
+/*
+ * Function: setscale(float scale)
+ * updates the specific trasformations that affect the model matrix
+ * of the matrices of the individual object.In this case the scale
+ * Used by: _render class in draw()
+ * Created: 1_03_2019
+*/
 void _Renderer::setscale(float scale)
 {
+    this->sceneEntity.setScale(scale);//reimplemnt
     scalingMatrix = glm::mat4(1.f);
-    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
+    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(this->sceneEntity.getScale(),//scale eqally on all axis(dont need respective sclaing)
+                                                        this->sceneEntity.getScale(),
+                                                        this->sceneEntity.getScale()));
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-
-//  this->sceneEntity.setScale(scale);//reimplemnt
 }
-void _Renderer::scale(float scale)
-{
-    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
-    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-
-//    this->sceneEntity.setScale(sceneEntity.getScale() + scale);//reimplement
-}
-
 /*
 * Function: setSceneEntity(_SceneEntity s)
 * Sets the sceen entity object locally and sets the 
@@ -363,17 +346,15 @@ _SceneEntity _Renderer::getSceneEntity()
 /*
  * Function: draw()
  * This is your proprietory draw function 
+ * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
  * Used by: the _glWidget class paintGl().
  * Created:11_02_2019
 */
 void _Renderer::_Renderer::draw()
 { 
     //Using the shader program in the current context
-    //can be called once in the init or every frame
-    //if the shader is switching between objects
     shdr->useShaderProgram();
-	//Setting the uniform each frame.
-	//Depends if the need is to update the values
+    //Setting the uniform for color
     transitionColors();
     //Bind Textures
     for(unsigned int t=0;t<textures.size();t++)
@@ -381,7 +362,6 @@ void _Renderer::_Renderer::draw()
         textures[t].bind();
     }
     //Bind the Buffers data of the respective buffer object
-    //in the context each frame.
 	glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
@@ -394,7 +374,8 @@ void _Renderer::_Renderer::draw()
 }
 
 /*
- * Temorrary debugging implemetation, trasitions colors of object
+ * Temporary debugging implemetation, trasitions colors of object
+ * hot reloding of shaders also needs to be implemented
 */
 void _Renderer::transitionColors()
 {

@@ -145,14 +145,11 @@ void _Shader::setChildShader(QString s, unsigned int typ)
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;
-
     for (auto const& shader_part : shader_parts)
     {
         combined_src = combined_src + tools.ReadStringFromQrc(shader_part);//second specifies value at key in map(dictionary)
     }
-
     //tools.ReadStringFromQrc(s);
-
     unsigned int shader = compileShader(combined_src,typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }

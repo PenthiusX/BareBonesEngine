@@ -38,6 +38,7 @@ _Camera cam;
  //Varible for InputCallbackFunctions
  unsigned int id;
   float scroolScale;
+  QVector2D rotRads;
 };
 
 #endif // _GLWIDGET_H
