@@ -21,9 +21,9 @@ public:
     void objLoader(QString pathToFile);
 
 private:
-std::vector<float> vertices;
-std::vector<unsigned int> indices;
-std::vector<float> uvs;
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<float> uvs;
 };
 
 #endif // _ASSETLOADER_H

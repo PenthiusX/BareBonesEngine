@@ -29,20 +29,20 @@ public:
 
 private:
     //Shader Program
-     uint shaderProgram = 0;
+    uint shaderProgram = 0;
 
-     // map(dictionary) of shader
-     //key : shader typ enum eg. GL_VERTEX_SHADER
-     //value : shader ID returned by glCreateShader
-     std::map<unsigned int,unsigned int> child_shaders;
+    // map(dictionary) of shader
+    //key : shader typ enum eg. GL_VERTEX_SHADER
+    //value : shader ID returned by glCreateShader
+    std::map<unsigned int,unsigned int> child_shaders;
 
-     unsigned int compileShader(QString src_path,unsigned int typ);
+    unsigned int compileShader(QString src_path,unsigned int typ);
 
-     _Tools tools;
+    _Tools tools;
 
-     //Error checking
-     int success;
-     char infoLog[512];
+    //Error checking
+    int success;
+    char infoLog[512];
 };
 
 #endif // _SHADER_H

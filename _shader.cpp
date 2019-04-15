@@ -87,8 +87,8 @@ void _Shader::attachShaders()
     }
     else//if no child shaders attatched
     {
-       std::cerr << "ERROR::SHADERCLASS::NO_CHILD_SHADERS_ATTATCHED." << std::endl;
-       exit(0);
+        std::cerr << "ERROR::SHADERCLASS::NO_CHILD_SHADERS_ATTATCHED." << std::endl;
+        exit(0);
     }
 }
 /*

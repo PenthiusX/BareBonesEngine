@@ -4,7 +4,7 @@
 
 /*
  * Class: _Camera
- * class sets values needed by the Viewmatrix 
+ * class sets values needed by the Viewmatrix
  * for setting of values on Init or realtime
  * Created: 01_03_2019
  * Author: Aditya
@@ -27,10 +27,10 @@ public:
     unsigned int getFOV();
 
 private:
- QVector3D eyePosition;
- QVector3D focalPoint;
- QVector3D upVector;
- unsigned int fov;
+    QVector3D eyePosition;
+    QVector3D focalPoint;
+    QVector3D upVector;
+    unsigned int fov;
 };
 
 #endif // _CAMERA_H
