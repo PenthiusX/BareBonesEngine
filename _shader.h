@@ -21,7 +21,8 @@ public:
     void setVertexShader(QString vShader);
     void attachShaders();
     void attachShaders(QString v , QString f);//should be deprecated
-    void setChildShader(QString s,unsigned int typ);
+    //void setChildShader(QString s,unsigned int typ);
+    void setChildShader(QString s,unsigned int typ, glm::ivec3 workgroup_size = glm::ivec3(16,16,1));
     void setChildShader(std::vector<QString>, unsigned int typ);
     void useShaderProgram();
     uint getUniformLocation(const char *nameOfUniform);
@@ -35,7 +36,8 @@ public:
 
 
 
-    QString shader_parser(QString shader_file);
+    //QString shader_parser(QString shader_file);
+    QString shader_parser(QString shader_file, glm::ivec3 workgroup_size = glm::ivec3(16,16,1));
 private:
     //Shader Program
      uint shaderProgram = 0;

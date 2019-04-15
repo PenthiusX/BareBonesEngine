@@ -18,11 +18,12 @@ _GPU_Compute::_GPU_Compute() : QOpenGLExtraFunctions(QOpenGLContext::currentCont
 void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_img)
 {
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_copy_8_to_32.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_copy_8_to_32.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -32,7 +33,7 @@ void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_im
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -44,11 +45,12 @@ void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_im
 void _GPU_Compute::compute_copy_32_to_8(_Texture &input_img, _Texture &output_img)
 {
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_copy_32_to_8.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_copy_32_to_8.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -58,10 +60,9 @@ void _GPU_Compute::compute_copy_32_to_8(_Texture &input_img, _Texture &output_im
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
-
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -123,11 +124,12 @@ _GPU_Compute::GroupSize _GPU_Compute::getWorkGroupSize(int w,int h, COMPUTE_OPER
 void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_sobel_edge_mag.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_sobel_edge_mag.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -137,7 +139,7 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -156,11 +158,12 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_
 {
 
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_sobel_edge_mag_theta.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_sobel_edge_mag_theta.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -171,7 +174,7 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -184,11 +187,12 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_
 void _GPU_Compute::compute_guassian_blur_3_3(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_guassian_blur_3_3.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_guassian_blur_3_3.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -198,7 +202,7 @@ void _GPU_Compute::compute_guassian_blur_3_3(_Texture& input_img,_Texture& outpu
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -210,11 +214,12 @@ void _GPU_Compute::compute_guassian_blur_3_3(_Texture& input_img,_Texture& outpu
 void _GPU_Compute::compute_guassian_blur_5_5(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_guassian_blur_5_5.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_guassian_blur_5_5.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -224,7 +229,7 @@ void _GPU_Compute::compute_guassian_blur_5_5(_Texture& input_img,_Texture& outpu
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -235,11 +240,12 @@ void _GPU_Compute::compute_guassian_blur_5_5(_Texture& input_img,_Texture& outpu
 void _GPU_Compute::compute_invert(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_uint_invert.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_uint_invert.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -249,7 +255,7 @@ void _GPU_Compute::compute_invert(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -261,11 +267,12 @@ void _GPU_Compute::compute_invert(_Texture& input_img,_Texture& output_img)
 void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_threshold.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_threshold.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -275,7 +282,7 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -297,11 +304,12 @@ void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
     compute_sobel_edge(texture_blur,texture_sobel_mag_,texture_sobel_theta_);
 
     static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
     {
-        shader.setChildShader(":/shaders/compute_canny.glsl",GL_COMPUTE_SHADER);
+        shader.setChildShader(":/shaders/compute_canny.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -312,7 +320,7 @@ void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-    GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 

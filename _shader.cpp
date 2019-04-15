@@ -131,9 +131,10 @@ void _Shader::attachShaders(QString v,QString f)
  *   use fnction as :
  *   setChildshader(std::vector<QString> parts{"path_to/vshader_head.glsl","path_to/vshader_uniforms.glsl","path_to/vshader_main.glsl"})
 */
-QString _Shader::shader_parser(QString shader_file){
+QString _Shader::shader_parser(QString shader_file,glm::ivec3 workgroup_size)
+{
 
-    //for dealing with #include statements
+    //for dealing with #include statements and dynamic workgroup sizes
     QStringList included_files;
 
     QString shader_src = tools.ReadStringFromQrc(shader_file);
@@ -159,6 +160,9 @@ QString _Shader::shader_parser(QString shader_file){
         }
         else break;
     }
+
+    shader_src.replace("#local_size_define",QString("layout (local_size_x =%1, local_size_y = %2, local_size_z = %3) in;").arg(workgroup_size.x).arg(workgroup_size.y).arg(workgroup_size.z));
+
     return shader_src;
 }
 
@@ -167,10 +171,10 @@ QString _Shader::shader_parser(QString shader_file){
  * this function addds these shaders to the shader program objects
  * takes path to shader file and typ of shader ie. GL_VERTEX_SHADER
 */
-void _Shader::setChildShader(QString s, unsigned int typ)
+void _Shader::setChildShader(QString s, unsigned int typ, glm::ivec3 workgroup_size)
 {
     //solve shader dependancies and create final shader source
-    QString shader_src = shader_parser(s);
+    QString shader_src = shader_parser(s,workgroup_size);
 
 
     unsigned int shader = compile_shader(shader_src,typ);
