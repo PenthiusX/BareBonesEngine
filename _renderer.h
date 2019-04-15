@@ -42,12 +42,10 @@ public:
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
     //
-    void setPosition(QVector3D pos);
-    void translate(QVector3D pos);
-	void setRotation(QVector3D rot);
-    void rotate(QVector3D rot);
-    void setscale(float scale);
-	void scale(float scale);
+    void setPosition(QVector3D pos);//resets the positon to the value that is required
+    void translate(QVector3D pos);//update the current positon with the value that is set
+    void setRotation(QVector3D rot);//sets the rotation value to the desired value
+    void setscale(float scale);//set the scale of the object;
     //
     void setSceneEntityInRenderer(_SceneEntity s);//
     _SceneEntity getSceneEntity();//
@@ -73,7 +71,7 @@ private:
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
     std::vector<_Texture> textures;//Teture array for tetures in use for the respective renderer object
-    bool isTranfomationLocal;
+    bool isTranfomationLocal;//Sets the flag to determine if tranformations need to be set on a local or world pivot
 
     //Debug implentation
     void transitionColors();

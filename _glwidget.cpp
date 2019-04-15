@@ -20,7 +20,6 @@
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     id = 0;
-
 }
 _GLWidget::~_GLWidget()
 {
@@ -61,7 +60,7 @@ void _GLWidget::initializeGL()
     background_quad.setModelData(vertsV,indiceV);
     //
     s.setId(0);
-    s.setIsTransfomationLocal(false);
+    s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
     s.setScale(0.09f);
@@ -131,6 +130,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 * runs each time the mouse is pressed and moved.
 * Created: 5_02_2019
 */
+
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {
     if(e->buttons() == Qt::RightButton)
@@ -139,11 +139,11 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
     if(e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y())
         mousePressPosition = maxpoint;
-
-    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    float damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
+    rotRads = rotRads + QVector2D(e->localPos()) - mousePressPosition;
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
         if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-            scene->getSceneObjectsArray()[i]->rotate(QVector3D(diff.y() * 0.0005,diff.x() * 0.0005,0.f));
+            scene->getSceneObjectsArray()[i]->setRotation(QVector3D(rotRads.y() * damp,rotRads.x() * damp,0.f));//values are inverted for intuitive controll
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
@@ -159,21 +159,18 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 	{
         scroolScale = numSteps * 0.005;
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-		{
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->scale(scroolScale);
-        }
+                scene->getSceneObjectsArray()[i]->setscale(scroolScale);
     }
     else
     {
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-		{
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
 			{
 				scroolScale = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
                 scene->getSceneObjectsArray()[i]->setscale(scroolScale);
+                qInfo() << scroolScale;
             }
-        }
     }
 }
 /*
@@ -192,36 +189,30 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
     if (event->text() == "d" || event->text() == "D")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(0.f,-0.1f,0.0));
+                scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.1f,-0.f,0.0));
 
     if (event->text() == "a" || event->text() == "A")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(0.f,0.1f, 0.0));
+                scene->getSceneObjectsArray()[i]->translate(QVector3D(0.1f,0.f, 0.0));
 
     if (event->text() == "w" || event->text() == "W")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(0.1f, 0.0, 0.0));
+                scene->getSceneObjectsArray()[i]->translate(QVector3D(0.f, 0.1, 0.0));
 
     if (event->text() == "s" || event->text() == "S")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.1f, 0.0, 0.0));
+                scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.f, -0.1, 0.0));
 
     if (event->text() == "r" || event->text() == "R")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-        {
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
 			{
 				scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
                 scene->getSceneObjectsArray()[i]->setRotation(QVector3D(0.0f, 0.0, 0.0));
                 scene->getSceneObjectsArray()[i]->setscale(scene->getSceneObjectsArray()[i]->getSceneEntity().getScale());
+                rotRads = QVector2D(.0f,.0f);
 			}
-        }
-
-    if (event->text() == "c" || event->text() == "C")
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-             qInfo() << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().x() << "_" << scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().y() << "_" <<scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion().z();
 }
