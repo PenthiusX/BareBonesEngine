@@ -52,11 +52,11 @@ void _GLWidget::initializeGL()
         1.0f, -1.0f, 0.999f,  // bottom right
         -1.0f, -1.0f, 0.999f, // bottom left
         -1.0f,  1.0f, 0.999f  // top left
-       };
+    };
     std::vector<unsigned int> indiceV = {// note that we start from 0!
-                                0, 1, 3,   // first triangle
-                                1, 2, 3    // second triangle
-                               };
+                                         0, 1, 3,   // first triangle
+                                         1, 2, 3    // second triangle
+                                        };
     background_quad.setModelData(vertsV,indiceV);
     //
     s.setId(0);
@@ -134,7 +134,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {
     if(e->buttons() == Qt::RightButton)
-          qDebug() << "Only right button";
+        qDebug() << "Only right button";
 
     QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
     if(e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y())
@@ -156,7 +156,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
     if (e->orientation() == Qt::Horizontal)
-	{
+    {
         scroolScale = numSteps * 0.005;
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
@@ -166,8 +166,8 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     {
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-			{
-				scroolScale = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
+            {
+                scroolScale = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
                 scene->getSceneObjectsArray()[i]->setscale(scroolScale);
                 qInfo() << scroolScale;
             }
@@ -183,8 +183,8 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 {
     if (event->text() == "q" || event->text() == "Q")
         id += 1;
-        if (id >= scene->getSceneObjectsArray().size())
-            id = 0;
+    if (id >= scene->getSceneObjectsArray().size())
+        id = 0;
 
     if (event->text() == "d" || event->text() == "D")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
@@ -209,10 +209,10 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
     if (event->text() == "r" || event->text() == "R")
         for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
             if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-			{
-				scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
+            {
+                scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
                 scene->getSceneObjectsArray()[i]->setRotation(QVector3D(0.0f, 0.0, 0.0));
                 scene->getSceneObjectsArray()[i]->setscale(scene->getSceneObjectsArray()[i]->getSceneEntity().getScale());
                 rotRads = QVector2D(.0f,.0f);
-			}
+            }
 }

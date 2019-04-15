@@ -25,11 +25,11 @@ QString _Tools::ReadStringFromQrc(QString Filename)
     {
         qDebug() << "could not open file for read";
     }
-        QTextStream in(&mFile);
-        mText = in.readAll();
+    QTextStream in(&mFile);
+    mText = in.readAll();
 
-        mFile.close();
-        return mText;
+    mFile.close();
+    return mText;
 }
 /*
  * Function : retunrnMaxPoint(QVector2D mousepos)
@@ -47,7 +47,7 @@ QVector2D _Tools::retunrnMaxPoint(QVector2D mousepos)
     }
     if(mousepos.y() > max.y())
     {
-         max.setY(max.y());
+        max.setY(max.y());
     }
     return max;
 }
@@ -85,14 +85,6 @@ void _Tools::calcualteMaxExtentsOfModel(/*sceneEntity s*/)
 
 void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
 {
-//    for(int i = 0 ; i < 4 ; i++)
-//    {
-//        for(int j = 0 ; j < 4 ; j++)
-//        {
-//            qInfo() << i <<","<< j << mat4[i][j];
-//        }
-//    }
-
     for(int i = 0 ; i < 4 ; i++)
     {
         qInfo() << mat4[i][0] <<" "<< mat4[i][1] <<" "<< mat4[i][2] <<" "<< mat4[i][3];

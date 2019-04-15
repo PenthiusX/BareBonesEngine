@@ -50,8 +50,8 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
     width = img.width();
     height = img.height();
 
-//    addParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+    //    addParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    //    addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
     addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
@@ -186,9 +186,9 @@ void _Texture::load( GLenum format, GLenum datatype)
     {
         glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
     }
-        color_format = format;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
-       //glGenerateMipmap(GL_TEXTURE_2D);
+    color_format = format;
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
+    //glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 //return width of loaded texture image

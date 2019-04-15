@@ -13,11 +13,11 @@
 */
 _Scene::_Scene()
 {
-	isCamera = false;
+    isCamera = false;
 }
 _Scene::~_Scene()
 {
-	renderObjects.clear();
+    renderObjects.clear();
 }
 /*
  * Function: getSceneObjects()
@@ -27,7 +27,7 @@ _Scene::~_Scene()
 */
 std::vector<_Renderer*> _Scene::getSceneObjectsArray()
 {
-	return this->renderObjects;
+    return this->renderObjects;
 }
 /*
 * Function: addSceneObject(_SceneEntity s)
@@ -38,7 +38,7 @@ std::vector<_Renderer*> _Scene::getSceneObjectsArray()
 */
 void _Scene::addSceneObject(_SceneEntity s)
 {
-// Only sets the scene object if the camera has been set already and scene object is active
+    // Only sets the scene object if the camera has been set already and scene object is active
     if (s.getIsActive() == true)
     {
         if (isCamera == true)
@@ -70,7 +70,7 @@ void _Scene::addSceneObject(_SceneEntity s)
 */
 void _Scene::addCamera(_Camera c)
 {
-	isCamera = true;
+    isCamera = true;
     cam = c;
 }
 /*
@@ -90,13 +90,13 @@ void _Scene::updateCamera(_Camera c)
 void _Scene::onResize(int w,int h)
 {
     for (unsigned int i = 0; i < renderObjects.size(); i++)
-	{
-       renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
-	}
+    {
+        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
+    }
 }
 /*
  * Function: render()
- * This function is render function that will call the glDraw fuinction in 
+ * This function is render function that will call the glDraw fuinction in
  * the render final draw of all sceneEntity objects attached to scene.
  * this is being called by the _GlWidget class.
  * Created:26_02_2019

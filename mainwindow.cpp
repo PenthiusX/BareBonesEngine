@@ -73,5 +73,5 @@ MainWindow::~MainWindow()
 */
 void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
 {
-//  ui->widget->update_camera_image(img,w,h);//------------------------Needs work!!!!!
+    //  ui->widget->update_camera_image(img,w,h);//------------------------Needs work!!!!!
 }

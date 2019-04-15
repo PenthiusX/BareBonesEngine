@@ -24,7 +24,7 @@ public:
     inline unsigned int setShader(unsigned int prog){ shaderProgram = prog; }
 
     inline unsigned int GetID(){ return m_ID;}
-//    void setSlotUniformName(QString name);//used if multiple texture bindings require differant slots get slot location of the given uniform name
+    //    void setSlotUniformName(QString name);//used if multiple texture bindings require differant slots get slot location of the given uniform name
 
     void bind();//bind texture to default slot(0)
     void bind(unsigned int index);//bind texture default given slot index

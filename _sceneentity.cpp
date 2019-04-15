@@ -7,9 +7,9 @@
 _SceneEntity::_SceneEntity()
 {	//sets the rotation value at init and uses the from axis angle 
     this->rotation = QVector3D(0.0,0.0,0.0);
-	this->postion = QVector3D(0.0, 0.0, 0.0);
-	this->scale = 1.0;
-	this->isActive = false;
+    this->postion = QVector3D(0.0, 0.0, 0.0);
+    this->scale = 1.0;
+    this->isActive = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -19,9 +19,9 @@ _SceneEntity::_SceneEntity()
 */
 _SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale)
 {
-	this->postion = pos;
-	this->rotation = rot;
-	this->scale = scale;
+    this->postion = pos;
+    this->rotation = rot;
+    this->scale = scale;
 }
 /*
 */
@@ -37,11 +37,11 @@ _SceneEntity::~_SceneEntity(){
 */
 void _SceneEntity::setId(unsigned int id)
 {
-	this->id = id;
+    this->id = id;
 }
 unsigned int _SceneEntity::getId()
 {
-	return this->id;
+    return this->id;
 }
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
@@ -50,11 +50,11 @@ unsigned int _SceneEntity::getId()
 */
 void _SceneEntity::setPosition(QVector3D pos)
 {
-	this->postion = pos;
+    this->postion = pos;
 }
 QVector3D _SceneEntity::getPostion()
 {
-	return this->postion;
+    return this->postion;
 }
 /*
  * Function: setRotation(QQuaternion rot) & getRotation()
@@ -63,11 +63,11 @@ QVector3D _SceneEntity::getPostion()
 */
 void _SceneEntity::setRotation(QVector3D rot)
 {
-	this->rotation = rot;
+    this->rotation = rot;
 }
 QVector3D _SceneEntity::getRotation()
 {
-	return this->rotation;
+    return this->rotation;
 }
 /*
  * Function: setScale(float scale) & getScale()
@@ -76,11 +76,11 @@ QVector3D _SceneEntity::getRotation()
 */
 void _SceneEntity::setScale(float scale)
 {
-	this->scale = scale;
+    this->scale = scale;
 }
 float _SceneEntity::getScale()
 {
-	return this->scale;
+    return this->scale;
 }
 /*
  * Function: setVertexData(std::vector<float> vertices) & getvertexData()
@@ -89,11 +89,11 @@ float _SceneEntity::getScale()
 */
 void _SceneEntity::setVertexData(std::vector<float> vertices)
 {
-	this->vertexData = vertices;
+    this->vertexData = vertices;
 }
 std::vector<float> _SceneEntity::getvertexData()
 {
-	return this->vertexData;
+    return this->vertexData;
 }
 /*
  * Function: setIndexData(std::vector<unsigned int> indices) & getIndexData()
@@ -102,11 +102,11 @@ std::vector<float> _SceneEntity::getvertexData()
 */
 void _SceneEntity::setIndexData(std::vector<unsigned int> indices)
 {
-	this->indexData = indices;
+    this->indexData = indices;
 }
 std::vector<unsigned int> _SceneEntity::getIndexData()
 {
-	return this->indexData;
+    return this->indexData;
 }
 /*
  * Function: setuvData(std::vector<unsigned int> uvCoords) & getUvData()
@@ -115,11 +115,11 @@ std::vector<unsigned int> _SceneEntity::getIndexData()
 */
 void _SceneEntity::setuvData(std::vector<int> uvCoords)
 {
-	this->uvData = uvCoords;
+    this->uvData = uvCoords;
 }
 std::vector<int> _SceneEntity::getUvData()
 {
-	return this->uvData;
+    return this->uvData;
 }
 /*
  * Function: setnormalData(std::vector<float> normalData) & getNormalData()
@@ -128,11 +128,11 @@ std::vector<int> _SceneEntity::getUvData()
 */
 void _SceneEntity::setnormalData(std::vector<float> normalData)
 {
-	this->normalData = normalData;
+    this->normalData = normalData;
 }
 std::vector<float> _SceneEntity::getNormalData()
 {
-	return this->normalData;
+    return this->normalData;
 }
 bool _SceneEntity::getIsActive()
 {
@@ -161,8 +161,8 @@ bool _SceneEntity::getIsTransfomationLocal()
 void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
 {
     this->isActive = true;
-	this->vertexData = vertices;
-	this->indexData = indices;
+    this->vertexData = vertices;
+    this->indexData = indices;
 }
 /*
  * Function: setModelData(Qstring path)
@@ -173,11 +173,11 @@ void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigne
  */
 void _SceneEntity::setModelData(QString path)
 {
-	this->isActive = true;
-	_AssetLoader a;
-	a.objLoader(path);
-	this->vertexData = a.getAssetVertices();
-	this->indexData = a.getAssetIndices();
+    this->isActive = true;
+    _AssetLoader a;
+    a.objLoader(path);
+    this->vertexData = a.getAssetVertices();
+    this->indexData = a.getAssetIndices();
 }
 /*
  * Function: setShaderPath(QString vSh, QString fSh)
@@ -186,7 +186,7 @@ void _SceneEntity::setModelData(QString path)
 */
 void _SceneEntity::setShader(QString vSh, QString fSh)
 {
-	this->vShaderPath = vSh;
+    this->vShaderPath = vSh;
     this->fShaderPath = fSh;
 }
 /* Function:gets/sets texture path getTexturePath().
@@ -208,7 +208,7 @@ void _SceneEntity::setTexturePath(QString texPath)
 */
 QString _SceneEntity::getVertexShaderPath()
 {
-	return this->vShaderPath;
+    return this->vShaderPath;
 }
 /*
 * Function: getFragmentShaderPath()
@@ -217,5 +217,5 @@ QString _SceneEntity::getVertexShaderPath()
 */
 QString _SceneEntity::getFragmentShaderPath()
 {
-	return this->fShaderPath;
+    return this->fShaderPath;
 }

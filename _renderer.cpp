@@ -15,21 +15,18 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-//    glEnable(GL_BLEND);
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     glEnable(GL_PROGRAM_POINT_SIZE);
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_FRONT_AND_BACK);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_FRONT_AND_BACK);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
-	//
-	shdr = new _Shader();//initialising the _shader() class * object.
-	setShader();//will run this shader by default.
-	timer.start();
-	//
-	glm_projection4x4 = glm::mat4(1.0f);
+
+    shdr = new _Shader();//initialising the _shader() class * object.
+    setShader();//will run this shader by default.
+    timer.start();
+
+    glm_projection4x4 = glm::mat4(1.0f);
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
     isTranfomationLocal = false;
@@ -40,8 +37,8 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 */
 _Renderer::~_Renderer()
 {
-	shdr = NULL;
-	delete shdr;
+    shdr = NULL;
+    delete shdr;
 }
 
 /*
@@ -49,11 +46,11 @@ _Renderer::~_Renderer()
  * Sets a dafault hard-fed shader
  * on the render object
  * Is being used by the _glWidget class
- * Create:11_02_2019 
+ * Create:11_02_2019
 */
 void _Renderer::setShader()
 {
-	shdr->attachShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    shdr->attachShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
 }
 
 /*
@@ -65,42 +62,42 @@ void _Renderer::setShader()
 */
 void _Renderer::setShader(QString vSh, QString fSh)
 {
-	shdr->attachShaders(vSh,fSh);
+    shdr->attachShaders(vSh,fSh);
 }
 
 /*
  * Function: setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
  * set Vertex and Index data into
  * the GPU buffers to use for the current model.
- * May have extended implementation for inclusion of UV for texture and Normals for 
+ * May have extended implementation for inclusion of UV for texture and Normals for
  * lighting.
  * Used by: the _glWidget class initializeGL().
  * Created: 11_02_2019
 */
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<unsigned int> indexArray)
 {
-	// Copy the vertex and index data locally for use in the current drawcall.
-	this->vertices = vertexArray;
-	this->indices = indexArray;
+    // Copy the vertex and index data locally for use in the current drawcall.
+    this->vertices = vertexArray;
+    this->indices = indexArray;
     // Initialization code (done once (unless your object frequently changes))
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
-    // 
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //
+
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
-    //
-	glEnableVertexAttribArray(0);
+
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-	//
+
     this->colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture and UVs
-	this->modelUnifrom = shdr->getUniformLocation("model");
-	this->viewUniform  = shdr->getUniformLocation("view");  
-	this->projectionUniform = shdr->getUniformLocation("projection");
+    this->modelUnifrom = shdr->getUniformLocation("model");
+    this->viewUniform  = shdr->getUniformLocation("view");
+    this->projectionUniform = shdr->getUniformLocation("projection");
 }
 
 /*
@@ -172,8 +169,8 @@ void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int ihei
  */
 void _Renderer::setTexture(QString pathtoTexture)
 {
-     if(!textures.empty())
-     textures[0].setImage(pathtoTexture);
+    if(!textures.empty())
+        textures[0].setImage(pathtoTexture);
 }
 
 /*
@@ -185,18 +182,18 @@ void _Renderer::setTexture(QString pathtoTexture)
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
 { 
-        glm_model4x4 = glm::mat4(1.0f);
-        translationMatrix = glm::mat4(1.f);
-        rotationMatrix = glm::mat4(1.f);
-        scalingMatrix = glm::mat4(1.f);
-        //
-        scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
-        glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
-        glm::quat quat = glm::quat(EulerAngles);
-        rotationMatrix = glm::mat4_cast(quat);
-        translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
-        //
-        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+    glm_model4x4 = glm::mat4(1.0f);
+    translationMatrix = glm::mat4(1.f);
+    rotationMatrix = glm::mat4(1.f);
+    scalingMatrix = glm::mat4(1.f);
+
+    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
+    glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
+    glm::quat quat = glm::quat(EulerAngles);
+    rotationMatrix = glm::mat4_cast(quat);
+    translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
+
+    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
 }
 
 /*
@@ -209,11 +206,11 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
-	glm_view4x4 = glm::mat4(1.0f);
-	glm_view4x4 = glm::lookAt(
-	glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
-	glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
-	glm::vec3(upVector.x(), upVector.y(), upVector.z()));
+    glm_view4x4 = glm::mat4(1.0f);
+    glm_view4x4 = glm::lookAt(
+                glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
+                glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
+                glm::vec3(upVector.x(), upVector.y(), upVector.z()));
 }
 
 /*
@@ -226,7 +223,7 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
 */
 void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar )
 {
-	// Calculate aspect ratio
+    // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
 }
@@ -267,9 +264,9 @@ void _Renderer::translate(QVector3D pos)
         translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     }
-  this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
-                                          translationMatrix[3][1], // an alternate implemtation to the norm.
-                                          translationMatrix[3][2]));
+    this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
+            translationMatrix[3][1], // an alternate implemtation to the norm.
+            translationMatrix[3][2]));
 }
 
 /*
@@ -325,12 +322,12 @@ void _Renderer::setscale(float scale)
 */
 void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
-	this->sceneEntity = s;	
+    this->sceneEntity = s;
     this->isTranfomationLocal = s.getIsTransfomationLocal();
-	setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
+    setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
-	setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
+    setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
 
 /*
@@ -340,12 +337,12 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 */
 _SceneEntity _Renderer::getSceneEntity()
 {
-	return this->sceneEntity;
+    return this->sceneEntity;
 }
 
 /*
  * Function: draw()
- * This is your proprietory draw function 
+ * This is your proprietory draw function
  * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
  * Used by: the _glWidget class paintGl().
  * Created:11_02_2019
@@ -362,14 +359,14 @@ void _Renderer::_Renderer::draw()
         textures[t].bind();
     }
     //Bind the Buffers data of the respective buffer object
-	glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
-	//sets the values for the MVP matrix in the vertex shader
-	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
-	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
+    //sets the values for the MVP matrix in the vertex shader
+    glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
+    glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
     glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
-	//The Final draw call for each frame
+    //The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
