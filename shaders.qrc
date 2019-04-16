@@ -17,5 +17,11 @@
         <file>shaders/compute_threshold.glsl</file>
         <file>shaders/compute_copy_8_to_32.glsl</file>
         <file>shaders/compute_copy_32_to_8.glsl</file>
+        <file>shaders/compute_row_operations.glsl</file>
+        <file>shaders/compute_row_wise_max.glsl</file>
+        <file>shaders/compute_row_wise_sum.glsl</file>
+        <file>shaders/compute_row_wise_arg_max.glsl</file>
+        <file>shaders/compute_mark_column_index.glsl</file>
+        <file>shaders/compute_clear_8_ui_texture.glsl</file>
     </qresource>
 </RCC>

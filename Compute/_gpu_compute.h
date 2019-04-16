@@ -21,6 +21,8 @@ class _GPU_Compute : private QOpenGLExtraFunctions
 public:
     _GPU_Compute();
 
+    GroupSize getWorkGroupSize(int w,int h,COMPUTE_OPERTION operation = _DEFAULT_2D_GROUP);
+
     void compute_sobel_edge(_Texture& input_img, _Texture& output_img);
     void compute_invert(_Texture &input_img, _Texture &output_img);
     void compute_canny_edge(_Texture &input_img, _Texture &output_img);
@@ -30,7 +32,10 @@ public:
     void compute_threshold(_Texture &input_img, _Texture &output_img);
     void compute_copy_8_to_32(_Texture &input_img, _Texture &output_img);
     void compute_copy_32_to_8(_Texture &input_img, _Texture &output_img);
-    GroupSize getWorkGroupSize(int w,int h,COMPUTE_OPERTION operation = _DEFAULT_2D_GROUP);
+    void compute_row_wise_max(_Texture &input_img, _Texture &output_img);
+    void compute_row_wise_arg_max(_Texture &input_img, _Texture &output_img);
+    void compute_mark_column_index(_Texture &input_img, _Texture &output_img);
+    void compute_clear_8_ui_texture(_Texture &input_img, unsigned int value=0);
 };
 
 #endif // _GPU_COMPUTE_H

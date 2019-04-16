@@ -12,7 +12,7 @@ void main()
 {
     ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.xy);
 
-    uint inv = getImagePixel(inputImage,image_pixel_cord)/3;
+    uint inv = mod(getImagePixel(inputImage,image_pixel_cord),256);
 
     setImagePixel(resultImage,image_pixel_cord,inv);
 
