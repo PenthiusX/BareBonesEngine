@@ -31,7 +31,8 @@ HEADERS  += mainwindow.h \
     _tools.h \
     Compute/_gpu_compute.h \
     IO/_configcontrolentity.h \
-    IO/_picolo_camera.h
+    IO/_picolo_camera.h \
+    UI/fancyslider.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -53,7 +54,8 @@ SOURCES += main.cpp\
     _tools.cpp \
     Compute/_gpu_compute.cpp \
     IO/_configcontrolentity.cpp \
-    IO/_picolo_camera.cpp
+    IO/_picolo_camera.cpp \
+    UI/fancyslider.cpp
 
 FORMS    += mainwindow.ui
 
