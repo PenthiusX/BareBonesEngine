@@ -6,109 +6,76 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>847</width>
-    <height>486</height>
+    <width>947</width>
+    <height>579</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="_GLWidget" name="widget" native="true"/>
+    </item>
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="5">
-       <widget class="QPushButton" name="backlight_off">
-        <property name="text">
-         <string>BackLight Off</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="line_laser_off">
-        <property name="text">
-         <string>Line Laser Off</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
+      <item row="0" column="1">
        <widget class="QPushButton" name="stage_right">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Stage Right</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="7">
-       <widget class="QPushButton" name="motors_setup">
-        <property name="text">
-         <string>motors</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="stage_left">
-        <property name="text">
-         <string>Satge Left</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="laser_focus_out">
-        <property name="text">
-         <string>Laser Focus Out</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="7">
-       <widget class="QPushButton" name="mark_sine_wave">
-        <property name="text">
-         <string>sine wave</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="8">
-       <widget class="QPushButton" name="grab_frame">
-        <property name="text">
-         <string>grab frame</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="8">
-       <widget class="QPushButton" name="scan">
-        <property name="text">
-         <string>Scan</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="laser_focus_in">
-        <property name="text">
-         <string>Laser Focus In</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
+      <item row="4" column="0">
        <widget class="QPushButton" name="backlight_on">
+        <property name="styleSheet">
+         <string notr="true"> QPushButton:checked{color:green;}</string>
+        </property>
         <property name="text">
-         <string>BackLight On</string>
+         <string>BackLight</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
+      <item row="6" column="0">
        <widget class="QPushButton" name="marking_laser_on">
+        <property name="styleSheet">
+         <string notr="true"> QPushButton:checked{color:green;}</string>
+        </property>
         <property name="text">
-         <string>Mark Laser On</string>
+         <string>Mark Laser</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="6">
-       <widget class="QPushButton" name="marking_laser_off">
+      <item row="5" column="0">
+       <widget class="QPushButton" name="line_laser_on">
+        <property name="styleSheet">
+         <string notr="true"> QPushButton:checked{color:green;}</string>
+        </property>
         <property name="text">
-         <string>Mark Laser Off</string>
+         <string>Line Laser</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="1" column="0">
        <widget class="QPushButton" name="laser_height_up">
         <property name="text">
          <string>Laser ZUp</string>
@@ -118,45 +85,133 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="line_laser_on">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="laser_focus_in">
         <property name="text">
-         <string>Line Laser On</string>
+         <string>Laser Focus In</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="1">
        <widget class="QPushButton" name="laser_height_down">
         <property name="text">
          <string>Laser Z Down</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="vaccum_on">
-        <property name="styleSheet">
-         <string notr="true">QPushButton{color:yellow;}
-    QPushButton:checked{color:green;}</string>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="laser_focus_out">
+        <property name="text">
+         <string>Laser Focus Out</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="stage_left">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
         </property>
         <property name="text">
-         <string>vaccum On</string>
+         <string>Satge Left</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QPushButton" name="motors_setup">
+        <property name="text">
+         <string>motors</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="vaccum_on">
+        <property name="styleSheet">
+         <string notr="true"> QPushButton:checked{color:green;}</string>
+        </property>
+        <property name="text">
+         <string>vaccum</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
         </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="vaccum_off">
+      <item row="5" column="1">
+       <widget class="QSlider" name="line_laser_slider">
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSlider" name="backlight_slider">
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QPushButton" name="scan">
         <property name="text">
-         <string>vaccum Off</string>
+         <string>Scan</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QPushButton" name="grab_frame">
+        <property name="text">
+         <string>grab frame</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QSlider" name="marking_laser_slider">
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>8</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QPushButton" name="mark_sine_wave">
+        <property name="text">
+         <string>sine wave</string>
         </property>
        </widget>
       </item>
      </layout>
-    </item>
-    <item>
-     <widget class="_GLWidget" name="widget" native="true"/>
     </item>
    </layout>
   </widget>
