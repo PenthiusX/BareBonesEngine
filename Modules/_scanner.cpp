@@ -134,7 +134,7 @@ void _Scanner::scan_generate_model()
 
     //FILE* imagefile;
 
-    char *colours=new char[machine->camera->getWidth()*machine->camera->getHeight()];
+    char *colours=new char[machine->camera->getWidth()*machine->camera->getHeight()*4];
 
     //initialise empty textures for processing
     static _Texture texture(nullptr,machine->camera->getWidth(),machine->camera->getHeight());
@@ -145,7 +145,7 @@ void _Scanner::scan_generate_model()
 
     //load texture
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_out.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
     texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
 
     //texture.unbind();
@@ -184,13 +184,14 @@ void _Scanner::scan_generate_model()
         texture.setImage(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
         //compute operation(edge detecton currently)
-        //gpu_compute->compute_sobel_edge(texture,texture_out);
+        //gpu_compute->compute_row_wise_mean(texture,texture_out);
         //gpu_compute->compute_threshold(texture,texture_outt);
 //        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
 //        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
 //        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
         //gpu_compute->compute_canny_edge(texture_outt,texture_out);
         gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
+        gpu_compute->compute_copy_red_to_rgba(texture,texture_out);
         gpu_compute->compute_mark_column_index(texture_outt,texture_out);
         //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
 
@@ -201,7 +202,7 @@ void _Scanner::scan_generate_model()
         glViewport(0, 0, machine->camera->getWidth(), machine->camera->getHeight());
 
         //get image from gpu texture
-        glReadPixels(0, 0, machine->camera->getWidth(), machine->camera->getHeight(),GL_RED, GL_UNSIGNED_BYTE,colours);
+        glReadPixels(0, 0, machine->camera->getWidth(), machine->camera->getHeight(),GL_RGBA, GL_UNSIGNED_BYTE,colours);
 
         //send signal to update display texture
         emit set_image(colours,machine->camera->getWidth(),machine->camera->getHeight());

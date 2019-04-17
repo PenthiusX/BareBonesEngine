@@ -5,7 +5,8 @@
 #local_size_define
 
 layout(binding=0, r8ui) uniform mediump uimage2D inputImage;
-layout(binding=1, r32i) uniform mediump iimage2D resultImage;
+layout(binding=1, r32i) uniform mediump iimage2D sigma_x_dot_y;
+layout(binding=2, r32i) uniform mediump iimage2D sigma_y;
 
 layout( location=0 ) uniform unsigned int levels;
 layout( location=1 ) uniform unsigned int imageWidth;
@@ -37,8 +38,11 @@ void main()
        int a = int(getImagePixel(inputImage,image_pixel_cord));
        int b = int(getImagePixel(inputImage,image_pixel_cord+ivec2(1,0)));
 
-       setImagePixel(resultImage,image_pixel_cord,int(combine(a,image_pixel_cord.x)));
-       setImagePixel(resultImage,image_pixel_cord+ivec2(1,0),int(combine(a,image_pixel_cord.x+1)));
+       setImagePixel(sigma_x_dot_y,image_pixel_cord,a*(image_pixel_cord.x-int(imageWidth/2)));
+       setImagePixel(sigma_x_dot_y,image_pixel_cord+ivec2(1,0),b*(image_pixel_cord.x+1-int(imageWidth/2)));
+
+       setImagePixel(sigma_y,image_pixel_cord,a);
+       setImagePixel(sigma_y,image_pixel_cord+ivec2(1,0),b);
 
        barrier();
 
@@ -46,11 +50,15 @@ void main()
        uint stride = 1;
        for(int level = 0; level < levels ; level++)
        {
-           if((mod(image_pixel_cord.x,stride)==0) && is_inside(image_pixel_cord,ivec2(-1,-1),ivec2(imageWidth+1,imageHeight+1)) && is_inside(image_pixel_cord+ivec2(stride,0),ivec2(-1,-1),ivec2(imageWidth+1,imageHeight+1)))
+           if((mod(image_pixel_cord.x,stride)==0) && is_inside(image_pixel_cord,ivec2(-1,-1),ivec2(769,577)) && is_inside(image_pixel_cord+ivec2(stride,0),ivec2(-1,-1),ivec2(769,577)))
            {
-               a = getImagePixel(resultImage,image_pixel_cord);
-               b = getImagePixel(resultImage,image_pixel_cord+ivec2(stride,0));
-               setImagePixel(resultImage,image_pixel_cord,(a+b));
+               a = getImagePixel(sigma_x_dot_y,image_pixel_cord);
+               b = getImagePixel(sigma_x_dot_y,image_pixel_cord+ivec2(stride,0));
+               setImagePixel(sigma_x_dot_y,image_pixel_cord,(a+b));
+
+               a = getImagePixel(sigma_y,image_pixel_cord);
+               b = getImagePixel(sigma_y,image_pixel_cord+ivec2(stride,0));
+               setImagePixel(sigma_y,image_pixel_cord,(a+b));
            }
            stride = stride * 2;
            barrier();

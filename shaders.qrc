@@ -23,5 +23,8 @@
         <file>shaders/compute_row_wise_arg_max.glsl</file>
         <file>shaders/compute_mark_column_index.glsl</file>
         <file>shaders/compute_clear_8_ui_texture.glsl</file>
+        <file>shaders/compute_row_wise_mean.glsl</file>
+        <file>shaders/compute_divide_mark_column_index.glsl</file>
+        <file>shaders/compute_copy_red_to_rgba.glsl</file>
     </qresource>
 </RCC>

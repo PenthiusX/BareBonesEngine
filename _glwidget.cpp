@@ -41,22 +41,22 @@ void _GLWidget::initializeGL()
 
 	s.setId(0);
 	s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-	s.setPosition(QVector3D(1.0,-0.3f, -3.0));
+    s.setPosition(QVector3D(8.0,5.0f, 6.0));
 	s.setScale(0.5);
 	s.setModelData(":/models/torus.obj");
 
 	s1.setId(1);
 	s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-    s1.setPosition(QVector3D(0.0, 0.7f, 4.0));
+    s1.setPosition(QVector3D(8.0,5.7f,6.0));
 	s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
-	s1.setScale(1.5);
+    s1.setScale(0.5);
     s1.setModelData(":/models/cone.obj");
 
     s2.setId(2);
     s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    s2.setPosition(QVector3D(0.0, 1.7f, 2.0));
+    s2.setPosition(QVector3D(8.0, 6.7f, 6.0));
     s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
-    s2.setScale(1.5);
+    s2.setScale(0.5);
     s2.setModelData(":/models/monkey.obj");
     s2.setTexturePath(":textures/eye.png");//needs a texture compliable shader attached too
 
@@ -206,8 +206,8 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
                 render_object->setTexture(img,w,h);
             }
             else {
-                //setting up new 8 bit grayscale GL_RED texture for firs time
-                render_object->setupTexture(img,w,h,GL_RED);
+                //setting up new 8 bit grayscale GL_RED texture for first time
+                render_object->setupTexture(img,w,h,GL_RGBA);
             }
 
             doneCurrent();

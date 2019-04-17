@@ -42,6 +42,33 @@ void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_im
 
 }
 
+void _GPU_Compute::compute_copy_red_to_rgba(_Texture &input_img, _Texture &output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_copy_red_to_rgba.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_RGBA8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 void _GPU_Compute::compute_copy_32_to_8(_Texture &input_img, _Texture &output_img)
 {
     static _Shader shader;
@@ -160,12 +187,41 @@ void _GPU_Compute::compute_mark_column_index(_Texture& input_img,_Texture& outpu
     compute_clear_8_ui_texture(output_img,0);
 
     input_img.bindForCompute(0,GL_R32I,GL_READ_ONLY);
-    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
+    output_img.bindForCompute(1,GL_RGBA8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 
-    int levels = glm::ceil(glm::log2(float(input_img.getWidth())));
-    glUniform1ui(0,levels);
+    //calculate size of workgroups based on image resolution here
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+void _GPU_Compute::compute_divide_mark_column_index(_Texture& input_img,_Texture& input_img2,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(1, input_img.getHeight(),_COLUMN_WISE_LOCAL_GROUP);
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_divide_mark_column_index.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    compute_clear_8_ui_texture(output_img,0);
+
+    input_img.bindForCompute(0,GL_R32I,GL_READ_ONLY);
+    input_img2.bindForCompute(1,GL_R32I,GL_READ_ONLY);
+    output_img.bindForCompute(2,GL_R8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glUniform1ui(0,input_img.getWidth());
+    glUniform1ui(1,input_img.getHeight());
 
     //calculate size of workgroups based on image resolution here
 
@@ -201,6 +257,7 @@ void _GPU_Compute::compute_clear_8_ui_texture(_Texture& input_img,unsigned int v
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 }
+
 void _GPU_Compute::compute_row_wise_arg_max(_Texture& input_img,_Texture& output_img)
 {
     static _Shader shader;
@@ -230,6 +287,78 @@ void _GPU_Compute::compute_row_wise_arg_max(_Texture& input_img,_Texture& output
 
 }
 
+void _GPU_Compute::compute_row_wise_sum(_Texture& input_img,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth()/2, input_img.getHeight(),_ROW_WISE_LOCAL_GROUP);
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_row_wise_arg_max.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R32I,GL_READ_WRITE);
+
+    shader.useShaderProgram();
+
+    int levels = glm::ceil(glm::log2(float(input_img.getWidth())));
+
+    glUniform1ui(0,levels);
+    glUniform1ui(1,input_img.getWidth());
+    glUniform1ui(2,input_img.getHeight());
+
+    //calculate size of workgroups based on image resolution here
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+
+void _GPU_Compute::compute_row_wise_mean(_Texture& input_img,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth()/2, input_img.getHeight(),_ROW_WISE_LOCAL_GROUP);
+
+    static _Texture sigma_x_dot_y = _Texture(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture sigma_y = _Texture(nullptr,input_img.getWidth(),input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_row_wise_mean.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+        sigma_x_dot_y.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+        sigma_y.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+    }
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    sigma_x_dot_y.bindForCompute(1,GL_R32I,GL_READ_WRITE);
+    sigma_y.bindForCompute(2,GL_R32I,GL_READ_WRITE);
+
+    shader.useShaderProgram();
+
+    int levels = glm::ceil(glm::log2(float(input_img.getWidth())));
+
+    glUniform1ui(0,levels);
+    glUniform1ui(1,input_img.getWidth());
+    glUniform1ui(2,input_img.getHeight());
+
+    //calculate size of workgroups based on image resolution here
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+    compute_divide_mark_column_index(sigma_x_dot_y,sigma_y,output_img);
+
+}
+
 /* Function : compute_sobel_edge
  *
  * computes sobel edge by using 3 x 3 kernal
@@ -256,9 +385,7 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
-
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
 }
 
 /* Function : compute_sobel_edge
@@ -266,7 +393,7 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_img)
  * computes sobel edge by using 3 x 3 kernal
  * returns sobel gradient magnitude and gradint angle(range 0:180 degress as 0:255 values)
  * requires imput image texture , output magnitude image texture ,output angle image texture
-*/
+ */
 void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_Texture& output_theta)
 {
 
@@ -286,8 +413,6 @@ void _GPU_Compute::compute_sobel_edge(_Texture& input_img,_Texture& output_mag,_
     output_theta.bindForCompute(2,GL_R8UI,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
-
-
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 

@@ -36,6 +36,10 @@ public:
     void compute_row_wise_arg_max(_Texture &input_img, _Texture &output_img);
     void compute_mark_column_index(_Texture &input_img, _Texture &output_img);
     void compute_clear_8_ui_texture(_Texture &input_img, unsigned int value=0);
+    void compute_row_wise_sum(_Texture &input_img, _Texture &output_img);
+    void compute_row_wise_mean(_Texture &input_img, _Texture &output_img);
+    void compute_divide_mark_column_index(_Texture &input_img, _Texture &input_img2, _Texture &output_img);
+    void compute_copy_red_to_rgba(_Texture &input_img, _Texture &output_img);
 };
 
 #endif // _GPU_COMPUTE_H
