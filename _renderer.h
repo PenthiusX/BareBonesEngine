@@ -65,8 +65,6 @@ private:
     glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix;
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
-    //Stores the uniform location allocated in the shader
-    GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform,mousePosUniform;
     std::vector<_Renderer> sceneObject;
     //Holds the vertex and index data
     std::vector<float> vertices;//not allocated yet
@@ -75,6 +73,9 @@ private:
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
     std::vector<_Texture> textures;//Texture array for tetures in use for the respective renderer object
     bool isTranfomationLocal;//Sets the flag to determine if tranformations need to be set on a local or world pivot
+    //Stores the uniform location allocated in the shader
+    GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform,mousePosUniform;
+    void setuniformLocations();
 };
 
 #endif // _RENDERER_H

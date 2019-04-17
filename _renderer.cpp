@@ -97,14 +97,21 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
+    setuniformLocations();//sets all uniform locations to respective variables.
+    qDebug() << "setModelDataInBuffers() for entity" << this->sceneEntity.getId();
+}
+/*
+ *
+*/
+void _Renderer::setuniformLocations()
+{
     this->colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture and UVs
     this->modelUnifrom = shdr->getUniformLocation("model");
     this->viewUniform  = shdr->getUniformLocation("view");
     this->projectionUniform = shdr->getUniformLocation("projection");
     this->mousePosUniform = shdr->getUniformLocation("mousePos");
-
-    qDebug() << "setModelDataInBuffers() for entity" << this->sceneEntity.getId();
 }
+
 /*
  * Function: setupTexture()
  * Contributor : Saurabh
@@ -253,7 +260,6 @@ void _Renderer::translate(QVector3D pos)
             translationMatrix[3][1], // an alternate implemtation to the norm.
             translationMatrix[3][2]));
 }
-
 /*
  * Function: setRotation(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
