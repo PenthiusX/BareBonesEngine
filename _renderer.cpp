@@ -20,6 +20,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_FRONT_AND_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    glRenderMode(GL_SELECT);
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
 
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -30,6 +31,8 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
     isTranfomationLocal = false;
+
+    qDebug() << "render initialised ";
 }
 
 /*
@@ -51,8 +54,8 @@ _Renderer::~_Renderer()
 void _Renderer::setShader()
 {
     shdr->attachShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    qDebug() << "default Shader attached for entity" << this->sceneEntity.getId();
 }
-
 /*
  * Function: setShader(QString vSh, QString fSh)
  * Takes the path to the relative qrc aided directory
@@ -63,8 +66,8 @@ void _Renderer::setShader()
 void _Renderer::setShader(QString vSh, QString fSh)
 {
     shdr->attachShaders(vSh,fSh);
+    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << this->sceneEntity.getId();
 }
-
 /*
  * Function: setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
  * set Vertex and Index data into
@@ -98,8 +101,10 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     this->modelUnifrom = shdr->getUniformLocation("model");
     this->viewUniform  = shdr->getUniformLocation("view");
     this->projectionUniform = shdr->getUniformLocation("projection");
-}
+    this->mousePosUniform = shdr->getUniformLocation("mousePos");
 
+    qDebug() << "setModelDataInBuffers() for entity" << this->sceneEntity.getId();
+}
 /*
  * Function: setupTexture()
  * Contributor : Saurabh
@@ -115,25 +120,19 @@ void _Renderer::setupTexture()
     _Texture texture(img,1360,1024);
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
+    qDebug() << "setupTexture() on entity" << this->sceneEntity.getId();
 }
-
-/*
- * Function: setupTexture()
- * Contributor : Aditya
- * creates new texture from texfile image path and adds into list(vector) of textures
- * current context should be active while calling these function
- * Created: 28_3_2019
- */
 void _Renderer::setupTexture(QString texfile)
 {
     QImage img = QImage(texfile);
     _Texture texture(img);
     texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
+    qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getId();
 }
 
 /*
- * Function: setTexture(char* texBitmap)
+ * Function: setTexture()
  * Contributor : saurabh
  * updates the first texture image from char pointer array
  * resolution of previous image is used
@@ -144,35 +143,20 @@ void _Renderer::setTexture(char* texBitmap)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap);
+    qDebug() << "setTexture(char* texBitmap) on entity" << this->sceneEntity.getId();
 }
-
-/*
- * Function: setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
- * Contributor : Saurabh
- * updates the first texture image from char pointer array
- * resolution of texture is updated to given values
- * current context should be active while calling this function
- * Created: 2_3_2019
- */
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap,iwidth,iheight);
+    qDebug() << "setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight) on entity" << this->sceneEntity.getId();
 }
-
-/*
- * Function: setTexture(QString pathtoTexture)
- * Contributor : Saurabh
- * updates the first texture image from a texfile
- * current context should be active while calling this function
- * Created: 2_3_2019
- */
 void _Renderer::setTexture(QString pathtoTexture)
 {
     if(!textures.empty())
         textures[0].setImage(pathtoTexture);
+    qDebug() << "setTexture(QString pathtoTexture) on entity" << this->sceneEntity.getId();
 }
-
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 * Sets the values matrices for the model matrix 
@@ -194,8 +178,8 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
     translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
 
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+    qDebug() << "setModelMatrix() on entity" << this->sceneEntity.getId();
 }
-
 /*
 * Function: setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 * sets the camera view for the scene through this matrix
@@ -211,8 +195,8 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
                 glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
+    qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getId();
 }
-
 /*
 * Function: setProjectionMatrix(int w, int h)
 * takes thew width and height of the window and sets the relative 
@@ -226,6 +210,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
+    qDebug() << "setProjectionMatrix() on entity" << this->sceneEntity.getId();
 }
 /*
  * Function: setPosition(QVector3D pos)\translate(QVector3D pos)
@@ -352,7 +337,6 @@ void _Renderer::_Renderer::draw()
     //Using the shader program in the current context
     shdr->useShaderProgram();
     //Setting the uniform for color
-    transitionColors();
     //Bind Textures
     for(unsigned int t=0;t<textures.size();t++)
     {
@@ -374,12 +358,19 @@ void _Renderer::_Renderer::draw()
  * Temporary debugging implemetation, trasitions colors of object
  * hot reloding of shaders also needs to be implemented
 */
-void _Renderer::transitionColors()
+void _Renderer::transitionColors(QVector2D mousePos)
 {
+    float x = mousePos.x();
+    float y = mousePos.y();
+
+    x = x / 824;//limiting the value between 0 and 1
+    y = y / 375;//limiting the value between 0 and 1
+
+    qDebug() << x << "." << y;
+
     double r = abs(cos(timer.elapsed() * 0.002));
     double g = abs(sin(timer.elapsed() * 0.003));
     double b = abs(cos(timer.elapsed() * 0.005));
     glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
+    glUniform2f(mousePosUniform,x,y);//passing mouse value to shader
 }
-
-

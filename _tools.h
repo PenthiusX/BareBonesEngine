@@ -2,6 +2,7 @@
 #define TOOLS_H
 
 #include <QString>
+#include <QDebug>
 #include <QVector3D>
 #include <QVector2D>
 #include <glm/glm.hpp>
@@ -25,12 +26,12 @@ public:
     static QString ReadStringFromQrc(QString Filename);
     static QVector2D retunrnMaxPoint(QVector2D mousepos);
     static QVector3D translateToPoint(QVector3D pointLocation,float stepDistance);
+    static void Debugmatrix4x4(glm::mat4x4 mat4);
 
     //function templates for mouse based intersection with models and object selection.
     static QVector3D pointOfintersectionWithModel(QVector2D mousePosition/*,sceneEntity s*/);
     static void generateAABBforModel(/*sceneEntity s*/);
     static void calcualteMaxExtentsOfModel(/*sceneEntity s*/);
-    static void Debugmatrix4x4(glm::mat4x4 mat4);
 };
 
 

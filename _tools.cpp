@@ -1,7 +1,7 @@
 #include "_tools.h"
 #include <QFile>
 #include <QString>
-#include <QDebug>
+
 
 //Commonly used Functions
 

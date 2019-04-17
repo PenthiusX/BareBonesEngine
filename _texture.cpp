@@ -46,7 +46,6 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
 {
     qDebug() << "tex contruct";
     image = (char*)img.bits();
-
     width = img.width();
     height = img.height();
 
@@ -62,9 +61,7 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
 void _Texture::setImage(QString pathtoTexture)
 {
     QImage img = QImage(pathtoTexture);
-
     qDebug() << "tex contruct";
-
     image = (char*)img.bits();
     width = img.width();
     height = img.height();
