@@ -26,7 +26,7 @@ public:
 
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
-
+    //
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<unsigned int> indexArray);//take vertex and index data and binds it to object buffer
 
     //setting image of existing texture, current context should be active while calling these functions, use makeCurrent() to make context current
@@ -34,7 +34,7 @@ public:
     void setTexture(char* texBitmap);//takes am image and binds it to object
     void setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight);////takes am image and binds it to object\
 
-    //generating new texture from texfile path or default , context should be active to call tese function
+    //generating new texture from texfile path or default , context should be active to call these function
     void setupTexture();//takes am image and binds it to object
     void setupTexture(QString texfile); //initializes texture from file
     //
@@ -44,13 +44,16 @@ public:
     //
     void setPosition(QVector3D pos);//resets the positon to the value that is required
     void translate(QVector3D pos);//update the current positon with the value that is set
-    void setRotation(QVector3D rot);//sets the rotation value to the desired value
-    void setscale(float scale);//set the scale of the object;
+    void setRotation(QVector3D rot);
+    void setscale(float scale);
     //
-    void setSceneEntityInRenderer(_SceneEntity s);//
-    _SceneEntity getSceneEntity();//
+    void setSceneEntityInRenderer(_SceneEntity s);
+    _SceneEntity getSceneEntity();
 
     void draw();//Draws everything bound in the scene
+
+    //Debug implentation
+    void transitionColors(QVector2D mousePos);
 
 private:
     unsigned int VBO;//vertex buffer object
@@ -63,18 +66,15 @@ private:
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
     //Stores the uniform location allocated in the shader
-    GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform;
+    GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform,mousePosUniform;
     std::vector<_Renderer> sceneObject;
     //Holds the vertex and index data
     std::vector<float> vertices;//not allocated yet
     std::vector<unsigned int> indices;//not allocated yet
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
-    std::vector<_Texture> textures;//Teture array for tetures in use for the respective renderer object
+    std::vector<_Texture> textures;//Texture array for tetures in use for the respective renderer object
     bool isTranfomationLocal;//Sets the flag to determine if tranformations need to be set on a local or world pivot
-
-    //Debug implentation
-    void transitionColors();
 };
 
 #endif // _RENDERER_H

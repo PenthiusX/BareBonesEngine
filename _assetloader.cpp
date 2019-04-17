@@ -47,6 +47,7 @@ std::vector<unsigned int> _AssetLoader::getAssetIndices()
 */
 void _AssetLoader::objLoader(QString pathToFile)
 {
+    qDebug() << "Loading Model" << pathToFile <<  "vertices.";
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
     const char* p = qba;
 
@@ -68,6 +69,7 @@ void _AssetLoader::objLoader(QString pathToFile)
         temp = "";
     }
 
+    qDebug() << "Loading Model" << pathToFile <<  "indices.";
     std::string ai = objData.substr(objData.find("f ") + 1);
     std::stringstream ss;
     ss << ai;

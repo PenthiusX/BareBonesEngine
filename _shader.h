@@ -25,7 +25,7 @@ public:
     void setChildShader(QString s,unsigned int typ);
     void setChildShader(std::vector<QString>, unsigned int typ);
     void useShaderProgram();
-    uint getUniformLocation(const char *nameOfUniform);
+    GLint getUniformLocation(const char *nameOfUniform);
 
 private:
     //Shader Program

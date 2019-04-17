@@ -46,6 +46,7 @@ void _GLWidget::initializeGL()
     background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
     background_quad.setRotation(QVector3D(0.0, 0.0, 0.0));
     background_quad.setScale(1.0);
+    background_quad.setId(100);
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
         1.0,  1.0, 0.999f,	// top right
@@ -136,14 +137,18 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     if(e->buttons() == Qt::RightButton)
         qDebug() << "Only right button";
 
+    QVector2D mosPos = mousePressPosition;
     QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
     if(e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y())
-        mousePressPosition = maxpoint;
-    float damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
-    rotRads = rotRads + QVector2D(e->localPos()) - mousePressPosition;
+        mosPos = maxpoint;
+    float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
+    rotRads = rotRads + QVector2D(e->localPos()) - mosPos;
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
         if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
+        {
             scene->getSceneObjectsArray()[i]->setRotation(QVector3D(rotRads.y() * damp,rotRads.x() * damp,0.f));//values are inverted for intuitive controll
+            scene->getSceneObjectsArray()[i]->transitionColors(QVector2D(mousePressPosition.x(), mousePressPosition.y()));
+        }
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
