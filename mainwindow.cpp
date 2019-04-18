@@ -51,29 +51,29 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->laser_height_down, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});
     connect(ui->laser_focus_in, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserFocusMotorDiff", Qt::QueuedConnection,Q_ARG(int, -300));});
     connect(ui->laser_focus_out, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserFocusMotorDiff", Qt::QueuedConnection,Q_ARG(int, 300));});
-    connect(ui->grab_frame, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "GrabFrame", Qt::QueuedConnection,Q_ARG(QString,"image_0.pgm"));});
+    //connect(ui->grab_frame, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "GrabFrame", Qt::QueuedConnection,Q_ARG(QString,"image_0.pgm"));});
 
     //checkable buttons
-    connect(ui->backlight_on, &QPushButton::toggled,[this]() {
-        if(ui->backlight_on->isChecked())
+    connect(ui->backlight_button, &QPushButton::toggled,[this]() {
+        if(ui->backlight_button->isChecked())
             QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, 136));
         else
             QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, 0));
     });
-    connect(ui->line_laser_on, &QPushButton::toggled,[this]() {
-        if(ui->line_laser_on->isChecked())
+    connect(ui->line_laser_button, &QPushButton::toggled,[this]() {
+        if(ui->line_laser_button->isChecked())
             QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 70));
         else
             QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 0));
     });
-    connect(ui->marking_laser_on, &QPushButton::toggled,[this]() {
-        if(ui->marking_laser_on->isChecked())
+    connect(ui->marking_laser_button, &QPushButton::toggled,[this]() {
+        if(ui->marking_laser_button->isChecked())
             QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(float, 4));
         else
             QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(float, 0));
     });
-    connect(ui->vaccum_on, &QPushButton::toggled,[this]() {
-        if(ui->vaccum_on->isChecked())
+    connect(ui->vaccum_button, &QPushButton::toggled,[this]() {
+        if(ui->vaccum_button->isChecked())
             QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 1));
         else
             QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 0));
