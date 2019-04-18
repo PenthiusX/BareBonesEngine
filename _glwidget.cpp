@@ -20,6 +20,9 @@
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     id = 0;
+    this->isCamFocus = false;
+    //keeps the event callbacks working for the GL widget
+    setFocusPolicy(Qt::StrongFocus);
 }
 _GLWidget::~_GLWidget()
 {
@@ -34,8 +37,6 @@ _GLWidget::~_GLWidget()
 void _GLWidget::initializeGL()
 {
     //needs this to make the GL widgit have the strongest focus when switching widgets.
-    //keeps the event callbacks working for the GL widget
-    setFocusPolicy(Qt::StrongFocus);
     //
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
@@ -102,7 +103,16 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-    scene->render();
+
+	//this debug use code , sets focus on object with targetID
+	for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
+		if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id) {
+			cam.setFocalPoint(QVector3D(scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion()));
+		}
+	}
+	scene->updateCamera(cam);
+	//
+	scene->render();
     this->update();//is to send QtOpenglGl a flag to update openglFrames
 }
 /*
@@ -184,40 +194,77 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 * event pointer of QKeyEvent object.
 * Created: 25_02_2019
 */
-void _GLWidget::keyPressEvent(QKeyEvent * event)
+void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final controlls set.
 {
-    if (event->text() == "q" || event->text() == "Q")
+    if ((event->text() == "q" || event->text() == "Q"))
         id += 1;
     if (id >= scene->getSceneObjectsArray().size())
         id = 0;
 
-    if (event->text() == "d" || event->text() == "D")
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.1f,-0.f,0.0));
+    if (event->text() == "d" || event->text() == "D") {
+        if (isCamFocus == true){
+            cam.setEyePosition(QVector3D(cam.getEyePosition().x() - 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
+        }else{
+            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
+                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id) {
+                    scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.1f, -0.f, 0.0));
+                }
+            }
+        }
 
-    if (event->text() == "a" || event->text() == "A")
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(0.1f,0.f, 0.0));
+    }
 
-    if (event->text() == "w" || event->text() == "W")
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(0.f, 0.1, 0.0));
+    if (event->text() == "a" || event->text() == "A") {
+        if (isCamFocus == true){
+            cam.setEyePosition(QVector3D(cam.getEyePosition().x() + 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
+            scene->updateCamera(cam);
+        }else{
+            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
+                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id) {
+                    scene->getSceneObjectsArray()[i]->translate(QVector3D(0.1f, 0.f, 0.0));
+                }
+            }
+        }
+    }
 
-    if (event->text() == "s" || event->text() == "S")
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-                scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.f, -0.1, 0.0));
+    if (event->text() == "w" || event->text() == "W") {
+        if (isCamFocus == true){
+            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() + 0.1, cam.getEyePosition().z()));
+            scene->updateCamera(cam);
+        }else{
+            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
+                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id) {
+                    scene->getSceneObjectsArray()[i]->translate(QVector3D(0.f, 0.1, 0.0));
+                }
+            }
+        }
+    }
 
-    if (event->text() == "r" || event->text() == "R")
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id)
-            {
+    if (event->text() == "s" || event->text() == "S") {
+        if (isCamFocus == true){
+            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() - 0.1, cam.getEyePosition().z()));
+            scene->updateCamera(cam);
+        }else{
+            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
+                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id) {
+                    scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.f, -0.1, 0.0));
+                }
+            }
+        }
+    }
+
+    if (event->text() == "r" || event->text() == "R") {
+        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
+            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == id){
                 scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
                 scene->getSceneObjectsArray()[i]->setRotation(QVector3D(0.0f, 0.0, 0.0));
                 scene->getSceneObjectsArray()[i]->setscale(scene->getSceneObjectsArray()[i]->getSceneEntity().getScale());
-                rotRads = QVector2D(.0f,.0f);
+                rotRads = QVector2D(.0f, .0f);
             }
+        }
+    }
+
+    if (event->text() == "c" || event->text() == "C"){
+        this->isCamFocus = !isCamFocus;
+    }
 }
