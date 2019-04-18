@@ -39,6 +39,7 @@ private:
     unsigned int id;
     float scroolScale;
     QVector2D rotRads;
+	bool isCamFocus;
 };
 
 #endif // _GLWIDGET_H

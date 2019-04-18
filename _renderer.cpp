@@ -15,11 +15,8 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    glEnable(GL_PROGRAM_POINT_SIZE);
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_FRONT_AND_BACK);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //    glRenderMode(GL_SELECT);
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
 
@@ -202,7 +199,7 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
                 glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
-    qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getId();
+    //qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getId();
 }
 /*
 * Function: setProjectionMatrix(int w, int h)
@@ -273,7 +270,9 @@ void _Renderer::setRotation(QVector3D rot)
     this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
     if(isTranfomationLocal)
     {//still buggy
-        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(), this->sceneEntity.getRotation().y(), this->sceneEntity.getRotation().z());
+        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(), 
+							  this->sceneEntity.getRotation().y(), 
+							  this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         glm_model4x4 *= glm::mat4_cast(quat);
     }
@@ -339,15 +338,17 @@ _SceneEntity _Renderer::getSceneEntity()
  * Created:11_02_2019
 */
 void _Renderer::_Renderer::draw()
-{ 
+{
+    //use cased during debuging the color and Depth buffer
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     //Using the shader program in the current context
     shdr->useShaderProgram();
     //Setting the uniform for color
+    transitionColors(QVector2D( 0.3,0.1));
     //Bind Textures
-    for(unsigned int t=0;t<textures.size();t++)
-    {
-        textures[t].bind();
-    }
+    for(unsigned int t=0;t<textures.size();t++){
+        textures[t].bind();}
     //Bind the Buffers data of the respective buffer object
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
@@ -368,11 +369,10 @@ void _Renderer::transitionColors(QVector2D mousePos)
 {
     float x = mousePos.x();
     float y = mousePos.y();
-
     x = x / 824;//limiting the value between 0 and 1
     y = y / 375;//limiting the value between 0 and 1
 
-    qDebug() << x << "." << y;
+    //qDebug() << x << "." << y;
 
     double r = abs(cos(timer.elapsed() * 0.002));
     double g = abs(sin(timer.elapsed() * 0.003));
