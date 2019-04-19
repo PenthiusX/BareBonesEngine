@@ -150,7 +150,6 @@ void _Picolo_Camera::callbackfunc(PMCSIGNALINFO_1 SigInfo)
             break;
         default:
             break;
-
     }
 }
 
@@ -171,10 +170,23 @@ int _Picolo_Camera::list_cameras()
 
 }
 
-//currently saving frame in image.pgm
+/* Function grab_frame()
+ * Capture frame from camera and but do not save it
+ * Created: 10_04_2019
+ */
 int _Picolo_Camera::grab_frame(){
+    if(!Drv_Img_Ptr) return 0; //no frame grabbed uptil now
 
-    return grab_frame(filename2);
+    // ... Here you can processs image data in Frame.pData
+    if (!failed_grab){
+
+        memcpy(byteframe,Drv_Img_Ptr,Width*Height);
+    }
+    else {
+        qDebug() <<"failed: grab frame";
+        return 0;
+    }
+    return 1;
 }
 
 /* Function grab_frame(QString filename)

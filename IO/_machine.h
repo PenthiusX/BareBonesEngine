@@ -5,6 +5,8 @@
 #include <IO/_hwdcamera.h>
 #include <IO/_configcontrolentity.h>
 #include <QJsonObject>
+#include <QMutex>
+#include <QTimer>
 
 /*
  * The Machine class
@@ -34,7 +36,7 @@ public:
 
 signals:
     void serialReturned(QString responce);
-    void cameraFrameReturned(char *img,unsigned int w,unsigned h);
+    void frameUpdated(char *img,unsigned int w,unsigned h);//goes from machine to ui(gl_widget) for displaying
 
 public slots:
     void init();
@@ -48,17 +50,24 @@ public slots:
     void LineLaser(int intensity);
     void BackLight(int intensity);
     void GrabFrame(QString filename);
+    void GrabFrame();
     void set_image_dir(QString dir);
     QString InfoCmd();
     QString InfoCmd(_HardwareSerial &port);
     QString getMachineVersion();
 
+
+    void updateFrameColor(char *img, unsigned int iwidth, unsigned int iheight);
+
 public:
     _HardwareSerial *hardware_serial = nullptr;
     _HWDCamera *camera = nullptr;
+    char * colorFrame = nullptr;
+    QTimer *timer = nullptr;
+    QMutex frameUpdateMutex;//acquired by modules when they need to display processed or masked image else it is acquired by machine to show camera image
 
-
-
+protected:
+    void updateFrameGrayscale(char *img, unsigned int iwidth, unsigned int iheight);
 };
 
 #endif // _MACHINE_H

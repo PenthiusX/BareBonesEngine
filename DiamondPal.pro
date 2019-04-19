@@ -32,7 +32,6 @@ HEADERS  += mainwindow.h \
     Compute/_gpu_compute.h \
     IO/_configcontrolentity.h \
     IO/_picolo_camera.h \
-    UI/fancyslider.h \
     UI/_tabwidget.h \
     UI/_tabbar.h
 
@@ -57,7 +56,6 @@ SOURCES += main.cpp\
     Compute/_gpu_compute.cpp \
     IO/_configcontrolentity.cpp \
     IO/_picolo_camera.cpp \
-    UI/fancyslider.cpp \
     UI/_tabwidget.cpp \
     UI/_tabbar.cpp
 

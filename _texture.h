@@ -18,7 +18,8 @@ public:
     //update texture image
     void setImage(QString qrcPathtoFile); //from image file path
     void setImage(char* img); //from char pointer array and resolution of last image
-    void setImage(char* img,unsigned int iwidth,unsigned int iheight);//from char pointer array with updated given resolution
+    void setImage(char* img,unsigned int iwidth,unsigned int iheight);
+    void setImage(char* img,unsigned int iwidth,unsigned int iheight,GLenum internal_format,GLenum format);//from char pointer array with updated given resolution
     void setImage(QImage &img);//from QImage
 
     //setShader used if multiple texture bindings require differant slots

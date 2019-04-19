@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
             QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 0));
     });
 
-    //connect(machine,SIGNAL(cameraFrameReturned(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+
 
     //buttons to marker slots connections
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
@@ -96,7 +96,8 @@ MainWindow::MainWindow(QWidget *parent) :
         QMetaObject::invokeMethod(scanner, "scan_generate_model", Qt::QueuedConnection);
     });
 
-    connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+    connect(machine,SIGNAL(frameUpdated(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+    //connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     //connect(marker,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
 
     //start the hardware thread

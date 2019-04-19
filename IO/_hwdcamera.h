@@ -18,6 +18,7 @@ public:
     virtual int stop_camera(); //
     virtual int list_cameras();
     virtual int grab_frame(QString filename);
+    virtual int grab_frame();
     virtual void set_image_dir(QString);
 
     virtual void setBrightness(int value);

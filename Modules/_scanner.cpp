@@ -100,6 +100,7 @@ void _Scanner::init()
         qDebug()<< "max_compute_workgroup_invocations" << max_compute_workgroup_invocations;
 
     }
+    connect(this,SIGNAL(set_image(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
 }
 
 
@@ -165,6 +166,8 @@ void _Scanner::scan_generate_model()
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
     else qDebug() << "incomplete";
 
+    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
+
     for(int t = 0;t<200;t++)
     {
         QString filename = QString("scan_image_stage_%1").arg(t);
@@ -173,7 +176,7 @@ void _Scanner::scan_generate_model()
         //QThread::msleep(100);
 
         //grab new frame from camera
-        machine->GrabFrame(filename);
+        machine->camera->grab_frame(filename);
 
         //send the grabbed frame to gui widget for display
         //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
@@ -220,6 +223,8 @@ void _Scanner::scan_generate_model()
         //qDebug() << "wrote: " << filename;
 
     }
+
+    machine->frameUpdateMutex.unlock();
 
     //delete imagefile;
 }

@@ -39,6 +39,11 @@ int _HWDCamera::list_cameras()
     return 0;
 }
 
+int _HWDCamera::grab_frame()
+{
+    return 0;
+}
+
 int _HWDCamera::grab_frame(QString filename)
 {
     //qDebug() <<"fallback camera grabframe";

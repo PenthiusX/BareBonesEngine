@@ -142,12 +142,6 @@ void _Machine::BackLight(int intensity)
     hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
 }
 
-void _Machine::GrabFrame(QString filename)
-{
-    camera->grab_frame(filename);
-    emit cameraFrameReturned(camera->get_frame(),camera->getWidth(),camera->getHeight());
-}
-
 /* Set Marking Laser intensity and switch on/off
  * @ - for machine intensity starts from zero but for command intensity
  * recieved from 1 above hence intensity is subtracted by 1
@@ -378,6 +372,12 @@ void _Machine::init()
 
     //setup commands
     set_hardware_serial_defaults();
+
+    colorFrame = new char[camera->getWidth()*camera->getHeight()*4];
+
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(GrabFrame()));
+    timer->start(40);
 }
 
 /* Function : set_image_dir(QString dir)
@@ -388,3 +388,45 @@ void _Machine::set_image_dir(QString dir)
 {
     camera->set_image_dir(dir);
 }
+
+
+void _Machine::GrabFrame()
+{
+    if(frameUpdateMutex.tryLock(0))
+    {
+        //lock is aquired
+        camera->grab_frame();
+        if(camera->get_frame())
+            updateFrameGrayscale(camera->get_frame(),camera->getWidth(),camera->getHeight());
+        frameUpdateMutex.unlock();
+    }
+}
+
+void _Machine::GrabFrame(QString filename)
+{
+    if(frameUpdateMutex.tryLock(0))
+    {
+        //lock is aquired
+        camera->grab_frame(filename);
+        if(camera->get_frame())
+            updateFrameGrayscale(camera->get_frame(),camera->getWidth(),camera->getHeight());
+        frameUpdateMutex.unlock();
+    }
+}
+
+void _Machine::updateFrameGrayscale(char* img,unsigned int iwidth,unsigned int iheight)
+{
+    for (int index = 0; index < (iwidth*iheight); index++) {
+        colorFrame[index*4] = img[index];
+        colorFrame[index*4+1] = img[index];
+        colorFrame[index*4+2] = img[index];
+        colorFrame[index*4+3] = 255;
+    }
+    emit frameUpdated(colorFrame,iwidth,iheight);
+}
+
+void _Machine::updateFrameColor(char* img,unsigned int iwidth,unsigned int iheight)
+{
+    emit frameUpdated(img,iwidth,iheight);
+}
+

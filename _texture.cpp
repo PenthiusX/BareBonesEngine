@@ -114,6 +114,15 @@ void _Texture::setImage(char* img,unsigned int iwidth,unsigned int iheight)
     setImage(img);
 }
 
+void _Texture::setImage(char *img, unsigned int iwidth, unsigned int iheight, GLenum internal_format, GLenum format)
+{
+    image = img;
+    //qDebug() << "setting image" << GL_RED << color_format;
+    glBindTexture(GL_TEXTURE_2D,m_ID);
+    glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, GL_UNSIGNED_BYTE, image);
+
+}
+
 /* bind texture to default slot(0)
  * Created: 21_02_2019
 */
