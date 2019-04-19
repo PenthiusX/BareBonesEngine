@@ -18,7 +18,6 @@
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 	id = 0;
-
 }
 _GLWidget::~_GLWidget()
 {
@@ -191,7 +190,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)
 */
 void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h)
 {
-    static _Renderer *render_object =nullptr;
+    static _Renderer *render_object = nullptr;
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
     {
         render_object = scene->getSceneObjectsArray()[i];
@@ -206,7 +205,7 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
                 render_object->setTexture(img,w,h);
             }
             else {
-                //setting up new 8 bit grayscale GL_RED texture for first time
+                //setting up new 8 bit grayscale GL_RGBA texture for first time
                 render_object->setupTexture(img,w,h,GL_RGBA);
             }
 

@@ -36,6 +36,7 @@ public:
     static void callbackfunc(PMCSIGNALINFO_1 SigInfo);
 
     int list_cameras();
+
     int grab_frame();
     int grab_frame(QString filename);
 

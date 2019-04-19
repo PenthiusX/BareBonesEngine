@@ -79,6 +79,12 @@ MainWindow::MainWindow(QWidget *parent) :
             QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 0));
     });
 
+    //slider connections
+    connect(ui->backlight_slider,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
+    connect(ui->line_laser_slider,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
+    connect(ui->offset_slider,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
+    connect(ui->gain_slider,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
+    connect(ui->contrast_slider,SIGNAL(valueChanged(int)),machine,SLOT(setContrast(int)));
 
 
     //buttons to marker slots connections

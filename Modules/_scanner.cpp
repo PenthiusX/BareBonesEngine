@@ -162,7 +162,6 @@ void _Scanner::scan_generate_model()
     glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,machine->camera->getWidth(), machine->camera->getHeight());
     glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
 
-
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
     else qDebug() << "incomplete";
 
@@ -170,13 +169,13 @@ void _Scanner::scan_generate_model()
 
     for(int t = 0;t<200;t++)
     {
-        QString filename = QString("scan_image_stage_%1").arg(t);
+        QString filename = QString("scan_image_stage_%1.pgm").arg(t);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
         //QThread::msleep(100);
 
         //grab new frame from camera
-        machine->camera->grab_frame(filename);
+        machine->GrabFrame(filename);
 
         //send the grabbed frame to gui widget for display
         //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
@@ -211,16 +210,8 @@ void _Scanner::scan_generate_model()
         emit set_image(colours,machine->camera->getWidth(),machine->camera->getHeight());
 
         //For saving processed image
-//        imagefile=fopen(filename.toLocal8Bit(), "wb");
-
-//        if( imagefile == NULL) {
-//            qDebug() << "Can't create:" << filename;
-//        }
-//        fprintf(imagefile,"P5\n%u %u 255\n", machine->camera->getWidth(), machine->camera->getHeight());
-//        fwrite(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), imagefile);
-//        fclose(imagefile);
-
-        //qDebug() << "wrote: " << filename;
+        //filename = QString("processed_image_stage_%1.pgm").arg(t);
+        //_Tools::SaveImageToPgm(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), filename);
 
     }
 

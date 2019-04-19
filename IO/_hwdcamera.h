@@ -25,6 +25,7 @@ public:
     virtual void setGain(int value);
     virtual void setExposure(int value);
     virtual void setContrast(int value);
+    virtual void setOffset(int value);
 
     int getWidth() const;
     int getHeight() const;

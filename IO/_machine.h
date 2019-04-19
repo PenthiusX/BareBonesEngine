@@ -55,6 +55,11 @@ public slots:
     QString InfoCmd();
     QString InfoCmd(_HardwareSerial &port);
     QString getMachineVersion();
+    void setBrightness(int value);
+    void setGain(int value);
+    void setExposure(int value);
+    void setContrast(int value);
+    void setOffset(int value);
 
 
     void updateFrameColor(char *img, unsigned int iwidth, unsigned int iheight);
@@ -66,8 +71,9 @@ public:
     QTimer *timer = nullptr;
     QMutex frameUpdateMutex;//acquired by modules when they need to display processed or masked image else it is acquired by machine to show camera image
 
-protected:
+protected slots:
     void updateFrameGrayscale(char *img, unsigned int iwidth, unsigned int iheight);
+    void updateImageCamera();
 };
 
 #endif // _MACHINE_H

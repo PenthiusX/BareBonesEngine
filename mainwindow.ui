@@ -237,16 +237,16 @@ Calibration</string>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="QLabel" name="Contrast_2">
+              <widget class="QLabel" name="Brightness_2">
                <property name="text">
-                <string>Contrast</string>
+                <string>Brightness</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="Brightness_2">
+              <widget class="QLabel" name="Contrast_2">
                <property name="text">
-                <string>Brightness</string>
+                <string>Contrast</string>
                </property>
               </widget>
              </item>
@@ -262,7 +262,7 @@ Calibration</string>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
-              <widget class="QSlider" name="Brightness">
+              <widget class="QSlider" name="brightness_slider">
                <property name="maximumSize">
                 <size>
                  <width>200</width>
@@ -278,7 +278,7 @@ Calibration</string>
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="Contrast">
+              <widget class="QSlider" name="contrast_slider">
                <property name="maximumSize">
                 <size>
                  <width>200</width>
@@ -294,7 +294,7 @@ Calibration</string>
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="Hardware_gain">
+              <widget class="QSlider" name="gain_slider_2">
                <property name="maximumSize">
                 <size>
                  <width>200</width>
@@ -302,7 +302,7 @@ Calibration</string>
                 </size>
                </property>
                <property name="maximum">
-                <number>255</number>
+                <number>2060</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -1207,13 +1207,20 @@ v</string>
             <layout class="QHBoxLayout" name="horizontalLayout_23">
              <item>
               <widget class="QSlider" name="gain_slider">
+               <property name="maximum">
+                <number>2060</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="gain_slider_spinbox"/>
+              <widget class="QSpinBox" name="gain_slider_spinbox">
+               <property name="maximum">
+                <number>2060</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -1228,13 +1235,26 @@ v</string>
             <layout class="QHBoxLayout" name="horizontalLayout_24">
              <item>
               <widget class="QSlider" name="offset_slider">
+               <property name="minimum">
+                <number>-500</number>
+               </property>
+               <property name="maximum">
+                <number>497</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="offset_slider_spinbox"/>
+              <widget class="QSpinBox" name="offset_slider_spinbox">
+               <property name="minimum">
+                <number>-500</number>
+               </property>
+               <property name="maximum">
+                <number>497</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -4421,6 +4441,70 @@ v</string>
     <hint type="destinationlabel">
      <x>330</x>
      <y>484</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gain_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gain_slider_spinbox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1453</x>
+     <y>401</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1594</x>
+     <y>401</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gain_slider_spinbox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gain_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1594</x>
+     <y>401</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1453</x>
+     <y>401</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>offset_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>offset_slider_spinbox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1454</x>
+     <y>451</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1595</x>
+     <y>451</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>offset_slider_spinbox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>offset_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1595</x>
+     <y>451</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1454</x>
+     <y>451</y>
     </hint>
    </hints>
   </connection>

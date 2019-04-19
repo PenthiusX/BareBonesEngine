@@ -142,6 +142,7 @@ void _Machine::BackLight(int intensity)
     hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
 }
 
+
 /* Set Marking Laser intensity and switch on/off
  * @ - for machine intensity starts from zero but for command intensity
  * recieved from 1 above hence intensity is subtracted by 1
@@ -177,6 +178,31 @@ QString _Machine::getMachineVersion()
     //command : "?"
     static QString info_cmd = config["Hardware"]["Controls"]["GetVersion"]["Commands"]["RS232"].getStringEntity("SET");
     return hardware_serial->writeDataAndWait(info_cmd);
+}
+
+void _Machine::setBrightness(int value)
+{
+    camera->setBrightness(value);
+}
+
+void _Machine::setGain(int value)
+{
+    camera->setGain(value);
+}
+
+void _Machine::setExposure(int value)
+{
+    camera->setExposure(value);
+}
+
+void _Machine::setContrast(int value)
+{
+    camera->setContrast(value);
+}
+
+void _Machine::setOffset(int value)
+{
+    camera->setOffset(value);
 }
 
 
@@ -376,7 +402,7 @@ void _Machine::init()
     colorFrame = new char[camera->getWidth()*camera->getHeight()*4];
 
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(GrabFrame()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateImageCamera()));
     timer->start(40);
 }
 
@@ -392,6 +418,11 @@ void _Machine::set_image_dir(QString dir)
 
 void _Machine::GrabFrame()
 {
+    camera->grab_frame();
+}
+
+void _Machine::updateImageCamera()
+{
     if(frameUpdateMutex.tryLock(0))
     {
         //lock is aquired
@@ -404,14 +435,7 @@ void _Machine::GrabFrame()
 
 void _Machine::GrabFrame(QString filename)
 {
-    if(frameUpdateMutex.tryLock(0))
-    {
-        //lock is aquired
-        camera->grab_frame(filename);
-        if(camera->get_frame())
-            updateFrameGrayscale(camera->get_frame(),camera->getWidth(),camera->getHeight());
-        frameUpdateMutex.unlock();
-    }
+    camera->grab_frame(filename);
 }
 
 void _Machine::updateFrameGrayscale(char* img,unsigned int iwidth,unsigned int iheight)

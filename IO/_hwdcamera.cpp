@@ -89,6 +89,11 @@ void _HWDCamera::setContrast(int value)
 
 }
 
+void _HWDCamera::setOffset(int value)
+{
+
+}
+
 int _HWDCamera::getWidth() const
 {
     return Width;

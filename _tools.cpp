@@ -99,7 +99,7 @@ glm::vec3 _Tools::NormalizeSum(glm::vec3 in)
  * this function returns index of elemnt having maximum value
  * index 0 if x is max ,1 if y and 2 if z
  * created: 15_04_2019
-*/
+ */
 int _Tools::argmax(glm::vec3 in){
     int m = 0;
     float mv=0;

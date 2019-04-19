@@ -215,26 +215,26 @@ int _Picolo_Camera::grab_frame(QString filename)
 
 void _Picolo_Camera::setBrightness(int value)
 {
-    //McSetParamInt(m_Channel, MC_Brightness, value);
+    McSetParamInt(m_Channel, MC_Brightness, value);
 }
 
 void _Picolo_Camera::setGain(int value)
 {
-    //McSetParamInt(m_Channel, MC_BEC_Gain_Y, value);
+    McSetParamInt(m_Channel, MC_Gain, value);
 }
 
 void _Picolo_Camera::setExposure(int value)
 {
-    //McSetParamInt(m_Channel, MC_Exposure, value);
+    McSetParamInt(m_Channel, MC_Exposure, value);
 }
 
 void _Picolo_Camera::setContrast(int value)
 {
-    //McSetParamInt(m_Channel, MC__Contrast, value);
+    McSetParamInt(m_Channel, MC_Contrast, value);
 }
 
 void _Picolo_Camera::setOffset(int value)
 {
-    //McSetParamInt(m_Channel, MC_BEC_Offset_Y, value);
+    McSetParamInt(m_Channel, MC_Offset, value);
 }
 
