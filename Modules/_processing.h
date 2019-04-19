@@ -10,7 +10,6 @@ public:
     explicit _Processing(QObject *parent = nullptr);
     void init();
 
-
 signals:
 
 public slots:
