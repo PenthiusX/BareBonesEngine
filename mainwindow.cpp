@@ -19,11 +19,16 @@ MainWindow::MainWindow(QWidget *parent) :
     machine = new _Machine(":/Config/configuration.json");
     machine->moveToThread(hardwareInteractionThread);
 
+    processing = new _Processing();
+    processing->moveToThread(hardwareInteractionThread);
+
     marker = new _Marker(machine);
     marker->moveToThread(hardwareInteractionThread);
 
-    scanner = new _Scanner(machine);
+    scanner = new _Scanner(machine,processing);
     scanner->moveToThread(hardwareInteractionThread);
+
+
 
     //
     qDebug() << "created hardware objects in thread :" << QThread::currentThread();
@@ -32,9 +37,11 @@ MainWindow::MainWindow(QWidget *parent) :
         machine->deleteLater();
         scanner->deleteLater();
         marker->deleteLater();
+        processing->deleteLater();
     });    //initialize machine which will create hardware objects in new thread
     connect(hardwareInteractionThread,SIGNAL(started()),machine,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),scanner,SLOT(init()));
+    connect(hardwareInteractionThread,SIGNAL(started()),processing,SLOT(init()));
 
     /* button connections
      *  slot function implemented in child object of MainWindow and used by lambda functions
@@ -79,6 +86,17 @@ MainWindow::MainWindow(QWidget *parent) :
             QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 0));
     });
 
+    qRegisterMetaType<const char*>("const char*");
+
+    connect(ui->live_camera_button, &QPushButton::toggled,[this]() {
+        if(ui->live_camera_button->isChecked())
+            QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int)) ));
+        else
+            QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,nullptr));
+    });
+
+    //setActiveProcess(SLOT(passThroughFrame(char* ,unsigned int,unsigned int)));
+
     //slider connections
     connect(ui->backlight_slider,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
     connect(ui->line_laser_slider,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
@@ -93,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //buttons to scanner slots connections
     //connect(ui->scan, SIGNAL(clicked()),scanner,SLOT(scan_generate_model()));
+
     connect(ui->scan, &QPushButton::clicked,[this]() {
         QString dir = QFileDialog::getExistingDirectory(this, tr("Open Images Directory"),
                                                     QCoreApplication::applicationDirPath()+"/../scan_images",
@@ -102,12 +121,16 @@ MainWindow::MainWindow(QWidget *parent) :
         QMetaObject::invokeMethod(scanner, "scan_generate_model", Qt::QueuedConnection);
     });
 
-    connect(machine,SIGNAL(frameUpdated(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+    connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
+
+    connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
     //connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     //connect(marker,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
 
     //start the hardware thread
     hardwareInteractionThread->start();
+
 }
 /*
  *

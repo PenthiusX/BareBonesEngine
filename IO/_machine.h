@@ -36,7 +36,8 @@ public:
 
 signals:
     void serialReturned(QString responce);
-    void frameUpdated(char *img,unsigned int w,unsigned h);//goes from machine to ui(gl_widget) for displaying
+    void guiFrameOut(char *img,unsigned int w,unsigned h);//goes from machine to ui(gl_widget) for displaying
+    void cameraFrameRecieved(char *img,unsigned int w,unsigned h);
 
 public slots:
     void init();
@@ -60,7 +61,6 @@ public slots:
     void setExposure(int value);
     void setContrast(int value);
     void setOffset(int value);
-
 
     void updateFrameColor(char *img, unsigned int iwidth, unsigned int iheight);
 

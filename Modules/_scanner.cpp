@@ -28,9 +28,10 @@ _Scanner::_Scanner(QObject *parent) : QObject(parent) , QOpenGLExtraFunctions()
  * surface will be created in parent thread when instance is created
  *
  */
-_Scanner::_Scanner(_Machine *global_machine,QObject *parent) : QObject(parent) ,QOpenGLExtraFunctions()
+_Scanner::_Scanner(_Machine *global_machine,_Processing* proc,QObject *parent) : QObject(parent) ,QOpenGLExtraFunctions()
 {
     machine = global_machine;
+    processing = proc;
 
     QSurfaceFormat format;
 

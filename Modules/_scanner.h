@@ -8,6 +8,7 @@
 #include <QOpenGLContext>
 #include <QWidget>
 #include <Compute/_gpu_compute.h>
+#include <Modules/_processing.h>
 
 
 class _Scanner : public QObject , protected QOpenGLExtraFunctions
@@ -15,7 +16,7 @@ class _Scanner : public QObject , protected QOpenGLExtraFunctions
     Q_OBJECT
 public:
     explicit _Scanner(QObject *parent = nullptr);
-    explicit _Scanner(_Machine* global_machine,QObject *parent = nullptr);
+    explicit _Scanner(_Machine* global_machine,_Processing* proc,QObject *parent = nullptr);
 
 public slots:
     void init();
@@ -30,6 +31,7 @@ public:
     QOpenGLContext *context = nullptr;
     QOffscreenSurface *surface = nullptr;
     _GPU_Compute *gpu_compute = nullptr;
+    _Processing *processing=nullptr;
 
     unsigned int framebuffer;
     unsigned int renderbuffer;

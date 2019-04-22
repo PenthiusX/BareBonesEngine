@@ -5,6 +5,7 @@
 #include <IO/_machine.h>
 #include <Modules/_marker.h>
 #include <Modules/_scanner.h>
+#include <Modules/_processing.h>
 
 namespace Ui {
 class MainWindow;
@@ -26,9 +27,9 @@ private:
     QThread *hardwareInteractionThread;//all hardware IO operations done inside this thread
 
     //all the following objects should be moved and work in the hardwareInteractionThread
-    _Machine *machine;
-    _Marker *marker;
-    _Scanner *scanner;
+    _Machine *machine=nullptr;
+    _Marker *marker=nullptr;
+    _Scanner *scanner=nullptr;
+    _Processing *processing=nullptr;
 };
-
 #endif // MAINWINDOW_H

@@ -399,7 +399,6 @@ void _Machine::init()
     //setup commands
     set_hardware_serial_defaults();
 
-    colorFrame = new char[camera->getWidth()*camera->getHeight()*4];
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateImageCamera()));
@@ -428,7 +427,7 @@ void _Machine::updateImageCamera()
         //lock is aquired
         camera->grab_frame();
         if(camera->get_frame())
-            updateFrameGrayscale(camera->get_frame(),camera->getWidth(),camera->getHeight());
+            emit cameraFrameRecieved(camera->get_frame(),camera->getWidth(),camera->getHeight());
         frameUpdateMutex.unlock();
     }
 }
@@ -446,11 +445,11 @@ void _Machine::updateFrameGrayscale(char* img,unsigned int iwidth,unsigned int i
         colorFrame[index*4+2] = img[index];
         colorFrame[index*4+3] = 255;
     }
-    emit frameUpdated(colorFrame,iwidth,iheight);
+    emit guiFrameOut(colorFrame,iwidth,iheight);
 }
 
 void _Machine::updateFrameColor(char* img,unsigned int iwidth,unsigned int iheight)
 {
-    emit frameUpdated(img,iwidth,iheight);
+    emit guiFrameOut(img,iwidth,iheight);
 }
 
