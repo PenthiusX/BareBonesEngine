@@ -226,7 +226,6 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 void _Renderer::setPosition(QVector3D pos)
 {
     this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
-    this->sceneEntity.setPosition(pos);
     if(isTranfomationLocal)
     {
         glm_model4x4 = glm::mat4(1.0f);
@@ -235,10 +234,19 @@ void _Renderer::setPosition(QVector3D pos)
     else if(!isTranfomationLocal)
     {
         translationMatrix = glm::mat4(1.f);
-        translationMatrix = glm::translate(translationMatrix,glm::vec3( this->sceneEntity.getPostion().x(),
-                                                                        this->sceneEntity.getPostion().y(),
-                                                                        this->sceneEntity.getPostion().z()));
+        translationMatrix = glm::translate(translationMatrix,glm::vec3( pos.x(),
+                                                                        pos.y(),
+                                                                        pos.z()));
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+    }
+    this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
+            translationMatrix[3][1],
+            translationMatrix[3][2]));
+
+    //Debug use
+    if(this->sceneEntity.getId() == 2)
+    {
+        _Tools::Debugmatrix4x4(translationMatrix);
     }
 }
 void _Renderer::translate(QVector3D pos)
@@ -254,8 +262,14 @@ void _Renderer::translate(QVector3D pos)
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     }
     this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
-            translationMatrix[3][1], // an alternate implemtation to the norm.
+            translationMatrix[3][1],
             translationMatrix[3][2]));
+
+    //debug use
+    if(this->sceneEntity.getId() == 2)
+    {
+        _Tools::Debugmatrix4x4(translationMatrix);
+    }
 }
 /*
  * Function: setRotation(QVector3D pos)

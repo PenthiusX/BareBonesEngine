@@ -69,7 +69,7 @@ private:
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
 
-    //The local scene object that carries all the prelaoded and updated values for the sceneOject being rendered.
+    //The local renderer object that carries all the prelaoded and updated values for the scene being rendered.
     std::vector<_Renderer> sceneObject;
 
     //Holds the vertex and index data
