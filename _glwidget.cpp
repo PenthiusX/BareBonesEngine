@@ -70,11 +70,13 @@ void _GLWidget::initializeGL()
     s1.setIsTransfomationLocal(false);
     s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setScale(.09f);
-    s1.setModelData(":/models/stickman.obj");
+    s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
     //
+    mpoint.setId(2);
+    mpoint.setIsTransfomationLocal(false);
     mpoint.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
+    mpoint.setScale(0.1f);
     mpoint.setModelData(":/models/sphere.obj");
-    mpoint.setScale(0.01f);
     //
     scene = new _Scene();
     scene->addCamera(cam);
@@ -82,9 +84,7 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(s);//0
     scene->addSceneObject(s1);//1
     scene->addSceneObject(mpoint);//2
-	scene->addSceneObject(background_quad);//3
-
-//    glSelectBuffer();
+    scene->addSceneObject(background_quad);//3
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -106,7 +106,7 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-    //this debug use code , sets focus on object with targetID--
+    //this debug use code , sets focus on object with the iD that is selected
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
         if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch){
             cam.setFocalPoint(QVector3D(scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion()));
@@ -156,7 +156,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
         {
             scene->getSceneObjectsArray()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are inverted for intuitive controll
         }
-    qDebug() << mosPos;
+    //    qDebug() << mosPos;
     scene->getSceneObjectsArray()[2]->setPosition(QVector3D(mosPos.x(), mosPos.y(), 0.0));
 }
 /*
@@ -164,8 +164,8 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 * This is a overriden function from the QWidget parent
 * runs each time the mouse wheel is scrolled.
 * Created: 5_02_2019
-*/
-/*Controlls: 
+*
+* Controlls:
 * scrool wheel up to scale object relatively
 */
 void _GLWidget::wheelEvent(QWheelEvent *e)
@@ -195,8 +195,8 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 * runns anytime a key is presses and returns which key through the
 * event pointer of QKeyEvent object.
 * Created: 25_02_2019
-*/
-/* Controls: WASD to move ,
+*
+ Controls: WASD to move ,
  * C to switch focut to  camera or model. R to reset to default with respect to focus
  * Q to switch between models(models need to have a sequntial ID for this to work properly)
  *

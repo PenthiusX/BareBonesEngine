@@ -10,6 +10,7 @@ _SceneEntity::_SceneEntity()
     this->postion = QVector3D(0.0, 0.0, 0.0);
     this->scale = 1.0;
     this->isActive = false;
+    this->isTransfomationLocal = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
