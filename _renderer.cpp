@@ -371,9 +371,6 @@ void _Renderer::transitionColors(QVector2D mousePos)
     float y = mousePos.y();
     x = x / 824;//limiting the value between 0 and 1
     y = y / 375;//limiting the value between 0 and 1
-
-    //qDebug() << x << "." << y;
-
     double r = abs(cos(timer.elapsed() * 0.002));
     double g = abs(sin(timer.elapsed() * 0.003));
     double b = abs(cos(timer.elapsed() * 0.005));

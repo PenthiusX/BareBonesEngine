@@ -75,7 +75,7 @@ void _Scene::addCamera(_Camera c)
 }
 /*
  * Function: updateCamera(_Camera c)
- * !!Needs implemntation!!
+ * sets the camera updated values to every render entity matrix
 */
 void _Scene::updateCamera(_Camera c)
 {
