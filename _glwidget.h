@@ -5,6 +5,15 @@
 #include <QMouseEvent>
 #include "_scene.h"
 
+/*
+ * The _GLWidget Class:
+ * This class is the Controller is a typical MVC where the
+ * View and Controller are being handeled by the QT GUI frameowrk and
+ * its wrapper functions for creating Opengl and GUI windowing context.
+ * Created: 5_02_2019
+ * Author: Aditya,Saurabh
+*/
+
 class _GLWidget :  public QOpenGLWidget
 {
 public:
@@ -29,17 +38,17 @@ private:
     unsigned int shaderProgram;
 
     _Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
-    _SceneEntity s, s1,s2;
+    _SceneEntity s, s1,s2,mpoint;
     _SceneEntity background_quad;
     _AssetLoader assetLoader;
     _Camera cam;
-    QVector2D mousePressPosition;
 
     //Varible for InputCallbackFunctions
-    unsigned int id;
+    unsigned int idmatch;
     float scroolScale;
     QVector2D rotRads;
 	bool isCamFocus;
+    QVector2D mousePressPosition;
 };
 
 #endif // _GLWIDGET_H
