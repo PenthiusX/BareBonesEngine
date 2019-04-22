@@ -3,6 +3,9 @@
 #include <QThread>
 #include <QMetaMethod>
 
+
+/* Processing class
+*/
 _Processing::_Processing(QObject *parent) : QObject(parent) , QOpenGLExtraFunctions()
 {
     QSurfaceFormat format;
@@ -94,9 +97,80 @@ void _Processing::init()
 
     colorFrame = new char[1360*1024*4];
 
+    //create framebuffer to get processed image from texture should use glGetTexImage afterwards
+    glGenFramebuffers(1,&framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
 
+    glGenRenderbuffers(1,&renderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,1360, 1024);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
+    else qDebug() << "incomplete";
 
     //connect(this,SIGNAL(set_image(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
 }
 
+void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int iheight)
+{
+    static bool init = true;
+    static _Texture texture(nullptr,iwidth,iheight);
+    static _Texture texture_out(nullptr,iwidth,iheight);
+    static _Texture texture_outt(nullptr,iwidth,iheight);
 
+    if(init)
+    {
+
+
+    //initialise empty textures for processing
+
+
+    //load texture
+    texture.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
+    texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+
+    //texture.unbind();
+    init = false;
+    }
+    //Do the Processing
+
+    //send the image to gpu texture
+    texture.setImage(img,iwidth,iheight);
+
+    //compute operation(edge detecton currently)
+    //gpu_compute->compute_row_wise_mean(texture,texture_out);
+    //gpu_compute->compute_threshold(texture,texture_outt);
+//        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
+//        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
+//        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+    //gpu_compute->compute_canny_edge(texture_outt,texture_out);
+    gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
+    gpu_compute->compute_copy_red_to_rgba(texture,texture_out);
+    gpu_compute->compute_mark_column_index(texture_outt,texture_out);
+    //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+
+    //bind to framebuffer for grabbing
+    texture_out.bindForFramebuffer();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glViewport(0, 0, iwidth, iheight);
+
+    //get image from gpu texture
+    glReadPixels(0, 0, iwidth, iheight,GL_RGBA, GL_UNSIGNED_BYTE,colorFrame);
+
+    //send signal to update display texture
+    emit outputImage(colorFrame,iwidth,iheight);
+
+}
+
+bool _Processing::makeCurrent()
+{
+    return context->makeCurrent(surface);
+}
+
+void _Processing::doneCurrent()
+{
+    context->doneCurrent();
+}

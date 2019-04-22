@@ -67,40 +67,14 @@ _Scanner::_Scanner(_Machine *global_machine,_Processing* proc,QObject *parent) :
 void _Scanner::init()
 {
     //creating context
-    if (!context->create())
-        qFatal("Cannot create the requested OpenGL context!");
-    else {
-        //make context active
-        bool success = context->makeCurrent(surface);
-        //qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
-        initializeOpenGLFunctions();
+    bool success = processing->makeCurrent();
+    //qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
-        //this object will handle all compute operations
-        gpu_compute = new _GPU_Compute();//should be created when context is active
+    gpu_compute = new _GPU_Compute;
 
-        //checking if gl context is working
+    initializeOpenGLFunctions();
 
-        qDebug() << QString::fromUtf8((char*)glGetString(GL_VERSION));
-
-        //GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS
-
-                int workGroupSizes[3] = { 0 };
-                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &workGroupSizes[0]);
-                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &workGroupSizes[1]);
-                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &workGroupSizes[2]);
-                int workGroupCounts[3] = { 0 };
-                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &workGroupCounts[0]);
-                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &workGroupCounts[1]);
-                glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &workGroupCounts[2]);
-                int max_compute_workgroup_invocations;
-                //glGetIntegeri(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS,&max_compute_workgroup_invocations);
-
-        qDebug()<< "workGroupSizes" << workGroupSizes[0] << " " << workGroupSizes[1]<< " " << workGroupSizes[2];
-        qDebug()<< "workGroupCounts" << workGroupCounts[0] << " " << workGroupCounts[1]<< " " << workGroupCounts[2];
-        qDebug()<< "max_compute_workgroup_invocations" << max_compute_workgroup_invocations;
-
-    }
     connect(this,SIGNAL(set_image(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
 }
 
@@ -131,40 +105,9 @@ void _Scanner::scan_save_images()
 */
 void _Scanner::scan_generate_model()
 {
-    bool success = context->makeCurrent(surface);
+    bool success = processing->makeCurrent();
     qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
-    //FILE* imagefile;
-
-    char *colours=new char[machine->camera->getWidth()*machine->camera->getHeight()*4];
-
-    //initialise empty textures for processing
-    static _Texture texture(nullptr,machine->camera->getWidth(),machine->camera->getHeight());
-    static _Texture texture_out(nullptr,machine->camera->getWidth(),machine->camera->getHeight());
-    static _Texture texture_outt(nullptr,machine->camera->getWidth(),machine->camera->getHeight());
-
-    unsigned int framebuffer;
-
-    //load texture
-    texture.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
-    texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
-
-    //texture.unbind();
-
-    //create framebuffer to get processed image from texture should use glGetTexImage afterwards
-    glGenFramebuffers(1,&framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
-
-    texture_out.bindForFramebuffer();
-
-    glGenRenderbuffers(1,&renderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,machine->camera->getWidth(), machine->camera->getHeight());
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
-
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
-    else qDebug() << "incomplete";
 
     machine->frameUpdateMutex.lock();// display will not be updated by camera frame
 
@@ -181,34 +124,7 @@ void _Scanner::scan_generate_model()
         //send the grabbed frame to gui widget for display
         //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
-        //Do the Processing
-
-        //send the image to gpu texture
-        texture.setImage(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
-
-        //compute operation(edge detecton currently)
-        //gpu_compute->compute_row_wise_mean(texture,texture_out);
-        //gpu_compute->compute_threshold(texture,texture_outt);
-//        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
-//        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
-//        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
-        //gpu_compute->compute_canny_edge(texture_outt,texture_out);
-        gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
-        gpu_compute->compute_copy_red_to_rgba(texture,texture_out);
-        gpu_compute->compute_mark_column_index(texture_outt,texture_out);
-        //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
-
-        //bind to framebuffer for grabbing
-        texture_out.bindForFramebuffer();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, machine->camera->getWidth(), machine->camera->getHeight());
-
-        //get image from gpu texture
-        glReadPixels(0, 0, machine->camera->getWidth(), machine->camera->getHeight(),GL_RGBA, GL_UNSIGNED_BYTE,colours);
-
-        //send signal to update display texture
-        emit set_image(colours,machine->camera->getWidth(),machine->camera->getHeight());
+        processing->markLineLaser(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
         //For saving processed image
         //filename = QString("processed_image_stage_%1.pgm").arg(t);

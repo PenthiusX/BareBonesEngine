@@ -28,8 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
     scanner = new _Scanner(machine,processing);
     scanner->moveToThread(hardwareInteractionThread);
 
-
-
     //
     qDebug() << "created hardware objects in thread :" << QThread::currentThread();
 
@@ -40,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
         processing->deleteLater();
     });    //initialize machine which will create hardware objects in new thread
     connect(hardwareInteractionThread,SIGNAL(started()),machine,SLOT(init()));
-    connect(hardwareInteractionThread,SIGNAL(started()),scanner,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),processing,SLOT(init()));
+    connect(hardwareInteractionThread,SIGNAL(started()),scanner,SLOT(init()));
 
     /* button connections
      *  slot function implemented in child object of MainWindow and used by lambda functions

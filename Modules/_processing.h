@@ -14,6 +14,11 @@ class _Processing : public QObject , protected QOpenGLExtraFunctions
 public:
     explicit _Processing(QObject *parent = nullptr);
 
+    bool makeCurrent();
+    void doneCurrent();
+    _GPU_Compute *gpu_compute = nullptr;
+
+    void markLineLaser(char *img, unsigned int iwidth, unsigned int iheight);
 signals:
     void outputImage(char *img, unsigned int iwidth, unsigned int iheight);
     void inputImageRecived(char *img, unsigned int iwidth, unsigned int iheight);
@@ -28,7 +33,6 @@ protected:
 
     QOpenGLContext *context = nullptr;
     QOffscreenSurface *surface = nullptr;
-    _GPU_Compute *gpu_compute = nullptr;
     char * colorFrame = nullptr;
 
     unsigned int framebuffer;
