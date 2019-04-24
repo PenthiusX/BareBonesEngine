@@ -28,6 +28,8 @@ public:
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<unsigned int> indexArray);//take vertex and index data and binds it to object buffer
 
+    void setFrameBuffer(unsigned int resW, unsigned int resH);
+
     //setting image of existing texture, current context should be active while calling these functions, use makeCurrent() to make context current
     void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object
@@ -52,6 +54,7 @@ public:
 
     //Debug implentation
     void transitionColors(QVector2D mousePos);
+    void unProject(QVector2D mousePressPosition);
 
 private:
     unsigned int VBO;//vertex buffer object
@@ -61,6 +64,7 @@ private:
     //Shader class object sets the shaders and passes the program to the current context
     _Shader* shdr;
     GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform,mousePosUniform;
+    GLuint frameBuffer1;bool isFramebufferActive; unsigned int fbtexture,textureColorbuffer;
     //Stores the uniform location allocated in the shader
     void setuniformLocations();
 

@@ -138,10 +138,6 @@ void _Shader::setChildShader(QString s, unsigned int typ)
     unsigned int shader = compileShader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-/*
- *
- *
-*/
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;

@@ -16,8 +16,9 @@
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
     glEnable(GL_FRONT_AND_BACK);
-//    glRenderMode(GL_SELECT);
+    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
 
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -28,16 +29,16 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
     isTranfomationLocal = false;
+    isFramebufferActive = false;
 
     qDebug() << "render initialised ";
 }
-
 /*
  *Distructor: _Renderer Class
 */
 _Renderer::~_Renderer()
 {
-    shdr = NULL;
+    shdr = nullptr;
     delete shdr;
 }
 
@@ -98,7 +99,40 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     qDebug() << "setModelDataInBuffers() for entity" << this->sceneEntity.getId();
 }
 /*
- *
+ * Function: setFrameBuffer()
+ * Created:24_04_2019
+ */
+void _Renderer::setFrameBuffer(unsigned int resW, unsigned int resH)
+{
+    isFramebufferActive = true;
+    qDebug() << "----------Frambuffer Enabled for ID----------------" << this->sceneEntity.getId();
+    // framebuffer configuration
+    // -------------------------
+    unsigned int framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    // create a color attachment texture
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resW, resH, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+    // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, resW, resH); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+    // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        qDebug() << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+/*
+ * Function: setuniformLocations()
+ * sets a seperate functional implementation to the existing
+ * Created:11_02_2019
 */
 void _Renderer::setuniformLocations()
 {
@@ -111,7 +145,6 @@ void _Renderer::setuniformLocations()
 
 /*
  * Function: setupTexture()
- * Contributor : Saurabh
  * creates new texture and adds into list(vector) of textures
  * current context should be active while calling these functions
  * use makeCurrent() to make context current
@@ -134,7 +167,6 @@ void _Renderer::setupTexture(QString texfile)
     textures.push_back(texture);
     qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getId();
 }
-
 /*
  * Function: setTexture()
  * Contributor : saurabh
@@ -163,13 +195,13 @@ void _Renderer::setTexture(QString pathtoTexture)
 }
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
-* Sets the values matrices for the model matrix 
+* Sets the values matrices for the model matrix
 * works in implementing translation , rotation and scaling
 * Used by: the _glWidget class initialiseGl() or paintGl().
 * Created: 25_02_2019
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
-{ 
+{
     glm_model4x4 = glm::mat4(1.0f);
     translationMatrix = glm::mat4(1.f);
     rotationMatrix = glm::mat4(1.f);
@@ -203,8 +235,8 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
 }
 /*
 * Function: setProjectionMatrix(int w, int h)
-* takes thew width and height of the window and sets the relative 
-* field of view and the aspect ration bindings. will update itself each time the 
+* takes thew width and height of the window and sets the relative
+* field of view and the aspect ration bindings. will update itself each time the
 * window is resized.and needs to be called in the resizeGl function.
 * Used by: the _glWidget class resizeGL().
 * Created: 25_02_2019
@@ -242,12 +274,6 @@ void _Renderer::setPosition(QVector3D pos)
     this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
             translationMatrix[3][1],
             translationMatrix[3][2]));
-
-    //Debug use
-    if(this->sceneEntity.getId() == 2)
-    {
-        _Tools::Debugmatrix4x4(translationMatrix);
-    }
 }
 void _Renderer::translate(QVector3D pos)
 {
@@ -264,12 +290,6 @@ void _Renderer::translate(QVector3D pos)
     this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
             translationMatrix[3][1],
             translationMatrix[3][2]));
-
-    //debug use
-    if(this->sceneEntity.getId() == 2)
-    {
-        _Tools::Debugmatrix4x4(translationMatrix);
-    }
 }
 /*
  * Function: setRotation(QVector3D pos)
@@ -284,9 +304,9 @@ void _Renderer::setRotation(QVector3D rot)
     this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
     if(isTranfomationLocal)
     {//still buggy
-        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(), 
-							  this->sceneEntity.getRotation().y(), 
-							  this->sceneEntity.getRotation().z());
+        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                              this->sceneEntity.getRotation().y(),
+                              this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         glm_model4x4 *= glm::mat4_cast(quat);
     }
@@ -319,7 +339,7 @@ void _Renderer::setscale(float scale)
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
-* Sets the sceen entity object locally and sets the 
+* Sets the sceen entity object locally and sets the
 * shader ,Model data , projection matrix, texture,
 * and initialises the modelMatrix.
 * Created: 1_03_2019
@@ -355,24 +375,54 @@ void _Renderer::_Renderer::draw()
 {
     //use cased during debuging the color and Depth buffer
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //----------------Framebuffer test-----------------------------
+    //debug implemetation
+    //default is 0 (your scene) , genrated is framebuffer1
+    if(isFramebufferActive){
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
+        glEnable(GL_DEPTH_TEST);}
+    //-------------------------------------------------------------
 
     //Using the shader program in the current context
     shdr->useShaderProgram();
-    //Setting the uniform for color
-    transitionColors(QVector2D( 0.3,0.1));
+
+    //Setting the uniform for color trnasitioning//just a temporary debug use
+    transitionColors(QVector2D(0.3,0.1));
+
     //Bind Textures
     for(unsigned int t=0;t<textures.size();t++){
-        textures[t].bind();}
+        textures[t].bind();
+    }
     //Bind the Buffers data of the respective buffer object
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
-    //sets the values for the MVP matrix in the vertex shader
+
+    //Sets the values for the MVP matrix in the vertex shader
     glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
     glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
     glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
+
     //The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
+
+    //----------------Framebuffer test--------------------
+    // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+    if(isFramebufferActive){
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+        // clear all relevant buffers
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        shdr->useShaderProgram();
+        glBindBuffer(GL_ARRAY_BUFFER,VBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
+    }
+    //----------------------------------------------------
 }
 
 /*
@@ -390,4 +440,53 @@ void _Renderer::transitionColors(QVector2D mousePos)
     double b = abs(cos(timer.elapsed() * 0.005));
     glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
     glUniform2f(mousePosUniform,x,y);//passing mouse value to shader
+}
+/*
+ *
+*/
+void _Renderer::unProject(QVector2D mousePressPosition)
+{
+    // Where The Viewport Values Will Be Stored
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);           // Retrieves The Viewport Values (X, Y, Width, Height)
+
+    for(int i = 0 ; i < 4 ;i++){
+        qDebug() << viewport[i];
+    }
+
+    // Holds Our X, Y and Z Coordinates
+    GLfloat winX, winY, winZ;
+    winX = (float)mousePressPosition.x();                  // Holds The Mouse X Coordinate
+    winY = (float)mousePressPosition.y();                  // Holds The Mouse Y Coordinate
+    qDebug() << mousePressPosition;
+    GLbyte color[4];
+    GLfloat depth;
+    GLuint index;
+
+    glFlush();
+    winY = viewport[3] - winY - 1;// Subtract The Current Mouse Y Coordinate From The Screen Height.
+    glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+    qDebug() << glGetError();;
+    qDebug() << mousePressPosition <<"-depthz"<< winZ;
+    glReadPixels(winX, winY, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+    qDebug() << glGetError();
+    qDebug() << mousePressPosition <<"-color"<< color[0]<<color[1]<<color[2]<<color[3];
+    glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+    qDebug() << glGetError();
+    qDebug() << mousePressPosition <<"-depth"<< depth;
+    glReadPixels(winX, winY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+    qDebug() << glGetError();
+    qDebug() << mousePressPosition <<"-index"<< index;
+
+    //        glm::vec3 mPos = glm::unProject(
+    //                    glm::vec3(x, float(this->width()) - y, 1.0f),
+    //                    glm::mat4(1.0f),
+    //                    this->glm_projection4x4,
+    //                    glm::vec4(0.0f, 0.0f, float(mWindowWidth), float(mWindowHeight))
+    //                 );
+
+    //      ROUND 2 DECIMAL
+    //        posX= ((int)(posX * 10 + .5) / 10.0);
+    //        posY= ((int)(posY * 10+ .5) / 10.0);
+    //        posZ= ((int)(posZ * 10 + .5) / 10.0);
 }
