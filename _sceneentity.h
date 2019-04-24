@@ -14,6 +14,8 @@ public:
     ~_SceneEntity();
     void setId(unsigned int id);//sets the iD either externaly or internally generated
     unsigned int getId();// call to retrieve unique id for the object instance.
+    void setTag(char* tag);
+    char* getTag();
     //
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
     QVector3D getPostion();//get the current position of the relvant object instace
@@ -41,14 +43,14 @@ public:
     void setIsTransfomationLocal(bool isLoc);
     bool getIsTransfomationLocal();
 
-
 private:
     unsigned int id;
+    char* tag;
     QVector3D postion;
     QVector3D rotation;
     float scale;
     //
-    std::vector<float>vertexData;
+    std::vector<float> vertexData;
     std::vector<unsigned int> indexData;
     std::vector<int> uvData;
     std::vector<float> normalData;

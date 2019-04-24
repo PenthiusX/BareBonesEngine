@@ -58,6 +58,7 @@ void _GLWidget::initializeGL()
                                          1, 2, 3    // second triangle
                                         };
     background_quad.setModelData(vertsV,indiceV);
+    background_quad.setId(420);
     //
     s.setId(0);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
@@ -85,6 +86,9 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(s1);//1
     scene->addSceneObject(mpoint);//2
     scene->addSceneObject(background_quad);//3
+
+    //Test implemetation//needs to be deleted
+    scene->getSceneObjectsArray()[3]->setFrameBuffer(1024,768);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -136,6 +140,10 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    for(unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+    {
+        scene->getSceneObjectsArray()[i]->unProject(this->mousePressPosition);
+    }
 }
 /*
 * Function: mouseMoveEvent(QMouseEvent *e)
@@ -152,12 +160,22 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
     rotRads = rotRads + QVector2D(e->localPos()) - mosPos;
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+    {
         if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch)
         {
             scene->getSceneObjectsArray()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are inverted for intuitive controll
         }
-    //    qDebug() << mosPos;
-    scene->getSceneObjectsArray()[2]->setPosition(QVector3D(mosPos.x(), mosPos.y(), 0.0));
+    }
+    /*
+    qDebug() << mosPos;
+    if(scene->getSceneObjectsArray()[2] != nullptr)
+    {
+        scene->getSceneObjectsArray()[2]->setPosition(QVector3D(mosPos.x(), mosPos.y(), 0.0));
+    }
+    else {
+        qInfo() << "no object at index";
+    }
+*/
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
