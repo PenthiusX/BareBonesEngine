@@ -5,6 +5,21 @@
 
 
 /* Processing class
+ * used for image prcessing operations
+ * this contains image input and output slots
+ *
+ *      inputImage : slot for 8-bit grayscale image input
+ *
+ *      image processing done by class methods which are activated by using setActiveProcess function
+ *
+ *      outputImage : signal for 32-bit rgba image out
+ * Author : Saurabh
+ * created:22_04_2019
+*/
+
+/* _Processing constructor
+ * creates offscreen render surface and context
+ * instance should be created in parent gui thread
 */
 _Processing::_Processing(QObject *parent) : QObject(parent) , QOpenGLExtraFunctions()
 {
@@ -31,6 +46,25 @@ _Processing::_Processing(QObject *parent) : QObject(parent) , QOpenGLExtraFuncti
 
     qDebug() << "offscreen render init" ;
 }
+
+/* Function : setActiveProcess(const char* slot)
+ * set the active process to be done on image
+ * eg:
+ *    //for setting in same thread
+ *    setActiveProcess(SLOT(passThroughFrame(char* ,unsigned int,unsigned int)));
+ *
+ *    //for setting no process in same thread
+ *    setActiveProcess(nullptr);
+ *
+ *    //for setting in differant thread
+ *    QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int)) ));
+ *
+ *    //for setting no process in differant thread
+ *    QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,nullptr));
+ *
+ *   //this has to be called once before above two calls
+ *   qRegisterMetaType<const char*>("const char*");
+*/
 void _Processing::setActiveProcess(const char* slot)
 {
     if(active_slot)
@@ -40,11 +74,22 @@ void _Processing::setActiveProcess(const char* slot)
     active_slot = slot;
 }
 
+
+/* slot : inputImage(char *img, unsigned int iwidth, unsigned int iheight)
+ * connet this to image source in machine->camera
+ * takes 8-bit grayscale image currently
+*/
 void _Processing::inputImage(char *img, unsigned int iwidth, unsigned int iheight)
 {
+    //call the internal slot which will be connected to active process
     emit inputImageRecived(img,iwidth,iheight);
 }
 
+
+/* process : passThroughFrame(char *img, unsigned int iwidth, unsigned int iheight)
+ * convert 8-bit grayscale image to 32-bit rgba image
+ * passes image as it is for displaying
+*/
 void _Processing::passThroughFrame(char *img, unsigned int iwidth, unsigned int iheight)
 {
     if(!colorFrame) colorFrame = new char[MAX_FRAME_WIDTH*MAX_FRAME_HEIGHT*4];
@@ -54,9 +99,16 @@ void _Processing::passThroughFrame(char *img, unsigned int iwidth, unsigned int 
         colorFrame[index*4+2] = img[index];
         colorFrame[index*4+3] = 255;
     }
+
+    //send image out after processing is done
     emit outputImage(colorFrame,iwidth,iheight);
 }
 
+/* Function : init()
+ * this function has to called when thread starts
+ * creates context in thread and initializes opengl functions
+ *
+*/
 void _Processing::init()
 {
     if (!context->create())
@@ -96,23 +148,23 @@ void _Processing::init()
 
     }
 
-    //connect(this,SIGNAL(set_image(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
 }
 
+/* process : markLineLaser
+ * marks red line on detected line laser path
+ *
+*/
 void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int iheight)
 {
     static bool init = true;
+
+    //initialise empty textures for processing
     static _Texture texture(nullptr,iwidth,iheight);
     static _Texture texture_out(nullptr,iwidth,iheight);
     static _Texture texture_outt(nullptr,iwidth,iheight);
 
     if(init)
     {
-
-
-    //initialise empty textures for processing
-
-
     //load texture
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
@@ -138,21 +190,23 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     gpu_compute->compute_mark_column_index(texture_outt,texture_out);
     //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
 
-    //bind to framebuffer for grabbing
-
     //get image from gpu texture
-    //glReadPixels(0, 0, iwidth, iheight,GL_RGBA, GL_UNSIGNED_BYTE,colorFrame);
-
     //send signal to update display texture
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out),iwidth,iheight);
 
 }
 
+/* function: makeCurrent
+ * set the context active
+*/
 bool _Processing::makeCurrent()
 {
     return context->makeCurrent(surface);
 }
 
+/* function: doneCurrent
+ * set the context inactive
+*/
 void _Processing::doneCurrent()
 {
     context->doneCurrent();

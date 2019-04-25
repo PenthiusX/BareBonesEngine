@@ -32,11 +32,6 @@ public:
     QOffscreenSurface *surface = nullptr;
     _GPU_Compute *gpu_compute = nullptr;
     _Processing *processing=nullptr;
-
-    unsigned int framebuffer;
-    unsigned int renderbuffer;
-    unsigned int framebuffer_texture;
-    unsigned int framebuffer_Width=MAX_FRAME_WIDTH,framebuffer_Height=MAX_FRAME_HEIGHT;
 };
 
 #endif // _SCANNER_H

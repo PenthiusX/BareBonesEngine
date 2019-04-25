@@ -84,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
             QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 0));
     });
 
-    qRegisterMetaType<const char*>("const char*");
+    qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
 
     connect(ui->live_camera_button, &QPushButton::toggled,[this]() {
         if(ui->live_camera_button->isChecked())
