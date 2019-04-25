@@ -83,12 +83,12 @@ void _GLWidget::initializeGL()
     scene->addCamera(cam);
     //
     scene->addSceneObject(s);//0
-    scene->addSceneObject(s1);//1
-    scene->addSceneObject(mpoint);//2
-    scene->addSceneObject(background_quad);//3
+//    scene->addSceneObject(s1);//1
+//    scene->addSceneObject(mpoint);//2
+//    scene->addSceneObject(background_quad);//3
 
     //Test implemetation//needs to be deleted
-    scene->getSceneObjectsArray()[3]->setFrameBuffer(1024,768);
+    scene->getSceneObjectsArray()[0]->setFrameBuffer(640,480);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -141,7 +141,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
     for(unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-    {
+    {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
         scene->getSceneObjectsArray()[i]->unProject(this->mousePressPosition);
     }
 }
