@@ -106,6 +106,7 @@ void _Shader::attachShaders(QString v,QString f)
  * Function: attachGeometryShader(QString geoS)
  * takes in a qrc path to the geometry shader for this
  * shaderprogram instance
+ * NOT IN USE.
 */
 void _Shader::setGeometryShader(QString geoS)
 {
@@ -131,13 +132,15 @@ GLint _Shader::getUniformLocation(const char* nameOfUniform)
 }
 /*
  *
- *
 */
 void _Shader::setChildShader(QString s, unsigned int typ)
 {
     unsigned int shader = compileShader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
+/*
+ *
+*/
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;

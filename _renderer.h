@@ -64,9 +64,14 @@ private:
     //Shader class object sets the shaders and passes the program to the current context
     _Shader* shdr;
     GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform,mousePosUniform;
-    GLuint frameBuffer1;bool isFramebufferActive; unsigned int fbtexture,textureColorbuffer;
     //Stores the uniform location allocated in the shader
     void setuniformLocations();
+    //Frambuffer variables
+    GLuint frameBuffer1;bool isFramebufferActive;
+    unsigned int fbtexture,textureColorbuffer;
+    unsigned int quadVAO, quadVBO;
+    _Shader* fboShader;
+
 
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
     glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix;
