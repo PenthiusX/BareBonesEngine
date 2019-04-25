@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QMetaMethod>
+#include <array>
 
 
 /* Processing class
@@ -98,6 +99,43 @@ void _Processing::passThroughFrame(char *img, unsigned int iwidth, unsigned int 
         colorFrame[index*4+1] = img[index];
         colorFrame[index*4+2] = img[index];
         colorFrame[index*4+3] = 255;
+    }
+
+    //send image out after processing is done
+    emit outputImage(colorFrame,iwidth,iheight);
+}
+
+void _Processing::histogram(char *img, unsigned int iwidth, unsigned int iheight)
+{
+    std::array<unsigned int, 256> hist{};
+
+    if(!colorFrame) colorFrame = new char[MAX_FRAME_WIDTH*MAX_FRAME_HEIGHT*4];
+    for (int index = 0; index < (iwidth*iheight); index++) {
+        unsigned char v = img[index];
+        //if((v<256)&&(v>=0))
+        hist[v]+=1;
+    }
+
+    float scaler=55000.0;
+    for (unsigned int w = 0; w < iwidth; w++) {
+        for (unsigned int h = 0; h < iheight; h++) {
+            unsigned int index = iwidth*h+w;
+            if(hist[(w*256/iwidth)]<(float(iheight-h)*scaler/float(iheight)))
+            {
+                colorFrame[index*4] = 0;
+                colorFrame[index*4+1] = 0;
+                colorFrame[index*4+2] = 0;
+                colorFrame[index*4+3] = 255;
+            }
+            else {
+                {
+                    colorFrame[index*4] = 255;
+                    colorFrame[index*4+1] = 255;
+                    colorFrame[index*4+2] = 255;
+                    colorFrame[index*4+3] = 255;
+                }
+            }
+        }
     }
 
     //send image out after processing is done

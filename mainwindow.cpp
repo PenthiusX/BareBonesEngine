@@ -88,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->live_camera_button, &QPushButton::toggled,[this]() {
         if(ui->live_camera_button->isChecked())
-            QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int)) ));
+            QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(histogram(char* ,unsigned int,unsigned int)) ));
         else
             QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,nullptr));
     });

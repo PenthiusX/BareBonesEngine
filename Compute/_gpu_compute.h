@@ -41,6 +41,7 @@ public:
     void compute_divide_mark_column_index(_Texture &input_img, _Texture &input_img2, _Texture &output_img);
     void compute_copy_red_to_rgba(_Texture &input_img, _Texture &output_img);
     char *get_texture_image_framebuffer(_Texture &input_img);
+
 };
 
 #endif // _GPU_COMPUTE_H

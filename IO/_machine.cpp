@@ -74,7 +74,7 @@ _Machine::~_Machine()
  * number of steps for full rotation: 16000
  * Created: 21_02_2019
  * */
-void _Machine::TurnTableMotorDiff(int steps)
+void _Machine::TurnTableMotorDiff(int steps,ActionType action)
 {
     //command : XM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["StageMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
@@ -87,7 +87,7 @@ void _Machine::TurnTableMotorDiff(int steps)
  * mm per step : unknown
  * Created: 21_02_2019
  * */
-void _Machine::LaserFocusMotorDiff(int steps)
+void _Machine::LaserFocusMotorDiff(int steps,ActionType action)
 {
     //command : FM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["LaserFocusMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
@@ -100,7 +100,7 @@ void _Machine::LaserFocusMotorDiff(int steps)
  * mm per step : unknown
  * Created: 21_02_2019
  * */
-void _Machine::LaserHeightMotorDiff(int steps)
+void _Machine::LaserHeightMotorDiff(int steps,ActionType action)
 {
     //command : ZM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["LaserHeightMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
@@ -113,7 +113,7 @@ void _Machine::LaserHeightMotorDiff(int steps)
  * zero intensity specifies off condition
  * intensity varies from 0 to 255
  * */
-void _Machine::Vaccum(int state)
+void _Machine::Vaccum(int state,ActionType action)
 {
     //command for on:N
     //command for off:Y
@@ -126,7 +126,7 @@ void _Machine::Vaccum(int state)
  * zero intensity specifies off condition
  * intensity varies from 0 to 255
  * */
-void _Machine::LineLaser(int intensity)
+void _Machine::LineLaser(int intensity,ActionType action)
 {
     static QString cmd = config["Hardware"]["Controls"]["LineLaser"]["Commands"]["RS232"].getStringEntity("SET");
     hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
@@ -136,7 +136,7 @@ void _Machine::LineLaser(int intensity)
  * zero intensity specifies off condition
  * intensity varies from 0 to 255
  * */
-void _Machine::BackLight(int intensity)
+void _Machine::BackLight(int intensity,ActionType action)
 {
     static QString cmd = config["Hardware"]["Controls"]["BackLight"]["Commands"]["RS232"].getStringEntity("SET");
     hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
@@ -148,7 +148,7 @@ void _Machine::BackLight(int intensity)
  * recieved from 1 above hence intensity is subtracted by 1
  * zero intensity specifies off condition
  * */
-void _Machine::MarkingLaser(float intensity)
+void _Machine::MarkingLaser(float intensity,ActionType action)
 {
     static QString laser_power_cmd = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("SET");
     if (intensity > 0)
@@ -180,27 +180,27 @@ QString _Machine::getMachineVersion()
     return hardware_serial->writeDataAndWait(info_cmd);
 }
 
-void _Machine::setBrightness(int value)
+void _Machine::setBrightness(int value,ActionType action)
 {
     camera->setBrightness(value);
 }
 
-void _Machine::setGain(int value)
+void _Machine::setGain(int value,ActionType action)
 {
     camera->setGain(value);
 }
 
-void _Machine::setExposure(int value)
+void _Machine::setExposure(int value,ActionType action)
 {
     camera->setExposure(value);
 }
 
-void _Machine::setContrast(int value)
+void _Machine::setContrast(int value,ActionType action)
 {
     camera->setContrast(value);
 }
 
-void _Machine::setOffset(int value)
+void _Machine::setOffset(int value,ActionType action)
 {
     camera->setOffset(value);
 }
@@ -235,7 +235,7 @@ QString _Machine::InfoCmd(_HardwareSerial& port)
  * on | state = 1
  * off | state = 0
  * */
-void _Machine::MarkingLaserOut(int state)
+void _Machine::MarkingLaserOut(int state,ActionType action)
 {
     //command for on:Q
     //command for off:R
@@ -248,7 +248,7 @@ void _Machine::MarkingLaserOut(int state)
  * on | state = 1
  * off | state = 0
  * */
-void _Machine::MarkingLaserDiode(int state)
+void _Machine::MarkingLaserDiode(int state,ActionType action)
 {
     //command for on:V
     //command for off:W
