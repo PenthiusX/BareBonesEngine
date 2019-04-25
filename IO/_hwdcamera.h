@@ -4,8 +4,6 @@
 #include <QString>
 #include <QJsonObject>
 
-#define MAX_FRAME_WIDTH 1360
-#define MAX_FRAME_HEIGHT 1024
 
 class _HWDCamera
 {

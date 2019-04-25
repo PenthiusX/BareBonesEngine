@@ -20,8 +20,8 @@
 */
 _AVT_Camera::_AVT_Camera() : _HWDCamera()
 {
-    Width = 1360;
-    Height = 1024;
+    Width = MAX_FRAME_WIDTH;
+    Height = MAX_FRAME_HEIGHT;
 }
 
 

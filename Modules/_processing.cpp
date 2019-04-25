@@ -47,6 +47,7 @@ void _Processing::inputImage(char *img, unsigned int iwidth, unsigned int iheigh
 
 void _Processing::passThroughFrame(char *img, unsigned int iwidth, unsigned int iheight)
 {
+    if(!colorFrame) colorFrame = new char[MAX_FRAME_WIDTH*MAX_FRAME_HEIGHT*4];
     for (int index = 0; index < (iwidth*iheight); index++) {
         colorFrame[index*4] = img[index];
         colorFrame[index*4+1] = img[index];
@@ -95,20 +96,6 @@ void _Processing::init()
 
     }
 
-    colorFrame = new char[1360*1024*4];
-
-    //create framebuffer to get processed image from texture should use glGetTexImage afterwards
-    glGenFramebuffers(1,&framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
-
-    glGenRenderbuffers(1,&renderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,1360, 1024);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
-
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
-    else qDebug() << "incomplete";
-
     //connect(this,SIGNAL(set_image(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
 }
 
@@ -152,16 +139,12 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
 
     //bind to framebuffer for grabbing
-    texture_out.bindForFramebuffer();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glViewport(0, 0, iwidth, iheight);
 
     //get image from gpu texture
-    glReadPixels(0, 0, iwidth, iheight,GL_RGBA, GL_UNSIGNED_BYTE,colorFrame);
+    //glReadPixels(0, 0, iwidth, iheight,GL_RGBA, GL_UNSIGNED_BYTE,colorFrame);
 
     //send signal to update display texture
-    emit outputImage(colorFrame,iwidth,iheight);
+    emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out),iwidth,iheight);
 
 }
 

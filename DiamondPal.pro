@@ -72,6 +72,9 @@ RESOURCES += \
 INCLUDEPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 
+DEFINES += MAX_FRAME_WIDTH=1360
+DEFINES += MAX_FRAME_HEIGHT=1024
+
 linux-g++ { #check if platform is linux
 message(Linux)
 DEFINES += PLATFORM_LINUX=true

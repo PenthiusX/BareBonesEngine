@@ -34,11 +34,6 @@ protected:
     QOpenGLContext *context = nullptr;
     QOffscreenSurface *surface = nullptr;
     char * colorFrame = nullptr;
-
-    unsigned int framebuffer;
-    unsigned int renderbuffer;
-    unsigned int framebuffer_texture;
-    unsigned int framebuffer_Width=1360,framebuffer_Height=1024;
     const char* active_slot = nullptr;
 };
 

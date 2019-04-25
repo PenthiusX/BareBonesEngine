@@ -548,11 +548,39 @@ void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
 
     shader.useShaderProgram();
 
-
-
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
-
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
+}
+char* _GPU_Compute::get_texture_image_framebuffer(_Texture& input_img)
+{
+    static unsigned int framebuffer=0,renderbuffer=0;
+    static char* colorFrame=nullptr;
+
+    if(!framebuffer)
+    {
+        glGenFramebuffers(1,&framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
+
+        glGenRenderbuffers(1,&renderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
+
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
+        else qDebug() << "incomplete";
+
+        colorFrame = new char[MAX_FRAME_WIDTH*MAX_FRAME_HEIGHT*4];
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
+
+    glViewport(0, 0, input_img.getWidth(), input_img.getHeight());
+
+    input_img.bindForFramebuffer();
+
+    glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),GL_RGBA, GL_UNSIGNED_BYTE,colorFrame);
+
+    return colorFrame;
 }

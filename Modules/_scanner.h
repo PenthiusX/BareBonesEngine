@@ -36,7 +36,7 @@ public:
     unsigned int framebuffer;
     unsigned int renderbuffer;
     unsigned int framebuffer_texture;
-    unsigned int framebuffer_Width=1360,framebuffer_Height=1024;
+    unsigned int framebuffer_Width=MAX_FRAME_WIDTH,framebuffer_Height=MAX_FRAME_HEIGHT;
 };
 
 #endif // _SCANNER_H
