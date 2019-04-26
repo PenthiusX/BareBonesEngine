@@ -3,6 +3,8 @@
 #include "IO/_hardwareserial.h"
 #include <QDebug>
 #include <QFileDialog>
+#include <QPixmap>
+#include <QImage>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -120,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+    connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),this,SLOT(update_histogram_image(char*,unsigned int ,unsigned int)));
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
 
     connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
@@ -130,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
     hardwareInteractionThread->start();
 
 }
+
 /*
  *
 */
@@ -137,10 +141,35 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 /*
  *
 */
 void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
 {
   ui->widget->update_background_image(img,w,h);//------------------------Needs work!!!!!
+}
+
+void MainWindow::update_histogram_image(char *img, unsigned int w, unsigned int h)
+{
+
+//ui->histogram_image_label->setPixmap(pixmap);
+
+int lw = ui->histogram_image_label->width();
+int lh = (lw*3)/4;//ui->histogram_image_label->height();
+
+QImage Img((uchar*)img, w, h, QImage::Format_Grayscale8);
+
+Img.save("hist.png");
+
+QPixmap pixmap;
+
+pixmap.convertFromImage(Img);
+//pixmap.loadFromData((uchar*)img,w*h);
+
+// set a scaled pixmap to a w x h window keeping its aspect ratio
+ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh,Qt::KeepAspectRatio));
+//ui->histogram_image_label->setMask(pixmap.mask());
+
+//ui->histogram_image_label->show();
 }

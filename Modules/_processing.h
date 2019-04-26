@@ -37,6 +37,8 @@ protected:
     QOpenGLContext *context = nullptr;
     QOffscreenSurface *surface = nullptr;
     char * colorFrame = nullptr;
+    char * colorFrame2 = nullptr;
+
     const char* active_slot = nullptr;
 };
 

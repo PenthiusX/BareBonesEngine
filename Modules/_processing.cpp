@@ -109,7 +109,6 @@ void _Processing::histogram(char *img, unsigned int iwidth, unsigned int iheight
 {
     std::array<unsigned int, 256> hist{};
 
-    if(!colorFrame) colorFrame = new char[MAX_FRAME_WIDTH*MAX_FRAME_HEIGHT*4];
     for (int index = 0; index < (iwidth*iheight); index++) {
         unsigned char v = img[index];
         //if((v<256)&&(v>=0))
@@ -117,29 +116,24 @@ void _Processing::histogram(char *img, unsigned int iwidth, unsigned int iheight
     }
 
     float scaler=55000.0;
-    for (unsigned int w = 0; w < iwidth; w++) {
-        for (unsigned int h = 0; h < iheight; h++) {
-            unsigned int index = iwidth*h+w;
-            if(hist[(w*256/iwidth)]<(float(iheight-h)*scaler/float(iheight)))
+    for (unsigned int w = 0; w < 256; w++) {
+        for (unsigned int h = 0; h < 256; h++) {
+            unsigned int index = 256*h+w;
+            if(hist[w]>(float(256-h)*scaler/float(256)))
             {
-                colorFrame[index*4] = 0;
-                colorFrame[index*4+1] = 0;
-                colorFrame[index*4+2] = 0;
-                colorFrame[index*4+3] = 255;
+                colorFrame2[index] = 0;
             }
             else {
-                {
-                    colorFrame[index*4] = 255;
-                    colorFrame[index*4+1] = 255;
-                    colorFrame[index*4+2] = 255;
-                    colorFrame[index*4+3] = 255;
-                }
+                colorFrame2[index] = 255;
             }
         }
     }
 
     //send image out after processing is done
-    emit outputImage(colorFrame,iwidth,iheight);
+    emit outputImage2(colorFrame2,256,256);
+
+    passThroughFrame(img,iwidth,iheight);
+    //emit outputImage(colorFrame,iwidth,iheight);
 }
 
 /* Function : init()
@@ -185,7 +179,7 @@ void _Processing::init()
         qDebug()<< "max_compute_workgroup_invocations" << max_compute_workgroup_invocations;
 
     }
-
+    colorFrame2 = new char[256*256];
 }
 
 /* process : markLineLaser
