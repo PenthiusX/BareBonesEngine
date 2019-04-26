@@ -200,9 +200,9 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
 {
     glm_view4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::lookAt(
-                glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
-                glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
-                glm::vec3(upVector.x(), upVector.y(), upVector.z()));
+                  glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
+                  glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
+                  glm::vec3(upVector.x(), upVector.y(), upVector.z()));
     //qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getId();
 }
 /*
@@ -345,9 +345,10 @@ void _Renderer::setFrameBuffer(unsigned int resW, unsigned int resH)
     isFramebufferActive = true;
     qDebug() << "----------Frambuffer Enabled for ID----------------" << this->sceneEntity.getId();
     // framebuffer configuration
-    // --------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------
     glGenFramebuffers(1, &frameBuffer1);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
+
     // create a color attachment texture
     glGenTextures(1, &textureColorbuffer);
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
@@ -355,26 +356,30 @@ void _Renderer::setFrameBuffer(unsigned int resW, unsigned int resH)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
     // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-    unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, resW, resH); // use a single renderbuffer object for both a depth AND stencil buffer.
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+
     // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        qDebug() << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        qDebug() << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;}
+
+    //reset to the default framebuffer 0
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    //-----------------------------------------------------------------------------------------
+    //---------------------------------------FBOQUAD--------------------------------------------
+    fboShader->attachShaders(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");
     float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
                              // positions   // texCoords
-                             -1.0f,  1.0f,  0.0f, 1.0f,
-                             -1.0f, -1.0f,  0.0f, 0.0f,
-                             1.0f, -1.0f,  1.0f, 0.0f,
+                            -0.5f,  0.5f,  0.0f, 1.0f,
+                            -0.5f, -0.5f,  0.0f, 0.0f,
+                             0.5f, -0.5f,  1.0f, 0.0f,
 
-                             -1.0f,  1.0f,  0.0f, 1.0f,
-                             1.0f, -1.0f,  1.0f, 0.0f,
-                             1.0f,  1.0f,  1.0f, 1.0f
+                            -0.5f,  0.5f,  0.0f, 1.0f,
+                             0.5f, -0.5f,  1.0f, 0.0f,
+                             0.5f,  0.5f,  1.0f, 1.0f
                            };
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);
@@ -385,8 +390,7 @@ void _Renderer::setFrameBuffer(unsigned int resW, unsigned int resH)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    //-------------------------------------------------------------------------------------------
-    fboShader->attachShaders(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");
+    //---------------------------------------------------------------------------------------------
 }
 
 /*
@@ -398,21 +402,17 @@ void _Renderer::setFrameBuffer(unsigned int resW, unsigned int resH)
 */
 void _Renderer::_Renderer::draw()
 {
-    //use cased during debuging the color and Depth buffer
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //----------------Framebuffer test-----------------------------
     //default is 0 (your scene) , genrated is framebuffer1
     if(isFramebufferActive){
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
-        glEnable(GL_DEPTH_TEST);glEnable(GL_STENCIL_TEST);} // enable depth and stencil testing (is disabled for rendering screen-space quad)
-
+//    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
+    glEnable(GL_DEPTH_TEST);glEnable(GL_STENCIL_TEST);}// enable depth and stencil testing (is disabled for rendering screen-space quad)
     //-------------------------------------------------------------
+
     //Using the shader program in the current context
     shdr->useShaderProgram();
-
     //Setting the uniform for color trnasitioning//just a temporary debug use
-    transitionColors(QVector2D(0.3,0.1));
-
+    transitionColors(QVector2D(0.0,0.0));
     //Bind Textures
     for(unsigned int t=0;t<textures.size();t++){
         textures[t].bind();
@@ -421,31 +421,26 @@ void _Renderer::_Renderer::draw()
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
-
     //Sets the values for the MVP matrix in the vertex shader
     glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
     glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
     glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
-
     //The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 
     //----------------Framebuffer test--------------------
+    if(isFramebufferActive){
     // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
-    if(isFramebufferActive)
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-        glDisable(GL_DEPTH_TEST);
-        // clear all relevant buffers
-//        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
-        glClear(GL_COLOR_BUFFER_BIT);
-        fboShader->useShaderProgram();
-        glBindVertexArray(quadVAO);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-    }
-    //----------------------------------------------------
+    glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+    glDisable(GL_STENCIL_TEST);
+    // clear all relevant buffers
+    //  glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    fboShader->useShaderProgram();
+    glBindVertexArray(quadVAO);
+    glBindTexture(GL_TEXTURE_2D,textureColorbuffer);
+    glDrawArrays(GL_TRIANGLES, 0, 6);}	// use the color attachment texture as the texture of the quad plane
+    //-----------------------------------------------------
 }
 
 /*
@@ -486,10 +481,9 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     GLfloat depth;
     GLuint index;
 
-    glFlush();
     winY = viewport[3] - winY - 1;// Subtract The Current Mouse Y Coordinate From The Screen Height.
     glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-    qDebug() << glGetError();;
+    qDebug() << glGetError();
     qDebug() << mousePressPosition <<"-depthz"<< winZ;
     glReadPixels(winX, winY, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
     qDebug() << glGetError();

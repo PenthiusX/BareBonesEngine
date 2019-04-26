@@ -96,6 +96,7 @@ void _Scene::onResize(int w,int h)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
     }
+        renderObjects[0]->setFrameBuffer(w,h);
 }
 /*
  * Function: render()

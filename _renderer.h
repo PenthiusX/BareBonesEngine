@@ -68,7 +68,7 @@ private:
     void setuniformLocations();
     //Frambuffer variables
     GLuint frameBuffer1;bool isFramebufferActive;
-    unsigned int fbtexture,textureColorbuffer;
+    unsigned int fbtexture,textureColorbuffer,rbo;
     unsigned int quadVAO, quadVBO;
     _Shader* fboShader;
 

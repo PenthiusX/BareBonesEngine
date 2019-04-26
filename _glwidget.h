@@ -36,6 +36,7 @@ private:
     unsigned int VAO;
     unsigned int EBO;
     unsigned int shaderProgram;
+    QOpenGLContext *context;
 
     _Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
     _SceneEntity s, s1,s2,mpoint;
