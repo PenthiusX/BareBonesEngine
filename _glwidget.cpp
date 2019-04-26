@@ -22,7 +22,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
     this->isCamFocus = false;
     //keeps the event callbacks working for the GL widget
     setFocusPolicy(Qt::StrongFocus);
-    makeCurrent();
+//    makeCurrent();
 }
 _GLWidget::~_GLWidget()
 {
@@ -66,19 +66,19 @@ void _GLWidget::initializeGL()
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
-    s.setScale(0.09f);
-    s.setModelData(":/models/stickman.obj");
-    //
-    s1.setId(1);
-    s1.setIsTransfomationLocal(false);
-    s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-    s1.setScale(.09f);
-    s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
+    s.setScale(0.49f);
+    s.setModelData(":/models/monkey.obj");
+//    //
+//    s1.setId(1);
+//    s1.setIsTransfomationLocal(false);
+//    s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+//    s1.setScale(.09f);
+//    s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
     //
     mpoint.setId(2);
     mpoint.setIsTransfomationLocal(false);
     mpoint.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-    mpoint.setScale(0.1f);
+    mpoint.setScale(0.8f);
     mpoint.setModelData(":/models/sphere.obj");
     //
     scene = new _Scene();
