@@ -22,6 +22,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
     this->isCamFocus = false;
     //keeps the event callbacks working for the GL widget
     setFocusPolicy(Qt::StrongFocus);
+    makeCurrent();
 }
 _GLWidget::~_GLWidget()
 {
@@ -35,6 +36,7 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
+
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
@@ -88,7 +90,6 @@ void _GLWidget::initializeGL()
 //    scene->addSceneObject(background_quad);//3
 
     //Test implemetation//needs to be deleted
-    scene->getSceneObjectsArray()[0]->setFrameBuffer(640,480);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -166,16 +167,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             scene->getSceneObjectsArray()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are inverted for intuitive controll
         }
     }
-    /*
-    qDebug() << mosPos;
-    if(scene->getSceneObjectsArray()[2] != nullptr)
-    {
-        scene->getSceneObjectsArray()[2]->setPosition(QVector3D(mosPos.x(), mosPos.y(), 0.0));
-    }
-    else {
-        qInfo() << "no object at index";
-    }
-*/
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
@@ -207,6 +198,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
                 qInfo() << scroolScale;
             }
     }
+
 }
 /*
 * Function: keyPressEvent(QKeyEvent * event)

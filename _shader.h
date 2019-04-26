@@ -21,11 +21,12 @@ public:
     void setVertexShader(QString vShader);
     void setGeometryShader(QString geoS);
     void attachShaders();
-    void attachShaders(QString v , QString f);//should be deprecated
-    void setChildShader(QString s,unsigned int typ);
-    void setChildShader(std::vector<QString>, unsigned int typ);
+    void attachShaders(QString v , QString f);
     void useShaderProgram();
     GLint getUniformLocation(const char *nameOfUniform);
+
+    void setChildShader(QString s,unsigned int typ);
+    void setChildShader(std::vector<QString>, unsigned int typ);
 
 private:
     //Shader Program
@@ -37,6 +38,7 @@ private:
     std::map<unsigned int,unsigned int> child_shaders;
 
     unsigned int compileShader(QString src_path,unsigned int typ);
+
 
     _Tools tools;
 
