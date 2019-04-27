@@ -3,7 +3,7 @@
 #include <QThread>
 #include <QMetaMethod>
 #include <array>
-
+#include <Compute/_cpu_compute.h>
 
 /* Processing class
  * used for image prcessing operations
@@ -129,6 +129,8 @@ void _Processing::histogram(char *img, unsigned int iwidth, unsigned int iheight
         }
     }
 
+
+    //qDebug() << "k means" <<  _Cpu_Compute::compute_k_means(hist);
     //send image out after processing is done
     emit outputImage2(colorFrame2,256,256);
 

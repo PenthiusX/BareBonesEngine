@@ -34,7 +34,8 @@ HEADERS  += mainwindow.h \
     IO/_picolo_camera.h \
     UI/_tabwidget.h \
     UI/_tabbar.h \
-    Modules/_processing.h
+    Modules/_processing.h \
+    Compute/_cpu_compute.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -59,7 +60,8 @@ SOURCES += main.cpp\
     IO/_picolo_camera.cpp \
     UI/_tabwidget.cpp \
     UI/_tabbar.cpp \
-    Modules/_processing.cpp
+    Modules/_processing.cpp \
+    Compute/_cpu_compute.cpp
 
 FORMS    += mainwindow.ui
 

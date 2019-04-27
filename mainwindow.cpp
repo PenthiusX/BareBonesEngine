@@ -160,15 +160,13 @@ int lh = (lw*3)/4;//ui->histogram_image_label->height();
 
 QImage Img((uchar*)img, w, h, QImage::Format_Grayscale8);
 
-Img.save("hist.png");
-
 QPixmap pixmap;
 
 pixmap.convertFromImage(Img);
 //pixmap.loadFromData((uchar*)img,w*h);
 
 // set a scaled pixmap to a w x h window keeping its aspect ratio
-ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh,Qt::KeepAspectRatio));
+ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
 //ui->histogram_image_label->setMask(pixmap.mask());
 
 //ui->histogram_image_label->show();
