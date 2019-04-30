@@ -67,7 +67,7 @@ void _GLWidget::initializeGL()
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
     s.setScale(0.49f);
     s.setModelData(":/models/stickman.obj");
-//    //
+    //
     s1.setId(1);
     s1.setIsTransfomationLocal(false);
     s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");

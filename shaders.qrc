@@ -4,8 +4,8 @@
         <file>shaders/fshader.glsl</file>
         <file>shaders/vshader1.glsl</file>
         <file>shaders/fshader1.glsl</file>
-        <file>shaders/texVshader.glsl</file>
-        <file>shaders/texFshader.glsl</file>
+        <file>shaders/fboTexVshader.glsl</file>
+        <file>shaders/fboTexFshader.glsl</file>
         <file>shaders/fshader_background.glsl</file>
         <file>shaders/vshader_background.glsl</file>
     </qresource>

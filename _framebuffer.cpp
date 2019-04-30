@@ -26,7 +26,7 @@ _FrameBuffer::~_FrameBuffer()
 */
 void _FrameBuffer::setupQuad()
 {
-    fboShader->attachShaders(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");
+    fboShader->attachShaders(":/shaders/fboTexVshader.glsl", ":/shaders/fboTexFshader.glsl");
     float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
                              // positions   // texCoords
                              -0.75f,  0.75f,  0.0f, 1.0f,
