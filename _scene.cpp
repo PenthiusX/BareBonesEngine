@@ -109,10 +109,14 @@ void _Scene::onResize(int w,int h)
 */
 void _Scene::render()
 {
+    //sets the Frame for the framebufferObject , the frames are being bound underneath in the draw() function below
     fboObject->setFrame();
+    //
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
         renderObjects[i]->draw();
     }
+    //
+    // sets the frame on the Quad that has been hardcoded into the function
     fboObject->renderFrameOnQuad();
 }
