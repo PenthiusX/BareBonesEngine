@@ -1,6 +1,13 @@
 #include "_framebuffer.h"
 #include "_tools.h"
 
+/*
+ * Class: _FrameBuffer
+ * Creates an individual instace for the setting and
+ * binding of the framebufferObjects
+ * Created: 30_04_2019
+ * Author: Aditya
+*/
 _FrameBuffer::_FrameBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     fboShader = new _Shader();
@@ -12,6 +19,11 @@ _FrameBuffer::~_FrameBuffer()
     delete fboShader;
 }
 
+/* Function: setupQuad()
+ * this function sets up a basic quad to render the frabbuffer texture to
+ * we put it in front of the camera for postprocessing implementations.
+ * Created: 30_04_2019
+*/
 void _FrameBuffer::setupQuad()
 {
     fboShader->attachShaders(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");
@@ -37,6 +49,11 @@ void _FrameBuffer::setupQuad()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
 
+/*
+ * Function: setupFramebufferObjects(int resWidth, int resHeight)
+ * this function sets up the the buffers for framebuffer to Texture rendering
+ * Created: 30_04_2019
+*/
 void _FrameBuffer::setupFramebufferObjects(int resWidth, int resHeight)
 {
     glGenFramebuffers(1, &frameBuffer);
@@ -63,7 +80,13 @@ void _FrameBuffer::setupFramebufferObjects(int resWidth, int resHeight)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-//initilise once
+/*
+ * Function: initialise()
+ * this function calls to all function needed on initialisation
+ * should be called on resize as well if you need the Framebuffer texture to
+ * be the correct respective resolution on resize.
+ * Created: 30_04_2019
+*/
 void _FrameBuffer::initialise()
 {
     GLint viewport[4];
@@ -73,7 +96,14 @@ void _FrameBuffer::initialise()
     setupQuad();
 }
 
-//Put at the start of frame
+/*
+ * Function: setFrame()
+ * this function set the Frame for the frameBuffer
+ * all the scene object Related bindings in the draw call like : shaderdata,model,etc
+ * come after this so that it reads to frame and updates it in the renderFrame() function
+ * which comes after.
+ * Created: 30_04_2019
+*/
 void _FrameBuffer::setFrame()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -81,7 +111,12 @@ void _FrameBuffer::setFrame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-//Put at end of Frame
+/*
+ * Function: renderFrameOnQuad()
+ * this function will render the frame generated via setFrame, and render it on the Quad
+ * that has been set in setupQuad() and rendered below.
+ * Created: 30_04_2019
+*/
 void _FrameBuffer::renderFrameOnQuad()
 {
     // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
@@ -93,4 +128,14 @@ void _FrameBuffer::renderFrameOnQuad()
 
     glBindTexture(GL_TEXTURE_2D,this->textureColorbuffer);
     glDrawArrays(GL_TRIANGLES, 0, 6);	// use the color attachment texture as the texture of the quad plane
+}
+/*
+ * Function: renderFrameOn()
+ * this function should help with implementation of the applying a FrameTextuere onto any
+ * Object passed into it.
+ * Created: 30_04_2019
+*/
+void _FrameBuffer::renderFrameOn()
+{
+    //implentation pending
 }

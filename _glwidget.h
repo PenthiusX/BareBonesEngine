@@ -6,7 +6,7 @@
 #include "_scene.h"
 
 /*
- * The _GLWidget Class:
+ * Class: _GLWidget
  * This class is the Controller is a typical MVC where the
  * View and Controller are being handeled by the QT GUI frameowrk and
  * its wrapper functions for creating Opengl and GUI windowing context.
