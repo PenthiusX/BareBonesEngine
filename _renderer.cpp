@@ -247,6 +247,7 @@ void _Renderer::setPosition(QVector3D pos)
             translationMatrix[3][1],
             translationMatrix[3][2]));
 }
+
 void _Renderer::translate(QVector3D pos)
 {
     this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
@@ -401,14 +402,6 @@ void _Renderer::setFrameBuffer(unsigned int resW, unsigned int resH)
 */
 void _Renderer::_Renderer::draw()
 {
-    //----------------Framebuffer test-----------------------------
-    //default is 0 (your scene) , genrated is frameBuffer1
-    if(isFramebufferActive){
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
-        glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);}// enable depth and stencil testing (is disabled for rendering screen-space quad)
-    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //-------------------------------------------------------------
     //Using the shader program in the current context
     shdr->useShaderProgram();
     //Bind Textures
@@ -426,19 +419,6 @@ void _Renderer::_Renderer::draw()
     transitionColors(QVector2D(0.0,0.0));//Setting the uniform for color trnasitioning//just a temporary debug use
     //The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
-    //----------------Framebuffer test--------------------
-    if(isFramebufferActive){
-        // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST | GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        fboShader->useShaderProgram();
-        glBindVertexArray(quadVAO);
-
-        glBindTexture(GL_TEXTURE_2D,textureColorbuffer);
-        glDrawArrays(GL_TRIANGLES, 0, 6);}	// use the color attachment texture as the texture of the quad plane
-    //----------------------------------------------------
-    //    glUseProgram(0);//Reset shader ??
 }
 
 /*

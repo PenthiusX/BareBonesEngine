@@ -3,6 +3,8 @@
 #include "_sceneentity.h"
 #include "_renderer.h"
 #include "_camera.h"
+#include "_framebuffer.h"
+
 #include <vector>
 
 /*
@@ -26,6 +28,7 @@ public:
 private:
     std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> renderObjects;
+    _FrameBuffer *fboObject;
     _Renderer* r;
     _Camera cam;
     bool isCamera;

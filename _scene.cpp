@@ -1,5 +1,4 @@
 #include "_scene.h"
-#include <iostream>
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -14,6 +13,7 @@
 _Scene::_Scene()
 {
     isCamera = false;
+    fboObject = new _FrameBuffer();
 }
 _Scene::~_Scene()
 {
@@ -58,7 +58,7 @@ void _Scene::addSceneObject(_SceneEntity s)
     }
     else
     {
-        std::cout << "scene object has not been set Properly" << std::endl;
+       qDebug() << "scene object has not been set Properly";
     }
 }
 /*
@@ -96,7 +96,9 @@ void _Scene::onResize(int w,int h)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
     }
-        renderObjects[0]->setFrameBuffer(w,h);
+//        renderObjects[0]->setFrameBuffer(w,h);
+        fboObject->initialise();
+        fboObject->setupFramebufferObjects(w,h);
 }
 /*
  * Function: render()
@@ -107,8 +109,10 @@ void _Scene::onResize(int w,int h)
 */
 void _Scene::render()
 {
+    fboObject->setFrame();
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
         renderObjects[i]->draw();
     }
+    fboObject->renderFrameOnQuad();
 }
