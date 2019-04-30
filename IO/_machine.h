@@ -30,6 +30,8 @@ class _Machine :public QObject
         _STORE_VALUE_TOGGLE
     };
 
+    typedef void (_Machine::*CommandFunction)(int,ActionType); // function pointer with (int ,ActionType) parameters
+
 public:
     _Machine(); //constructor initializes camera and hradware_serial
     _Machine(QString json_file);
@@ -38,6 +40,8 @@ public:
     void set_hardware_serial_defaults(); //setup commands
     void set_camera(_ConfigControlEntity &camera_config);
     void set_hardware_serial(_ConfigControlEntity &hardware_config);
+    void set_function_map();
+    void callCommandFunction(QString function_name, int value, ActionType action = _DEFAULT);
 
     _ConfigControlEntity config;
 
@@ -49,26 +53,28 @@ signals:
 
 public slots:
     void init();
-    void TurnTableMotorDiff(int steps,ActionType action = _DEFAULT);  //Rotate Stage Motor by specified steps (differential input)
-    void LaserFocusMotorDiff(int steps,ActionType action = _DEFAULT); //Slide Marking Laser Focus Motor by specified steps (differential input)
-    void LaserHeightMotorDiff(int steps,ActionType action = _DEFAULT);//Slide Marking Laser Height Motor by specified steps (differential input)
-    void MarkingLaserOut(int state,ActionType action = _DEFAULT);     //Marking Laser Shoot on(state=1) or off(state=0)
-    void MarkingLaserDiode(int state,ActionType action = _DEFAULT);   //Marking Laser Diode on(state=1) or off(state=0)
-    void Vaccum(int state,ActionType action = _DEFAULT);
-    void MarkingLaser(float intensit,ActionType actiony = _DEFAULT);
-    void LineLaser(int intensity,ActionType action = _DEFAULT);
-    void BackLight(int intensity,ActionType action = _DEFAULT);
     void GrabFrame(QString filename);
     void GrabFrame();
     void set_image_dir(QString dir);
     QString InfoCmd();
     QString InfoCmd(_HardwareSerial &port);
     QString getMachineVersion();
-    void setBrightness(int value,ActionType action = _DEFAULT);
-    void setGain(int value,ActionType action = _DEFAULT);
-    void setExposure(int value,ActionType action = _DEFAULT);
-    void setContrast(int value,ActionType action = _DEFAULT);
-    void setOffset(int value,ActionType action = _DEFAULT);
+
+    //machine control commands
+    void TurnTableMotorDiff(  int steps,ActionType action = _DEFAULT);  //Rotate Stage Motor by specified steps (differential input)
+    void LaserFocusMotorDiff( int steps,ActionType action = _DEFAULT); //Slide Marking Laser Focus Motor by specified steps (differential input)
+    void LaserHeightMotorDiff(int steps,ActionType action = _DEFAULT);//Slide Marking Laser Height Motor by specified steps (differential input)
+    void MarkingLaserOut(     int state,ActionType action = _DEFAULT);     //Marking Laser Shoot on(state=1) or off(state=0)
+    void MarkingLaserDiode(   int state,ActionType action = _DEFAULT);   //Marking Laser Diode on(state=1) or off(state=0)
+    void Vaccum(              int state,ActionType action = _DEFAULT);
+    void MarkingLaser(        int intensity,ActionType action = _DEFAULT);
+    void LineLaser(           int intensity,ActionType action = _DEFAULT);
+    void BackLight(           int intensity,ActionType action = _DEFAULT);
+    void setBrightness(       int value,ActionType action = _DEFAULT);
+    void setGain(             int value,ActionType action = _DEFAULT);
+    void setExposure(         int value,ActionType action = _DEFAULT);
+    void setContrast(         int value,ActionType action = _DEFAULT);
+    void setOffset(           int value,ActionType action = _DEFAULT);
 
     void updateFrameColor(char *img, unsigned int iwidth, unsigned int iheight);
 
@@ -77,6 +83,7 @@ public:
     _HWDCamera *camera = nullptr;
     char * colorFrame = nullptr;
     QTimer *timer = nullptr;
+    std::map<QString, _Machine::CommandFunction> function_map;
     QMutex frameUpdateMutex;//acquired by modules when they need to display processed or masked image else it is acquired by machine to show camera image
 
 protected slots:

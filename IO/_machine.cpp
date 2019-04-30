@@ -15,6 +15,8 @@
 #define NEWLINE "\n"
 #define NULL_STR ""
 
+
+
 /*
  * The Machine class
  * To create an interface for computer-machine communication
@@ -34,7 +36,8 @@
  */
 _Machine::_Machine()
 {
-
+    //mandatory
+    set_function_map();
 }
 
 /* Constructor for the Machine class
@@ -46,7 +49,8 @@ _Machine::_Machine()
  */
 _Machine::_Machine(QString json_file) : config(_ConfigControlEntity(_Tools::ReadJsonFromQrc(json_file)))
 {
-
+    //mandatory
+    set_function_map();
 }
 
 _Machine::~_Machine()
@@ -148,7 +152,7 @@ void _Machine::BackLight(int intensity,ActionType action)
  * recieved from 1 above hence intensity is subtracted by 1
  * zero intensity specifies off condition
  * */
-void _Machine::MarkingLaser(float intensity,ActionType action)
+void _Machine::MarkingLaser(int intensity,ActionType action)
 {
     static QString laser_power_cmd = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("SET");
     if (intensity > 0)
@@ -403,6 +407,20 @@ void _Machine::init()
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateImageCamera()));
     timer->start(40);
+
+    callCommandFunction("StageMotor",10000);
+
+}
+
+void _Machine::callCommandFunction(QString function_name,int value,ActionType action)
+{
+    //calling function pointer
+    (*this.*function_map[function_name])(value,action);
+}
+
+void _Machine::set_function_map()
+{
+    function_map["StageMotor"] = &_Machine::TurnTableMotorDiff;
 }
 
 /* Function : set_image_dir(QString dir)
@@ -413,7 +431,6 @@ void _Machine::set_image_dir(QString dir)
 {
     camera->set_image_dir(dir);
 }
-
 
 void _Machine::GrabFrame()
 {
