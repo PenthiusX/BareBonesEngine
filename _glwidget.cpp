@@ -36,7 +36,6 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
@@ -67,25 +66,25 @@ void _GLWidget::initializeGL()
     s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
     s.setScale(0.49f);
-    s.setModelData(":/models/monkey.obj");
+    s.setModelData(":/models/stickman.obj");
 //    //
-//    s1.setId(1);
-//    s1.setIsTransfomationLocal(false);
-//    s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-//    s1.setScale(.09f);
-//    s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
+    s1.setId(1);
+    s1.setIsTransfomationLocal(false);
+    s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s1.setScale(.09f);
+    s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
     //
-    mpoint.setId(2);
-    mpoint.setIsTransfomationLocal(false);
-    mpoint.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-    mpoint.setScale(0.8f);
-    mpoint.setModelData(":/models/sphere.obj");
+//    mpoint.setId(2);
+//    mpoint.setIsTransfomationLocal(false);
+//    mpoint.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
+//    mpoint.setScale(0.8f);
+//    mpoint.setModelData(":/models/sphere.obj");
     //
     scene = new _Scene();
     scene->addCamera(cam);
     //
     scene->addSceneObject(s);//0
-//    scene->addSceneObject(s1);//1
+    scene->addSceneObject(s1);//1
 //    scene->addSceneObject(mpoint);//2
 //    scene->addSceneObject(background_quad);//3
 
@@ -111,13 +110,13 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-    //this debug use code , sets focus on object with the iD that is selected
+    //this debug use code , sets camfocus on object with the iD that is selected---
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
         if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch){
             cam.setFocalPoint(QVector3D(scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion()));
         }
     }
-    //----------------------------------------------------------
+    //--------------------------------------------------------------------------
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
