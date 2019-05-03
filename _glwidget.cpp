@@ -22,7 +22,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
     this->isCamFocus = false;
     //keeps the event callbacks working for the GL widget
     setFocusPolicy(Qt::StrongFocus);
-//    makeCurrent();
+//  makeCurrent();
 }
 _GLWidget::~_GLWidget()
 {
@@ -36,6 +36,9 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
+    //Initailise the scene in InitaliseGl
+    //needs to be run after the openGl contxt is initialised
+    scene = new _Scene();
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
@@ -65,7 +68,7 @@ void _GLWidget::initializeGL()
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
-    s.setScale(0.49f);
+    s.setScale(0.09f);
     s.setModelData(":/models/stickman.obj");
     //
     s1.setId(1);
@@ -80,13 +83,12 @@ void _GLWidget::initializeGL()
 //    mpoint.setScale(0.8f);
 //    mpoint.setModelData(":/models/sphere.obj");
     //
-    scene = new _Scene();
     scene->addCamera(cam);
-    //
-    scene->addSceneObject(s);//0
-    scene->addSceneObject(s1);//1
-//    scene->addSceneObject(mpoint);//2
-//    scene->addSceneObject(background_quad);//3
+    //add the backGround quad first for it to render last
+    scene->addSceneObject(background_quad);
+    scene->addSceneObject(s);
+    scene->addSceneObject(s1);
+//  scene->addSceneObject(mpoint);
 
     //Test implemetation//needs to be deleted
 }
@@ -142,7 +144,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
     for(unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
     {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-        scene->getSceneObjectsArray()[i]->unProject(this->mousePressPosition);
+//        scene->getSceneObjectsArray()[i]->unProject(this->mousePressPosition);
     }
 }
 /*
@@ -197,7 +199,6 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
                 qInfo() << scroolScale;
             }
     }
-
 }
 /*
 * Function: keyPressEvent(QKeyEvent * event)
@@ -208,7 +209,6 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
  Controls: WASD to move ,
  * C to switch focut to  camera or model. R to reset to default with respect to focus
  * Q to switch between models(models need to have a sequntial ID for this to work properly)
- *
 */
 void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final controlls set.
 {
