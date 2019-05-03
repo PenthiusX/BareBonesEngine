@@ -106,7 +106,7 @@ void _Shader::attachShaders(QString v,QString f)
  * Function: attachGeometryShader(QString geoS)
  * takes in a qrc path to the geometry shader for this
  * shaderprogram instance
- * NOT IN USE.
+ **NOT IN USE**
 */
 void _Shader::setGeometryShader(QString geoS)
 {

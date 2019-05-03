@@ -16,3 +16,4 @@ void main()
     gl_Position =  mvpx * vec4(aPos, 1.0);
     ourColor = aColor;//vec4(mousePos.x,mousePos.y,.0,1);
 }
+
