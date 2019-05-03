@@ -420,7 +420,21 @@ void _Machine::callCommandFunction(QString function_name,int value,ActionType ac
 
 void _Machine::set_function_map()
 {
+    //assigning function pointers
     function_map["StageMotor"] = &_Machine::TurnTableMotorDiff;
+    function_map["LaserFocusMotor"] = &_Machine::LaserFocusMotorDiff;
+    function_map["LaserHeightMotor"] = &_Machine::LaserHeightMotorDiff;
+    function_map["MarkingLaserOut"] = &_Machine::MarkingLaserOut;
+    function_map["MarkingLaserDiode"] = &_Machine::MarkingLaserDiode;
+    function_map["Vaccum"] = &_Machine::Vaccum;
+    function_map["MarkingLaser"] = &_Machine::MarkingLaser;
+    function_map["LineLaser"] = &_Machine::LineLaser;
+    function_map["BackLight"] = &_Machine::BackLight;
+    function_map["Brightness"] = &_Machine::setBrightness;
+    function_map["Gain"] = &_Machine::setGain;
+    function_map["Exposure"] = &_Machine::setExposure;
+    function_map["Contrast"] = &_Machine::setContrast;
+    function_map["Offset"] = &_Machine::setOffset;
 }
 
 /* Function : set_image_dir(QString dir)

@@ -41,7 +41,6 @@ public:
     void set_camera(_ConfigControlEntity &camera_config);
     void set_hardware_serial(_ConfigControlEntity &hardware_config);
     void set_function_map();
-    void callCommandFunction(QString function_name, int value, ActionType action = _DEFAULT);
 
     _ConfigControlEntity config;
 
@@ -59,13 +58,14 @@ public slots:
     QString InfoCmd();
     QString InfoCmd(_HardwareSerial &port);
     QString getMachineVersion();
+    void callCommandFunction(QString function_name, int value, ActionType action = _DEFAULT);
 
     //machine control commands
-    void TurnTableMotorDiff(  int steps,ActionType action = _DEFAULT);  //Rotate Stage Motor by specified steps (differential input)
+    void TurnTableMotorDiff(  int steps,ActionType action = _DEFAULT); //Rotate Stage Motor by specified steps (differential input)
     void LaserFocusMotorDiff( int steps,ActionType action = _DEFAULT); //Slide Marking Laser Focus Motor by specified steps (differential input)
-    void LaserHeightMotorDiff(int steps,ActionType action = _DEFAULT);//Slide Marking Laser Height Motor by specified steps (differential input)
-    void MarkingLaserOut(     int state,ActionType action = _DEFAULT);     //Marking Laser Shoot on(state=1) or off(state=0)
-    void MarkingLaserDiode(   int state,ActionType action = _DEFAULT);   //Marking Laser Diode on(state=1) or off(state=0)
+    void LaserHeightMotorDiff(int steps,ActionType action = _DEFAULT); //Slide Marking Laser Height Motor by specified steps (differential input)
+    void MarkingLaserOut(     int state,ActionType action = _DEFAULT); //Marking Laser Shoot on(state=1) or off(state=0)
+    void MarkingLaserDiode(   int state,ActionType action = _DEFAULT); //Marking Laser Diode on(state=1) or off(state=0)
     void Vaccum(              int state,ActionType action = _DEFAULT);
     void MarkingLaser(        int intensity,ActionType action = _DEFAULT);
     void LineLaser(           int intensity,ActionType action = _DEFAULT);

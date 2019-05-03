@@ -35,7 +35,8 @@ HEADERS  += mainwindow.h \
     UI/_tabwidget.h \
     UI/_tabbar.h \
     Modules/_processing.h \
-    Compute/_cpu_compute.h
+    Compute/_cpu_compute.h \
+    UI/_lightcaliberationsection.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -61,9 +62,11 @@ SOURCES += main.cpp\
     UI/_tabwidget.cpp \
     UI/_tabbar.cpp \
     Modules/_processing.cpp \
-    Compute/_cpu_compute.cpp
+    Compute/_cpu_compute.cpp \
+    UI/_lightcaliberationsection.cpp
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    UI/LightCaliberationSection.ui
 
 RESOURCES += \
     shaders.qrc \

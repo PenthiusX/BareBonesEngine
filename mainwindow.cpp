@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //since the machine object is working in differant thread we have to use invokeMethod function
 
     //clickable buttons
-    connect(ui->stage_left, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "TurnTableMotorDiff", Qt::QueuedConnection,Q_ARG(int, 100));});
+    connect(ui->stage_left, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));});
     connect(ui->stage_right, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "TurnTableMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});
     connect(ui->laser_height_up, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, 100));});
     connect(ui->laser_height_down, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});
@@ -75,9 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
     });
     connect(ui->marking_laser_button, &QPushButton::toggled,[this]() {
         if(ui->marking_laser_button->isChecked())
-            QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(float, 4));
+            QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(int, 4));
         else
-            QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(float, 0));
+            QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(int, 0));
     });
     connect(ui->vaccum_button, &QPushButton::toggled,[this]() {
         if(ui->vaccum_button->isChecked())
@@ -98,10 +98,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //setActiveProcess(SLOT(passThroughFrame(char* ,unsigned int,unsigned int)));
 
     //slider connections
-    connect(ui->backlight_slider,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
-    connect(ui->line_laser_slider,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
-    connect(ui->offset_slider,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
-    connect(ui->gain_slider,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
+//    connect(ui->backlight_slider,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
+//    connect(ui->line_laser_slider,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
+//    connect(ui->offset_slider,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
+//    connect(ui->gain_slider,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
     connect(ui->contrast_slider,SIGNAL(valueChanged(int)),machine,SLOT(setContrast(int)));
 
 
@@ -153,21 +153,21 @@ void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
 void MainWindow::update_histogram_image(char *img, unsigned int w, unsigned int h)
 {
 
-//ui->histogram_image_label->setPixmap(pixmap);
+////ui->histogram_image_label->setPixmap(pixmap);
 
-int lw = ui->histogram_image_label->width();
-int lh = (lw*3)/4;//ui->histogram_image_label->height();
+//int lw = ui->histogram_image_label->width();
+//int lh = (lw*3)/4;//ui->histogram_image_label->height();
 
-QImage Img((uchar*)img, w, h, QImage::Format_Grayscale8);
+//QImage Img((uchar*)img, w, h, QImage::Format_Grayscale8);
 
-QPixmap pixmap;
+//QPixmap pixmap;
 
-pixmap.convertFromImage(Img);
-//pixmap.loadFromData((uchar*)img,w*h);
+//pixmap.convertFromImage(Img);
+////pixmap.loadFromData((uchar*)img,w*h);
 
-// set a scaled pixmap to a w x h window keeping its aspect ratio
-ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
-//ui->histogram_image_label->setMask(pixmap.mask());
+//// set a scaled pixmap to a w x h window keeping its aspect ratio
+//ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
+////ui->histogram_image_label->setMask(pixmap.mask());
 
-//ui->histogram_image_label->show();
+////ui->histogram_image_label->show();
 }

@@ -35,5 +35,3 @@ std::vector<int> _Cpu_Compute::compute_k_means(std::array<unsigned int, 256> arr
 
     return k_means;
 }
-
-
