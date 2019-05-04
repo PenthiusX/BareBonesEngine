@@ -1,16 +1,70 @@
 {
 	"Camera" : {
-		"CAMERA_BRIGHTNESS" : 100,
 		"CAMERA_CHANNEL" : 0,
-		"CAMERA_CONTRAST" : 50,
-		"CAMERA_EXPOSURE" : 85,
-		"CAMERA_GAIN" : 20,
 		"CAMERA_NAME" : "M_CCIR",
 		"CAMERA_TIMEOUT" : 200,
 		"CAMERA_TYPE" : "Picolo5",
-		"MINIMAL_GAIN" : 0,
-		"MINIMAL_OFFSET" : 0,
-		"ROI" : [ 0, 0, 1360, 1024 ]
+		"ROI" : [ 0, 0, 1360, 1024 ],
+		"Brightness" : {
+			"Data" : {
+				"Calibeartion" : {
+					"STATE" : false,
+					"VALUE" : 100
+				},
+				"Default" : {
+					"MAX" : 0,
+					"MIN" : 255
+				}
+			}
+		},
+		"Gain" : {
+			"Data" : {
+				"Calibeartion" : {
+					"STATE" : true,
+					"VALUE" : 100
+				},
+				"Default" : {
+					"MAX" : 0,
+					"MIN" : 1000
+				}
+			}
+		},
+		"Exposure" : {
+			"Data" : {
+				"Calibeartion" : {
+					"STATE" : false,
+					"VALUE" : 100
+				},
+				"Default" : {
+					"MAX" : 0,
+					"MIN" : 255
+				}
+			}
+		},
+		"Contrast" : {
+			"Data" : {
+				"Calibeartion" : {
+					"STATE" : false,
+					"VALUE" : 100
+				},
+				"Default" : {
+					"MAX" : 0,
+					"MIN" : 255
+				}
+			}
+		},
+		"Offset" : {
+			"Data" : {
+				"Calibeartion" : {
+					"STATE" : false,
+					"VALUE" : 100
+				},
+				"Default" : {
+					"MAX" : 500,
+					"MIN" : -400
+				}
+			}
+		}
 	},
 	"Configuration" : {
 		"LASER_MARKING" : false,

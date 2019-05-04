@@ -32,8 +32,16 @@ class _Machine :public QObject
 
     typedef void (_Machine::*CommandFunction)(int,ActionType); // function pointer with (int ,ActionType) parameters
 
+    struct ControlEntity
+    {
+        _Machine::CommandFunction cmdFunctionPtr;
+        bool inittialised=false;
+        _ConfigControlEntity& default_config;
+        _ConfigControlEntity temp_config;
+    };
+
 public:
-    _Machine(); //constructor initializes camera and hradware_serial
+    _Machine(); //constructor initializes camera and hardware_serial
     _Machine(QString json_file);
     ~_Machine();
 
@@ -83,7 +91,7 @@ public:
     _HWDCamera *camera = nullptr;
     char * colorFrame = nullptr;
     QTimer *timer = nullptr;
-    std::map<QString, _Machine::CommandFunction> function_map;
+    std::map<QString, ControlEntity> function_map;
     QMutex frameUpdateMutex;//acquired by modules when they need to display processed or masked image else it is acquired by machine to show camera image
 
 protected slots:

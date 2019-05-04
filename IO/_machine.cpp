@@ -415,26 +415,26 @@ void _Machine::init()
 void _Machine::callCommandFunction(QString function_name,int value,ActionType action)
 {
     //calling function pointer
-    (*this.*function_map[function_name])(value,action);
+    (*this.*function_map[function_name].cmdFunctionPtr)(value,action);
 }
 
 void _Machine::set_function_map()
 {
     //assigning function pointers
-    function_map["StageMotor"] = &_Machine::TurnTableMotorDiff;
-    function_map["LaserFocusMotor"] = &_Machine::LaserFocusMotorDiff;
-    function_map["LaserHeightMotor"] = &_Machine::LaserHeightMotorDiff;
-    function_map["MarkingLaserOut"] = &_Machine::MarkingLaserOut;
-    function_map["MarkingLaserDiode"] = &_Machine::MarkingLaserDiode;
-    function_map["Vaccum"] = &_Machine::Vaccum;
-    function_map["MarkingLaser"] = &_Machine::MarkingLaser;
-    function_map["LineLaser"] = &_Machine::LineLaser;
-    function_map["BackLight"] = &_Machine::BackLight;
-    function_map["Brightness"] = &_Machine::setBrightness;
-    function_map["Gain"] = &_Machine::setGain;
-    function_map["Exposure"] = &_Machine::setExposure;
-    function_map["Contrast"] = &_Machine::setContrast;
-    function_map["Offset"] = &_Machine::setOffset;
+    function_map["StageMotor"].cmdFunctionPtr = &_Machine::TurnTableMotorDiff;
+    function_map["LaserFocusMotor"].cmdFunctionPtr = &_Machine::LaserFocusMotorDiff;
+    function_map["LaserHeightMotor"].cmdFunctionPtr = &_Machine::LaserHeightMotorDiff;
+    function_map["MarkingLaserOut"].cmdFunctionPtr = &_Machine::MarkingLaserOut;
+    function_map["MarkingLaserDiode"].cmdFunctionPtr = &_Machine::MarkingLaserDiode;
+    function_map["Vaccum"].cmdFunctionPtr = &_Machine::Vaccum;
+    function_map["MarkingLaser"].cmdFunctionPtr = &_Machine::MarkingLaser;
+    function_map["LineLaser"].cmdFunctionPtr = &_Machine::LineLaser;
+    function_map["BackLight"].cmdFunctionPtr = &_Machine::BackLight;
+    function_map["Brightness"].cmdFunctionPtr = &_Machine::setBrightness;
+    function_map["Gain"].cmdFunctionPtr = &_Machine::setGain;
+    function_map["Exposure"].cmdFunctionPtr = &_Machine::setExposure;
+    function_map["Contrast"].cmdFunctionPtr = &_Machine::setContrast;
+    function_map["Offset"].cmdFunctionPtr = &_Machine::setOffset;
 }
 
 /* Function : set_image_dir(QString dir)

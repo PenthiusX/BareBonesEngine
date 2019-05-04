@@ -52,6 +52,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //since the machine object is working in differant thread we have to use invokeMethod function
 
     //clickable buttons
+
+    ui->light_caliberation_section_widget->setMachine(machine);
+    ui->light_caliberation_section_widget->setupConnections();
+
     connect(ui->stage_left, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));});
     connect(ui->stage_right, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "TurnTableMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});
     connect(ui->laser_height_up, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, 100));});
@@ -98,10 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //setActiveProcess(SLOT(passThroughFrame(char* ,unsigned int,unsigned int)));
 
     //slider connections
-//    connect(ui->backlight_slider,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
-//    connect(ui->line_laser_slider,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
-//    connect(ui->offset_slider,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
-//    connect(ui->gain_slider,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
+
     connect(ui->contrast_slider,SIGNAL(valueChanged(int)),machine,SLOT(setContrast(int)));
 
 
