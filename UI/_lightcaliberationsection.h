@@ -22,6 +22,7 @@ signals:
 
 public slots:
 
+    void init();
 private:
     Ui::LightCaliberationSection *ui;
     _Machine *machine=nullptr;

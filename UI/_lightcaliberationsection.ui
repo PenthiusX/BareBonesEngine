@@ -85,7 +85,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="line_laser_slider_box">
+    <widget class="_SliderBox" name="line_laser_slider_box">
      <property name="title">
       <string>Line Laser</string>
      </property>

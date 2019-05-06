@@ -410,6 +410,9 @@ void _Machine::init()
 
     callCommandFunction("StageMotor",10000);
 
+    initialised = true;
+
+    emit initMachine();
 }
 
 void _Machine::callCommandFunction(QString function_name,int value,ActionType action)
@@ -482,5 +485,10 @@ void _Machine::updateFrameGrayscale(char* img,unsigned int iwidth,unsigned int i
 void _Machine::updateFrameColor(char* img,unsigned int iwidth,unsigned int iheight)
 {
     emit guiFrameOut(img,iwidth,iheight);
+}
+
+bool _Machine::isInitialised() const
+{
+    return initialised;
 }
 

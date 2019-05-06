@@ -17,6 +17,7 @@ _SliderBox::~_SliderBox()
 void _SliderBox::setValue(int value)
 {
     ui->slider->setValue(value);
+    //emitValue(value);//also sets the value on machine hardware
 }
 
 void _SliderBox::emitValue(int value)

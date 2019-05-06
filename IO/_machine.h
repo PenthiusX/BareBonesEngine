@@ -35,8 +35,7 @@ class _Machine :public QObject
     struct ControlEntity
     {
         _Machine::CommandFunction cmdFunctionPtr;
-        bool inittialised=false;
-        _ConfigControlEntity& default_config;
+        _ConfigControlEntity default_config;
         _ConfigControlEntity temp_config;
     };
 
@@ -57,6 +56,7 @@ signals:
     void serialReturned(QString responce);
     void guiFrameOut(char *img,unsigned int w,unsigned h);//goes from machine to ui(gl_widget) for displaying
     void cameraFrameRecieved(char *img,unsigned int w,unsigned h);
+    void initMachine();
 
 public slots:
     void init();
@@ -93,6 +93,9 @@ public:
     QTimer *timer = nullptr;
     std::map<QString, ControlEntity> function_map;
     QMutex frameUpdateMutex;//acquired by modules when they need to display processed or masked image else it is acquired by machine to show camera image
+    bool initialised = false;
+
+    bool isInitialised() const;
 
 protected slots:
     void updateFrameGrayscale(char *img, unsigned int iwidth, unsigned int iheight);
