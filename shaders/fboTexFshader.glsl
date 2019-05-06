@@ -2,6 +2,7 @@
 out vec4 FragColor;
 
 in vec2 TexCoords;
+in vec2 iMouse;
 
 uniform sampler2D screenTexture;
 
@@ -9,12 +10,24 @@ void main()
 {
 //    FragColor = texture2D(screenTexture, TexCoords) * vec4(1.00,1.0,1.0,1.0);
 //---------------------------------------------------------------------------
-    FragColor = vec4(vec3(1.0 - texture2D(screenTexture, TexCoords)), 1.0);
+//    FragColor = vec4(vec3(1.0 - texture2D(screenTexture, TexCoords)), 1.0);
 //---------------------------------------------------------------------------
 //      FragColor = texture2D(screenTexture, TexCoords);
 //      float average = (FragColor.r + FragColor.g + FragColor.b) / 3.0;
 //      FragColor = vec4(average, average, average, 1.0);
 //---------------------------------------------------------------------------
+//    float zv = gl_FragCoord.z/gl_FragCoord.w;
+//    FragColor = texture2D(screenTexture, TexCoords) * vec4(zv,zv,zv,1.0);
+//---------------------------------------------------------------------------
+    vec4 col;
+    if((gl_FragCoord.x + 5.) >= iMouse.x && gl_FragCoord.y + 5. >= iMouse.y)
+    {
+      if((gl_FragCoord.x - 5.) <= iMouse.x && gl_FragCoord.y - 5. <= iMouse.y)
+      {
+        col = vec4(0.0,0.5,0.0,1.0);
+      }
+    }
+    FragColor = texture2D(screenTexture, TexCoords) + col;
 }
 
 //Edge detection shader
