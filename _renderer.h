@@ -53,6 +53,7 @@ public:
     void draw();//Draws everything bound in the scene
     //Debug implentation
     void transitionColors(QVector2D mousePos);
+    void unProject(QVector2D mousePressPosition);
 
 private:
     unsigned int VBO;//vertex buffer object

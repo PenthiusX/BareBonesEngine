@@ -113,7 +113,7 @@ void _Renderer::setuniformLocations()
     this->modelUnifrom = shdr->getUniformLocation("model");
     this->viewUniform  = shdr->getUniformLocation("view");
     this->projectionUniform = shdr->getUniformLocation("projection");
-    this->mousePosUniform = shdr->getUniformLocation("mousePos");
+    this->mousePosUniform = shdr->getUniformLocation("iMouse");
 }
 
 /*
@@ -363,7 +363,7 @@ void _Renderer::_Renderer::draw()
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
-//----------------------------------------------------------------------
+//---------------------------Temorary Use-------------------------------------------
 /*
  * Temporary debugging implemetation, transistion colors of object
  * hot reloding of shaders also needs to be implemented
@@ -385,3 +385,54 @@ void _Renderer::transitionColors(QVector2D mousePos)
 //        glColor3f(0, 0, 1); glVertex3f(0, 0, 0); glVertex3f(0, 0, 10);
 //      glEnd();
 }
+/*
+ *
+*/
+void _Renderer::unProject(QVector2D mousePressPosition)
+{
+    // Where The Viewport Values Will Be Stored
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);           // Retrieves The Viewport Values (X, Y, Width, Height)
+
+    for(int i = 0 ; i < 4 ;i++){
+        qDebug() << viewport[i];
+    }
+
+    // Holds Our X, Y and Z Coordinates
+    GLfloat winX, winY, winZ;
+    winX = (float)mousePressPosition.x();                  // Holds The Mouse X Coordinate
+    winY = (float)mousePressPosition.y();                  // Holds The Mouse Y Coordinate
+    qDebug() << mousePressPosition;
+    GLbyte color[4];
+    GLfloat depth;
+    GLuint index;
+
+//    glFlush();
+    winY = viewport[3] - winY - 1;// Subtract The Current Mouse Y Coordinate From The Screen Height.
+    glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+    qDebug() << glGetError();;
+    qDebug() << mousePressPosition <<"-depthz"<< winZ;
+    glReadPixels(winX, winY, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+    qDebug() << glGetError();
+    qDebug() << mousePressPosition <<"-color"<< color[0]<<color[1]<<color[2]<<color[3];
+    glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+    qDebug() << glGetError();
+    qDebug() << mousePressPosition <<"-depth"<< depth;
+    glReadPixels(winX, winY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+    qDebug() << glGetError();
+    qDebug() << mousePressPosition <<"-index"<< index;
+
+    //        glm::vec3 mPos = glm::unProject(
+    //                    glm::vec3(x, float(this->width()) - y, 1.0f),
+    //                    glm::mat4(1.0f),
+    //                    this->glm_projection4x4,
+    //                    glm::vec4(0.0f, 0.0f, float(mWindowWidth), float(mWindowHeight))
+    //                 );
+
+    //      ROUND 2 DECIMAL
+    //        posX= ((int)(posX * 10 + .5) / 10.0);
+    //        posY= ((int)(posY * 10+ .5) / 10.0);
+    //        posZ= ((int)(posZ * 10 + .5) / 10.0);
+}
+
+
