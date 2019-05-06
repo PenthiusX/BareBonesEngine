@@ -23,6 +23,9 @@ signals:
 public slots:
 
     void init();
+    void updateHistogramImage(char *img, unsigned int w, unsigned int h);
+    void save();
+
 private:
     Ui::LightCaliberationSection *ui;
     _Machine *machine=nullptr;

@@ -14,6 +14,7 @@ class _SliderBox : public QGroupBox
 public:
     explicit _SliderBox(QWidget *parent = nullptr);
     ~_SliderBox();
+    int value();
 
 signals:
     void valueChanged(int value);

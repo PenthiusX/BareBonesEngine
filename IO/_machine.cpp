@@ -49,8 +49,10 @@ _Machine::_Machine()
  */
 _Machine::_Machine(QString json_file) : config(_ConfigControlEntity(_Tools::ReadJsonFromQrc(json_file)))
 {
+    json_file_name=json_file;
     //mandatory
     set_function_map();
+
 }
 
 _Machine::~_Machine()
@@ -80,6 +82,20 @@ _Machine::~_Machine()
  * */
 void _Machine::TurnTableMotorDiff(int steps,ActionType action)
 {
+    static int last_steps = steps;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save steps to config
+        config["Hardware"]["Controls"]["StageMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE")=steps;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        steps = config["Hardware"]["Controls"]["StageMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    }
     //command : XM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["StageMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
     static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
@@ -93,6 +109,20 @@ void _Machine::TurnTableMotorDiff(int steps,ActionType action)
  * */
 void _Machine::LaserFocusMotorDiff(int steps,ActionType action)
 {
+    static int last_steps = steps;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save steps to config
+        config["Hardware"]["Controls"]["LaserFocusMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE")=steps;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        steps = config["Hardware"]["Controls"]["LaserFocusMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    }
     //command : FM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["LaserFocusMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
     static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
@@ -106,6 +136,20 @@ void _Machine::LaserFocusMotorDiff(int steps,ActionType action)
  * */
 void _Machine::LaserHeightMotorDiff(int steps,ActionType action)
 {
+    static int last_steps = steps;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save steps to config
+        config["Hardware"]["Controls"]["LaserHeightMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE")=steps;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        steps = config["Hardware"]["Controls"]["LaserHeightMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    }
     //command : ZM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["LaserHeightMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
     static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
@@ -119,6 +163,28 @@ void _Machine::LaserHeightMotorDiff(int steps,ActionType action)
  * */
 void _Machine::Vaccum(int state,ActionType action)
 {
+    static int last_state = state;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save state to config
+        config["Hardware"]["Controls"]["Vaccum"]["Data"]["Caliberation"].getFloatEntity("VALUE")=state;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        state = config["Hardware"]["Controls"]["Vaccum"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables state without temporary variables
+        state = state + last_state;
+        last_state = state - last_state;
+        state = state - last_state;
+        break;
+    }
+    }
     //command for on:N
     //command for off:Y
     static QString on = config["Hardware"]["Controls"]["Vaccum"]["Commands"]["RS232"].getStringEntity("ON");
@@ -132,6 +198,28 @@ void _Machine::Vaccum(int state,ActionType action)
  * */
 void _Machine::LineLaser(int intensity,ActionType action)
 {
+    static int last_value = intensity;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Hardware"]["Controls"]["LineLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE")=intensity;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        intensity = config["Hardware"]["Controls"]["LineLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        intensity = intensity + last_value;
+        last_value = intensity - last_value;
+        intensity = intensity - last_value;
+        break;
+    }
+    }
     static QString cmd = config["Hardware"]["Controls"]["LineLaser"]["Commands"]["RS232"].getStringEntity("SET");
     hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
 }
@@ -142,7 +230,32 @@ void _Machine::LineLaser(int intensity,ActionType action)
  * */
 void _Machine::BackLight(int intensity,ActionType action)
 {
+    static int last_value = intensity;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE")=intensity;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        intensity = config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        intensity = intensity + last_value;
+        last_value = intensity - last_value;
+        intensity = intensity - last_value;
+        break;
+    }
+    }
+
     static QString cmd = config["Hardware"]["Controls"]["BackLight"]["Commands"]["RS232"].getStringEntity("SET");
+
+    //write value to serial
     hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
 }
 
@@ -154,6 +267,29 @@ void _Machine::BackLight(int intensity,ActionType action)
  * */
 void _Machine::MarkingLaser(int intensity,ActionType action)
 {
+    static int last_value = intensity;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Hardware"]["Controls"]["MarkingLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE")=intensity;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        intensity = config["Hardware"]["Controls"]["MarkingLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        intensity = intensity + last_value;
+        last_value = intensity - last_value;
+        intensity = intensity - last_value;
+        break;
+    }
+    }
+
     static QString laser_power_cmd = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("SET");
     if (intensity > 0)
     {
@@ -186,29 +322,138 @@ QString _Machine::getMachineVersion()
 
 void _Machine::setBrightness(int value,ActionType action)
 {
+    static int last_value = value;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Camera"]["Brightness"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        value = config["Camera"]["Brightness"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        value = value + last_value;
+        last_value = value - last_value;
+        value = value - last_value;
+        break;
+    }
+    }
     camera->setBrightness(value);
 }
 
 void _Machine::setGain(int value,ActionType action)
 {
+    static int last_value = value;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        value = config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        value = value + last_value;
+        last_value = value - last_value;
+        value = value - last_value;
+        break;
+    }
+    }
     camera->setGain(value);
 }
 
 void _Machine::setExposure(int value,ActionType action)
 {
+    static int last_value = value;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Camera"]["Exposure"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        value = config["Camera"]["Exposure"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        value = value + last_value;
+        last_value = value - last_value;
+        value = value - last_value;
+        break;
+    }
+    }
     camera->setExposure(value);
 }
 
 void _Machine::setContrast(int value,ActionType action)
 {
+    static int last_value = value;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Camera"]["Contrast"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        value = config["Camera"]["Contrast"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        value = value + last_value;
+        last_value = value - last_value;
+        value = value - last_value;
+        break;
+    }
+    }
     camera->setContrast(value);
 }
 
 void _Machine::setOffset(int value,ActionType action)
 {
+    static int last_value = value;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        value = config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        value = value + last_value;
+        last_value = value - last_value;
+        value = value - last_value;
+        break;
+    }
+    }
     camera->setOffset(value);
 }
-
 
 
 /* Function :InfoCmd()
@@ -230,6 +475,7 @@ QString _Machine::InfoCmd()
  * */
 QString _Machine::InfoCmd(_HardwareSerial& port)
 {
+
     //command : "?"
     static QString info_cmd = config["Hardware"]["Controls"]["Info"]["Commands"]["RS232"].getStringEntity("SET");
     return port.writeDataAndWait(info_cmd);
@@ -241,6 +487,17 @@ QString _Machine::InfoCmd(_HardwareSerial& port)
  * */
 void _Machine::MarkingLaserOut(int state,ActionType action)
 {
+    static int last_state = state;
+    switch (action) {
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables state without temporary variables
+        state = state + last_state;
+        last_state = state - last_state;
+        state = state - last_state;
+        break;
+    }
+    }
     //command for on:Q
     //command for off:R
     static QString on = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("ON");
@@ -254,6 +511,28 @@ void _Machine::MarkingLaserOut(int state,ActionType action)
  * */
 void _Machine::MarkingLaserDiode(int state,ActionType action)
 {
+    static int last_state = state;
+    switch (action) {
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save state to config
+        config["Hardware"]["Controls"]["MarkingLaserDiode"]["Data"]["Caliberation"].getFloatEntity("VALUE")=state;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        state = config["Hardware"]["Controls"]["MarkingLaserDiode"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables state without temporary variables
+        state = state + last_state;
+        last_state = state - last_state;
+        state = state - last_state;
+        break;
+    }
+    }
     //command for on:V
     //command for off:W
     static QString on = config["Hardware"]["Controls"]["MarkingLaserDiode"]["Commands"]["RS232"].getStringEntity("ON");
@@ -419,6 +698,11 @@ void _Machine::callCommandFunction(QString function_name,int value,ActionType ac
 {
     //calling function pointer
     (*this.*function_map[function_name].cmdFunctionPtr)(value,action);
+}
+
+void _Machine::saveConfig()
+{
+    _Tools::WriteJsonToQrc("configuration.json",config.toJson());
 }
 
 void _Machine::set_function_map()

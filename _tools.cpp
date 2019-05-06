@@ -47,6 +47,21 @@ QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
     return loadDoc.object();
 }
 
+bool _Tools::WriteJsonToQrc(QString Filename,QJsonObject jsonObject)
+{
+    QFile saveFile(Filename);
+
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return false;
+    }
+
+    QJsonDocument saveDoc(jsonObject);
+    saveFile.write(saveDoc.toJson());
+
+    return true;
+}
+
 void _Tools::SaveImageToPgm(char* img,unsigned int rttWidth, unsigned int rttHeight, QString filename)
 {
     static FILE* imagefile;

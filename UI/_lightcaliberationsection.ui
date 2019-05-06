@@ -81,7 +81,6 @@
      <property name="title">
       <string>Back Light Control</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout"/>
     </widget>
    </item>
    <item>
@@ -89,7 +88,6 @@
      <property name="title">
       <string>Line Laser</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_20"/>
     </widget>
    </item>
    <item>
@@ -97,7 +95,6 @@
      <property name="title">
       <string>Marking Laser</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_8"/>
     </widget>
    </item>
    <item>
@@ -157,14 +154,14 @@
     </spacer>
    </item>
    <item>
-    <widget class="QPushButton" name="save_3">
+    <widget class="QPushButton" name="save_button">
      <property name="text">
       <string>Save</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="auto_calibration">
+    <widget class="QPushButton" name="auto_calibration_button">
      <property name="text">
       <string>Auto Calibration</string>
      </property>
@@ -181,5 +178,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>save_button</sender>
+   <signal>clicked()</signal>
+   <receiver>_LightCaliberationSection</receiver>
+   <slot>save()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>143</x>
+     <y>793</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>143</x>
+     <y>419</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -8,6 +8,14 @@
 #include <QMutex>
 #include <QTimer>
 
+enum ActionType{
+    _DEFAULT=0,
+    _CALIBERATION_CONFIG_UPDATE,
+    _DEFAULT_FROM_CONFIG,
+    _STORE_VALUE_TOGGLE
+};
+
+
 /*
  * The Machine class
  * To create an interface for computer-machine communication
@@ -22,13 +30,6 @@
 class _Machine :public QObject
 {
     Q_OBJECT
-
-    enum ActionType{
-        _DEFAULT=0,
-        _CALIBERATION_CONFIG_UPDATE,
-        _DEFAULT_FROM_CONFIG,
-        _STORE_VALUE_TOGGLE
-    };
 
     typedef void (_Machine::*CommandFunction)(int,ActionType); // function pointer with (int ,ActionType) parameters
 
@@ -67,6 +68,7 @@ public slots:
     QString InfoCmd(_HardwareSerial &port);
     QString getMachineVersion();
     void callCommandFunction(QString function_name, int value, ActionType action = _DEFAULT);
+    void saveConfig();
 
     //machine control commands
     void TurnTableMotorDiff(  int steps,ActionType action = _DEFAULT); //Rotate Stage Motor by specified steps (differential input)
@@ -94,7 +96,7 @@ public:
     std::map<QString, ControlEntity> function_map;
     QMutex frameUpdateMutex;//acquired by modules when they need to display processed or masked image else it is acquired by machine to show camera image
     bool initialised = false;
-
+    QString json_file_name;
     bool isInitialised() const;
 
 protected slots:
