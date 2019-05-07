@@ -702,7 +702,7 @@ void _Machine::callCommandFunction(QString function_name,int value,ActionType ac
 
 void _Machine::saveConfig()
 {
-    _Tools::WriteJsonToQrc("configuration.json",config.toJson());
+    _Tools::WriteJsonToFile("configuration.json",config.toJson());
 }
 
 void _Machine::set_function_map()

@@ -1,6 +1,6 @@
 #include "_lightcaliberationsection.h"
 #include <QDebug>
-
+#include <_tools.h>
 
 /*
  * The _LightCaliberationSection class
@@ -18,6 +18,8 @@ _LightCaliberationSection::_LightCaliberationSection(QWidget *parent) : QWidget(
     ui(new Ui::LightCaliberationSection)
 {
     ui->setupUi(this);
+//    ui->instruction_display_text_browser->se
+//    (":/Config/Docs/instructions_light_caliberation.txt.txt");
 }
 
 /* _LightCaliberationSection destructor
@@ -124,6 +126,11 @@ bool _LightCaliberationSection::deleteConnections()
     qDebug() << "light caliberation section connections failed to delete";
     return false;
 }
+
+/* Function : save()
+ * this function saves the necessary values in this caliberation section
+ * Created: 06_05_2019
+*/
 void _LightCaliberationSection::save()
 {
     //save caliberated values

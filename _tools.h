@@ -17,7 +17,8 @@ public:
     static glm::vec3 NormalizeSum(glm::vec3 in);
     static int argmax(glm::vec3 in);
     static glm::ivec3 GetGroupSize(int n, glm::vec3 ratio = glm::vec3(3,3,1));
-    static bool WriteJsonToQrc(QString Filename,QJsonObject jsonObject);
+    static bool WriteJsonToFile(QString Filename,QJsonObject jsonObject);
+    static QString getFolderFromDialog(QString aplicationRelativePath);
 };
 
 

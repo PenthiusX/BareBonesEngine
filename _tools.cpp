@@ -47,16 +47,16 @@ QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
     return loadDoc.object();
 }
 
-bool _Tools::WriteJsonToQrc(QString Filename,QJsonObject jsonObject)
+bool _Tools::WriteJsonToFile(QString filename ,QJsonObject config)
 {
-    QFile saveFile(Filename);
+    QFile saveFile(filename);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
         qWarning("Couldn't open save file.");
         return false;
     }
 
-    QJsonDocument saveDoc(jsonObject);
+    QJsonDocument saveDoc(config);
     saveFile.write(saveDoc.toJson());
 
     return true;

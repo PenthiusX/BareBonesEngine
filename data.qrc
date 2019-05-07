@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>Config/configuration.json</file>
+        <file>Config/Docs/instructions_light_caliberation.htm</file>
     </qresource>
 </RCC>
