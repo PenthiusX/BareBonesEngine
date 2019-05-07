@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    qRegisterMetaType<ActionType>("ActionType");
+
     //machine,marker,scanner should be in same thread -
     hardwareInteractionThread = new QThread;
 
@@ -53,8 +55,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //clickable buttons
 
-    ui->light_caliberation_section_widget->setMachine(machine);
-    ui->light_caliberation_section_widget->setupConnections();
+    ui->light_caliberation_section->setMachine(machine);
+    ui->light_caliberation_section->setupConnections();
+
+    //
+    connect(ui->light_calibration_button, &QPushButton::clicked,[this]() {
+        ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->light_caliberation_section);
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(histogram(char* ,unsigned int,unsigned int))));
+    });
+    connect(ui->machine_selection_button, &QPushButton::clicked,[this]() {
+        ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->machine_type_section);
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,nullptr));
+    });
 
     connect(ui->stage_left, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));});
     connect(ui->stage_right, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "TurnTableMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});
@@ -110,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
 
+
     //buttons to scanner slots connections
     //connect(ui->scan, SIGNAL(clicked()),scanner,SLOT(scan_generate_model()));
 
@@ -123,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
-    connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),ui->light_caliberation_section_widget,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
+    connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),ui->light_caliberation_section,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
 
     connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));

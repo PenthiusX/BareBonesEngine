@@ -82,7 +82,7 @@ _Machine::~_Machine()
  * */
 void _Machine::TurnTableMotorDiff(int steps,ActionType action)
 {
-    static int last_steps = steps;
+    static int last_steps;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -109,7 +109,7 @@ void _Machine::TurnTableMotorDiff(int steps,ActionType action)
  * */
 void _Machine::LaserFocusMotorDiff(int steps,ActionType action)
 {
-    static int last_steps = steps;
+    static int last_steps;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -136,7 +136,7 @@ void _Machine::LaserFocusMotorDiff(int steps,ActionType action)
  * */
 void _Machine::LaserHeightMotorDiff(int steps,ActionType action)
 {
-    static int last_steps = steps;
+    static int last_steps;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -163,7 +163,7 @@ void _Machine::LaserHeightMotorDiff(int steps,ActionType action)
  * */
 void _Machine::Vaccum(int state,ActionType action)
 {
-    static int last_state = state;
+    static int last_state;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -198,7 +198,7 @@ void _Machine::Vaccum(int state,ActionType action)
  * */
 void _Machine::LineLaser(int intensity,ActionType action)
 {
-    static int last_value = intensity;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -230,7 +230,7 @@ void _Machine::LineLaser(int intensity,ActionType action)
  * */
 void _Machine::BackLight(int intensity,ActionType action)
 {
-    static int last_value = intensity;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -267,7 +267,7 @@ void _Machine::BackLight(int intensity,ActionType action)
  * */
 void _Machine::MarkingLaser(int intensity,ActionType action)
 {
-    static int last_value = intensity;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -299,14 +299,11 @@ void _Machine::MarkingLaser(int intensity,ActionType action)
         MarkingLaserDiode(1); //switch on the laser diode
         QThread::sleep(5);    //wait 5 seconds
         MarkingLaserOut(1);
-        //QTimer::singleShot(3000,[this]() {MarkingLaserOut(1);});//switch on the laser out after 2 seconds
     }
     else {
         MarkingLaserOut(0);//switch off the laser out
         QThread::sleep(1);
-        MarkingLaserDiode(0);
-        //QTimer::singleShot(1000,[this]() {MarkingLaserDiode(0);});//switch off the laser diode after 2 seconds
-    }
+        MarkingLaserDiode(0);}
 }
 
 /* Function :getMachineType()
@@ -322,7 +319,7 @@ QString _Machine::getMachineVersion()
 
 void _Machine::setBrightness(int value,ActionType action)
 {
-    static int last_value = value;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -349,7 +346,7 @@ void _Machine::setBrightness(int value,ActionType action)
 
 void _Machine::setGain(int value,ActionType action)
 {
-    static int last_value = value;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -376,7 +373,7 @@ void _Machine::setGain(int value,ActionType action)
 
 void _Machine::setExposure(int value,ActionType action)
 {
-    static int last_value = value;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -403,7 +400,7 @@ void _Machine::setExposure(int value,ActionType action)
 
 void _Machine::setContrast(int value,ActionType action)
 {
-    static int last_value = value;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -430,7 +427,7 @@ void _Machine::setContrast(int value,ActionType action)
 
 void _Machine::setOffset(int value,ActionType action)
 {
-    static int last_value = value;
+    static int last_value;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {
@@ -487,7 +484,7 @@ QString _Machine::InfoCmd(_HardwareSerial& port)
  * */
 void _Machine::MarkingLaserOut(int state,ActionType action)
 {
-    static int last_state = state;
+    static int last_state;
     switch (action) {
     case _STORE_VALUE_TOGGLE:
     {
@@ -511,7 +508,7 @@ void _Machine::MarkingLaserOut(int state,ActionType action)
  * */
 void _Machine::MarkingLaserDiode(int state,ActionType action)
 {
-    static int last_state = state;
+    static int last_state;
     switch (action) {
     case _CALIBERATION_CONFIG_UPDATE:
     {

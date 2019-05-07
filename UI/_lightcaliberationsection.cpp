@@ -53,9 +53,6 @@ void _LightCaliberationSection::setMachine(_Machine *mach)
     ui->backlight_slider_box->setMinimum(machine->config["Hardware"]["Controls"]["BackLight"]["Data"]["Default"].getFloatEntity("MIN"));
     ui->backlight_slider_box->setMaximum(machine->config["Hardware"]["Controls"]["BackLight"]["Data"]["Default"].getFloatEntity("MAX"));
 
-    ui->line_laser_slider_box->setMinimum(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Default"].getFloatEntity("MIN"));
-    ui->line_laser_slider_box->setMaximum(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Default"].getFloatEntity("MAX"));
-
 }
 
 /* Function : init()
@@ -70,6 +67,7 @@ void _LightCaliberationSection::init()
     if(machine->isInitialised())
     {
         //send default commands here
+        ui->lens_number_dropdown->setCurrentIndex(machine->config["Camera"]["Lens"].getFloatEntity("LENS_NUMBER"));
         ui->gain_slider_box->setValue(machine->config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
         ui->offset_slider_box->setValue(machine->config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
         ui->backlight_slider_box->setValue(machine->config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
@@ -89,7 +87,6 @@ bool _LightCaliberationSection::setupConnections()
         //setup connections here
 
         connect(ui->backlight_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
-        connect(ui->line_laser_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
         connect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
         connect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
 
@@ -115,7 +112,6 @@ bool _LightCaliberationSection::deleteConnections()
 
         //delete connections here
         disconnect(ui->backlight_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
-        disconnect(ui->line_laser_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
         disconnect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
         disconnect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
 
@@ -134,9 +130,10 @@ bool _LightCaliberationSection::deleteConnections()
 void _LightCaliberationSection::save()
 {
     //save caliberated values
-    machine->BackLight(ui->backlight_slider_box->value(),_CALIBERATION_CONFIG_UPDATE);
-    machine->setGain(ui->gain_slider_box->value(),_CALIBERATION_CONFIG_UPDATE);
-    machine->setOffset(ui->offset_slider_box->value(),_CALIBERATION_CONFIG_UPDATE);
+    machine->config["Camera"]["Lens"].getFloatEntity("LENS_NUMBER") = ui->lens_number_dropdown->currentIndex() ;
+    QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, ui->backlight_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
+    QMetaObject::invokeMethod(machine, "setGain", Qt::QueuedConnection,Q_ARG(int, ui->gain_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
+    QMetaObject::invokeMethod(machine, "setOffset", Qt::QueuedConnection,Q_ARG(int, ui->offset_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
 
     machine->saveConfig();
 }

@@ -30,7 +30,7 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_17">
          <item>
-          <widget class="QPushButton" name="Select_machine_type">
+          <widget class="QPushButton" name="machine_selection_button">
            <property name="minimumSize">
             <size>
              <width>80</width>
@@ -58,7 +58,7 @@ Interest</string>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="Light_calibration">
+          <widget class="QPushButton" name="light_calibration_button">
            <property name="minimumSize">
             <size>
              <width>80</width>
@@ -666,7 +666,7 @@ v</string>
      </layout>
     </item>
     <item>
-     <widget class="QStackedWidget" name="stackedWidget_5">
+     <widget class="QStackedWidget" name="caliberation_sections_stacked_widget">
       <property name="maximumSize">
        <size>
         <width>320</width>
@@ -674,74 +674,11 @@ v</string>
        </size>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_20"/>
-      <widget class="QWidget" name="machine_type_section">
-       <widget class="QPushButton" name="save_1">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>110</y>
-          <width>311</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Save</string>
-        </property>
-       </widget>
-       <widget class="QPlainTextEdit" name="plainTextEdit_1_3">
-        <property name="geometry">
-         <rect>
-          <x>6</x>
-          <y>180</y>
-          <width>301</width>
-          <height>331</height>
-         </rect>
-        </property>
-        <property name="plainText">
-         <string/>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="display_instruction_button">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>20</y>
-          <width>311</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Display Instructions</string>
-        </property>
-       </widget>
-       <widget class="QPlainTextEdit" name="plainTextEdit_1_1">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>60</y>
-          <width>111</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="plainText">
-         <string>Current machine:</string>
-        </property>
-       </widget>
-       <widget class="QPlainTextEdit" name="plainTextEdit_1_2">
-        <property name="geometry">
-         <rect>
-          <x>130</x>
-          <y>60</y>
-          <width>181</width>
-          <height>31</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="page_2">
+      <widget class="_MachineSelectionSection" name="machine_type_section"/>
+      <widget class="QWidget" name="zpage_2">
        <widget class="QGroupBox" name="groupBox_2">
         <property name="geometry">
          <rect>
@@ -1031,13 +968,7 @@ v</string>
         </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="light_caliberation_section">
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="_LightCaliberationSection" name="light_caliberation_section_widget" native="true"/>
-        </item>
-       </layout>
-      </widget>
+      <widget class="_LightCaliberationSection" name="light_caliberation_section"/>
       <widget class="QWidget" name="page_5">
        <widget class="QSpinBox" name="spinBox_6">
         <property name="geometry">
@@ -4076,6 +4007,12 @@ v</string>
    <class>_LightCaliberationSection</class>
    <extends>QWidget</extends>
    <header>UI/_lightcaliberationsection.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>_MachineSelectionSection</class>
+   <extends>QWidget</extends>
+   <header>UI/_machineselectionsection.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

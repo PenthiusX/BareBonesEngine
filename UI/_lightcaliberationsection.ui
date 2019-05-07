@@ -77,20 +77,6 @@
     </widget>
    </item>
    <item>
-    <widget class="_SliderBox" name="line_laser_slider_box">
-     <property name="title">
-      <string>Line Laser</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="_SliderBox" name="marking_laser_slider_box">
-     <property name="title">
-      <string>Marking Laser</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="groupBox_6">
      <property name="title">
       <string>Camera Controls:</string>

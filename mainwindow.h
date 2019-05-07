@@ -20,7 +20,7 @@ public:
 
 public slots:
     void update_camera_image(char* img,unsigned int w,unsigned int h);
-
+    
 private:
     Ui::MainWindow *ui;
 
