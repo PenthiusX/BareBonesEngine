@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     });
     connect(ui->machine_selection_button, &QPushButton::clicked,[this]() {
         ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->machine_type_section);
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int))));
         QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,nullptr));
     });
 
@@ -77,11 +78,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(ui->grab_frame, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "GrabFrame", Qt::QueuedConnection,Q_ARG(QString,"image_0.pgm"));});
 
     //checkable buttons
-    connect(ui->backlight_button, &QPushButton::toggled,[this]() {
-        if(ui->backlight_button->isChecked())
-            QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, 136));
-        else
-            QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, 0));
+    connect(ui->backlight_button, &QPushButton::clicked,[this]() {
+        QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_STORE_VALUE_TOGGLE));
     });
     connect(ui->line_laser_button, &QPushButton::toggled,[this]() {
         if(ui->line_laser_button->isChecked())

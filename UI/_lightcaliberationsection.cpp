@@ -74,7 +74,6 @@ void _LightCaliberationSection::init()
     }
 }
 
-
 /* Function : setupConnections()
  * this function sets the necessary connections between ui and machine
  * and defaults related to caliberation entities

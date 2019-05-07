@@ -232,15 +232,22 @@ void _Machine::BackLight(int intensity,ActionType action)
 {
     static int last_value;
     switch (action) {
+    case _DEFAULT:
+    {
+        last_value = intensity;
+        break;
+    }
     case _CALIBERATION_CONFIG_UPDATE:
     {
         //save value to config
         config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE")=intensity;
+        last_value = intensity;
         break;
     }
     case _DEFAULT_FROM_CONFIG:
     {
         intensity = config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE");
+        last_value = intensity;
         break;
     }
     case _STORE_VALUE_TOGGLE:
