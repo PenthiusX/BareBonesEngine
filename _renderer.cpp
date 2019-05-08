@@ -15,10 +15,10 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    //    glEnable(GL_DEPTH_TEST);
-    //    glEnable(GL_STENCIL_TEST);
+    //  glEnable(GL_DEPTH_TEST);
+    //  glEnable(GL_STENCIL_TEST);
     glEnable(GL_FRONT_AND_BACK);
-    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
 
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -55,7 +55,7 @@ _Renderer::~_Renderer()
 void _Renderer::setShader()
 {
     shdr->attachShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-    qDebug() << "default Shader attached for entity" << this->sceneEntity.getId();
+    qDebug() << "default Shader attached for entity" << this->sceneEntity.getTag();
 }
 /*
  * Function: setShader(QString vSh, QString fSh)
@@ -67,7 +67,7 @@ void _Renderer::setShader()
 void _Renderer::setShader(QString vSh, QString fSh)
 {
     shdr->attachShaders(vSh,fSh);
-    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << this->sceneEntity.getId();
+    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << this->sceneEntity.getTag();;
 }
 /*
  * Function: setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
@@ -99,7 +99,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
     setuniformLocations();//sets all uniform locations to respective variables.
-    qDebug() << "setModelDataInBuffers() for entity" << this->sceneEntity.getId();
+    qDebug() << "setModelDataInBuffers() for entity" << this->sceneEntity.getTag();
 }
 /*
  * Function: setuniformLocations()
@@ -109,11 +109,18 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 */
 void _Renderer::setuniformLocations()
 {
+    qDebug() <<"--------"<<this->sceneEntity.getTag() <<"--------";
     this->colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture and UVs
+    qDebug() << "colorUniform ->" << colorUniform;
     this->modelUnifrom = shdr->getUniformLocation("model");
+    qDebug() << "modelUnifrom ->" << modelUnifrom;
     this->viewUniform  = shdr->getUniformLocation("view");
+    qDebug() << "viewUniform ->" << viewUniform;
     this->projectionUniform = shdr->getUniformLocation("projection");
+    qDebug() << "projectionUniform ->" << projectionUniform;
     this->mousePosUniform = shdr->getUniformLocation("iMouse");
+    qDebug() << "mousePosUniform ->" << mousePosUniform;
+    qDebug() <<"-----------------------------------------";
 }
 
 /*
@@ -128,7 +135,7 @@ void _Renderer::setupTexture()
     _Texture texture(img,1360,1024);
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-    qDebug() << "setupTexture() on entity" << this->sceneEntity.getId();
+    qDebug() << "setupTexture() on entity" << this->sceneEntity.getTag();
 }
 void _Renderer::setupTexture(QString texfile)
 {
@@ -136,7 +143,7 @@ void _Renderer::setupTexture(QString texfile)
     _Texture texture(img);
     texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-    qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getId();
+    qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getTag();
 }
 /*
  * Function: setTexture()
@@ -150,19 +157,19 @@ void _Renderer::setTexture(char* texBitmap)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap);
-    qDebug() << "setTexture(char* texBitmap) on entity" << this->sceneEntity.getId();
+    qDebug() << "setTexture(char* texBitmap) on entity" << this->sceneEntity.getTag();
 }
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap,iwidth,iheight);
-    qDebug() << "setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight) on entity" << this->sceneEntity.getId();
+    qDebug() << "setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight) on entity" << this->sceneEntity.getTag();
 }
 void _Renderer::setTexture(QString pathtoTexture)
 {
     if(!textures.empty())
         textures[0].setImage(pathtoTexture);
-    qDebug() << "setTexture(QString pathtoTexture) on entity" << this->sceneEntity.getId();
+    qDebug() << "setTexture(QString pathtoTexture) on entity" << this->sceneEntity.getTag();
 }
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
@@ -185,7 +192,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
     translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
 
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-    qDebug() << "setModelMatrix() on entity" << this->sceneEntity.getId();
+    qDebug() << "setModelMatrix() on entity" << this->sceneEntity.getTag();
 }
 /*
 * Function: setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
@@ -202,7 +209,7 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
                 glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
-    //qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getId();
+    //qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getTag();
 }
 /*
 * Function: setProjectionMatrix(int w, int h)
@@ -217,7 +224,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
-    qDebug() << "setProjectionMatrix() on entity" << this->sceneEntity.getId();
+    qDebug() << "setProjectionMatrix() on entity" << this->sceneEntity.getTag();
 }
 /*
  * Function: setPosition(QVector3D pos)\translate(QVector3D pos)
@@ -331,7 +338,7 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 * returns the current scene entity object.
 * Created:11_02_2019
 */
-_SceneEntity _Renderer::getSceneEntity()
+_SceneEntity _Renderer::getSceneEntity() const
 {
     return this->sceneEntity;
 }
@@ -358,7 +365,7 @@ void _Renderer::_Renderer::draw()
     glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
     glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
     glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
-    transitionColors(QVector2D(0.0,0.0));//Setting the uniform for color trnasitioning//just a temporary debug use
+    transitionColors();//Setting the uniform for color trnasitioning//just a temporary debug use
     //The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
@@ -368,26 +375,15 @@ void _Renderer::_Renderer::draw()
  * Temporary debugging implemetation, transistion colors of object
  * hot reloding of shaders also needs to be implemented
 */
-void _Renderer::transitionColors(QVector2D mousePos)
+void _Renderer::transitionColors()
 {
-    float x = mousePos.x();
-    float y = mousePos.y();
-    x = x / 824;//limiting the value between 0 and 1
-    y = y / 375;//limiting the value between 0 and 1
     double r = abs(cos(timer.elapsed() * 0.002));
     double g = abs(sin(timer.elapsed() * 0.003));
     double b = abs(cos(timer.elapsed() * 0.005));
     glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
-    glUniform2f(mousePosUniform,x,y);//passing mouse value to shader
-//    glBegin(GL_LINES);
-//        glColor3f(1, 0, 0); glVertex3f(0, 0, 0); glVertex3f(10, 0, 0);
-//        glColor3f(0, 1, 0); glVertex3f(0, 0, 0); glVertex3f(0, 10, 0);
-//        glColor3f(0, 0, 1); glVertex3f(0, 0, 0); glVertex3f(0, 0, 10);
-//      glEnd();
+   //passing mouse value to shader
 }
-/*
- *
-*/
+
 void _Renderer::unProject(QVector2D mousePressPosition)
 {
     // Where The Viewport Values Will Be Stored
@@ -406,8 +402,7 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     GLbyte color[4];
     GLfloat depth;
     GLuint index;
-
-//    glFlush();
+    //    glFlush();
     winY = viewport[3] - winY - 1;// Subtract The Current Mouse Y Coordinate From The Screen Height.
     glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
     qDebug() << glGetError();;
@@ -421,6 +416,8 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     glReadPixels(winX, winY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
     qDebug() << glGetError();
     qDebug() << mousePressPosition <<"-index"<< index;
+
+    glUniform2f(mousePosUniform,mousePressPosition.x(),mousePressPosition.y());
 
     //        glm::vec3 mPos = glm::unProject(
     //                    glm::vec3(x, float(this->width()) - y, 1.0f),

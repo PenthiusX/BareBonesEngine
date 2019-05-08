@@ -18,13 +18,13 @@ public:
     ~_Camera();
     //
     void setEyePosition(QVector3D epos);
-    QVector3D getEyePosition();
+    QVector3D getEyePosition()const;
     void setFocalPoint(QVector3D focalPos);
-    QVector3D getFocalPoint();
+    QVector3D getFocalPoint()const;
     void setUpVector(QVector3D upVec);
-    QVector3D getUpVector();
+    QVector3D getUpVector()const;
     void setFOV(unsigned fov);
-    unsigned int getFOV();
+    unsigned int getFOV()const;
 
 private:
     QVector3D eyePosition;

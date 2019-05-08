@@ -33,7 +33,7 @@ void _Camera::setEyePosition(QVector3D epos)
 {
     this->eyePosition = epos;
 }
-QVector3D _Camera::getEyePosition()
+QVector3D _Camera::getEyePosition() const
 {
     return this->eyePosition;
 }
@@ -46,7 +46,7 @@ void _Camera::setFocalPoint(QVector3D focalPos)
 {
     this->focalPoint = focalPos;
 }
-QVector3D _Camera::getFocalPoint()
+QVector3D _Camera::getFocalPoint() const
 {
     return this->focalPoint;
 }
@@ -60,7 +60,7 @@ void _Camera::setUpVector(QVector3D upVec)
 {
     this->upVector = upVec;
 }
-QVector3D _Camera::getUpVector()
+QVector3D _Camera::getUpVector() const
 {
     return this->upVector;
 }
@@ -76,7 +76,7 @@ void _Camera::setFOV(unsigned int fove)
     this->fov = fove;
 }
 
-unsigned int _Camera::getFOV()
+unsigned int _Camera::getFOV() const
 {
     return this->fov;
 }

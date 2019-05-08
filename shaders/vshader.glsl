@@ -8,11 +8,13 @@ uniform mat4 projection;
 //
 out vec4 ourColor;
 //
-out vec2 iMouse;
+uniform vec2 iMouse;
+out vec2 iMouseO;
 
 void main()
 {
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
     ourColor = aColor;
+    iMouseO = iMouse;
 }
