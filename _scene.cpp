@@ -26,7 +26,7 @@ _Scene::~_Scene()
  * this is being called by the _GlWidget class.
  * Created:26_02_2019
 */
-std::vector<_Renderer*> _Scene::getSceneObjectsArray()
+std::vector<_Renderer*> _Scene::getSceneObjects()
 {
     return this->renderObjects;
 }
@@ -93,6 +93,8 @@ void _Scene::updateCamera(_Camera c)
 */
 void _Scene::onResize(int w,int h)
 {
+    this->resW = w;
+    this->resH = h;
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
@@ -116,7 +118,15 @@ void _Scene::render()
     {
         renderObjects[i]->draw();
     }
-    //
+    //Test implemtation might need a restructure.
+    //mouse y coordinate values are inerse of the the sceen coordinate values
+    //aligning it to be the same as the resolution Height value going into the FBOshader
+    unsigned int alignedMouseheight = (unsigned int) this->resH - this->mousePosition.y();
     // sets the frame on the Quad that has been hardcoded into the function
-    fboObject->renderFrameOnQuad();
+    fboObject->renderFrameOnQuad(QVector2D(this->mousePosition.x(),alignedMouseheight));
+}
+
+void _Scene::setMousePositionInScene(QVector2D mousePos)
+{
+    this->mousePosition = mousePos;
 }

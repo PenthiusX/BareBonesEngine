@@ -19,12 +19,14 @@ class _Scene
 public:
     _Scene();
     ~_Scene();
-    std::vector<_Renderer*> getSceneObjectsArray();
+    std::vector<_Renderer*> getSceneObjects();
     void addSceneObject(_SceneEntity s);
     void addCamera(_Camera c);
     void updateCamera(_Camera c);
     void onResize(int w,int h);
     void render();
+
+    void setMousePositionInScene(QVector2D mousePos);
 private:
     std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> renderObjects;
@@ -32,6 +34,8 @@ private:
     _Renderer* r;
     _Camera cam;
     bool isCamera;
+    QVector2D mousePosition;
+    int resW,resH;
 };
 
 #endif // _SCENE_H
