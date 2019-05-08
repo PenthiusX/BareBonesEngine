@@ -11,6 +11,7 @@ _SceneEntity::_SceneEntity()
     this->scale = 1.0;
     this->isActive = false;
     this->isTransfomationLocal = false;
+    this->tag = new char();
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -27,7 +28,8 @@ _SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale)
 /*
 */
 _SceneEntity::~_SceneEntity(){
-
+    tag = nullptr;
+    delete tag;
 }
 /*
  * Function: setId(int id) & getId()
@@ -40,9 +42,19 @@ void _SceneEntity::setId(unsigned int id)
 {
     this->id = id;
 }
-unsigned int _SceneEntity::getId()
+unsigned int _SceneEntity::getId() const
 {
     return this->id;
+}
+
+void _SceneEntity::setTag(const char *tag)
+{
+    this->tag = tag;
+}
+
+const char *_SceneEntity::getTag() const
+{
+    return this->tag;
 }
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
@@ -53,7 +65,7 @@ void _SceneEntity::setPosition(QVector3D pos)
 {
     this->postion = pos;
 }
-QVector3D _SceneEntity::getPostion()
+QVector3D _SceneEntity::getPostion() const
 {
     return this->postion;
 }
@@ -66,7 +78,7 @@ void _SceneEntity::setRotation(QVector3D rot)
 {
     this->rotation = rot;
 }
-QVector3D _SceneEntity::getRotation()
+QVector3D _SceneEntity::getRotation() const
 {
     return this->rotation;
 }
@@ -79,7 +91,7 @@ void _SceneEntity::setScale(float scale)
 {
     this->scale = scale;
 }
-float _SceneEntity::getScale()
+float _SceneEntity::getScale() const
 {
     return this->scale;
 }
@@ -92,7 +104,7 @@ void _SceneEntity::setVertexData(std::vector<float> vertices)
 {
     this->vertexData = vertices;
 }
-std::vector<float> _SceneEntity::getvertexData()
+std::vector<float> _SceneEntity::getvertexData() const
 {
     return this->vertexData;
 }
@@ -105,7 +117,7 @@ void _SceneEntity::setIndexData(std::vector<unsigned int> indices)
 {
     this->indexData = indices;
 }
-std::vector<unsigned int> _SceneEntity::getIndexData()
+std::vector<unsigned int> _SceneEntity::getIndexData() const
 {
     return this->indexData;
 }
@@ -118,7 +130,7 @@ void _SceneEntity::setuvData(std::vector<int> uvCoords)
 {
     this->uvData = uvCoords;
 }
-std::vector<int> _SceneEntity::getUvData()
+std::vector<int> _SceneEntity::getUvData()const
 {
     return this->uvData;
 }
@@ -131,7 +143,7 @@ void _SceneEntity::setnormalData(std::vector<float> normalData)
 {
     this->normalData = normalData;
 }
-std::vector<float> _SceneEntity::getNormalData()
+std::vector<float> _SceneEntity::getNormalData()const
 {
     return this->normalData;
 }
@@ -194,7 +206,7 @@ void _SceneEntity::setShader(QString vSh, QString fSh)
  * returns the path of the texture that is applied to the sceneObject.
  * Date: 26_02_2019
 */
-QString _SceneEntity::getTexturePath()
+QString _SceneEntity::getTexturePath() const
 {
     return this->texturePath;
 }
@@ -207,7 +219,7 @@ void _SceneEntity::setTexturePath(QString texPath)
 * returns the Vertex shader path set in the object via set shader Path
  * Created:26_02_2019
 */
-QString _SceneEntity::getVertexShaderPath()
+QString _SceneEntity::getVertexShaderPath() const
 {
     return this->vShaderPath;
 }
@@ -216,7 +228,7 @@ QString _SceneEntity::getVertexShaderPath()
 * returns the fragment shader path set in the object via set shader Path
 * Created:26_02_2019
 */
-QString _SceneEntity::getFragmentShaderPath()
+QString _SceneEntity::getFragmentShaderPath() const
 {
     return this->fShaderPath;
 }

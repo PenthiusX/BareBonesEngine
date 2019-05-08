@@ -2,7 +2,7 @@
 out vec4 FragColor;
 
 in vec2 TexCoords;
-in vec2 iMouse;
+in vec2 iMouseO;
 
 uniform sampler2D screenTexture;
 
@@ -20,9 +20,9 @@ void main()
 //    FragColor = texture2D(screenTexture, TexCoords) * vec4(zv,zv,zv,1.0);
 //---------------------------------------------------------------------------
     vec4 col;
-    if((gl_FragCoord.x + 5.) >= iMouse.x && gl_FragCoord.y + 5. >= iMouse.y)
+    if((gl_FragCoord.x + 5.) >= iMouseO.x && gl_FragCoord.y + 5. >= iMouseO.y)
     {
-      if((gl_FragCoord.x - 5.) <= iMouse.x && gl_FragCoord.y - 5. <= iMouse.y)
+      if((gl_FragCoord.x - 5.) <= iMouseO.x && gl_FragCoord.y - 5. <= iMouseO.y)
       {
         col = vec4(0.0,0.5,0.0,1.0);
       }

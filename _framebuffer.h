@@ -24,9 +24,11 @@ private:
     GLuint renderBufferObject;
     GLuint quadVAO,quadVBO;
 
+    GLuint mousePosUniform;
+    QVector2D mousePos;
+
     _Shader *fboShader;//local shader for the Fbo quad
     void setupQuad();//setup the parameters for the Quad object to render the fbuffer on
-    void unProject(QVector2D mousePressPosition);
 
 public:
     void initialise();//initialises the framebuffer objects

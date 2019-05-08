@@ -13,30 +13,30 @@ public:
     _SceneEntity();
     ~_SceneEntity();
     void setId(unsigned int id);//sets the iD either externaly or internally generated
-    unsigned int getId();// call to retrieve unique id for the object instance.
-    void setTag(char* tag);
-    char* getTag();
+    unsigned int getId() const;// call to retrieve unique id for the object instance.
+    void setTag(const char* tag);
+    const char* getTag() const;
     //
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
-    QVector3D getPostion();//get the current position of the relvant object instace
+    QVector3D getPostion() const;//get the current position of the relvant object instace
     void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
-    QVector3D getRotation();//get the Quaternian value of the rottion of the relavant object instance.
+    QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
-    float getScale();//get the float  value of the rotation of the relavant object instance.
+    float getScale() const;//get the float  value of the rotation of the relavant object instance.
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
     void _SceneEntity::setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
-    QString getTexturePath();
+    QString getTexturePath() const;
     //
-    QString getVertexShaderPath();//returns the vertexshader path
-    QString getFragmentShaderPath();//returns the fragment shader path
+    QString getVertexShaderPath() const;//returns the vertexshader path
+    QString getFragmentShaderPath() const;//returns the fragment shader path
     //
-    std::vector<float> getvertexData();//can get  the array of verterticess for refrence
-    std::vector<unsigned int> getIndexData();//can get the array of indices for refrence
-    std::vector<int> getUvData();// can get the array of UVs for refrence
-    std::vector<float> getNormalData();// can get the Array of normals for refrence
+    std::vector<float> getvertexData() const;//can get  the array of verterticess for refrence
+    std::vector<unsigned int> getIndexData() const;//can get the array of indices for refrence
+    std::vector<int> getUvData() const;// can get the array of UVs for refrence
+    std::vector<float> getNormalData() const;// can get the Array of normals for refrence
     //
     bool getIsActive();
     //
@@ -45,7 +45,7 @@ public:
 
 private:
     unsigned int id;
-    char* tag;
+    const char* tag;
     QVector3D postion;
     QVector3D rotation;
     float scale;

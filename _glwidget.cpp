@@ -22,7 +22,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
     this->isCamFocus = false;
     //keeps the event callbacks working for the GL widget
     setFocusPolicy(Qt::StrongFocus);
-//  makeCurrent();
+    //  makeCurrent();
 }
 _GLWidget::~_GLWidget()
 {
@@ -44,12 +44,6 @@ void _GLWidget::initializeGL()
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
     cam.setFOV(30);
     //
-    background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    background_quad.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
-    background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
-    background_quad.setRotation(QVector3D(0.0, 0.0, 0.0));
-    background_quad.setScale(1.0);
-    background_quad.setId(100);
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
         1.0,  1.0, 0.999f,	// top right
@@ -57,14 +51,19 @@ void _GLWidget::initializeGL()
         -1.0f, -1.0f, 0.999f, // bottom left
         -1.0f,  1.0f, 0.999f  // top left
     };
-    std::vector<unsigned int> indiceV = {// note that we start from 0!
-                                         0, 1, 3,   // first triangle
-                                         1, 2, 3    // second triangle
-                                        };
+    std::vector<unsigned int> indiceV = {0, 1, 3,
+                                         1, 2, 3 };
+    background_quad.setId(100);
+    background_quad.setTag("background");
+    background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    background_quad.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
+    background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
+    background_quad.setRotation(QVector3D(0.0, 0.0, 0.0));
+    background_quad.setScale(1.0);
     background_quad.setModelData(vertsV,indiceV);
-    background_quad.setId(420);
     //
     s.setId(0);
+    s.setTag("stickman1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
@@ -72,24 +71,24 @@ void _GLWidget::initializeGL()
     s.setModelData(":/models/stickman.obj");
     //
     s1.setId(1);
+    s1.setTag("stickman2");
     s1.setIsTransfomationLocal(false);
     s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s1.setScale(.09f);
     s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
     //
-//    mpoint.setId(2);
-//    mpoint.setIsTransfomationLocal(false);
-//    mpoint.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-//    mpoint.setScale(0.8f);
-//    mpoint.setModelData(":/models/sphere.obj");
+    //    mpoint.setId(2);
+    //    mpoint.setIsTransfomationLocal(false);
+    //    mpoint.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
+    //    mpoint.setScale(0.8f);
+    //    mpoint.setModelData(":/models/sphere.obj");
     //
     scene->addCamera(cam);
     //add the backGround quad first for it to render last
     scene->addSceneObject(background_quad);
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-//  scene->addSceneObject(mpoint);
-
+    // scene->addSceneObject(mpoint);
     //Test implemetation//needs to be deleted
 }
 /*
@@ -144,7 +143,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
     for(unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
     {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-//        scene->getSceneObjectsArray()[i]->unProject(this->mousePressPosition);
+        scene->getSceneObjectsArray()[i]->unProject(this->mousePressPosition);
     }
 }
 /*

@@ -49,10 +49,12 @@ public:
     void setscale(float scale);
 
     void setSceneEntityInRenderer(_SceneEntity s);
-    _SceneEntity getSceneEntity();
-    void draw();//Draws everything bound in the scene
+    _SceneEntity getSceneEntity() const;
+
+    void draw();//Draws/paints everything bound in the scene
+
     //Debug implentation
-    void transitionColors(QVector2D mousePos);
+    void transitionColors();
     void unProject(QVector2D mousePressPosition);
 
 private:

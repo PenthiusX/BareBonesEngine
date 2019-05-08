@@ -18,6 +18,7 @@ _Scene::_Scene()
 _Scene::~_Scene()
 {
     renderObjects.clear();
+    delete r;
 }
 /*
  * Function: getSceneObjects()
@@ -96,7 +97,6 @@ void _Scene::onResize(int w,int h)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
     }
-//        renderObjects[0]->setFrameBuffer(w,h);
         fboObject->initialise();
         fboObject->setupFramebufferObjects(w,h);
 }

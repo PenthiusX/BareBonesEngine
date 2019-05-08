@@ -31,11 +31,11 @@ void _FrameBuffer::setupQuad()
                              // positions   // texCoords
                              -1.00f,  1.0f,  0.0f, 1.0f,
                              -1.00f, -1.0f,  0.0f, 0.0f,
-                              1.00f, -1.0f,  1.0f, 0.0f,
+                             1.00f, -1.0f,  1.0f, 0.0f,
 
                              -1.00f,  1.0f,  0.0f, 1.0f,
-                              1.00f, -1.0f,  1.0f, 0.0f,
-                              1.00f,  1.0f,  1.0f, 1.0f
+                             1.00f, -1.0f,  1.0f, 0.0f,
+                             1.00f,  1.0f,  1.0f, 1.0f
                            };
 
     glGenVertexArrays(1, &quadVAO);
@@ -89,11 +89,16 @@ void _FrameBuffer::setupFramebufferObjects(int resWidth, int resHeight)
 */
 void _FrameBuffer::initialise()
 {
+    qDebug() << "--------------initailising Frambuffer -----------------";
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     //
     setupFramebufferObjects(viewport[2],viewport[3]);
+    qDebug() << "Frambuffer initailised";
     setupQuad();
+    qDebug() << "Quad setup complete";
+    this->mousePosUniform = fboShader->getUniformLocation("iMouse");
+    qDebug() << "mousePosUniform->" << mousePosUniform << "FBO";
 }
 
 /*
@@ -125,6 +130,8 @@ void _FrameBuffer::renderFrameOnQuad()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     fboShader->useShaderProgram();
     glBindVertexArray(quadVAO);
+
+    glUniform2f(mousePosUniform,mousePos.x(),mousePos.y());//passing mouse value to shader
 
     glBindTexture(GL_TEXTURE_2D,this->textureColorbuffer);
     glDrawArrays(GL_TRIANGLES, 0, 6);	// use the color attachment texture as the texture of the quad plane
