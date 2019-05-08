@@ -35,7 +35,7 @@ public:
     void setupFramebufferObjects(int w , int h);//can be called once but needs to update if the window is resized
     //
     void setFrame();
-    void renderFrameOnQuad();
+    void renderFrameOnQuad(QVector2D mousePos);
     void renderFrameOn();
 };
 #endif // _FRAMEBUFFER_H

@@ -88,7 +88,7 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(background_quad);
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-    // scene->addSceneObject(mpoint);
+    //scene->addSceneObject(mpoint);
     //Test implemetation//needs to be deleted
 }
 /*
@@ -112,13 +112,14 @@ void _GLWidget::resizeGL(int w, int h)
 void _GLWidget::paintGL()//the renderloop
 {
     //this debug use code , sets camfocus on object with the iD that is selected---
-    for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
-        if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch){
-            cam.setFocalPoint(QVector3D(scene->getSceneObjectsArray()[i]->getSceneEntity().getPostion()));
+    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
+        if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
+            cam.setFocalPoint(QVector3D(scene->getSceneObjects()[i]->getSceneEntity().getPostion()));
         }
     }
     //--------------------------------------------------------------------------
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
+    scene->setMousePositionInScene(this->mousePosition);//sets the mouse position in the scene for use in the scene
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
 }
@@ -141,9 +142,9 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
-    for(unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+    for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
     {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-        scene->getSceneObjectsArray()[i]->unProject(this->mousePressPosition);
+        scene->getSceneObjects()[i]->unProject(this->mousePressPosition);
     }
 }
 /*
@@ -154,17 +155,19 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {
+    mousePosition = QVector2D(e->localPos());
+    //RotateTarget with mouse
     QVector2D mosPos = mousePressPosition;
     QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
     if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y())
         mosPos = maxpoint;
     float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
     rotRads = rotRads + QVector2D(e->localPos()) - mosPos;
-    for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
     {
-        if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch)
+        if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
         {
-            scene->getSceneObjectsArray()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are inverted for intuitive controll
+            scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are elative controll
         }
     }
 }
@@ -179,22 +182,23 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 */
 void _GLWidget::wheelEvent(QWheelEvent *e)
 {
+    //Scale target with mouseWheel
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
     if (e->orientation() == Qt::Horizontal)
     {
         scroolScale = numSteps * 0.005;
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch)
-                scene->getSceneObjectsArray()[i]->setscale(scroolScale);
+        for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+            if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
+                scene->getSceneObjects()[i]->setscale(scroolScale);
     }
     else
     {
-        for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
-            if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch)
+        for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+            if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
             {
-                scroolScale = scene->getSceneObjectsArray()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
-                scene->getSceneObjectsArray()[i]->setscale(scroolScale);
+                scroolScale = scene->getSceneObjects()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
+                scene->getSceneObjects()[i]->setscale(scroolScale);
                 qInfo() << scroolScale;
             }
     }
@@ -213,16 +217,16 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 {
     if ((event->text() == "q" || event->text() == "Q"))
         idmatch += 1;
-    if (idmatch >= scene->getSceneObjectsArray().size())
+    if (idmatch >= scene->getSceneObjects().size())
         idmatch = 0;
 
     if (event->text() == "d" || event->text() == "D"){
         if (isCamFocus == true){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() - 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
         }else{
-            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
-                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch) {
-                    scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.1f, -0.f, 0.0));
+            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++) {
+                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch) {
+                    scene->getSceneObjects()[i]->translate(QVector3D(-0.1f, -0.f, 0.0));
                 }
             }
         }
@@ -233,9 +237,9 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() + 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
             scene->updateCamera(cam);
         }else{
-            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
-                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch) {
-                    scene->getSceneObjectsArray()[i]->translate(QVector3D(0.1f, 0.f, 0.0));
+            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++) {
+                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch) {
+                    scene->getSceneObjects()[i]->translate(QVector3D(0.1f, 0.f, 0.0));
                 }
             }
         }
@@ -246,9 +250,9 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() + 0.1, cam.getEyePosition().z()));
             scene->updateCamera(cam);
         }else{
-            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
-                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch) {
-                    scene->getSceneObjectsArray()[i]->translate(QVector3D(0.f, 0.1, 0.0));
+            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++) {
+                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch) {
+                    scene->getSceneObjects()[i]->translate(QVector3D(0.f, 0.1, 0.0));
                 }
             }
         }
@@ -259,9 +263,9 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() - 0.1, cam.getEyePosition().z()));
             scene->updateCamera(cam);
         }else{
-            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++) {
-                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch) {
-                    scene->getSceneObjectsArray()[i]->translate(QVector3D(-0.f, -0.1, 0.0));
+            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++) {
+                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch) {
+                    scene->getSceneObjects()[i]->translate(QVector3D(-0.f, -0.1, 0.0));
                 }
             }
         }
@@ -272,11 +276,11 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
             cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
         }
         else{
-            for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++){
-                if (scene->getSceneObjectsArray()[i]->getSceneEntity().getId() == idmatch){
-                    scene->getSceneObjectsArray()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
-                    scene->getSceneObjectsArray()[i]->setRotation(QVector3D(0.0f, 0.0, 0.0));
-                    scene->getSceneObjectsArray()[i]->setscale(scene->getSceneObjectsArray()[i]->getSceneEntity().getScale());
+            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
+                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
+                    scene->getSceneObjects()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
+                    scene->getSceneObjects()[i]->setRotation(QVector3D(0.0f, 0.0, 0.0));
+                    scene->getSceneObjects()[i]->setscale(scene->getSceneObjects()[i]->getSceneEntity().getScale());
                     rotRads = QVector2D(.0f, .0f);
                 }
             }

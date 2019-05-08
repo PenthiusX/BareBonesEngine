@@ -89,7 +89,7 @@ void _FrameBuffer::setupFramebufferObjects(int resWidth, int resHeight)
 */
 void _FrameBuffer::initialise()
 {
-    qDebug() << "--------------initailising Frambuffer -----------------";
+    qDebug() << "--------------Initailising Frambuffer -----------------";
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     //
@@ -122,7 +122,7 @@ void _FrameBuffer::setFrame()
  * that has been set in setupQuad() and rendered below.
  * Created: 30_04_2019
 */
-void _FrameBuffer::renderFrameOnQuad()
+void _FrameBuffer::renderFrameOnQuad(QVector2D mousePos)
 {
     // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
