@@ -81,23 +81,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->backlight_button, &QPushButton::clicked,[this]() {
         QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_STORE_VALUE_TOGGLE));
     });
-    connect(ui->line_laser_button, &QPushButton::toggled,[this]() {
-        if(ui->line_laser_button->isChecked())
-            QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 70));
-        else
-            QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 0));
+
+    connect(ui->line_laser_button, &QPushButton::clicked,[this]() {
+        QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_STORE_VALUE_TOGGLE));
     });
-    connect(ui->marking_laser_button, &QPushButton::toggled,[this]() {
-        if(ui->marking_laser_button->isChecked())
-            QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(int, 4));
-        else
-            QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(int, 0));
+
+    connect(ui->marking_laser_button, &QPushButton::clicked,[this]() {
+        QMetaObject::invokeMethod(machine, "MarkingLaser", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_STORE_VALUE_TOGGLE));
     });
-    connect(ui->vaccum_button, &QPushButton::toggled,[this]() {
-        if(ui->vaccum_button->isChecked())
-            QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 1));
-        else
-            QMetaObject::invokeMethod(machine, "Vaccum", Qt::QueuedConnection,Q_ARG(int, 0));
+    connect(ui->vaccum_button,  &QPushButton::clicked,[this]() {
+        QMetaObject::invokeMethod(machine, "Vaccum",  Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_STORE_VALUE_TOGGLE));
     });
 
     qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype

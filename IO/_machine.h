@@ -98,6 +98,7 @@ public:
     bool initialised = false;
     QString json_file_name;
     bool isInitialised() const;
+    void ActionTypeLogicHandler(ActionType action,int& val ,int& last_val ,float&config_val ,bool& toggle_state);
 
 protected slots:
     void updateFrameGrayscale(char *img, unsigned int iwidth, unsigned int iheight);

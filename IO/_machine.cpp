@@ -82,20 +82,11 @@ _Machine::~_Machine()
  * */
 void _Machine::TurnTableMotorDiff(int steps,ActionType action)
 {
-    static int last_steps;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save steps to config
-        config["Hardware"]["Controls"]["StageMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE")=steps;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        steps = config["Hardware"]["Controls"]["StageMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    }
+    static int last_value;
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,steps, last_value,config["Hardware"]["Controls"]["StageMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     //command : XM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["StageMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
     static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
@@ -109,20 +100,11 @@ void _Machine::TurnTableMotorDiff(int steps,ActionType action)
  * */
 void _Machine::LaserFocusMotorDiff(int steps,ActionType action)
 {
-    static int last_steps;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save steps to config
-        config["Hardware"]["Controls"]["LaserFocusMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE")=steps;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        steps = config["Hardware"]["Controls"]["LaserFocusMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    }
+    static int last_value;
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,steps, last_value,config["Hardware"]["Controls"]["LaserFocusMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     //command : FM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["LaserFocusMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
     static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
@@ -136,20 +118,11 @@ void _Machine::LaserFocusMotorDiff(int steps,ActionType action)
  * */
 void _Machine::LaserHeightMotorDiff(int steps,ActionType action)
 {
-    static int last_steps;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save steps to config
-        config["Hardware"]["Controls"]["LaserHeightMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE")=steps;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        steps = config["Hardware"]["Controls"]["LaserHeightMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    }
+    static int last_value;
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,steps, last_value,config["Hardware"]["Controls"]["LaserHeightMotor"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     //command : ZM<steps>G
     static QString prefix = config["Hardware"]["Controls"]["LaserHeightMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
     static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
@@ -163,28 +136,11 @@ void _Machine::LaserHeightMotorDiff(int steps,ActionType action)
  * */
 void _Machine::Vaccum(int state,ActionType action)
 {
-    static int last_state;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save state to config
-        config["Hardware"]["Controls"]["Vaccum"]["Data"]["Caliberation"].getFloatEntity("VALUE")=state;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        state = config["Hardware"]["Controls"]["Vaccum"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables state without temporary variables
-        state = state + last_state;
-        last_state = state - last_state;
-        state = state - last_state;
-        break;
-    }
-    }
+    static int last_value;
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,state, last_value,config["Hardware"]["Controls"]["Vaccum"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     //command for on:N
     //command for off:Y
     static QString on = config["Hardware"]["Controls"]["Vaccum"]["Commands"]["RS232"].getStringEntity("ON");
@@ -199,27 +155,10 @@ void _Machine::Vaccum(int state,ActionType action)
 void _Machine::LineLaser(int intensity,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Hardware"]["Controls"]["LineLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE")=intensity;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        intensity = config["Hardware"]["Controls"]["LineLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        intensity = intensity + last_value;
-        last_value = intensity - last_value;
-        intensity = intensity - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,intensity, last_value,config["Hardware"]["Controls"]["LineLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     static QString cmd = config["Hardware"]["Controls"]["LineLaser"]["Commands"]["RS232"].getStringEntity("SET");
     hardware_serial->waitAndWriteData(QString(cmd+"%1").arg(intensity));
 }
@@ -231,34 +170,9 @@ void _Machine::LineLaser(int intensity,ActionType action)
 void _Machine::BackLight(int intensity,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _DEFAULT:
-    {
-        last_value = intensity;
-        break;
-    }
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE")=intensity;
-        last_value = intensity;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        intensity = config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        last_value = intensity;
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        intensity = intensity + last_value;
-        last_value = intensity - last_value;
-        intensity = intensity - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,intensity, last_value,config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
 
     static QString cmd = config["Hardware"]["Controls"]["BackLight"]["Commands"]["RS232"].getStringEntity("SET");
 
@@ -275,27 +189,9 @@ void _Machine::BackLight(int intensity,ActionType action)
 void _Machine::MarkingLaser(int intensity,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Hardware"]["Controls"]["MarkingLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE")=intensity;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        intensity = config["Hardware"]["Controls"]["MarkingLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        intensity = intensity + last_value;
-        last_value = intensity - last_value;
-        intensity = intensity - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,intensity, last_value,config["Hardware"]["Controls"]["MarkingLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
 
     static QString laser_power_cmd = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("SET");
     if (intensity > 0)
@@ -327,135 +223,50 @@ QString _Machine::getMachineVersion()
 void _Machine::setBrightness(int value,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Camera"]["Brightness"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        value = config["Camera"]["Brightness"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        value = value + last_value;
-        last_value = value - last_value;
-        value = value - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,value, last_value,config["Camera"]["Brightness"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     camera->setBrightness(value);
 }
 
 void _Machine::setGain(int value,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        value = config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        value = value + last_value;
-        last_value = value - last_value;
-        value = value - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,value, last_value,config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     camera->setGain(value);
 }
 
 void _Machine::setExposure(int value,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Camera"]["Exposure"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        value = config["Camera"]["Exposure"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        value = value + last_value;
-        last_value = value - last_value;
-        value = value - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,value, last_value,config["Camera"]["Exposure"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     camera->setExposure(value);
 }
 
 void _Machine::setContrast(int value,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Camera"]["Contrast"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        value = config["Camera"]["Contrast"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        value = value + last_value;
-        last_value = value - last_value;
-        value = value - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,value, last_value,config["Camera"]["Contrast"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     camera->setContrast(value);
 }
 
 void _Machine::setOffset(int value,ActionType action)
 {
     static int last_value;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save value to config
-        config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE")=value;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        value = config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables value without temporary variables
-        value = value + last_value;
-        last_value = value - last_value;
-        value = value - last_value;
-        break;
-    }
-    }
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,value, last_value,config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     camera->setOffset(value);
 }
 
@@ -491,17 +302,12 @@ QString _Machine::InfoCmd(_HardwareSerial& port)
  * */
 void _Machine::MarkingLaserOut(int state,ActionType action)
 {
-    static int last_state;
-    switch (action) {
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables state without temporary variables
-        state = state + last_state;
-        last_state = state - last_state;
-        state = state - last_state;
-        break;
-    }
-    }
+    static int last_value;
+    static bool toggle_state=true;
+    float temp=0;
+
+    ActionTypeLogicHandler(action,state, last_value,temp, toggle_state);
+
     //command for on:Q
     //command for off:R
     static QString on = config["Hardware"]["Controls"]["MarkingLaser"]["Commands"]["RS232"].getStringEntity("ON");
@@ -515,28 +321,11 @@ void _Machine::MarkingLaserOut(int state,ActionType action)
  * */
 void _Machine::MarkingLaserDiode(int state,ActionType action)
 {
-    static int last_state;
-    switch (action) {
-    case _CALIBERATION_CONFIG_UPDATE:
-    {
-        //save state to config
-        config["Hardware"]["Controls"]["MarkingLaserDiode"]["Data"]["Caliberation"].getFloatEntity("VALUE")=state;
-        break;
-    }
-    case _DEFAULT_FROM_CONFIG:
-    {
-        state = config["Hardware"]["Controls"]["MarkingLaserDiode"]["Data"]["Caliberation"].getFloatEntity("VALUE");
-        break;
-    }
-    case _STORE_VALUE_TOGGLE:
-    {
-        //exchange variables state without temporary variables
-        state = state + last_state;
-        last_state = state - last_state;
-        state = state - last_state;
-        break;
-    }
-    }
+    static int last_value;
+    static bool toggle_state=true;
+
+    ActionTypeLogicHandler(action,state, last_value,config["Hardware"]["Controls"]["MarkingLaserDiode"]["Data"]["Caliberation"].getFloatEntity("VALUE"), toggle_state);
+
     //command for on:V
     //command for off:W
     static QString on = config["Hardware"]["Controls"]["MarkingLaserDiode"]["Commands"]["RS232"].getStringEntity("ON");
@@ -778,5 +567,48 @@ void _Machine::updateFrameColor(char* img,unsigned int iwidth,unsigned int iheig
 bool _Machine::isInitialised() const
 {
     return initialised;
+}
+
+/* Function : ActionTypeLogicHandler(ActionType action, int &val, int &last_val, float &config_val, bool &toggle_state)
+ * this function is used to implement the respective action type logic when machine command is called
+ * parameters:
+ *      action : enum ActionType ()
+ *      val : current value referance
+ *      last_val : last value referance
+ *      config_val : referance to _ConfigControlEntity floatEntity that stores the caliberation value to entity
+ *      toggle_state : referance to toggle state for button based toggles
+*/
+void _Machine::ActionTypeLogicHandler(ActionType action, int &val, int &last_val, float &config_val, bool &toggle_state)
+{
+    switch (action) {
+    case _DEFAULT:
+    {
+        last_val = val;
+        toggle_state=true;
+        break;
+    }
+    case _CALIBERATION_CONFIG_UPDATE:
+    {
+        //save value to config
+        config_val=val;
+        last_val= val;
+        toggle_state=true;
+        break;
+    }
+    case _DEFAULT_FROM_CONFIG:
+    {
+        val = config_val;
+        last_val= val;
+        toggle_state=true;
+        break;
+    }
+    case _STORE_VALUE_TOGGLE:
+    {
+        //exchange variables value without temporary variables
+        toggle_state=!toggle_state;
+        val = toggle_state * last_val;
+        break;
+    }
+    }
 }
 
