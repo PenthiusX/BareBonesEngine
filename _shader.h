@@ -17,9 +17,12 @@ public:
     ~_Shader();
 
     uint getShaderProgram();
+
     void setFragmentShader(QString fshader);
     void setVertexShader(QString vShader);
     void setGeometryShader(QString geoS);
+    void setComputeShader(QString compShader);
+
     void attachShaders();
     void attachShaders(QString v , QString f);
     void useShaderProgram();
