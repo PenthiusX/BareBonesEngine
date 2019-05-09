@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "IO/_hardwareserial.h"
 #include <QDebug>
-#include <QFileDialog>
 #include <QPixmap>
 #include <QImage>
 
@@ -57,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->light_caliberation_section->setMachine(machine);
     ui->light_caliberation_section->setupConnections();
+    ui->scan_caliberation_section->setMachineScanner(machine,scanner);
+    ui->scan_caliberation_section->setupConnections();
 
     //
     connect(ui->light_calibration_button, &QPushButton::clicked,[this]() {
@@ -66,7 +67,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->machine_selection_button, &QPushButton::clicked,[this]() {
         ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->machine_type_section);
         QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int))));
-        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,nullptr));
+    });
+
+    connect(ui->scan_calibration_button, &QPushButton::clicked,[this]() {
+        ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->scan_caliberation_section);
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(markLineLaser(char* ,unsigned int,unsigned int))));
     });
 
     connect(ui->stage_left, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));});
@@ -117,15 +122,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //buttons to scanner slots connections
     //connect(ui->scan, SIGNAL(clicked()),scanner,SLOT(scan_generate_model()));
 
-    connect(ui->scan, &QPushButton::clicked,[this]() {
-        QString dir = QFileDialog::getExistingDirectory(this, tr("Open Images Directory"),
-                                                    QCoreApplication::applicationDirPath()+"/../scan_images",
-                                                    QFileDialog::ShowDirsOnly);
-
-        QMetaObject::invokeMethod(machine, "set_image_dir", Qt::QueuedConnection,Q_ARG(QString, dir));
-        QMetaObject::invokeMethod(scanner, "scan_generate_model", Qt::QueuedConnection);
-    });
-
     connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),ui->light_caliberation_section,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
@@ -136,6 +132,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //start the hardware thread
     hardwareInteractionThread->start();
+
+    QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_DEFAULT_FROM_CONFIG));
 
 }
 

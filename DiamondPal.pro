@@ -38,7 +38,8 @@ HEADERS  += mainwindow.h \
     Compute/_cpu_compute.h \
     UI/_lightcaliberationsection.h \
     UI/_sliderbox.h \
-    UI/_machineselectionsection.h
+    UI/_machineselectionsection.h \
+    UI/_scancaliberationsection.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -67,12 +68,14 @@ SOURCES += main.cpp\
     Compute/_cpu_compute.cpp \
     UI/_lightcaliberationsection.cpp \
     UI/_sliderbox.cpp \
-    UI/_machineselectionsection.cpp
+    UI/_machineselectionsection.cpp \
+    UI/_scancaliberationsection.cpp
 
 FORMS    += mainwindow.ui \
     UI/_sliderbox.ui \
     UI/_lightcaliberationsection.ui \
-    UI/_machineselectionsection.ui
+    UI/_machineselectionsection.ui \
+    UI/_scancaliberationsection.ui
 
 RESOURCES += \
     shaders.qrc \

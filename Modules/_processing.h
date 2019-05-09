@@ -18,7 +18,6 @@ public:
     void doneCurrent();
     _GPU_Compute *gpu_compute = nullptr;
 
-    void markLineLaser(char *img, unsigned int iwidth, unsigned int iheight);
 
 signals:
     void outputImage(char *img, unsigned int iwidth, unsigned int iheight);
@@ -29,6 +28,8 @@ public slots:
     void inputImage(char *img, unsigned int iwidth, unsigned int iheight);
     void passThroughFrame(char *img, unsigned int iwidth, unsigned int iheight);
     void histogram(char *img, unsigned int iwidth, unsigned int iheight);
+    void markLineLaser(char *img, unsigned int iwidth, unsigned int iheight);
+
     void init();
     void setActiveProcess(const char *slot);
 

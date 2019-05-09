@@ -18,8 +18,6 @@ _LightCaliberationSection::_LightCaliberationSection(QWidget *parent) : QWidget(
     ui(new Ui::LightCaliberationSection)
 {
     ui->setupUi(this);
-//    ui->instruction_display_text_browser->se
-//    (":/Config/Docs/instructions_light_caliberation.txt.txt");
 }
 
 /* _LightCaliberationSection destructor
