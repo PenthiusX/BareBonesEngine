@@ -170,13 +170,13 @@ void _Texture::addParameter(unsigned int pname, unsigned int param)
 */
 void _Texture::load( GLenum format, GLenum datatype)
 {
-    qDebug() << "tex load";
+//    qDebug() << "tex load";
     if(m_ID==0)
     {
-        qDebug() << "tex gen b" << m_ID;
+//        qDebug() << "tex gen b" << m_ID;
         unsigned int t;
         glGenTextures(1,&m_ID);
-        qDebug() << "tex gen" << m_ID;
+//        qDebug() << "tex gen" << m_ID;
     }
     bind();
     for (auto const& parameter : parameters)
