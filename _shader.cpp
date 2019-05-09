@@ -119,6 +119,11 @@ void _Shader::setGeometryShader(QString geoS)
     glAttachShader(this->shaderProgram, geometryShader);
     glLinkProgram(this->shaderProgram);
 }
+
+void _Shader::setComputeShader(QString compShader)
+{
+
+}
 /*
 * Function: getUniformLocation(char* nameOfUniform)
 * returns a uint representing the loaction index of

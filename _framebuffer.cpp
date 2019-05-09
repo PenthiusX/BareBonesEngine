@@ -56,6 +56,9 @@ void _FrameBuffer::setupQuad()
 */
 void _FrameBuffer::setupFramebufferObjects(int resWidth, int resHeight)
 {
+    this->resH = resHeight;
+    this->resW = resWidth;
+
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
@@ -122,7 +125,7 @@ void _FrameBuffer::setFrame()
  * that has been set in setupQuad() and rendered below.
  * Created: 30_04_2019
 */
-void _FrameBuffer::renderFrameOnQuad(QVector2D mousePos)
+void _FrameBuffer::renderFrameOnQuad()
 {
     // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -145,4 +148,14 @@ void _FrameBuffer::renderFrameOnQuad(QVector2D mousePos)
 void _FrameBuffer::renderFrameOn()
 {
     //implentation pending
+}
+
+void _FrameBuffer::setMousePos(QVector2D mPos)
+{
+    //mouse y coordinate values are inverse of the the screen coordinate values
+    //aligning it here the same way the resolution Height values(from gl_FragCoords) are aligned in the FBOshader.
+    unsigned int alignedMouseheight = this->resH - (unsigned int)mPos.y();
+    this->mousePos.setX(mPos.x());
+    //this allignment is needed for it to be represented acurately in the shade.
+    this->mousePos.setY(alignedMouseheight);
 }

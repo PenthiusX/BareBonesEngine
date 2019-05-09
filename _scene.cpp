@@ -118,12 +118,11 @@ void _Scene::render()
     {
         renderObjects[i]->draw();
     }
-    //Test implemtation might need a restructure.
-    //mouse y coordinate values are inerse of the the sceen coordinate values
-    //aligning it to be the same as the resolution Height value going into the FBOshader
-    unsigned int alignedMouseheight = (unsigned int) this->resH - this->mousePosition.y();
+
+    //sets the mouse pointervalues to the fbo object
+    fboObject->setMousePos(this->mousePosition);
     // sets the frame on the Quad that has been hardcoded into the function
-    fboObject->renderFrameOnQuad(QVector2D(this->mousePosition.x(),alignedMouseheight));
+    fboObject->renderFrameOnQuad();
 }
 
 void _Scene::setMousePositionInScene(QVector2D mousePos)

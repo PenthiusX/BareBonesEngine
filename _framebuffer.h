@@ -30,12 +30,16 @@ private:
     _Shader *fboShader;//local shader for the Fbo quad
     void setupQuad();//setup the parameters for the Quad object to render the fbuffer on
 
+    unsigned int resH,resW;
+
 public:
     void initialise();//initialises the framebuffer objects
     void setupFramebufferObjects(int w , int h);//can be called once but needs to update if the window is resized
     //
     void setFrame();
-    void renderFrameOnQuad(QVector2D mousePos);
+    void renderFrameOnQuad();
     void renderFrameOn();
+    //
+    void setMousePos(QVector2D mousePos);
 };
 #endif // _FRAMEBUFFER_H
