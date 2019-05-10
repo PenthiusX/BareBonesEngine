@@ -54,7 +54,7 @@ void _FrameBuffer::setupQuad()
  * this function sets up the the buffers for framebuffer to Texture rendering
  * Created: 30_04_2019
 */
-void _FrameBuffer::setupFramebufferObjects(int resWidth, int resHeight)
+void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
 {
     this->resH = resHeight;
     this->resW = resWidth;
@@ -96,7 +96,7 @@ void _FrameBuffer::initialise()
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     //
-    setupFramebufferObjects(viewport[2],viewport[3]);
+    setupFramebuffer(viewport[2],viewport[3]);
     qDebug() << "Frambuffer initailised";
     setupQuad();
     qDebug() << "Quad setup complete";
@@ -129,8 +129,8 @@ void _FrameBuffer::renderFrameOnQuad()
 {
     // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glDisable(GL_DEPTH_TEST | GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     fboShader->useShaderProgram();
     glBindVertexArray(quadVAO);
 
