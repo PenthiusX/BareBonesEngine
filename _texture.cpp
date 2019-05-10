@@ -121,7 +121,6 @@ void _Texture::bind(unsigned int index)
 {
     glActiveTexture(GL_TEXTURE0+index);
     glBindTexture(GL_TEXTURE_2D,m_ID);
-
 }
 
 /* bind texture for compute shader operation

@@ -42,7 +42,7 @@ void _GLWidget::initializeGL()
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
-    cam.setFOV(30);
+    cam.setFOV(50);
     //
     //Hard coded vertices and indices
     std::vector<float> vertsV = {

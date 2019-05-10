@@ -15,10 +15,7 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    //  glEnable(GL_DEPTH_TEST);
-    //  glEnable(GL_STENCIL_TEST);
     glEnable(GL_FRONT_AND_BACK);
-    //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
 
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -122,7 +119,6 @@ void _Renderer::setuniformLocations()
     qDebug() << "mousePosUniform ->" << mousePosUniform;
     qDebug() <<"-----------------------------------------";
 }
-
 /*
  * Function: setupTexture()
  * creates new texture and adds into list(vector) of textures

@@ -122,7 +122,17 @@ void _Shader::setGeometryShader(QString geoS)
 
 void _Shader::setComputeShader(QString compShader)
 {
-
+    static const char* ComputeShader = \
+    "#version 430 core\n"
+    "writeonly uniform image2D writer;"
+    "layout (local_size_x = 16, local_size_y = 16) in;"
+    "void main()"
+    "{"
+        "vec2 coordinates = gl_GlobalInvocationID.xy;"
+        "vec2 resolution = vec2(512,512);"
+        "vec2 k = sign(cos(coordinates/resolution.yy*32.0));"
+        "imageStore(writer,ivec2(gl_GlobalInvocationID.xy),vec4(k.x*k.y));"
+    "}" ;
 }
 /*
 * Function: getUniformLocation(char* nameOfUniform)

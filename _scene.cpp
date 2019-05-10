@@ -99,8 +99,8 @@ void _Scene::onResize(int w,int h)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,100.0f);
     }
-        fboObject->initialise();
-        fboObject->setupFramebufferObjects(w,h);
+    fboObject->initialise();
+    fboObject->setupFramebuffer(w,h);
 }
 /*
  * Function: render()
@@ -118,7 +118,6 @@ void _Scene::render()
     {
         renderObjects[i]->draw();
     }
-
     //sets the mouse pointervalues to the fbo object
     fboObject->setMousePos(this->mousePosition);
     // sets the frame on the Quad that has been hardcoded into the function
