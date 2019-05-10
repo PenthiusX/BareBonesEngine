@@ -50,7 +50,7 @@ private:
     QVector2D rotRads;
 	bool isCamFocus;
     QVector2D mousePressPosition;
-    QVector2D mousePosition;
+    QVector2D mousePositionL,mousePositionR;
 };
 
 #endif // _GLWIDGET_H

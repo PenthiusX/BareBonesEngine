@@ -10,6 +10,8 @@ out vec4 ourColor;
 //
 uniform vec2 iMouse;
 out vec2 iMouseO;
+//
+out float DEPTH ;
 
 void main()
 {
@@ -17,4 +19,5 @@ void main()
     gl_Position =  mvpx * vec4(aPos, 1.0);
     ourColor = aColor;
     iMouseO = iMouse;
+    DEPTH = gl_Position.z / 50.0 ;
 }

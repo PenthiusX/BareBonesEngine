@@ -119,7 +119,7 @@ void _GLWidget::paintGL()//the renderloop
     }
     //--------------------------------------------------------------------------
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
-    scene->setMousePositionInScene(this->mousePosition);//sets the mouse position in the scene for use in the scene
+    scene->setMousePositionInScene(this->mousePositionR);//sets the mouse position in the scene for use in the scene
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
 }
@@ -131,7 +131,10 @@ void _GLWidget::paintGL()//the renderloop
 */
 void _GLWidget::mousePressEvent(QMouseEvent *e)
 {
-    mousePressPosition = QVector2D(e->localPos());
+    if(e->buttons() == Qt::LeftButton)
+    {//get mouse position only on left button click
+        mousePressPosition = QVector2D(e->localPos());
+    }
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
@@ -154,22 +157,33 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 * Created: 5_02_2019
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
-{
-    mousePosition = QVector2D(e->localPos());
-    //RotateTarget with mouse
-    QVector2D mosPos = mousePressPosition;
-    QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
-    if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y())
-        mosPos = maxpoint;
-    float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
-    rotRads = rotRads + QVector2D(e->localPos()) - mosPos;
-    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-    {
-        if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
+{   //selet button is pressed when updating mousevalues
+        if(e->buttons() == Qt::LeftButton)
         {
-            scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are elative controll
+            mousePositionL = QVector2D(e->localPos());
+
+            //RotateTarget with mouse
+            {
+                QVector2D mosPosL = mousePressPosition;
+                QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
+                if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
+                    mosPosL = maxpoint;
+                }
+                float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
+                rotRads = rotRads + mousePositionL - mosPosL;
+                for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+                {
+                    if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
+                    {
+                        scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are elative controll
+                    }
+                }
+            }
         }
-    }
+        if(e->buttons() == Qt::RightButton)
+        {
+            mousePositionR = QVector2D(e->localPos());
+        }
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
