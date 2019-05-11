@@ -373,11 +373,10 @@ void _Renderer::_Renderer::draw()
 */
 void _Renderer::transitionColors()
 {
-    double r = abs(cos(timer.elapsed() * 0.002));
-    double g = abs(sin(timer.elapsed() * 0.003));
-    double b = abs(cos(timer.elapsed() * 0.005));
+    double r = 01.0;//abs(cos(timer.elapsed() * 0.002));
+    double g = 01.0;//abs(sin(timer.elapsed() * 0.003));
+    double b = 01.0;//abs(cos(timer.elapsed() * 0.005));
     glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
-   //passing mouse value to shader
 }
 
 void _Renderer::unProject(QVector2D mousePressPosition)
@@ -414,18 +413,6 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     qDebug() << mousePressPosition <<"-index"<< index;
 
     glUniform2f(mousePosUniform,mousePressPosition.x(),mousePressPosition.y());
-
-    //        glm::vec3 mPos = glm::unProject(
-    //                    glm::vec3(x, float(this->width()) - y, 1.0f),
-    //                    glm::mat4(1.0f),
-    //                    this->glm_projection4x4,
-    //                    glm::vec4(0.0f, 0.0f, float(mWindowWidth), float(mWindowHeight))
-    //                 );
-
-    //      ROUND 2 DECIMAL
-    //        posX= ((int)(posX * 10 + .5) / 10.0);
-    //        posY= ((int)(posY * 10+ .5) / 10.0);
-    //        posZ= ((int)(posZ * 10 + .5) / 10.0);
 }
 
 

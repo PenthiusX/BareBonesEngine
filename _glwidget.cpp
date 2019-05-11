@@ -261,7 +261,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 
     if (event->text() == "w" || event->text() == "W"){
         if (isCamFocus == true){
-            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() + 0.1, cam.getEyePosition().z()));
+            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y(), cam.getEyePosition().z() + 0.2));
             scene->updateCamera(cam);
         }else{
             for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++) {
@@ -274,7 +274,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 
     if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus == true){
-            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() - 0.1, cam.getEyePosition().z()));
+            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y(), cam.getEyePosition().z() - 0.2));
             scene->updateCamera(cam);
         }else{
             for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++) {

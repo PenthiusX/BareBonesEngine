@@ -123,16 +123,51 @@ void _Shader::setGeometryShader(QString geoS)
 void _Shader::setComputeShader(QString compShader)
 {
     static const char* ComputeShader = \
-    "#version 430 core\n"
-    "writeonly uniform image2D writer;"
-    "layout (local_size_x = 16, local_size_y = 16) in;"
-    "void main()"
-    "{"
-        "vec2 coordinates = gl_GlobalInvocationID.xy;"
-        "vec2 resolution = vec2(512,512);"
-        "vec2 k = sign(cos(coordinates/resolution.yy*32.0));"
-        "imageStore(writer,ivec2(gl_GlobalInvocationID.xy),vec4(k.x*k.y));"
-    "}" ;
+            "#version 430 core\n"
+            "writeonly uniform image2D writer;"
+            "layout (local_size_x = 16, local_size_y = 16) in;"
+            "void main()"
+            "{"
+            "vec2 coordinates = gl_GlobalInvocationID.xy;"
+            "vec2 resolution = vec2(512,512);"
+            "vec2 k = sign(cos(coordinates/resolution.yy*32.0));"
+            "imageStore(writer,ivec2(gl_GlobalInvocationID.xy),vec4(k.x*k.y));"
+            "}" ;
+
+#define NUM_PARTICLES 1024*1024 // total number of particles to move
+    //Setting up the Shader Storage Buffer Objects in Your C Program
+#define WORK_GROUP_SIZE 128 // # work-items per work-group
+    struct pos
+    {
+        float x, y, z, w; // positions // positions
+    };
+    struct vel
+    {
+        float vx, vy, vz, vw; // l iti // velocities
+    };
+    struct color
+    {
+        float r, g, b, a; // colors
+    };
+    // need to do the following for both position, velocity, and colors
+
+    GLuint posSSbo;
+    GLuint velSSbo;
+    GLuint colSSbo;
+    float Xmin,Xmax;
+    Xmin = -10.0f;
+    Xmax = 10.0f;
+
+    glGenBuffers( 1, &posSSbo);
+    glBindBuffer( GL_SHADER_STORAGE_BUFFER, posSSbo );
+    glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct pos), nullptr, GL_STATIC_DRAW );
+
+    GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT ;
+    struct pos *points = (struct pos*)glMapBufferRange( GL_SHADER_STORAGE_BUFFER,0,NUM_PARTICLES * sizeof (struct pos),bufMask);
+    for(int i = 0;i <NUM_PARTICLES;i++)
+    {
+//        points[i].x = Ranf(Xmin,Xmax);
+    }
 }
 /*
 * Function: getUniformLocation(char* nameOfUniform)

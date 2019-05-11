@@ -116,12 +116,10 @@ void _Scene::render()
     //
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
-        renderObjects[i]->draw();
+        renderObjects[i]->draw();//calls the draw function unique to each renderObject
     }
-    //sets the mouse pointervalues to the fbo object
-    fboObject->setMousePos(this->mousePosition);
-    // sets the frame on the Quad that has been hardcoded into the function
-    fboObject->renderFrameOnQuad();
+    fboObject->setMousePos(this->mousePosition); //sets the mouse pointervalues to the fbo object
+    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 
 void _Scene::setMousePositionInScene(QVector2D mousePos)
