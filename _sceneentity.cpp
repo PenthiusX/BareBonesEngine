@@ -46,7 +46,11 @@ unsigned int _SceneEntity::getId() const
 {
     return this->id;
 }
-
+/* Function: setTag(const char *tag)
+ * sets/gets the tag for the scene object
+ * Tag is a string name uniqe identifier for the
+ * object,similar to iD.
+*/
 void _SceneEntity::setTag(const char *tag)
 {
     this->tag = tag;
