@@ -6,7 +6,10 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QJsonObject>
-
+#include <QMessageBox>
+#include <iostream>
+#include <fstream>
+using namespace std;
 //Commonly used Functions
 
 _Tools::_Tools()
@@ -34,13 +37,42 @@ QString _Tools::ReadStringFromQrc(QString Filename)
 
 QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
 {
+
+
     QFile loadFile(Filename);
 
-    if (!loadFile.open(QIODevice::ReadOnly)) {
+    if (!loadFile.open(QIODevice::ReadWrite)) {
         qWarning("Couldn't open save file.");
     }
 
     QByteArray saveData = loadFile.readAll();
+
+    QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
+
+    loadFile.close();
+
+    return loadDoc.object();
+}
+
+QJsonObject _Tools::ReadJsonFromSystem(QString Filename)
+{
+
+    string line;
+
+    QByteArray saveData;
+
+    ifstream myfile (Filename.toStdString());
+    if (myfile.is_open())
+    {
+      while ( getline (myfile,line) )
+      {
+        saveData.append(line.data());
+        saveData.append("\n");
+      }
+      myfile.close();
+    }
+
+    else cout << "Unable to open file";
 
     QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
 
@@ -51,13 +83,43 @@ bool _Tools::WriteJsonToFile(QString filename ,QJsonObject config)
 {
     QFile saveFile(filename);
 
-    if (!saveFile.open(QIODevice::WriteOnly)) {
+    qDebug() << filename;
+
+    if (!saveFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
         qWarning("Couldn't open save file.");
+        QMessageBox::information(0, "error", saveFile.errorString());
         return false;
     }
 
     QJsonDocument saveDoc(config);
     saveFile.write(saveDoc.toJson());
+
+    saveFile.close();
+
+    return true;
+}
+
+
+bool _Tools::WriteJsonToFileSystem(QString filename ,QJsonObject config)
+{
+    ofstream myfile (filename.toStdString());
+
+    if (myfile.is_open())
+    {
+
+        qDebug() << "writing using c++" << filename;
+        QJsonDocument saveDoc(config);
+        QString strJson(saveDoc.toJson(QJsonDocument::Compact));
+
+        myfile << strJson.toStdString();
+
+        myfile.close();
+    }
+    else
+    {
+        qDebug() << "Unable to open file";
+        return false;
+    }
 
     return true;
 }

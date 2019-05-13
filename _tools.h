@@ -19,6 +19,8 @@ public:
     static glm::ivec3 GetGroupSize(int n, glm::vec3 ratio = glm::vec3(3,3,1));
     static bool WriteJsonToFile(QString Filename,QJsonObject jsonObject);
     static QString getFolderFromDialog(QString aplicationRelativePath);
+    static QJsonObject ReadJsonFromSystem(QString Filename);
+    static bool WriteJsonToFileSystem(QString filename, QJsonObject config);
 };
 
 

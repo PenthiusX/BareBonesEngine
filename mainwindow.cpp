@@ -4,6 +4,9 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QImage>
+#include <UI/_appplicationsettingsdialog.h>
+#include <IO/_configcontrolentity.h>
+#include <QFileInfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setConfigSettings();
+
+    connect(ui->actionApplication_Settings,SIGNAL(triggered()),this,SLOT(openSettingsDialog()));
     qRegisterMetaType<ActionType>("ActionType");
 
     //machine,marker,scanner should be in same thread -
@@ -19,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //setup hardware interacting obejcts
     //machine to be intialised first
 
-    machine = new _Machine(":/Config/configuration.json");
+    machine = new _Machine(QCoreApplication::applicationDirPath()+"/configuration.json");
     machine->moveToThread(hardwareInteractionThread);
 
     processing = new _Processing();
@@ -134,7 +140,6 @@ MainWindow::MainWindow(QWidget *parent) :
     hardwareInteractionThread->start();
 
     QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_DEFAULT_FROM_CONFIG));
-
 }
 
 /*
@@ -153,4 +158,25 @@ void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
   ui->widget->update_background_image(img,w,h);//------------------------Needs work!!!!!
 }
 
+/*
+ *
+*/
+void MainWindow::setConfigSettings()
+{
+    if(!QFileInfo(QCoreApplication::applicationDirPath()+"/../application_settings_.json").exists())
+        QFile::copy(":/Config/application_setting.json",QCoreApplication::applicationDirPath()+ "/../application_settings_.json");
+}
 
+/*
+ *
+*/
+void MainWindow::openSettingsDialog()
+{
+    QString filename = QCoreApplication::applicationDirPath()+"/../application_settings_.json";
+    _ConfigControlEntity cce=_ConfigControlEntity(_Tools::ReadJsonFromQrc(filename));
+    _AppplicationSettingsDialog app_settings_dialog(cce);
+    app_settings_dialog.setModal(true);
+    app_settings_dialog.exec();
+
+    _Tools::WriteJsonToFile(filename,cce.toJson());
+}

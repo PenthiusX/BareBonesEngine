@@ -6,6 +6,7 @@
 #include <Modules/_marker.h>
 #include <Modules/_scanner.h>
 #include <Modules/_processing.h>
+#include <QFile>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,8 @@ public:
 public slots:
     void update_camera_image(char* img,unsigned int w,unsigned int h);
     
+    void openSettingsDialog();
+    void setConfigSettings();
 private:
     Ui::MainWindow *ui;
 
@@ -31,5 +34,6 @@ private:
     _Marker *marker=nullptr;
     _Scanner *scanner=nullptr;
     _Processing *processing=nullptr;
+    QFile settings_file;
 };
 #endif // MAINWINDOW_H

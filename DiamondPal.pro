@@ -39,7 +39,9 @@ HEADERS  += mainwindow.h \
     UI/_lightcaliberationsection.h \
     UI/_sliderbox.h \
     UI/_machineselectionsection.h \
-    UI/_scancaliberationsection.h
+    UI/_scancaliberationsection.h \
+    UI/_appplicationsettingsdialog.h \
+    UI/_pathsettingform.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -69,13 +71,17 @@ SOURCES += main.cpp\
     UI/_lightcaliberationsection.cpp \
     UI/_sliderbox.cpp \
     UI/_machineselectionsection.cpp \
-    UI/_scancaliberationsection.cpp
+    UI/_scancaliberationsection.cpp \
+    UI/_appplicationsettingsdialog.cpp \
+    UI/_pathsettingform.cpp
 
 FORMS    += mainwindow.ui \
     UI/_sliderbox.ui \
     UI/_lightcaliberationsection.ui \
     UI/_machineselectionsection.ui \
-    UI/_scancaliberationsection.ui
+    UI/_scancaliberationsection.ui \
+    UI/_appplicationsettingsdialog.ui \
+    UI/_pathsettingform.ui
 
 RESOURCES += \
     shaders.qrc \
