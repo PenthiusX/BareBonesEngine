@@ -60,7 +60,7 @@ void main()
     {
         if((gl_FragCoord.x - 5.) <= iMouseO.x && gl_FragCoord.y - 5. <= iMouseO.y)
         {
-            //          col = vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1.0);
+            // col = vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1.0);
             col = vec4(0.1,0.0,0.0,1.0);
         }
     }

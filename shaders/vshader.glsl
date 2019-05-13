@@ -18,6 +18,7 @@ void main()
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
     ourColor = aColor;
+    ourColor.a = 0.3;
     iMouseO = iMouse;
     DEPTH = gl_Position.z / 50.0 ;
 }

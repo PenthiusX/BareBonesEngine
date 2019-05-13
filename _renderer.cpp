@@ -16,13 +16,15 @@
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     glEnable(GL_FRONT_AND_BACK);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
-
+    //
     shdr = new _Shader();//initialising the _shader() class * object.
     fboShader = new _Shader();
     setShader();//will run this shader by default.
     timer.start();
-
+    //
     glm_projection4x4 = glm::mat4(1.0f);
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
@@ -373,9 +375,9 @@ void _Renderer::_Renderer::draw()
 */
 void _Renderer::transitionColors()
 {
-    double r = 01.0;//abs(cos(timer.elapsed() * 0.002));
-    double g = 01.0;//abs(sin(timer.elapsed() * 0.003));
-    double b = 01.0;//abs(cos(timer.elapsed() * 0.005));
+    double r = abs(cos(timer.elapsed() * 0.002));
+    double g = abs(sin(timer.elapsed() * 0.003));
+    double b = abs(cos(timer.elapsed() * 0.005));
     glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
 }
 

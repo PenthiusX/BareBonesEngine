@@ -45,9 +45,10 @@ private:
 
     _Tools tools;
 
-    //Error checking
+    //Error checking and Test/Debug
     int success;
     char infoLog[512];
+    void setUpParticles();
 };
 
 #endif // _SHADER_H
