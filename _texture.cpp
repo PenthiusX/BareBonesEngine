@@ -1,9 +1,6 @@
 #include "_texture.h"
 #include <QDebug>
 
-
-
-
 /* Texture Class currently working for single texture per shader
  * documentation and slots functions will be completed later
  * Created: 28_03_2019

@@ -29,7 +29,8 @@ HEADERS  += mainwindow.h \
            Modules/_marker.h \
            Modules/_scanner.h \
            _tools.h \
-    _framebuffer.h
+    _framebuffer.h \
+    _compute.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -49,7 +50,8 @@ SOURCES += main.cpp\
            Modules/_marker.cpp \
            Modules/_scanner.cpp \
            _tools.cpp \
-    _framebuffer.cpp
+    _framebuffer.cpp \
+    _compute.cpp
 
 FORMS    += mainwindow.ui
 
