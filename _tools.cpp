@@ -38,11 +38,23 @@ QString _Tools::ReadStringFromQrc(QString Filename)
 QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
 {
 
-
     QFile loadFile(Filename);
-
+    if(loadFile.isOpen())
+    {
+        qDebug() << "reading open";
+    }
     if (!loadFile.open(QIODevice::ReadWrite)) {
         qWarning("Couldn't open save file.");
+        QMessageBox::information(0, "error", loadFile.errorString());
+        qDebug() << "exists?              " << loadFile.exists();
+        qDebug() << "writable?            " << loadFile.isWritable();
+        qDebug() << "permissions before?  " << loadFile.permissions();
+        qDebug() << "permissions set?     " << loadFile.setPermissions(QFileDevice::WriteOther | QFileDevice::ReadOther);
+        qDebug() << "permissions after?   " << loadFile.permissions();
+
+        qDebug() << "opened?              " << loadFile.open(QIODevice::Append);
+        qDebug() << "errors?              " << loadFile.errorString();
+        qDebug() << "errnum?              " << loadFile.error();
     }
 
     QByteArray saveData = loadFile.readAll();
@@ -84,10 +96,22 @@ bool _Tools::WriteJsonToFile(QString filename ,QJsonObject config)
     QFile saveFile(filename);
 
     qDebug() << filename;
+    if(saveFile.isOpen())
+    {
+        qDebug() << "writing open";
+    }
+    qDebug() << "exists?              " << saveFile.exists();
+    qDebug() << "writable?            " << saveFile.isWritable();
+    qDebug() << "permissions before?  " << saveFile.permissions();
+    qDebug() << "permissions set?     " << saveFile.setPermissions(QFileDevice::WriteOther | QFileDevice::ReadOther);
+    qDebug() << "permissions after?   " << saveFile.permissions();
 
-    if (!saveFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
+    qDebug() << "opened?              " << saveFile.open(QIODevice::Append);
+    qDebug() << "errors?              " << saveFile.errorString();
+    qDebug() << "errnum?              " << saveFile.error();
+    if (!saveFile.open(QIODevice::WriteOnly)) {
         qWarning("Couldn't open save file.");
-        QMessageBox::information(0, "error", saveFile.errorString());
+
         return false;
     }
 

@@ -389,14 +389,14 @@ void _Machine::set_camera(_ConfigControlEntity& camera_config)
         camera = new _HWDCamera();
     }
 
-    delete camera;
-    camera = new _Picolo_Camera();
+//    delete camera;
+//    camera = new _Picolo_Camera();
 
-    if(camera->list_cameras()==0)
-    {
-        //base camera if no dc1394 camera found
-        camera = new _HWDCamera();
-    }
+//    if(camera->list_cameras()==0)
+//    {
+//        //base camera if no dc1394 camera found
+//        camera = new _HWDCamera();
+//    }
 
     /* camera->init(0) function of camera will reopen camera module hence it
      * should be stopped first else thows already opened error

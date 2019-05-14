@@ -163,8 +163,8 @@ void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
 */
 void MainWindow::setConfigSettings()
 {
-    if(!QFileInfo(QCoreApplication::applicationDirPath()+"/../application_settings_.json").exists())
-        QFile::copy(":/Config/application_setting.json",QCoreApplication::applicationDirPath()+ "/../application_settings_.json");
+//    if(!QFileInfo(QCoreApplication::applicationDirPath()+"/../application_settings_.json").exists())
+//        QFile::copy(":/Config/application_setting.json",QCoreApplication::applicationDirPath()+ "/../application_settings_.json");
 }
 
 /*
@@ -173,6 +173,7 @@ void MainWindow::setConfigSettings()
 void MainWindow::openSettingsDialog()
 {
     QString filename = QCoreApplication::applicationDirPath()+"/../application_settings_.json";
+    //QString filename = "C:/Users/Developer/Documents/build-DiamondPal-Desktop_Qt_5_12_2_MSVC2017_64bit-Debug/application_settings_.json";
     _ConfigControlEntity cce=_ConfigControlEntity(_Tools::ReadJsonFromQrc(filename));
     _AppplicationSettingsDialog app_settings_dialog(cce);
     app_settings_dialog.setModal(true);
