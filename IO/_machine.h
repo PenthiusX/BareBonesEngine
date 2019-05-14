@@ -87,6 +87,7 @@ public slots:
     void setOffset(           int value,ActionType action = _DEFAULT);
 
     void updateFrameColor(char *img, unsigned int iwidth, unsigned int iheight);
+    void setApplicationSettings(_ConfigControlEntity *app_sett);
 
 public:
     _HardwareSerial *hardware_serial = nullptr;
@@ -99,6 +100,7 @@ public:
     QString json_file_name;
     bool isInitialised() const;
     void ActionTypeLogicHandler(ActionType action,int& val ,int& last_val ,float&config_val ,bool& toggle_state);
+    _ConfigControlEntity *application_settings=nullptr;
 
 protected slots:
     void updateFrameGrayscale(char *img, unsigned int iwidth, unsigned int iheight);

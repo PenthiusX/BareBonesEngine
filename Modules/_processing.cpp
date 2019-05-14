@@ -129,7 +129,6 @@ void _Processing::histogram(char *img, unsigned int iwidth, unsigned int iheight
         }
     }
 
-
     //qDebug() << "k means" <<  _Cpu_Compute::compute_k_means(hist);
     //send image out after processing is done
     emit outputImage2(colorFrame2,256,256);
@@ -222,6 +221,8 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
     gpu_compute->compute_copy_red_to_rgba(texture,texture_out);
     gpu_compute->compute_mark_column_index(texture_outt,texture_out);
+    //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);
+
     //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
 
     //get image from gpu texture

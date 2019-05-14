@@ -33,10 +33,7 @@ void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_im
 
     shader.useShaderProgram();
 
-
-
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
-
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -262,6 +259,7 @@ void _GPU_Compute::compute_row_wise_arg_max(_Texture& input_img,_Texture& output
 {
     static _Shader shader;
     static GroupSize groupsize = getWorkGroupSize(input_img.getWidth()/2, input_img.getHeight(),_ROW_WISE_LOCAL_GROUP);
+//    static unsigned int ssbo = 0;
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
@@ -269,6 +267,11 @@ void _GPU_Compute::compute_row_wise_arg_max(_Texture& input_img,_Texture& output
         shader.setChildShader(":/shaders/compute_row_wise_arg_max.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
+
+//        glGenBuffers(1, &ssbo);
+//        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+//        glBufferData(GL_SHADER_STORAGE_BUFFER, input_img.getHeight() * 200 * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
+
     }
 
     input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
@@ -284,6 +287,8 @@ void _GPU_Compute::compute_row_wise_arg_max(_Texture& input_img,_Texture& output
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+//    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
 }
 

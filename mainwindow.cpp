@@ -204,4 +204,5 @@ void MainWindow::setApplicationSettingsForNestedObjects()
 {
     ui->scan_caliberation_section->setApplicationSettings(application_settings);
     ui->light_caliberation_section->setApplicationSettings(application_settings);
+
 }

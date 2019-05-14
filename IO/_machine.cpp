@@ -611,4 +611,7 @@ void _Machine::ActionTypeLogicHandler(ActionType action, int &val, int &last_val
     }
     }
 }
-
+void _Machine::setApplicationSettings(_ConfigControlEntity* app_sett)
+{
+    application_settings = app_sett;
+}
