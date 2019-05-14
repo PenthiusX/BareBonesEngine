@@ -163,8 +163,8 @@ void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
 */
 void MainWindow::setConfigSettings()
 {
-//    if(!QFileInfo(QCoreApplication::applicationDirPath()+"/../application_settings_.json").exists())
-//        QFile::copy(":/Config/application_setting.json",QCoreApplication::applicationDirPath()+ "/../application_settings_.json");
+    if(!QFileInfo(QCoreApplication::applicationDirPath()+"/../application_settings_.json").exists())
+        QFile::copy(":/Config/application_setting.json",QCoreApplication::applicationDirPath()+ "/../application_settings_.json");
 }
 
 /*
