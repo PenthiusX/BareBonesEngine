@@ -46,15 +46,14 @@ QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
     if (!loadFile.open(QIODevice::ReadOnly)) {
         qWarning("Couldn't open save file.");
         QMessageBox::information(0, "error", loadFile.errorString());
-        qDebug() << "exists?              " << loadFile.exists();
-        qDebug() << "writable?            " << loadFile.isWritable();
-        qDebug() << "permissions before?  " << loadFile.permissions();
-        qDebug() << "permissions set?     " << loadFile.setPermissions(QFileDevice::WriteOther | QFileDevice::ReadOther);
-        qDebug() << "permissions after?   " << loadFile.permissions();
-
-        qDebug() << "opened?              " << loadFile.open(QIODevice::Append);
-        qDebug() << "errors?              " << loadFile.errorString();
-        qDebug() << "errnum?              " << loadFile.error();
+        loadFile.exists();
+        loadFile.isWritable();
+        loadFile.permissions();
+        loadFile.setPermissions(QFileDevice::WriteOther | QFileDevice::ReadOther);
+        loadFile.permissions();
+        loadFile.open(QIODevice::Append);
+        loadFile.errorString();
+        loadFile.error();
     }
 
     QByteArray saveData = loadFile.readAll();
@@ -68,7 +67,6 @@ QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
 
 QJsonObject _Tools::ReadJsonFromSystem(QString Filename)
 {
-
     string line;
 
     QByteArray saveData;
@@ -95,33 +93,30 @@ bool _Tools::WriteJsonToFile(QString filename ,QJsonObject config)
 {
     QFile saveFile(filename);
 
-    qDebug() << filename;
+    qDebug() << "saving file" << filename;
 
-    qDebug() << "exists?              " << saveFile.exists();
-    qDebug() << "writable?            " << saveFile.isWritable();
-    qDebug() << "permissions before?  " << saveFile.permissions();
-    qDebug() << "permissions set?     " << saveFile.setPermissions(QFileDevice::WriteOther | QFileDevice::ReadOther);
-    qDebug() << "permissions after?   " << saveFile.permissions();
+    saveFile.exists();
+    saveFile.isWritable();
+    saveFile.permissions();
+    saveFile.setPermissions(QFileDevice::WriteOther | QFileDevice::ReadOther);
+    saveFile.permissions();
 
     if (!saveFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
         qWarning("Couldn't open save file.");
     }
 
-    qDebug() << "errors?              " << saveFile.errorString();
-    qDebug() << "errnum?              " << saveFile.error();
+    saveFile.errorString();
+    saveFile.error();
 
     if(saveFile.isOpen())
     {
         QJsonDocument saveDoc(config);
-        auto jobj = saveDoc.toJson();
-
-        qDebug() << "modified json"<< jobj;
-        saveFile.write(jobj);
+        saveFile.write(saveDoc.toJson());
         saveFile.close();
     }
+    else return false;
     return true;
 }
-
 
 bool _Tools::WriteJsonToFileSystem(QString filename ,QJsonObject config)
 {

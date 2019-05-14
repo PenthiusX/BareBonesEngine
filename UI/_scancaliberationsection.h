@@ -24,10 +24,12 @@ public slots:
     bool setupConnections();
     bool deleteConnections();
     void scan();
+    void setApplicationSettings(_ConfigControlEntity *app_sett);
 private:
     Ui::_ScanCaliberationSection *ui;
     _Machine *machine=nullptr;
     _Scanner *scanner=nullptr;
+    _ConfigControlEntity *application_settings=nullptr;
 };
 
 #endif // _SCANCALIBERATIONSECTION_H

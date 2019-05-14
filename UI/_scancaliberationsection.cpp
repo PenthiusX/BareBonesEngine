@@ -69,10 +69,8 @@ bool _ScanCaliberationSection::setupConnections()
         //setup connections here
 
         connect(ui->scan_button, &QPushButton::clicked,[this]() {
-            QString dir = QFileDialog::getExistingDirectory(this, tr("Open Images Directory"),
-                                                        QCoreApplication::applicationDirPath()+"/../scan_images",
-                                                        QFileDialog::ShowDirsOnly);
-
+            qDebug() << application_settings->toJson();
+            QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
             QMetaObject::invokeMethod(machine, "set_image_dir", Qt::QueuedConnection,Q_ARG(QString, dir));
             QMetaObject::invokeMethod(scanner, "scan_generate_model", Qt::QueuedConnection);
         });
@@ -121,4 +119,9 @@ void _ScanCaliberationSection::scan()
 {
     //save caliberated values
     qDebug() << "scanning";
+}
+
+void _ScanCaliberationSection::setApplicationSettings(_ConfigControlEntity* app_sett)
+{
+    application_settings = app_sett;
 }

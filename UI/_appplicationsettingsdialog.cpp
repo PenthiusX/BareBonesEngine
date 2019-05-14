@@ -1,5 +1,7 @@
 #include "_appplicationsettingsdialog.h"
 #include "ui__appplicationsettingsdialog.h"
+#include <QMessageBox>
+#include <QDebug>
 
 _AppplicationSettingsDialog::_AppplicationSettingsDialog(_ConfigControlEntity& app_settings_config,QWidget *parent) :
     QDialog(parent),
@@ -26,4 +28,6 @@ void _AppplicationSettingsDialog::accept()
     config["Paths"].getStringEntity("MACHINE_CONFIG_FILE") = ui->config_file_entity_widget->path();
     config["Paths"].getStringEntity("SCAN_STORE_PATH")= ui->scan_folder_entity_widget->path();
     close();
+    QMessageBox::information(0, "message", "restart application to apply settings");
 }
+

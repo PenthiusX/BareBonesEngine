@@ -68,7 +68,7 @@ public slots:
     QString InfoCmd(_HardwareSerial &port);
     QString getMachineVersion();
     void callCommandFunction(QString function_name, int value, ActionType action = _DEFAULT);
-    void saveConfig();
+    bool saveConfig(QString filename = "configuration.json");
 
     //machine control commands
     void TurnTableMotorDiff(  int steps,ActionType action = _DEFAULT); //Rotate Stage Motor by specified steps (differential input)

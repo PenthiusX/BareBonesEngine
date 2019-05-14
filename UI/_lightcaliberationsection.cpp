@@ -1,6 +1,7 @@
 #include "_lightcaliberationsection.h"
 #include <QDebug>
 #include <_tools.h>
+#include <QMessageBox>
 
 /*
  * The _LightCaliberationSection class
@@ -132,7 +133,8 @@ void _LightCaliberationSection::save()
     QMetaObject::invokeMethod(machine, "setGain", Qt::QueuedConnection,Q_ARG(int, ui->gain_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
     QMetaObject::invokeMethod(machine, "setOffset", Qt::QueuedConnection,Q_ARG(int, ui->offset_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
 
-    machine->saveConfig();
+    if(machine->saveConfig(application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE")))
+        QMessageBox::information(0, "message", "configuration file saved : "+application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE"));
 }
 
 /* Function : update_histogram_image(char *img, unsigned int w, unsigned int h)
@@ -153,4 +155,9 @@ void _LightCaliberationSection::updateHistogramImage(char *img, unsigned int w, 
 
     // set a scaled pixmap to a w x h window keeping its aspect ratio
     ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
+}
+
+void _LightCaliberationSection::setApplicationSettings(_ConfigControlEntity* app_sett)
+{
+    application_settings = app_sett;
 }

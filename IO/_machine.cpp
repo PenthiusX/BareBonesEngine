@@ -493,9 +493,9 @@ void _Machine::callCommandFunction(QString function_name,int value,ActionType ac
     (*this.*function_map[function_name].cmdFunctionPtr)(value,action);
 }
 
-void _Machine::saveConfig()
+bool _Machine::saveConfig(QString filename)
 {
-    _Tools::WriteJsonToFile("configuration.json",config.toJson());
+    return _Tools::WriteJsonToFile(filename,config.toJson());
 }
 
 void _Machine::set_function_map()

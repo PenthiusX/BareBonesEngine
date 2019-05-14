@@ -68,12 +68,16 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="accept_button">
+       <property name="text">
+        <string>Ok</string>
        </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="reject_button">
+       <property name="text">
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
@@ -92,34 +96,34 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
+   <sender>accept_button</sender>
+   <signal>clicked()</signal>
    <receiver>_AppplicationSettingsDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>410</x>
+     <y>380</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
+     <x>273</x>
+     <y>200</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
+   <sender>reject_button</sender>
+   <signal>clicked()</signal>
    <receiver>_AppplicationSettingsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>496</x>
+     <y>380</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>273</x>
+     <y>200</y>
     </hint>
    </hints>
   </connection>

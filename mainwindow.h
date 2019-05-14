@@ -19,11 +19,15 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void applicationSettingsChanged();
+
 public slots:
     void update_camera_image(char* img,unsigned int w,unsigned int h);
     
     void openSettingsDialog();
     void setConfigSettings();
+    void setApplicationSettingsForNestedObjects();
 private:
     Ui::MainWindow *ui;
 
@@ -34,6 +38,6 @@ private:
     _Marker *marker=nullptr;
     _Scanner *scanner=nullptr;
     _Processing *processing=nullptr;
-    QFile settings_file;
+    _ConfigControlEntity *application_settings=nullptr;
 };
 #endif // MAINWINDOW_H

@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setConfigSettings();
 
     connect(ui->actionApplication_Settings,SIGNAL(triggered()),this,SLOT(openSettingsDialog()));
+    connect(this,SIGNAL(applicationSettingsChanged()),this,SLOT(setApplicationSettingsForNestedObjects()));
     qRegisterMetaType<ActionType>("ActionType");
 
     //machine,marker,scanner should be in same thread -
@@ -25,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //setup hardware interacting obejcts
     //machine to be intialised first
 
-    machine = new _Machine(QCoreApplication::applicationDirPath()+"/configuration.json");
+    machine = new _Machine(application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE"));
     machine->moveToThread(hardwareInteractionThread);
 
     processing = new _Processing();
@@ -163,8 +164,18 @@ void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
 */
 void MainWindow::setConfigSettings()
 {
+    QString filename = QCoreApplication::applicationDirPath()+"/../application_settings_.json";
+
     if(!QFileInfo(QCoreApplication::applicationDirPath()+"/../application_settings_.json").exists())
         QFile::copy(":/Config/application_setting.json",QCoreApplication::applicationDirPath()+ "/../application_settings_.json");
+
+    application_settings = new _ConfigControlEntity(_Tools::ReadJsonFromQrc(filename));
+
+    if(!QFileInfo(application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE")).exists())
+        QFile::copy(":/Config/configuration.json",application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE"));
+
+    emit applicationSettingsChanged();
+
 }
 
 /*
@@ -174,10 +185,19 @@ void MainWindow::openSettingsDialog()
 {
     QString filename = QCoreApplication::applicationDirPath()+"/../application_settings_.json";
     //QString filename = "C:/Users/Developer/Documents/build-DiamondPal-Desktop_Qt_5_12_2_MSVC2017_64bit-Debug/application_settings_.json";
-    _ConfigControlEntity cce=_ConfigControlEntity(_Tools::ReadJsonFromQrc(filename));
-    _AppplicationSettingsDialog app_settings_dialog(cce);
+    delete application_settings;
+    application_settings= new _ConfigControlEntity(_Tools::ReadJsonFromQrc(filename));
+    _AppplicationSettingsDialog app_settings_dialog(*application_settings);
     app_settings_dialog.setModal(true);
     app_settings_dialog.exec();
 
-    _Tools::WriteJsonToFile(filename,cce.toJson());
+    _Tools::WriteJsonToFile(filename,application_settings->toJson());
+
+    emit applicationSettingsChanged();
+}
+
+void MainWindow::setApplicationSettingsForNestedObjects()
+{
+    ui->scan_caliberation_section->setApplicationSettings(application_settings);
+    ui->light_caliberation_section->setApplicationSettings(application_settings);
 }
