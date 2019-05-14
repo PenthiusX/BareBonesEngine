@@ -172,10 +172,14 @@ void MainWindow::setConfigSettings()
     application_settings = new _ConfigControlEntity(_Tools::ReadJsonFromQrc(filename));
 
     if(!QFileInfo(application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE")).exists())
+    {
+        application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE") = QCoreApplication::applicationDirPath() + "/../configuration.json";
         QFile::copy(":/Config/configuration.json",application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE"));
+        application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH") = QCoreApplication::applicationDirPath();
+        _Tools::WriteJsonToFile(filename,application_settings->toJson());
+    }
 
-    emit applicationSettingsChanged();
-
+    setApplicationSettingsForNestedObjects();
 }
 
 /*
@@ -193,7 +197,7 @@ void MainWindow::openSettingsDialog()
 
     _Tools::WriteJsonToFile(filename,application_settings->toJson());
 
-    emit applicationSettingsChanged();
+    setApplicationSettingsForNestedObjects();
 }
 
 void MainWindow::setApplicationSettingsForNestedObjects()
