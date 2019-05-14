@@ -1,11 +1,11 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
-uniform vec4 aColor;
 //
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 //
+uniform vec4 aColor;
 out vec4 ourColor;
 //
 uniform vec2 iMouse;
@@ -18,7 +18,6 @@ void main()
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
     ourColor = aColor;
-    ourColor.a = 0.3;
     iMouseO = iMouse;
     DEPTH = gl_Position.z / 50.0 ;
 }

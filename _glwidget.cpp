@@ -65,7 +65,7 @@ void _GLWidget::initializeGL()
     s.setId(0);
     s.setTag("stickman1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
     s.setScale(0.09f);
     s.setModelData(":/models/stickman.obj");
@@ -73,23 +73,15 @@ void _GLWidget::initializeGL()
     s1.setId(1);
     s1.setTag("stickman2");
     s1.setIsTransfomationLocal(false);
-    s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s1.setScale(.09f);
     s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
-    //
-    //    mpoint.setId(2);
-    //    mpoint.setIsTransfomationLocal(false);
-    //    mpoint.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-    //    mpoint.setScale(0.8f);
-    //    mpoint.setModelData(":/models/sphere.obj");
-    //
+
     scene->addCamera(cam);
     //add the backGround quad first for it to render last
     scene->addSceneObject(background_quad);
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-    //scene->addSceneObject(mpoint);
-    //Test implemetation//needs to be deleted
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -175,7 +167,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
                 {
                     if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
                     {
-                        scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are elative controll
+                        scene->getSceneObjects()[i]->setRotation(QVector3D(0.f/*rotRads.y() * damp*/, rotRads.x() * damp, 0.f));//values are elative controll
                     }
                 }
             }

@@ -378,7 +378,16 @@ void _Renderer::transitionColors()
     double r = abs(cos(timer.elapsed() * 0.002));
     double g = abs(sin(timer.elapsed() * 0.003));
     double b = abs(cos(timer.elapsed() * 0.005));
-    glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
+//    glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
+
+    if(this->sceneEntity.getTag() == "stickman1")
+    {
+        glUniform4f(colorUniform, 0.5, 0.5,0.5, 1.0f);
+    }
+    else if(this->sceneEntity.getTag() == "stickman2")
+    {
+       glUniform4f(colorUniform, 1.0, 0.0, 0.0, .3f);
+    }
 }
 
 void _Renderer::unProject(QVector2D mousePressPosition)
@@ -386,7 +395,7 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     // Where The Viewport Values Will Be Stored
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);           // Retrieves The Viewport Values (X, Y, Width, Height)
-
+/*
     for(int i = 0 ; i < 4 ;i++){
         qDebug() << viewport[i];
     }
@@ -413,8 +422,29 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     glReadPixels(winX, winY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
     qDebug() << glGetError();
     qDebug() << mousePressPosition <<"-index"<< index;
+*/
 
-    glUniform2f(mousePosUniform,mousePressPosition.x(),mousePressPosition.y());
+    // heavily influenced by: http://antongerdelan.net/opengl/raycasting.html
+       // viewport coordinate system
+       // normalized device coordinates
+       auto x = (2.0f * mousePressPosition.x()) / viewport[2] - 1.0f;
+       auto y = 1.f - (2.0f * mousePressPosition.y()) / viewport[3];
+       auto z = 1.f;
+       auto rayNormalizedDeviceCoordinates = glm::vec3(x, y, z);
+
+       // 4D homogeneous clip coordinates
+       auto rayClip = glm::vec4(rayNormalizedDeviceCoordinates.x, rayNormalizedDeviceCoordinates.y, -1.f, 1.f);
+
+       // 4D eye (camera) coordinates
+       glm::mat4x4 qi = glm::inverse(glm_projection4x4);
+
+//       auto rayEye = _projectionMatrix.Inverted() * rayClip;
+//       rayEye = new QVector3D(rayEye.X, rayEye.Y, -1.f, 0.f);
+
+//       // 4D world coordinates
+//       auto rayWorldCoordinates = (_camera.LookAtMatrix.Inverted() * rayEye).Xyz;
+//       rayWorldCoordinates.Normalize();
+//       FindClosestAsteroidHitByRay(rayWorldCoordinates);
+
+//    glUniform2f(mousePosUniform,mousePressPosition.x(),mousePressPosition.y());
 }
-
-
