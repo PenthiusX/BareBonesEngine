@@ -2,7 +2,7 @@
 #include "ui__machineselectionsection.h"
 
 _MachineSelectionSection::_MachineSelectionSection(QWidget *parent) :
-    QWidget(parent),
+    _CaliberationSection(parent),
     ui(new Ui::_MachineSelectionSection)
 {
     ui->setupUi(this);

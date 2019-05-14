@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <_tools.h>
 #include <QMessageBox>
+#include <UI/_caliberationsection.h>
 
 /*
  * The _LightCaliberationSection class
@@ -15,7 +16,7 @@
  * this constructor sets up the ui
  * Created: 03_05_2019
 */
-_LightCaliberationSection::_LightCaliberationSection(QWidget *parent) : QWidget(parent),
+_LightCaliberationSection::_LightCaliberationSection(QWidget *parent) : _CaliberationSection(parent),
     ui(new Ui::LightCaliberationSection)
 {
     ui->setupUi(this);
@@ -42,7 +43,6 @@ void _LightCaliberationSection::setMachine(_Machine *mach)
     machine = mach;
 
     //set the defaults here (min/max)
-
     ui->gain_slider_box->setMinimum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MIN"));
     ui->gain_slider_box->setMaximum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MAX"));
 
@@ -65,6 +65,8 @@ void _LightCaliberationSection::init()
 
     if(machine->isInitialised())
     {
+
+
         //send default commands here
         ui->lens_number_dropdown->setCurrentIndex(machine->config["Camera"]["Lens"].getFloatEntity("LENS_NUMBER"));
         ui->gain_slider_box->setValue(machine->config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
@@ -132,9 +134,7 @@ void _LightCaliberationSection::save()
     QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, ui->backlight_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
     QMetaObject::invokeMethod(machine, "setGain", Qt::QueuedConnection,Q_ARG(int, ui->gain_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
     QMetaObject::invokeMethod(machine, "setOffset", Qt::QueuedConnection,Q_ARG(int, ui->offset_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
-
-    if(machine->saveConfig(application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE")))
-        QMessageBox::information(0, "message", "configuration file saved : "+application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE"));
+    saveConfig();
 }
 
 /* Function : update_histogram_image(char *img, unsigned int w, unsigned int h)
@@ -155,9 +155,4 @@ void _LightCaliberationSection::updateHistogramImage(char *img, unsigned int w, 
 
     // set a scaled pixmap to a w x h window keeping its aspect ratio
     ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
-}
-
-void _LightCaliberationSection::setApplicationSettings(_ConfigControlEntity* app_sett)
-{
-    application_settings = app_sett;
 }

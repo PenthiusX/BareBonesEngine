@@ -1,13 +1,13 @@
 #ifndef _MACHINESELECTIONSECTION_H
 #define _MACHINESELECTIONSECTION_H
 
-#include <QWidget>
+#include <UI/_caliberationsection.h>
 
 namespace Ui {
 class _MachineSelectionSection;
 }
 
-class _MachineSelectionSection : public QWidget
+class _MachineSelectionSection : public _CaliberationSection
 {
     Q_OBJECT
 
