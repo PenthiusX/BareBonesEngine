@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>shaders/vshader.glsl</file>
-        <file>shaders/fshader.glsl</file>
-        <file>shaders/vshader1.glsl</file>
-        <file>shaders/fshader1.glsl</file>
+        <file>shaders/dmvshader.glsl</file>
+        <file>shaders/dmfshader.glsl</file>
+        <file>shaders/basicvshader.glsl</file>
+        <file>shaders/basicfshader.glsl</file>
         <file>shaders/fboTexVshader.glsl</file>
         <file>shaders/fboTexFshader.glsl</file>
         <file>shaders/fshader_background.glsl</file>

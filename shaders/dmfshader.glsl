@@ -6,7 +6,7 @@ in float DEPTH;
 
 void main()
 {
-       FragColor =  ourColor * vec4(DEPTH,DEPTH,DEPTH,1.0);
-
+//       FragColor =  ourColor * vec4(DEPTH,DEPTH,DEPTH,1.0);
+       FragColor =  ourColor;
 }
 

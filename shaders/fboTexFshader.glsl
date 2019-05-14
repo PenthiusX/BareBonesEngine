@@ -72,7 +72,7 @@ void main()
     }
     else
     {
-        col =  texture2D(screenTexture, TexCoords) * vec4(1.00,1.0,1.0,1.0);
+        col =  texture2D(screenTexture, TexCoords);
     }
     FragColor = col;
 }
