@@ -7,6 +7,7 @@
 #include <UI/_appplicationsettingsdialog.h>
 #include <IO/_configcontrolentity.h>
 #include <QFileInfo>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -195,4 +196,9 @@ void MainWindow::openSettingsDialog()
     _Tools::WriteJsonToFile(filename,application_settings->toJson());
 
     _CaliberationSection::setApplicationSettings(application_settings);
+}
+
+void MainWindow::msgBox(QString windowname,QString info)
+{
+    QMessageBox::information(0, windowname, info);
 }

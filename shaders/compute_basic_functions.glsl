@@ -4,6 +4,9 @@
  * Created :04_06_2019
 */
 
+//#define uimage2D1x8_bindless uimage2D
+//#define uimage2D1x32_bindless uimage2D
+//#define iimage2D1x32_bindless iimage2D
 
 /* <single_value_return> imageLoad(gimage image​, ivec2 cord);
  *

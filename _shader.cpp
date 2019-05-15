@@ -2,6 +2,7 @@
 #include <_tools.h>
 #include <iostream>
 #include <QDebug>
+#include <QMessageBox>
 /*
  * The _Shader class
  * Created: 14_02_2019
@@ -78,7 +79,8 @@ void _Shader::attachShaders()
         if(!success)
         {
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;
+            qDebug() << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog ;
+            //QMessageBox::information(0, "program error", infoLog);
         }
 
         //delete shader
@@ -252,7 +254,10 @@ unsigned int _Shader::compile_shader(QString src, unsigned int typ)
     if(!success)
     {
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
+        qDebug() << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog;
+
+        //QMetaObject::invokeMethod(MainWindow, "msgBox", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int)) ));
+
     }
 
     return shader;

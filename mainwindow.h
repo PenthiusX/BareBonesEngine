@@ -27,6 +27,7 @@ public slots:
     void openSettingsDialog();
     void setConfigSettings();
 
+    void msgBox(QString windowname, QString info);
 private:
     Ui::MainWindow *ui;
 
