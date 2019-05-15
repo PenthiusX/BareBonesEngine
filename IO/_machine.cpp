@@ -379,6 +379,7 @@ void _Machine::set_camera(_ConfigControlEntity& camera_config)
 
 #ifdef PLATFORM_WIN
 
+    #ifdef AVT_CAMERA
     //
     delete camera;
     camera = new _AVT_Camera();
@@ -388,7 +389,9 @@ void _Machine::set_camera(_ConfigControlEntity& camera_config)
         //base camera if no special camera found
         camera = new _HWDCamera();
     }
+    #endif //AVT_CAMERA
 
+    #ifdef PICOLO_CAMERA
     delete camera;
     camera = new _Picolo_Camera();
 
@@ -397,6 +400,7 @@ void _Machine::set_camera(_ConfigControlEntity& camera_config)
         //base camera if no dc1394 camera found
         camera = new _HWDCamera();
     }
+    #endif //PICOLO_CAMERA
 
     /* camera->init(0) function of camera will reopen camera module hence it
      * should be stopped first else thows already opened error

@@ -3,12 +3,13 @@
 
 #include <QWidget>
 #include <IO/_machine.h>
+#include <UI/_caliberationsection.h>
 
 namespace Ui {
 class _MachineSelectionSection;
 }
 
-class _MachineSelectionSection : public QWidget
+class _MachineSelectionSection : public _CaliberationSection
 {
     Q_OBJECT
 
@@ -18,7 +19,6 @@ public:
 
 public slots:
     void save();
-    void setApplicationSettings(_ConfigControlEntity *app_sett);
 private:
     Ui::_MachineSelectionSection *ui;
 };

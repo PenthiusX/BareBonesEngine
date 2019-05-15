@@ -13,6 +13,7 @@ TARGET = DiamondPal
 TEMPLATE = app
 
 HEADERS  += mainwindow.h \
+    UI/_caliberationsection.h \
             _glwidget.h \
             _renderer.h \
             _shader.h \
@@ -44,6 +45,7 @@ HEADERS  += mainwindow.h \
     UI/_pathsettingform.h
 
 SOURCES += main.cpp\
+    UI/_caliberationsection.cpp \
             mainwindow.cpp \
             _glwidget.cpp \
             _renderer.cpp \
@@ -94,6 +96,10 @@ DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 
 DEFINES += MAX_FRAME_WIDTH=1360
 DEFINES += MAX_FRAME_HEIGHT=1024
+
+DEFINES += PICOLO_CAMERA=true
+#DEFINES += AVT_CAMERA=true
+#DEFINES += NO_CAMERA=true
 
 linux-g++ { #check if platform is linux
 message(Linux)
