@@ -46,10 +46,10 @@ void _GLWidget::initializeGL()
     //
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
-        1.0,  1.0, 0.999f,	// top right
-        1.0f, -1.0f, 0.999f,  // bottom right
-        -1.0f, -1.0f, 0.999f, // bottom left
-        -1.0f,  1.0f, 0.999f  // top left
+        1.0,  1.0, 1.0f,	// top right
+        1.0f, -1.0f, 1.0f,  // bottom right
+        -1.0f, -1.0f, 1.0f, // bottom left
+        -1.0f,  1.0f, 1.0f  // top left
     };
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
@@ -66,22 +66,40 @@ void _GLWidget::initializeGL()
     s.setTag("stickman1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s.setPosition(QVector3D(1.5,-0.0f, -0.0));
-    s.setScale(0.09f);
-    s.setModelData(":/models/stickman.obj");
+    s.setPosition(QVector3D(0.0,0.0f, 0.0));
+    s.setScale(2.0f);
+    s.setModelData(":/models/sphere.obj");
     //
     s1.setId(1);
     s1.setTag("stickman2");
     s1.setIsTransfomationLocal(false);
+    s1.setPosition(QVector3D(0.0,1.0f, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s1.setScale(.09f);
+    s1.setScale(1.0f);
     s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
-
+    //
+    s2.setId(2);
+    s2.setTag("clickSurface");
+    s2.setIsTransfomationLocal(false);
+    s2.setPosition(QVector3D(1.5,-0.0f, -0.0));
+    s2.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
+    s2.setScale(1.0f);
+    s2.setModelData(vertsV,indiceV);
+    //
+    mpoint.setId(5);
+    mpoint.setTag("mousePointerObject");
+    mpoint.setIsTransfomationLocal(false);
+    mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    mpoint.setScale(.1f);
+    mpoint.setModelData(s.getvertexData(),s.getIndexData());
+    //
     scene->addCamera(cam);
-    //add the backGround quad first for it to render last
-    scene->addSceneObject(background_quad);
+
+    scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
     scene->addSceneObject(s);
-    scene->addSceneObject(s1);
+//    scene->addSceneObject(s1);
+//    scene->addSceneObject(s2);
+    scene->addSceneObject(mpoint);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -139,7 +157,8 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
     for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
     {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-        scene->getSceneObjects()[i]->unProject(this->mousePressPosition);
+        if(scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject")
+            scene->getSceneObjects()[i]->unProject(this->mousePressPosition);
     }
 }
 /*
@@ -150,32 +169,32 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {   //selet button is pressed when updating mousevalues
-        if(e->buttons() == Qt::LeftButton)
-        {
-            mousePositionL = QVector2D(e->localPos());
+    if(e->buttons() == Qt::LeftButton)
+    {
+        mousePositionL = QVector2D(e->localPos());
 
-            //RotateTarget with mouse
+        //RotateTarget with mouse
+        {
+            QVector2D mosPosL = mousePressPosition;
+            QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
+            if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
+                mosPosL = maxpoint;
+            }
+            float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
+            rotRads = rotRads + mousePositionL - mosPosL;
+            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
             {
-                QVector2D mosPosL = mousePressPosition;
-                QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
-                if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
-                    mosPosL = maxpoint;
-                }
-                float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
-                rotRads = rotRads + mousePositionL - mosPosL;
-                for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
                 {
-                    if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
-                    {
-                        scene->getSceneObjects()[i]->setRotation(QVector3D(0.f/*rotRads.y() * damp*/, rotRads.x() * damp, 0.f));//values are elative controll
-                    }
+                    scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));//values are elative controll
                 }
             }
         }
-        if(e->buttons() == Qt::RightButton)
-        {
-            mousePositionR = QVector2D(e->localPos());
-        }
+    }
+    if(e->buttons() == Qt::RightButton)
+    {
+        mousePositionR = QVector2D(e->localPos());
+    }
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
@@ -205,7 +224,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
             {
                 scroolScale = scene->getSceneObjects()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
                 scene->getSceneObjects()[i]->setscale(scroolScale);
-                qInfo() << scroolScale;
+                //                qInfo() << scroolScale;
             }
     }
 }

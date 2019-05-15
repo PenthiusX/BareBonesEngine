@@ -257,6 +257,9 @@ unsigned int _Shader::compileShader(QString src, unsigned int typ)
     return shader;
 }
 
+
+//Proptotype implemntation , only for testing
+//Not in use at the moment.
 void _Shader::setUpParticles()
 {
 #define NUM_PARTICLES 1024*1024 // total number of particles to move
@@ -285,7 +288,6 @@ void _Shader::setUpParticles()
     float vXmin,vXmax;
     vXmin = 0.0;
     vXmax = 2.0;
-
 
     glGenBuffers( 1, &posSSbo);
     glBindBuffer( GL_SHADER_STORAGE_BUFFER, posSSbo );
@@ -317,7 +319,6 @@ void _Shader::setUpParticles()
     }
     glUnmapBuffer( GL_SHADER_STORAGE_BUFFER );
 
-
     glGenBuffers( 1, &colSSbo);
     glBindBuffer( GL_SHADER_STORAGE_BUFFER, velSSbo );
     glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct vel), nullptr, GL_STATIC_DRAW );
@@ -330,7 +331,6 @@ void _Shader::setUpParticles()
         vels[ i ].vz = rand() % (int)(Xmax - Xmin);
         vels[ i ].vw = 0.;
     }
-
 
     glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 4, posSSbo );
     glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 5, velSSbo );

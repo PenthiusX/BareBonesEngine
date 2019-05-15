@@ -54,8 +54,10 @@ public:
     void draw();//Draws/paints everything bound in the scene
 
     //Debug implentation
+    glm::vec3 camPos;
     void transitionColors();
     void unProject(QVector2D mousePressPosition);
+    bool hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin);
 
 private:
     unsigned int VBO;//vertex buffer object
