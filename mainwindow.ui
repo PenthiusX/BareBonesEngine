@@ -86,7 +86,7 @@ Calibration</string>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="stage_calibration">
+          <widget class="QPushButton" name="stage_calibration_button">
            <property name="minimumSize">
             <size>
              <width>80</width>
@@ -661,7 +661,7 @@ v</string>
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="page_20"/>
       <widget class="_MachineSelectionSection" name="machine_type_section"/>
@@ -1422,132 +1422,7 @@ v</string>
         </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_6">
-       <widget class="QPushButton" name="D5">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>20</y>
-          <width>311</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Display Instructions</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_14">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>50</y>
-          <width>71</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Current Lens:</string>
-        </property>
-       </widget>
-       <widget class="QPlainTextEdit" name="plainTextEdit_5_1">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>50</y>
-          <width>41</width>
-          <height>31</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QGroupBox" name="groupBox_13">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>100</y>
-          <width>311</width>
-          <height>141</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Stage Slope Controls</string>
-        </property>
-        <widget class="QPushButton" name="stop_5">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>60</y>
-           <width>91</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Stop</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="start_5">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>30</y>
-           <width>91</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Start</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="check_5">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>90</y>
-           <width>91</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Check</string>
-         </property>
-        </widget>
-        <widget class="QPlainTextEdit" name="plainTextEdit_5_2">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>80</y>
-           <width>111</width>
-           <height>31</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_15">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>60</y>
-           <width>61</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Angle:</string>
-         </property>
-        </widget>
-        <widget class="QCheckBox" name="checkBox">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>30</y>
-           <width>70</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Use microns</string>
-         </property>
-        </widget>
-       </widget>
-      </widget>
+      <widget class="_StageCaliberationSection" name="stage_caliberation_section"/>
       <widget class="QWidget" name="page_7">
        <widget class="QPushButton" name="D6">
         <property name="geometry">
@@ -4035,6 +3910,12 @@ v</string>
    <class>_ScanCaliberationSection</class>
    <extends>QWidget</extends>
    <header>UI/_scancaliberationsection.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>_StageCaliberationSection</class>
+   <extends>QWidget</extends>
+   <header>UI/_stagecaliberationsection.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

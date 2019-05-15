@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>279</width>
-    <height>723</height>
+    <width>234</width>
+    <height>626</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,6 +32,15 @@
     <widget class="_SliderBox" name="offset_slider_box">
      <property name="title">
       <string>Offset:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextBrowser" name="instruction_display_text_browser">
+     <property name="source">
+      <url>
+       <string>qrc:/Config/Docs/instructions_light_caliberation.htm</string>
+      </url>
      </property>
     </widget>
    </item>

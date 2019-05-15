@@ -44,6 +44,9 @@ void _MachineSelectionSection::init()
                               Qt::BlockingQueuedConnection,
                               Q_RETURN_ARG(QString, infoString));
         ui->machine_info_text_browser->setText(infoString);
+
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int))));
+
         //this part sets the current page of stacked widget to this widget
         {
             if(dynamic_cast<QStackedWidget*>(parentWidget()))

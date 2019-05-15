@@ -28,7 +28,7 @@ _LightCaliberationSection::_LightCaliberationSection(QStackedWidget *parent) : _
 }
 
 /* _LightCaliberationSection destructor
- * this constructor deletes the ui
+ * this destructor deletes the ui
  * Created: 03_05_2019
 */
 _LightCaliberationSection::~_LightCaliberationSection()
@@ -97,10 +97,8 @@ bool _LightCaliberationSection::setupConnections()
 
         connect(ui->save_button,SIGNAL(clicked()),this,SLOT(save()));
 
-        qDebug() << "light caliberation section connections set";
         return true;
     }
-    qDebug() << "light caliberation section connections failed to setup";
     return false;
 }
 
@@ -119,11 +117,8 @@ bool _LightCaliberationSection::deleteConnections()
         disconnect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
         disconnect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
 
-        qDebug() << "light caliberation section connections deleted";
-
         return true;
     }
-    qDebug() << "light caliberation section connections failed to delete";
     return false;
 }
 

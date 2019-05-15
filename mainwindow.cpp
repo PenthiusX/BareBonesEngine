@@ -71,15 +71,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //
     connect(ui->light_calibration_button, SIGNAL(clicked()),ui->light_caliberation_section,SLOT(init()));
-    connect(ui->machine_selection_button, &QPushButton::clicked,[this]() {
-        ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->machine_type_section);
-        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int))));
-    });
-
-    connect(ui->scan_calibration_button, &QPushButton::clicked,[this]() {
-        ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->scan_caliberation_section);
-        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(markLineLaser(char* ,unsigned int,unsigned int))));
-    });
+    connect(ui->machine_selection_button, SIGNAL(clicked()),ui->machine_type_section,SLOT(init()));
+    connect(ui->scan_calibration_button, SIGNAL(clicked()),ui->scan_caliberation_section,SLOT(init()));
+    connect(ui->stage_calibration_button, SIGNAL(clicked()),ui->stage_caliberation_section,SLOT(init()));
 
     connect(ui->stage_left, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));});
     connect(ui->stage_right, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "TurnTableMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});

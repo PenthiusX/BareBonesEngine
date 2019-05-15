@@ -9,11 +9,33 @@ _Scanner* _CaliberationSection::scanner=nullptr;
 _Marker* _CaliberationSection::marker=nullptr;
 _Processing* _CaliberationSection::processing=nullptr;
 
+
+/*
+ * The _CaliberationSection class
+ *
+ *      ***** parent Widget of this class should be QStackedWidget *****
+ *
+ * parent class for differant caliberation section
+ * inherits QStackedWidget and implements UI/_lightcaliberationsection.ui file gui
+ * this class is base for all caliberation sections caliberation section
+ * contains global objects,modules like machine , scanner , processing
+ * Created: 15_05_2019
+ * Author:Saurabh
+*/
+
+/* _CaliberationSection constructor
+ * empty constructor
+ * Created: 15_05_2019
+*/
 _CaliberationSection::_CaliberationSection(QStackedWidget *parent) :
     QStackedWidget(parent)
 {
 }
 
+/* _LightCaliberationSection destructor
+ * empty destructors
+ * Created: 15_05_2019
+*/
 _CaliberationSection::~_CaliberationSection()
 {
 }
@@ -22,7 +44,7 @@ _CaliberationSection::~_CaliberationSection()
 
 /* Function : setMachine(_Machine *mach)
  * this function sets the global machine inside this class
- * Created: 03_05_2019
+ * Created: 15_05_2019
 */
 void _CaliberationSection::setMachine(_Machine *mach)
 {
@@ -32,7 +54,7 @@ void _CaliberationSection::setMachine(_Machine *mach)
 
 /* Function : setScanner(_Scanner *scann)
  * this function sets the global scanner inside this class
- * Created: 09_05_2019
+ * Created: 15_05_2019
 */
 void _CaliberationSection::setScanner(_Scanner *scann)
 {
@@ -67,11 +89,9 @@ void _CaliberationSection::setApplicationSettings(_ConfigControlEntity* app_sett
     application_settings = app_sett;
 }
 /* Function : init()
- * this function initialises the default values
- * default commands to hardware are also sent
- * when section button is clicked this function is called
- * this also shows the this widget in QStackedWidget
- * Created: 06_05_2019
+ * this function is virtual and should override in the child class
+ * this shows this widget in QStackedWidget
+ * Created: 15_05_2019
 */
 void _CaliberationSection::init()
 {
@@ -95,7 +115,7 @@ void _CaliberationSection::init()
 
 /* Function : saveConfig()
  * this function saves the caliberation config
- * Created: 06_05_2019
+ * Created: 15_05_2019
 */
 void _CaliberationSection::saveConfig()
 {

@@ -231,6 +231,49 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
 
 }
 
+void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int iheight)
+{
+    static bool init = true;
+
+    //initialise empty textures for processing
+    static _Texture texture(nullptr,iwidth,iheight);
+    static _Texture texture_out(nullptr,iwidth,iheight);
+    static _Texture texture_outt(nullptr,iwidth,iheight);
+
+    if(init)
+    {
+    //load texture
+    texture.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
+    texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+
+    //texture.unbind();
+    init = false;
+    }
+    //Do the Processing
+
+    //send the image to gpu texture
+    texture.setImage(img,iwidth,iheight);
+
+    //compute operation(edge detecton currently)
+    //gpu_compute->compute_row_wise_mean(texture,texture_out);
+    //gpu_compute->compute_threshold(texture,texture_outt);
+//        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
+//        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
+//        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+    //gpu_compute->compute_canny_edge(texture_outt,texture_out);
+    gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
+    gpu_compute->compute_copy_red_to_rgba(texture,texture_out);
+    gpu_compute->compute_mark_column_index(texture_outt,texture_out);
+    //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);
+
+    //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+
+    //get image from gpu texture
+    //send signal to update display texture
+    emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out),iwidth,iheight);
+}
+
 /* function: makeCurrent
  * set the context active
 */

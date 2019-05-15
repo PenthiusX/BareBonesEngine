@@ -24,6 +24,7 @@ _ScanCaliberationSection::~_ScanCaliberationSection()
 */
 void _ScanCaliberationSection::init()
 {
+    setupConnections();
 
     if(machine->isInitialised())
     {
@@ -40,6 +41,18 @@ void _ScanCaliberationSection::init()
         ui->gain_slider_box->setValue(machine->config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
         ui->offset_slider_box->setValue(machine->config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
         ui->line_laser_slider_box->setValue(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
+
+        //parentWidget()->  setCurrentWidget(ui->light_caliberation_section);
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(markLineLaser(char* ,unsigned int,unsigned int))));
+
+        if(dynamic_cast<QStackedWidget*>(parentWidget()))
+        {
+            //setting the stacked widget page to this widget
+            dynamic_cast<QStackedWidget*>(parentWidget())->setCurrentWidget(this);
+        }
+        else {
+            qWarning() << QString("parent pointer of %1 is not valid or is not of type QStackedWidget").arg(this->objectName());
+        }
     }
 }
 
@@ -64,8 +77,6 @@ bool _ScanCaliberationSection::setupConnections()
         connect(ui->line_laser_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
         connect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
         connect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
-
-        connect(machine,SIGNAL(initMachine()),this,SLOT(init()));
 
         qDebug() << "light caliberation section connections set";
         return true;
