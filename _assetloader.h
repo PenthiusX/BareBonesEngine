@@ -2,6 +2,7 @@
 #define _ASSETLOADER_H
 #include <vector>
 #include <qstring.h>
+#include <qvector3d.h>
 /*
  * Class: _AssetLoader
  * class sets values needed by the viewMatrix
@@ -24,6 +25,8 @@ private:
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
     std::vector<float> uvs;
+
+    QVector3D vertMin;
 };
 
 #endif // _ASSETLOADER_H

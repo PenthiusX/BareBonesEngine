@@ -202,6 +202,11 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
+    //Test var
+    camPos.x = eyePos.x();
+    camPos.y = eyePos.y();
+    camPos.z = eyePos.z();
+    //
     glm_view4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::lookAt(
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
@@ -368,26 +373,34 @@ void _Renderer::_Renderer::draw()
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
-//---------------------------Temorary Use-------------------------------------------
+/*
+  _______
+ |__   __|
+    | | ___ _ __ ___  _ __   ___  _ __ __ _ _ __ _   _   _   _ ___  ___
+    | |/ _ \ '_ ` _ \| '_ \ / _ \| '__/ _` | '__| | | | | | | / __|/ _ \
+    | |  __/ | | | | | |_) | (_) | | | (_| | |  | |_| | | |_| \__ \  __/
+    |_|\___|_| |_| |_| .__/ \___/|_|  \__,_|_|   \__, |  \__,_|___/\___|
+                     | |                          __/ |
+                     |_|                         |___/
+*/
+
 /*
  * Temporary debugging implemetation, transistion colors of object
- * hot reloding of shaders also needs to be implemented
+ * based on the tag attached to the scenceObjects
+ * hot reloding of shaders also needs to be implemented instead
 */
 void _Renderer::transitionColors()
 {
     double r = abs(cos(timer.elapsed() * 0.002));
     double g = abs(sin(timer.elapsed() * 0.003));
     double b = abs(cos(timer.elapsed() * 0.005));
-//    glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
-
+    //  glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
     if(this->sceneEntity.getTag() == "stickman1")
-    {
         glUniform4f(colorUniform, 0.5, 0.5,0.5, 1.0f);
-    }
     else if(this->sceneEntity.getTag() == "stickman2")
-    {
-       glUniform4f(colorUniform, 1.0, 0.0, 0.0, .3f);
-    }
+        glUniform4f(colorUniform, 1.0, 0.0, 0.0, .3f);
+    else if(this->sceneEntity.getTag() == "mousePointerObject")
+        glUniform4f(colorUniform, r, g, b, .8f);
 }
 
 void _Renderer::unProject(QVector2D mousePressPosition)
@@ -395,7 +408,7 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     // Where The Viewport Values Will Be Stored
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);           // Retrieves The Viewport Values (X, Y, Width, Height)
-/*
+    /*
     for(int i = 0 ; i < 4 ;i++){
         qDebug() << viewport[i];
     }
@@ -423,28 +436,37 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     qDebug() << glGetError();
     qDebug() << mousePressPosition <<"-index"<< index;
 */
+    qDebug() << mousePressPosition;
+    // viewport coordinate system
+    // normalized device coordinates
+    auto x = (2.0f * mousePressPosition.x()) / viewport[2] - 1.0f;
+    auto y = 1.f - (2.0f * mousePressPosition.y()) / viewport[3];
+    auto z = 1.f;
+    auto rayNormalizedDeviceCoordinates = glm::vec3(x, y, z);
 
-    // heavily influenced by: http://antongerdelan.net/opengl/raycasting.html
-       // viewport coordinate system
-       // normalized device coordinates
-       auto x = (2.0f * mousePressPosition.x()) / viewport[2] - 1.0f;
-       auto y = 1.f - (2.0f * mousePressPosition.y()) / viewport[3];
-       auto z = 1.f;
-       auto rayNormalizedDeviceCoordinates = glm::vec3(x, y, z);
+    // 4D homogeneous clip coordinates
+    auto rayClip = glm::vec4(rayNormalizedDeviceCoordinates.x, rayNormalizedDeviceCoordinates.y, -1.f, 1.f);
 
-       // 4D homogeneous clip coordinates
-       auto rayClip = glm::vec4(rayNormalizedDeviceCoordinates.x, rayNormalizedDeviceCoordinates.y, -1.f, 1.f);
+    // 4D eye (camera) coordinates
+    glm::vec4 rayEye = glm::inverse(glm_projection4x4) * rayClip;
+    rayEye = glm::vec4(rayEye.x,rayEye.y, -1.0, 0.0);
 
-       // 4D eye (camera) coordinates
-       glm::mat4x4 qi = glm::inverse(glm_projection4x4);
+    glm::vec3 ray_wor = glm::inverse(glm_view4x4) * rayEye;
+    // don't forget to normalise the vector at some point
+    ray_wor = glm::normalize(ray_wor);
+    qDebug() << ray_wor.x << ray_wor.y << ray_wor.z;
 
-//       auto rayEye = _projectionMatrix.Inverted() * rayClip;
-//       rayEye = new QVector3D(rayEye.X, rayEye.Y, -1.f, 0.f);
-
-//       // 4D world coordinates
-//       auto rayWorldCoordinates = (_camera.LookAtMatrix.Inverted() * rayEye).Xyz;
-//       rayWorldCoordinates.Normalize();
-//       FindClosestAsteroidHitByRay(rayWorldCoordinates);
-
-//    glUniform2f(mousePosUniform,mousePressPosition.x(),mousePressPosition.y());
+    if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,0.0,0.0),2,ray_wor,this->camPos) == true)
+        setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
 }
+
+bool _Renderer::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin)
+{
+    glm::vec3 oc = rayOrigin - center;
+    float a = glm::dot(rayDir,rayDir);
+    float b = 2.0 * glm::dot(oc, rayDir);
+    float c = dot(oc,oc) - radius*radius;
+    float discriminant = b*b - 4*a*c;
+    return (discriminant>0);
+}
+//----------------------------------------------------------------------------------------------
