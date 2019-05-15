@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setConfigSettings();
 
     connect(ui->actionApplication_Settings,SIGNAL(triggered()),this,SLOT(openSettingsDialog()));
-    connect(this,SIGNAL(applicationSettingsChanged()),this,SLOT(setApplicationSettingsForNestedObjects()));
+    _CaliberationSection::setApplicationSettings(application_settings);
     qRegisterMetaType<ActionType>("ActionType");
 
     //machine,marker,scanner should be in same thread -
@@ -61,16 +61,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //clickable buttons
 
-    ui->light_caliberation_section->setMachine(machine);
-    ui->light_caliberation_section->setupConnections();
-    ui->scan_caliberation_section->setMachineScanner(machine,scanner);
-    ui->scan_caliberation_section->setupConnections();
+    //set the global static objects which will be required for operations
+    _CaliberationSection::setMachine(machine);
+    _CaliberationSection::setScanner(scanner);
+    _CaliberationSection::setProcessing(processing);
+    _CaliberationSection::setMarker(marker);
+
+    connect(machine,SIGNAL(initMachine()),ui->machine_type_section,SLOT(init()));
 
     //
-    connect(ui->light_calibration_button, &QPushButton::clicked,[this]() {
-        ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->light_caliberation_section);
-        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(histogram(char* ,unsigned int,unsigned int))));
-    });
+    connect(ui->light_calibration_button, SIGNAL(clicked()),ui->light_caliberation_section,SLOT(init()));
     connect(ui->machine_selection_button, &QPushButton::clicked,[this]() {
         ui->caliberation_sections_stacked_widget->setCurrentWidget(ui->machine_type_section);
         QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int))));
@@ -140,6 +140,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //start the hardware thread
     hardwareInteractionThread->start();
 
+    //gui is shown when machine is initialised
+    connect(machine,SIGNAL(initMachine()),this,SLOT(show()));
+
     QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_DEFAULT_FROM_CONFIG));
 }
 
@@ -179,7 +182,7 @@ void MainWindow::setConfigSettings()
         _Tools::WriteJsonToFile(filename,application_settings->toJson());
     }
 
-    setApplicationSettingsForNestedObjects();
+    _CaliberationSection::setApplicationSettings(application_settings);
 }
 
 /*
@@ -197,12 +200,5 @@ void MainWindow::openSettingsDialog()
 
     _Tools::WriteJsonToFile(filename,application_settings->toJson());
 
-    setApplicationSettingsForNestedObjects();
-}
-
-void MainWindow::setApplicationSettingsForNestedObjects()
-{
-    ui->scan_caliberation_section->setApplicationSettings(application_settings);
-    ui->light_caliberation_section->setApplicationSettings(application_settings);
-
+    _CaliberationSection::setApplicationSettings(application_settings);
 }

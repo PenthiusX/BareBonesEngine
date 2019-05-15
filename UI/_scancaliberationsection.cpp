@@ -2,10 +2,11 @@
 #include "ui__scancaliberationsection.h"
 #include <QFileDialog>
 
-_ScanCaliberationSection::_ScanCaliberationSection(QWidget *parent) :
-    QWidget(parent),
+_ScanCaliberationSection::_ScanCaliberationSection(QStackedWidget *parent) :
+    _CaliberationSection(parent),
     ui(new Ui::_ScanCaliberationSection)
 {
+    delete layout(); //overwriting layout in setupUi
     ui->setupUi(this);
 }
 
@@ -14,30 +15,6 @@ _ScanCaliberationSection::~_ScanCaliberationSection()
     delete ui;
 }
 
-
-/* Function : setMachineScanner(_Machine *mach,_Scanner *scann)
- * this function sets the global machine and scanner inside this class
- * and defaults related to caliberation entities
- * Created: 09_05_2019
-*/
-void _ScanCaliberationSection::setMachineScanner(_Machine *mach,_Scanner *scann)
-{
-    //copies pointer to global machine
-    machine = mach;
-    scanner = scann;
-
-    //set the defaults here (min/max)
-
-    ui->gain_slider_box->setMinimum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MIN"));
-    ui->gain_slider_box->setMaximum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MAX"));
-
-    ui->offset_slider_box->setMinimum(machine->config["Camera"]["Offset"]["Data"]["Default"].getFloatEntity("MIN"));
-    ui->offset_slider_box->setMaximum(machine->config["Camera"]["Offset"]["Data"]["Default"].getFloatEntity("MAX"));
-
-    ui->line_laser_slider_box->setMinimum(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Default"].getFloatEntity("MIN"));
-    ui->line_laser_slider_box->setMaximum(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Default"].getFloatEntity("MAX"));
-
-}
 
 /* Function : init()
  * this function initialises the default values for machine commands
@@ -50,6 +27,15 @@ void _ScanCaliberationSection::init()
 
     if(machine->isInitialised())
     {
+        ui->gain_slider_box->setMinimum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MIN"));
+        ui->gain_slider_box->setMaximum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MAX"));
+
+        ui->offset_slider_box->setMinimum(machine->config["Camera"]["Offset"]["Data"]["Default"].getFloatEntity("MIN"));
+        ui->offset_slider_box->setMaximum(machine->config["Camera"]["Offset"]["Data"]["Default"].getFloatEntity("MAX"));
+
+        ui->line_laser_slider_box->setMinimum(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Default"].getFloatEntity("MIN"));
+        ui->line_laser_slider_box->setMaximum(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Default"].getFloatEntity("MAX"));
+
         //send default commands here
         ui->gain_slider_box->setValue(machine->config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
         ui->offset_slider_box->setValue(machine->config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
@@ -119,9 +105,4 @@ void _ScanCaliberationSection::scan()
 {
     //save caliberated values
     qDebug() << "scanning";
-}
-
-void _ScanCaliberationSection::setApplicationSettings(_ConfigControlEntity* app_sett)
-{
-    application_settings = app_sett;
 }

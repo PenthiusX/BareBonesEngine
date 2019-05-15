@@ -1,11 +1,16 @@
 #include "_caliberationsection.h"
 #include <QMessageBox>
+#include <QDebug>
 
+//global static objects which will be required for operations
 _ConfigControlEntity* _CaliberationSection::application_settings = nullptr;
 _Machine* _CaliberationSection::machine=nullptr;
+_Scanner* _CaliberationSection::scanner=nullptr;
+_Marker* _CaliberationSection::marker=nullptr;
+_Processing* _CaliberationSection::processing=nullptr;
 
-_CaliberationSection::_CaliberationSection(QWidget *parent) :
-    QWidget(parent)
+_CaliberationSection::_CaliberationSection(QStackedWidget *parent) :
+    QStackedWidget(parent)
 {
 }
 
@@ -17,32 +22,55 @@ _CaliberationSection::~_CaliberationSection()
 
 /* Function : setMachine(_Machine *mach)
  * this function sets the global machine inside this class
- * and defaults related to caliberation entities
  * Created: 03_05_2019
 */
 void _CaliberationSection::setMachine(_Machine *mach)
 {
     //copies pointer to global machine
     machine = mach;
-
-//    ui->gain_slider_box->setMinimum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MIN"));
-//    ui->gain_slider_box->setMaximum(machine->config["Camera"]["Gain"]["Data"]["Default"].getFloatEntity("MAX"));
-
-//    ui->offset_slider_box->setMinimum(machine->config["Camera"]["Offset"]["Data"]["Default"].getFloatEntity("MIN"));
-//    ui->offset_slider_box->setMaximum(machine->config["Camera"]["Offset"]["Data"]["Default"].getFloatEntity("MAX"));
-
-//    ui->backlight_slider_box->setMinimum(machine->config["Hardware"]["Controls"]["BackLight"]["Data"]["Default"].getFloatEntity("MIN"));
-//    ui->backlight_slider_box->setMaximum(machine->config["Hardware"]["Controls"]["BackLight"]["Data"]["Default"].getFloatEntity("MAX"));
-
 }
+
+/* Function : setScanner(_Scanner *scann)
+ * this function sets the global scanner inside this class
+ * Created: 09_05_2019
+*/
+void _CaliberationSection::setScanner(_Scanner *scann)
+{
+    //copies pointer to global scanner
+    scanner = scann;
+}
+
+/* Function : setProcessing(_Processing *proc)
+ * this function sets the global processing inside this class
+ * Created: 15_05_2019
+*/
+void _CaliberationSection::setProcessing(_Processing *proc)
+{
+    processing = proc;
+}
+
+/* Function : setMarker(_Marker *mark)
+ * this function sets the global marker inside this class
+ * Created: 15_05_2019
+*/
+void _CaliberationSection::setMarker(_Marker *mark)
+{
+    marker=mark;
+}
+
+/* Function : setApplicationSettings(_ConfigControlEntity* app_sett)
+ * this function sets the global application_settings inside this class
+ * Created: 15_05_2019
+*/
 void _CaliberationSection::setApplicationSettings(_ConfigControlEntity* app_sett)
 {
     application_settings = app_sett;
 }
 /* Function : init()
- * this function initialises the default values for machine commands
+ * this function initialises the default values
  * default commands to hardware are also sent
- * when machine is initialised this function is called
+ * when section button is clicked this function is called
+ * this also shows the this widget in QStackedWidget
  * Created: 06_05_2019
 */
 void _CaliberationSection::init()
@@ -50,66 +78,23 @@ void _CaliberationSection::init()
 
     if(machine->isInitialised())
     {
-        //send default commands here
-//        ui->lens_number_dropdown->setCurrentIndex(machine->config["Camera"]["Lens"].getFloatEntity("LENS_NUMBER"));
-//        ui->gain_slider_box->setValue(machine->config["Camera"]["Gain"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
-//        ui->offset_slider_box->setValue(machine->config["Camera"]["Offset"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
-//        ui->backlight_slider_box->setValue(machine->config["Hardware"]["Controls"]["BackLight"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
-
+        //this part sets the current page of stacked widget to this widget
+        {
+            if(dynamic_cast<QStackedWidget*>(parentWidget()))
+            {
+                //setting the stacked widget page to this widget
+                dynamic_cast<QStackedWidget*>(parentWidget())->setCurrentWidget(this);
+            }
+            else {
+                qWarning() << QString("parent pointer of %1 is not valid or is not of type QStackedWidget").arg(this->objectName());
+            }
+        }
     }
 }
 
-///* Function : setupConnections()
-// * this function sets the necessary connections between ui and machine
-// * and defaults related to caliberation entities
-// * Created: 03_05_2019
-//*/
-//bool _CaliberationSection::setupConnections()
-//{
-//    if(machine){
 
-//        //setup connections here
-
-////        connect(ui->backlight_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
-////        connect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
-////        connect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
-
-////        connect(machine,SIGNAL(initMachine()),this,SLOT(init()));
-////        connect(ui->save_button,SIGNAL(clicked()),this,SLOT(save()));
-
-////        qDebug() << "light caliberation section connections set";
-
-//        return true;
-//    }
-//    //qDebug() << "light caliberation section connections failed to setup";
-//    return false;
-//}
-
-
-///* Function : deleteConnections()
-// * this function deletes the necessary connections between ui and machine
-// * and defaults related to caliberation entities
-// * Created: 03_05_2019
-//*/
-//bool _CaliberationSection::deleteConnections()
-//{
-//    if(machine){
-
-//        //delete connections here
-//        disconnect(ui->backlight_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
-//        disconnect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
-//        disconnect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
-
-//        qDebug() << "light caliberation section connections deleted";
-
-//        return true;
-//    }
-//    qDebug() << "light caliberation section connections failed to delete";
-//    return false;
-//}
-
-/* Function : saveCoonfig()
- * this function saves the necessary values in this caliberation section
+/* Function : saveConfig()
+ * this function saves the caliberation config
  * Created: 06_05_2019
 */
 void _CaliberationSection::saveConfig()

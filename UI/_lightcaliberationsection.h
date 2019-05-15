@@ -12,7 +12,7 @@ class _LightCaliberationSection : public _CaliberationSection
 {
     Q_OBJECT
 public:
-    explicit _LightCaliberationSection(QWidget *parent = nullptr);
+    explicit _LightCaliberationSection(QStackedWidget *parent = nullptr);
     ~_LightCaliberationSection();
 
     bool setupConnections();
