@@ -88,6 +88,18 @@ void _CaliberationSection::setApplicationSettings(_ConfigControlEntity* app_sett
 {
     application_settings = app_sett;
 }
+
+bool _CaliberationSection::setupConnections()
+{
+    qDebug() << "parent set connections";
+    return true;
+}
+
+bool _CaliberationSection::deleteConnections()
+{
+    qDebug() << "parent delete connections";
+    return true;
+}
 /* Function : init()
  * this function is virtual and should override in the child class
  * this shows this widget in QStackedWidget

@@ -70,6 +70,7 @@ void _LightCaliberationSection::init()
         if(dynamic_cast<QStackedWidget*>(parentWidget()))
         {
             //setting the stacked widget page to this widget
+            dynamic_cast<_CaliberationSection*>(dynamic_cast<QStackedWidget*>(parentWidget())->currentWidget())->deleteConnections();
             dynamic_cast<QStackedWidget*>(parentWidget())->setCurrentWidget(this);
         }
         else {
@@ -97,6 +98,8 @@ bool _LightCaliberationSection::setupConnections()
 
         connect(ui->save_button,SIGNAL(clicked()),this,SLOT(save()));
 
+        connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),this,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
+
         return true;
     }
     return false;
@@ -116,7 +119,7 @@ bool _LightCaliberationSection::deleteConnections()
         disconnect(ui->backlight_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(BackLight(int)));
         disconnect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
         disconnect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));
-
+        disconnect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),this,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
         return true;
     }
     return false;

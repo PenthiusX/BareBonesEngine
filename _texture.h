@@ -43,6 +43,8 @@ public:
     unsigned int getWidth() const;
     unsigned int getHeight() const;
 
+    unsigned int getColorformat() const;
+
 protected:
     std::map<unsigned int,unsigned int> parameters;
     char* image;

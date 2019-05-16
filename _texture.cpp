@@ -244,3 +244,8 @@ unsigned int _Texture::getHeight() const
 {
     return height;
 }
+
+unsigned int _Texture::getColorformat() const
+{
+    return color_format;
+}

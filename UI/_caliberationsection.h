@@ -21,8 +21,8 @@ public:
     static void setMarker(_Marker *mark);
     static void setApplicationSettings(_ConfigControlEntity *app_sett);
 
-    //virtual bool setupConnections();
-    //virtual bool deleteConnections();
+    virtual bool setupConnections();
+    virtual bool deleteConnections();
 
 signals:
 

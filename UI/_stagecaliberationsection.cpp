@@ -75,7 +75,7 @@ bool _StageCaliberationSection::setupConnections()
         //setup connections here
 
         connect(ui->save_button,SIGNAL(clicked()),this,SLOT(save()));
-
+        connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),this,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
         return true;
     }
     return false;
@@ -92,6 +92,8 @@ bool _StageCaliberationSection::deleteConnections()
     if(machine){
 
         //delete connections here
+        disconnect(ui->save_button,SIGNAL(clicked()),this,SLOT(save()));
+        disconnect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),this,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
         return true;
     }
     return false;
@@ -131,3 +133,22 @@ void _StageCaliberationSection::save()
 //    // set a scaled pixmap to a w x h window keeping its aspect ratio
 //    ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
 //}
+/* Function : update_histogram_image(char *img, unsigned int w, unsigned int h)
+ * this function updates the histogram label with histogram image
+ * Created: 03_05_2019
+*/
+void _StageCaliberationSection::updateHistogramImage(char *img, unsigned int w, unsigned int h)
+{
+    //ui->histogram_image_label->setPixmap(pixmap);
+    int lw = ui->histogram_image_label->width();
+    int lh = (lw*3)/4;//ui->histogram_image_label->height();
+
+    QImage Img((uchar*)img, w, h, QImage::Format_Grayscale8);
+
+    QPixmap pixmap;
+
+    pixmap.convertFromImage(Img);
+
+    // set a scaled pixmap to a w x h window keeping its aspect ratio
+    ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
+}

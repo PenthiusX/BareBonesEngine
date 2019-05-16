@@ -124,8 +124,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //buttons to scanner slots connections
     //connect(ui->scan, SIGNAL(clicked()),scanner,SLOT(scan_generate_model()));
 
-    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
-    connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),ui->light_caliberation_section,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
+    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));    
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
 
     connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));

@@ -523,6 +523,43 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img)
 
 }
 
+void _GPU_Compute::compute_gradient_to_descrete_color(_Texture& input_img,_Texture& output_img)
+{
+    static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_blur(nullptr,input_img.getWidth(),input_img.getHeight());
+
+    texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_blur.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
+
+    //compute_guassian_blur_5_5(input_img,texture_blur);
+    compute_sobel_edge(input_img,texture_sobel_mag_,texture_sobel_theta_);
+
+
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_gradient_to_descrete_rgba_color.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    texture_sobel_mag_.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    texture_sobel_theta_.bindForCompute(1,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(2,GL_RGBA8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
 {
     static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
@@ -533,8 +570,8 @@ void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
     texture_blur.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
 
-    compute_guassian_blur_3_3(input_img,texture_blur);
-    compute_sobel_edge(texture_blur,texture_sobel_mag_,texture_sobel_theta_);
+    //compute_guassian_blur_5_5(input_img,texture_blur);
+    compute_sobel_edge(input_img,texture_sobel_mag_,texture_sobel_theta_);
 
     static _Shader shader;
     static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
@@ -584,8 +621,11 @@ char* _GPU_Compute::get_texture_image_framebuffer(_Texture& input_img)
     glViewport(0, 0, input_img.getWidth(), input_img.getHeight());
 
     input_img.bindForFramebuffer();
+    unsigned int format = input_img.getColorformat();
 
-    glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),GL_RGBA, GL_UNSIGNED_BYTE,colorFrame);
+    glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),format, GL_UNSIGNED_BYTE,colorFrame);
+
+    format = GL_RED;
 
     return colorFrame;
 }

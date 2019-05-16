@@ -23,6 +23,7 @@ public:
 public slots:
     void init();
     void save();
+    void updateHistogramImage(char *img, unsigned int w, unsigned int h);
 private:
     Ui::_StageCaliberationSection *ui;
 };
