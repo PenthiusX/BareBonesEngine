@@ -203,7 +203,8 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             {
                 if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
                 {
-                    //scene->getSceneObjects()[i]->setRotationAroundPivot(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f),QVector3D(0.0,0.0,0.0));
+                    qDebug() << scene->getSceneObjects()[i]->getSceneEntity().getPostion();
+//                    scene->getSceneObjects()[i]->setRotationAroundPivot(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f),QVector3D(0.0,0.0,0.0));
                     scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
                 }
             }

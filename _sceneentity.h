@@ -5,7 +5,15 @@
 #include <vector>
 #include <_assetloader.h>
 
-
+/* Class: _SceneEntity()
+ * The scene entity class holds the values for all the paramets a scene object needs
+ * to derive from while rendering.
+ * The objects of this class set and get properties at initialisation as well as runtime.
+ * accesing the scene entity object and its member variables from the sceneObjets will give
+ * you the current runtime updated values to all the parameters it holds, setting the same values
+ * on runtime will also translate to changes of the respective sceneoObject on screen.
+ * Author: Aditya
+*/
 class _SceneEntity
 {
 public:
@@ -14,14 +22,14 @@ public:
     ~_SceneEntity();
     void setId(unsigned int id);//sets the iD either externaly or internally generated
     unsigned int getId() const;// call to retrieve unique id for the object instance.
-    void setTag(const char* tag);
+    void setTag(const char* tag);//sts a name based identifier for the object
     const char* getTag() const;
     //
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
     QVector3D getPostion() const;//get the current position of the relvant object instace
     void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
     QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
-    void setPivot();//sets the pivot point to rotate around
+    void setPivot(QVector3D pivot);//sets the pivot point to rotate around
     QVector3D getPivot();//gets the pivot point to rotate around
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
     float getScale() const;//get the float  value of the rotation of the relavant object instance.
