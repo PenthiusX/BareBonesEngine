@@ -87,6 +87,20 @@ QVector3D _SceneEntity::getRotation() const
     return this->rotation;
 }
 /*
+ * Function: set/getPivot
+ * sets gets the pivot position for the
+ * scene entity.
+ * Created:16_05_2019
+*/
+void _SceneEntity::setPivot(QVector3D pivot)
+{
+    this->pivot = pivot;
+}
+QVector3D _SceneEntity::getPivot()
+{
+    return this->pivot;
+}
+/*
  * Function: setScale(float scale) & getScale()
  * sets/gets the scale for the current object.
  * Created:26_02_2019
