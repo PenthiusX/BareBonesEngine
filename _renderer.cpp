@@ -301,7 +301,7 @@ void _Renderer::setRotation(QVector3D rot)
                               this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         rotationMatrix = glm::mat4_cast(quat);
-        glm_model4x4 =  rotationMatrix * translationMatrix * scalingMatrix;
+        glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
     }
 }
 /*
@@ -312,11 +312,24 @@ void _Renderer::setRotation(QVector3D rot)
 */
 void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
 {
-    glm::mat4x4 tempTrans = translationMatrix;
+    this->sceneEntity.setRotation(rot);
+    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
+    if(isTranfomationLocal)
+    {//still buggy
+        setPosition(pivot);
+        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                              this->sceneEntity.getRotation().y(),
+                              this->sceneEntity.getRotation().z());
+        glm::quat quat = glm::quat(EulerAngles);
+        glm_model4x4 *= glm::mat4_cast(quat);
+    }
     if(!isTranfomationLocal)
     {
+        glm::mat4x4 tempTrans = translationMatrix;//store the initial position
         rotationMatrix = glm::mat4x4(1.f);
         translationMatrix = glm::mat4x4(1.f);
+
+        //translate the object to the pivot point
         translationMatrix[3][0] = pivot.x();
         translationMatrix[3][1] = pivot.y();
         translationMatrix[3][2] = pivot.z();
@@ -325,8 +338,9 @@ void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
                               this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         rotationMatrix = glm::mat4_cast(quat);
+        //rotate on the pivot point
         glm_model4x4 =  rotationMatrix * translationMatrix * scalingMatrix;
-        translationMatrix = tempTrans;
+        translationMatrix = tempTrans;//set the matrix back to initial position
         glm_model4x4 =  rotationMatrix * translationMatrix * scalingMatrix;
     }
 }
@@ -432,7 +446,8 @@ void _Renderer::transitionColors()
         glUniform4f(colorUniform, r, g, b, .8f);
 }
 /*
- */
+ *
+*/
 void _Renderer::unProject(QVector2D mousePressPosition)
 {
     // Where The Viewport Values Will Be Stored
@@ -488,10 +503,10 @@ void _Renderer::unProject(QVector2D mousePressPosition)
 
     if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,0.0,0.0),1,ray_wor,this->camPos) == true)
         setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
-
-
 }
-
+/*
+ *
+*/
 bool _Renderer::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin)
 {
     glm::vec3 oc = rayOrigin - center;
