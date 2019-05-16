@@ -27,5 +27,7 @@
         <file>shaders/compute_divide_mark_column_index.glsl</file>
         <file>shaders/compute_copy_red_to_rgba.glsl</file>
         <file>shaders/compute_gradient_to_descrete_rgba_color.glsl</file>
+        <file>shaders/compute_mask_image_rgba_r.glsl</file>
+        <file>shaders/compute_create_region_image_mask.glsl</file>
     </qresource>
 </RCC>

@@ -4,7 +4,7 @@ layout (local_size_x =16, local_size_y = 16, local_size_z = 1) in;
 layout(binding=0, r8ui) uniform mediump uimage2D inputImage;
 layout(binding=1, r8ui) uniform mediump uimage2D resultImage;
 
-#define theshold_value 127
+layout( location=0 ) uniform unsigned int theshold_value;
 
 #include compute_basic_functions.glsl
 

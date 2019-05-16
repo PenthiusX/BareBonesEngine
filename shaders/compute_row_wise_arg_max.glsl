@@ -16,11 +16,6 @@ ivec2 getPixelCord(){
     return ivec2(gl_LocalInvocationIndex,dot(uvec3(1,gl_NumWorkGroups.x,gl_NumWorkGroups.x*gl_NumWorkGroups.y),gl_WorkGroupID));
 }
 
-bool is_inside(ivec2 val, ivec2 lower, ivec2 upper)
-{
-   return ((val.x > lower.x ) && (val.y > lower.y ) && (val.x < upper.x ) && (val.y < upper.y ));
-}
-
 uint combine(uint p,uint q)
 {
     return (65536*p)+q;

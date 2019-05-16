@@ -237,7 +237,7 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
 
     //initialise empty textures for processing
     static _Texture texture_in(nullptr,iwidth,iheight);
-    static _Texture texture_thres(nullptr,iwidth,iheight);
+    //static _Texture texture_thres(nullptr,iwidth,iheight);
     static _Texture texture_edge(nullptr,iwidth,iheight);
     static _Texture texture_out(nullptr,iwidth,iheight);
     //static _Texture texture_outt(nullptr,iwidth,iheight);
@@ -246,7 +246,7 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
     {
     //load texture
     texture_in.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_thres.load(GL_RED,GL_UNSIGNED_BYTE);
+    //texture_thres.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
     //texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
@@ -265,11 +265,13 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
     //gpu_compute->compute_guassian_blur_5_5(texture_in,texture_thres);
     //gpu_compute->compute_sobel_edge(texture_thres,texture_sobel_mag_,texture_sobel_theta_);
     //gpu_compute->compute_canny_edge(texture_in,texture_edge);
-    gpu_compute->compute_gradient_to_descrete_color(texture_in,texture_out);
+    //gpu_compute->compute_gradient_to_descrete_color(texture_in,texture_out);
     //gpu_compute->compute_copy_8_to_32(texture,texture_outt);
     //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
     //gpu_compute->compute_sobel_edge(texture_in,texture_edge);
     //gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
+    //gpu_compute->compute_threshold(texture_edge,texture_thres,60);
+    gpu_compute->compute_stage_angle(texture_in,texture_out);
     //gpu_compute->compute_copy_red_to_rgba(texture_edge,texture_out);
     //gpu_compute->compute_mark_column_index(texture_outt,texture_out);
     //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);

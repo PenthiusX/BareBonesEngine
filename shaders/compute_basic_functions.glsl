@@ -164,3 +164,11 @@ float compute_kernal_filter_5_5(unimage2D1x8_bindless img,ivec2 image_cord,float
     }
    return val;
 }
+
+/*
+  checks if the selected cordinates is inside the bounds
+*/
+bool is_inside(ivec2 val, ivec2 lower, ivec2 upper)
+{
+   return ((val.x > lower.x ) && (val.y > lower.y ) && (val.x < upper.x ) && (val.y < upper.y ));
+}

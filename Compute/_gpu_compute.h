@@ -29,7 +29,7 @@ public:
     void compute_sobel_edge(_Texture &input_img, _Texture &output_mag, _Texture &output_theta);
     void compute_guassian_blur_3_3(_Texture &input_img, _Texture &output_img);
     void compute_guassian_blur_5_5(_Texture &input_img, _Texture &output_img);
-    void compute_threshold(_Texture &input_img, _Texture &output_img);
+    void compute_threshold(_Texture &input_img, _Texture &output_img,unsigned int threshold_value=127);
     void compute_copy_8_to_32(_Texture &input_img, _Texture &output_img);
     void compute_copy_32_to_8(_Texture &input_img, _Texture &output_img);
     void compute_row_wise_max(_Texture &input_img, _Texture &output_img);
@@ -40,8 +40,15 @@ public:
     void compute_row_wise_mean(_Texture &input_img, _Texture &output_img);
     void compute_divide_mark_column_index(_Texture &input_img, _Texture &input_img2, _Texture &output_img);
     void compute_copy_red_to_rgba(_Texture &input_img, _Texture &output_img);
+    float compute_stage_angle(_Texture &input_img, _Texture &output_img);
     char *get_texture_image_framebuffer(_Texture &input_img);
     //void compute_gradient_to_descrete_color(_Texture &input_mag, _Texture &input_theta, _Texture &output_img);
+    //void compute_gradient_to_descrete_color(_Texture &input_img, _Texture &output_img);
+    void compute_mask_image_rgba_r(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
+    void create_region_image_mask(_Texture &output_img,glm::ivec4 region);
+    void compute_gradient_to_descrete_color(_Texture &texture_sobel_mag_, _Texture &texture_sobel_theta_, _Texture &output_img);
+    void compute_canny_edge_from_sobel(_Texture &texture_sobel_mag_, _Texture &texture_sobel_theta_, _Texture &output_img);
+
     void compute_gradient_to_descrete_color(_Texture &input_img, _Texture &output_img);
 };
 

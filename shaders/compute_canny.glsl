@@ -13,6 +13,7 @@ layout(binding=2, r8ui) uniform mediump uimage2D outImage;
 void main()
 {
        const ivec2 neigbour[4]=ivec2[4](
+                   //   (w,h)
                    ivec2(1,0),
                    ivec2(1,-1),
                    ivec2(0,-1),
@@ -23,7 +24,7 @@ void main()
 
        float theta = getImagePixel(sobelThetaImage,image_pixel_cord);
 
-       int theta_quantized = int(((theta*PI)+(PI/8.0))/(PI/4.0));//getting theta in 4 descrete levels (0,1,2,3)
+       int theta_quantized = int(mod(theta-32,256)/64);//getting theta in 4 descrete levels (0,1,2,3)
 
        uint outf = getImagePixel(sobelMagImage,image_pixel_cord);
 
