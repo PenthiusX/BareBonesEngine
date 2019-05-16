@@ -51,37 +51,6 @@ QVector2D _Tools::retunrnMaxPoint(QVector2D mousepos)
     }
     return max;
 }
-/*
- * Function : translateToPoint(QVector3D pointLocation, float stepDistance)
- * this function takes in two points and generates the next point to translate
- * towards the point to focus on.
- * Created: 11_04_2019
-*/
-QVector3D _Tools::translateToPoint(QVector3D pointLocation, float stepDistance)
-{
-    //implementation pending
-    QVector3D t;
-    return t;
-}
-/*
- * Sudo Finction templates for later implementation
- * needed for mouse selection and point generation for gem inclusion editing
-*/
-QVector3D _Tools::pointOfintersectionWithModel(QVector2D mousePosition/*,sceneEntity s*/)
-{
-    //implementation pending
-    QVector3D t;
-    return t;
-}
-void _Tools::generateAABBforModel(/*sceneEntity s*/)
-{
-    //implementation pending
-}
-
-void _Tools::calcualteMaxExtentsOfModel(/*sceneEntity s*/)
-{
-    //implementation pending
-}
 
 void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
 {

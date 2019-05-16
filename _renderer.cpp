@@ -262,9 +262,11 @@ void _Renderer::setPosition(QVector3D pos)
 }
 void _Renderer::translate(QVector3D pos)
 {
-    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
+    //update the traformation matrix with the current values
+    setPosition(sceneEntity.getPostion());
     if(isTranfomationLocal)
     {
+//        glm_model4x4 *= translationMatrix;
         glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
     }
     else if(!isTranfomationLocal)
@@ -277,6 +279,8 @@ void _Renderer::translate(QVector3D pos)
    this->sceneEntity.setPosition(QVector3D(tmat4[3][0],
                                             tmat4[3][1],
                                             tmat4[3][2]));
+
+    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 /*
  * Function: setRotation(QVector3D pos)
@@ -299,17 +303,18 @@ void _Renderer::setRotation(QVector3D rot)
     }
     else if(!isTranfomationLocal)
     {
-        rotationMatrix = glm::mat4x4(1.f);
+//        rotationMatrix = glm::mat4x4(1.f);
         glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
                               this->sceneEntity.getRotation().y(),
                               this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         rotationMatrix = glm::mat4_cast(quat);
+        //rotate at center
         glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
     }
     //get the real position values from the modelMatrix
     glm::mat4x4 tmat4 = glm_model4x4 * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
-   this->sceneEntity.setPosition(QVector3D(tmat4[3][0],
+   this->sceneEntity.setPosition(QVector3D( tmat4[3][0],
                                             tmat4[3][1],
                                             tmat4[3][2]));
 }
@@ -334,24 +339,24 @@ void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
     }
     if(!isTranfomationLocal)
     {
-        rotationMatrix = glm::mat4x4(1.f);
-
-        translationMatrix[3][0] = pivot.x();
-        translationMatrix[3][1] = pivot.y();
-        translationMatrix[3][2] = pivot.z();
+        glm::mat4x4 pivotTmat = glm::mat4x4(1.0f);
+                    pivotTmat[3][0] = pivot.x();
+                    pivotTmat[3][1] = pivot.y();
+                    pivotTmat[3][2] = pivot.z();
         glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
                               this->sceneEntity.getRotation().y(),
                               this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         rotationMatrix = glm::mat4_cast(quat);
-        //rotate on the pivot point
-        glm_model4x4 =  rotationMatrix * translationMatrix * scalingMatrix;
+         glm_model4x4 = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
     }
     //get the real position values from the modelMatrix
     glm::mat4x4 tmat4 = glm_model4x4 * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
    this->sceneEntity.setPosition(QVector3D(tmat4[3][0],
                                             tmat4[3][1],
                                             tmat4[3][2]));
+
+        qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 /*
  * Function: setscale(float scale)
@@ -369,7 +374,6 @@ void _Renderer::setscale(float scale)
                                                         this->sceneEntity.getScale()));
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
 
-    qDebug() << "scaling";
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
@@ -424,7 +428,6 @@ void _Renderer::_Renderer::draw()
     //The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
-
 /*
   _______
  |__   __|
@@ -447,9 +450,9 @@ void _Renderer::transitionColors()
     double g = abs(sin(timer.elapsed() * 0.003));
     double b = abs(cos(timer.elapsed() * 0.005));
     //  glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
-    if(this->sceneEntity.getTag() == "stickman1")
+    if(this->sceneEntity.getTag() == "object1")
         glUniform4f(colorUniform, 0.5, 0.5,0.5, 1.0f);
-    else if(this->sceneEntity.getTag() == "stickman2")
+    else if(this->sceneEntity.getTag() == "object2")
         glUniform4f(colorUniform, 1.0, 0.0, 0.0, .3f);
     else if(this->sceneEntity.getTag() == "mousePointerObject")
         glUniform4f(colorUniform, r, g, b, .8f);
@@ -490,7 +493,7 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     qDebug() << glGetError();
     qDebug() << mousePressPosition <<"-index"<< index;
 */
-//    qDebug() << mousePressPosition;
+    //qDebug() << mousePressPosition;
     // viewport coordinate system
     // normalized device coordinates
     auto x = (2.0f * mousePressPosition.x()) / viewport[2] - 1.0f;
@@ -509,9 +512,8 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     // don't forget to normalise the vector at some point
     ray_wor = glm::normalize(ray_wor);
 //    qDebug() << ray_wor.x << ray_wor.y << ray_wor.z;
-
-    if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,0.0,0.0),1,ray_wor,this->camPos) == true)
-        setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
+//    if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,0.0,0.0),1,ray_wor,this->camPos) == true)
+//        setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
 }
 /*
  *

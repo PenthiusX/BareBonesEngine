@@ -71,17 +71,17 @@ void _GLWidget::initializeGL()
     pivot.setModelData(":/models/pivot.obj");
     //
     s.setId(2);
-    s.setTag("stickman1");
+    s.setTag("object1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s.setPosition(QVector3D(0.0,0.0f, 0.0));
+    s.setPosition(QVector3D(0.0,0.0, 0.0));
     s.setScale(2.0f);
     s.setModelData(":/models/sphere.obj");
     //
     s1.setId(3);
-    s1.setTag("stickman2");
+    s1.setTag("object2");
     s1.setIsTransfomationLocal(false);
-    s1.setPosition(QVector3D(0.0,1.0f, 0.0));
+    s1.setPosition(QVector3D(0.0,0.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s1.setScale(1.0f);
     s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
@@ -101,11 +101,10 @@ void _GLWidget::initializeGL()
     mpoint.setScale(.1f);
     mpoint.setModelData(s.getvertexData(),s.getIndexData());
     //
-    scene->addCamera(cam);
-
+    scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-    //  scene->addSceneObject(s);
-    //  scene->addSceneObject(s1);
+    scene->addSceneObject(s);
+    scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
 }
@@ -178,8 +177,8 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 * Created: 5_02_2019
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
-{   //selet button is pressed when updating mousevalues
-
+{
+    //selet button is pressed when updating mousevalues
     if(e->buttons() == Qt::LeftButton)
     {
         //send values to unProject for the pointerObjet---------------
@@ -197,15 +196,15 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
                 mosPosL = maxpoint;
             }
-            float damp = 0.0005;//to decrese the magnitude of the value coming in from the mousepos
+            double damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
             rotRads = rotRads + mousePositionL - mosPosL;
-            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-            {
-                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
-                {
-                    qDebug() << scene->getSceneObjects()[i]->getSceneEntity().getPostion();
-//                    scene->getSceneObjects()[i]->setRotationAroundPivot(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f),QVector3D(0.0,0.0,0.0));
-                    scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
+            for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
+                if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
+                    scene->getSceneObjects()[i]->setRotationAroundPivot(QVector3D(0.0/*rotRads.y() * damp*/, rotRads.x() * damp, 0.f),QVector3D(0.5,0.0,0.0));
+//                    scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
+                }
+                if(this->scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject"){
+                    this->scene->getSceneObjects()[i]->getSceneEntity().setPosition(QVector3D(0.10,0.0,0.0));
                 }
             }
         }
