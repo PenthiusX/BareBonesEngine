@@ -82,19 +82,28 @@ void _Scanner::init()
 /* Function : scan_save_images()
  * this function only saves the images captured by camera
  */
-void _Scanner::scan_save_images()
+void _Scanner::scanImages()
 {
+    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
+
     for(int t = 0;t<200;t++)
     {
+        QString filename = QString("scan_image_stage_%1").arg(t);
+
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
 
         //grab new frame from camera
-        machine->GrabFrame(QString("scan_image_stage_%1").arg(t));
+        machine->GrabFrame(filename);
 
         //send the grabbed frame to gui widget for display
-        emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+        //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+
+        processing->passThroughFrame(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+
     }
+
+    machine->frameUpdateMutex.unlock();
 }
 
 
@@ -103,7 +112,7 @@ void _Scanner::scan_save_images()
  * captures the image and does preprocessing on the image(currently)
  * this function should generate a 3d model of stone-- afterwards
 */
-void _Scanner::scan_generate_model()
+void _Scanner::scanGenerateModel()
 {
     bool success = processing->makeCurrent();
     qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
@@ -113,7 +122,7 @@ void _Scanner::scan_generate_model()
 
     for(int t = 0;t<200;t++)
     {
-        QString filename = QString("scan_image_stage_%1").arg(t);
+        QString filename = QString("scan_image_stage_%1.pgm").arg(t);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
         //QThread::msleep(100);

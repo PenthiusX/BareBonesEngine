@@ -521,13 +521,13 @@ void _Machine::set_function_map()
     function_map["Offset"].cmdFunctionPtr = &_Machine::setOffset;
 }
 
-/* Function : set_image_dir(QString dir)
+/* Function : setImageDir(QString dir)
  * this function sets folder to
  * save / load images when connected to hardware camera / no camera found respectively
 */
-void _Machine::set_image_dir(QString dir)
+void _Machine::setImageDir(QString dir)
 {
-    camera->set_image_dir(dir);
+    camera->setImageDir(dir);
 }
 
 void _Machine::GrabFrame()

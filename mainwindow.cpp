@@ -120,10 +120,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
 
-
-    //buttons to scanner slots connections
-    //connect(ui->scan, SIGNAL(clicked()),scanner,SLOT(scan_generate_model()));
-
     connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));    
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
 

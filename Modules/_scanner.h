@@ -20,8 +20,8 @@ public:
 
 public slots:
     void init();
-    void scan_save_images();
-    void scan_generate_model();
+    void scanImages();
+    void scanGenerateModel();
 signals:
     void set_image(char* img,unsigned int w,unsigned int h);
 

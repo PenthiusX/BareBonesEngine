@@ -66,7 +66,7 @@ int _HWDCamera::grab_frame(QString filename)
 
     if( imagefile == NULL) {
         qDebug() << "Can't open:" << filename;
-        fclose(imagefile);
+        //fclose(imagefile);
         return 0;
     }
     char line[30];
@@ -83,7 +83,7 @@ int _HWDCamera::grab_frame(QString filename)
     return 1;
 }
 
-void _HWDCamera::set_image_dir(QString dir)
+void _HWDCamera::setImageDir(QString dir)
 {
     images_dir = dir+"/";
 }

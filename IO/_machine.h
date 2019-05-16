@@ -63,7 +63,7 @@ public slots:
     void init();
     void GrabFrame(QString filename);
     void GrabFrame();
-    void set_image_dir(QString dir);
+    void setImageDir(QString dir);
     QString InfoCmd();
     QString InfoCmd(_HardwareSerial &port);
     QString getMachineVersion();

@@ -67,11 +67,18 @@ bool _ScanCaliberationSection::setupConnections()
 
         //setup connections here
 
+        connect(ui->scan_laser_button, &QPushButton::clicked,[this]() {
+            qDebug() << application_settings->toJson();
+            QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
+            QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
+            QMetaObject::invokeMethod(scanner, "scanGenerateModel", Qt::QueuedConnection);
+        });
+
         connect(ui->scan_button, &QPushButton::clicked,[this]() {
             qDebug() << application_settings->toJson();
             QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
-            QMetaObject::invokeMethod(machine, "set_image_dir", Qt::QueuedConnection,Q_ARG(QString, dir));
-            QMetaObject::invokeMethod(scanner, "scan_generate_model", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
+            QMetaObject::invokeMethod(scanner, "scanImages", Qt::QueuedConnection);
         });
 
         connect(ui->line_laser_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));

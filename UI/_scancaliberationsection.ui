@@ -64,6 +64,20 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="scan_laser_button">
+     <property name="text">
+      <string>scan laser</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="scan_edge_buttons">
+     <property name="text">
+      <string>scan edge</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
