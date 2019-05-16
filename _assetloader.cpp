@@ -41,6 +41,8 @@ std::vector<unsigned int> _AssetLoader::getAssetIndices()
 * a string array to get the approptie onfo to render the model
 * Created:15_03_2019
 */
+int posCounter = 0;
+int arrayCounter = 0;
 void _AssetLoader::objLoader(QString pathToFile)
 {
     qDebug() << "Loading Model" << pathToFile <<  "vertices.";
@@ -61,8 +63,18 @@ void _AssetLoader::objLoader(QString pathToFile)
         if (std::stringstream(temp) >> foundf)
         {
             vertices.push_back(foundf - 1);
+            posCounter++;
         }
         temp = "";
+        //assigning the max and min values for vertices
+        if(posCounter >= 3)
+        {
+            posCounter = 0;
+            if(vertices[arrayCounter] > vertMax.x())
+                vertMax.x() > vertices[arrayCounter];
+            else if(vertices[arrayCounter] > vertMax.y())
+                vertMax.y() > vertices[arrayCounter];
+        }
     }
 
     qDebug() << "Loading Model" << pathToFile <<  "indices.";

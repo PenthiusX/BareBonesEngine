@@ -257,7 +257,6 @@ unsigned int _Shader::compileShader(QString src, unsigned int typ)
     return shader;
 }
 
-
 //Proptotype implemntation , only for testing
 //Not in use at the moment.
 void _Shader::setUpParticles()

@@ -21,6 +21,8 @@ public:
     QVector3D getPostion() const;//get the current position of the relvant object instace
     void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
     QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
+    void setPivot();//sets the pivot point to rotate around
+    QVector3D getPivot();//gets the pivot point to rotate around
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
     float getScale() const;//get the float  value of the rotation of the relavant object instance.
     //
@@ -48,6 +50,7 @@ private:
     const char* tag;
     QVector3D postion;
     QVector3D rotation;
+    QVector3D pivot;
     float scale;
     //
     std::vector<float> vertexData;

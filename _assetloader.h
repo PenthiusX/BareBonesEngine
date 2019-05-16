@@ -27,6 +27,7 @@ private:
     std::vector<float> uvs;
 
     QVector3D vertMin;
+    QVector3D vertMax;
 };
 
 #endif // _ASSETLOADER_H
