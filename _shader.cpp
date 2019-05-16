@@ -254,7 +254,7 @@ unsigned int _Shader::compile_shader(QString src, unsigned int typ)
     if(!success)
     {
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        qDebug() << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog;
+        qDebug() << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << src ;
 
         //QMetaObject::invokeMethod(MainWindow, "msgBox", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int)) ));
 

@@ -50,6 +50,7 @@ public:
     void compute_canny_edge_from_sobel(_Texture &texture_sobel_mag_, _Texture &texture_sobel_theta_, _Texture &output_img);
 
     void compute_gradient_to_descrete_color(_Texture &input_img, _Texture &output_img);
+    void compute_mix_with_mask_rgba_r_rgba(_Texture &input_img_1, _Texture &mask_img, _Texture &input_img_2, _Texture &output_img);
 };
 
 #endif // _GPU_COMPUTE_H

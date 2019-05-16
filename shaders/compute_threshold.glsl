@@ -29,7 +29,7 @@ void main()
 {
     ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.xy);
 
-    uint thres = compute_threshold_inv(inputImage,image_pixel_cord);
+    uint thres = compute_threshold(inputImage,image_pixel_cord);
 
     setImagePixel(resultImage,image_pixel_cord,thres);
 

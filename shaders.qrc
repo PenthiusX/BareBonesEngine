@@ -29,5 +29,6 @@
         <file>shaders/compute_gradient_to_descrete_rgba_color.glsl</file>
         <file>shaders/compute_mask_image_rgba_r.glsl</file>
         <file>shaders/compute_create_region_image_mask.glsl</file>
+        <file>shaders/compute_mix_with_mask_rgba_r_rgba.glsl</file>
     </qresource>
 </RCC>
