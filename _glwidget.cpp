@@ -46,10 +46,10 @@ void _GLWidget::initializeGL()
     //
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
-        1.0,  1.0, 1.0f,	// top right
-        1.0f, -1.0f, 1.0f,  // bottom right
-        -1.0f, -1.0f, 1.0f, // bottom left
-        -1.0f,  1.0f, 1.0f  // top left
+        1.0,  1.0, 0.0f,	// top right
+        1.0f, -1.0f, 0.0f,  // bottom right
+        -1.0f, -1.0f, 0.0f, // bottom left
+        -1.0f,  1.0f, 0.0f  // top left
     };
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
@@ -81,7 +81,7 @@ void _GLWidget::initializeGL()
     s2.setId(2);
     s2.setTag("clickSurface");
     s2.setIsTransfomationLocal(false);
-    s2.setPosition(QVector3D(1.5,-0.0f, -0.0));
+    s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
     s2.setScale(1.0f);
     s2.setModelData(vertsV,indiceV);
@@ -96,9 +96,9 @@ void _GLWidget::initializeGL()
     scene->addCamera(cam);
 
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-    scene->addSceneObject(s);
-//    scene->addSceneObject(s1);
-//    scene->addSceneObject(s2);
+//  scene->addSceneObject(s);
+//  scene->addSceneObject(s1);
+    scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
 }
 /*
@@ -121,13 +121,13 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-    //this debug use code , sets camfocus on object with the iD that is selected---
+    //debug use,sets camfocus on object with the iD that is selected---
     for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
         if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
             cam.setFocalPoint(QVector3D(scene->getSceneObjects()[i]->getSceneEntity().getPostion()));
         }
     }
-    //--------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     scene->setMousePositionInScene(this->mousePositionR);//sets the mouse position in the scene for use in the scene
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
@@ -155,11 +155,13 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    //-----------------------------------------------------------
     for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
     {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
         if(scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject")
             scene->getSceneObjects()[i]->unProject(this->mousePressPosition);
     }
+    //-----------------------------------------------------------
 }
 /*
 * Function: mouseMoveEvent(QMouseEvent *e)
@@ -169,10 +171,17 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {   //selet button is pressed when updating mousevalues
+
     if(e->buttons() == Qt::LeftButton)
     {
+        //send values to unProject for the pointerObjet---------------
+        for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+        {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
+            if(scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject")
+                scene->getSceneObjects()[i]->unProject(QVector2D(e->localPos().x(),e->localPos().y()));
+        }
+        //-----------------------------------------------------------
         mousePositionL = QVector2D(e->localPos());
-
         //RotateTarget with mouse
         {
             QVector2D mosPosL = mousePressPosition;

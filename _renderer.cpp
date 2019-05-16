@@ -212,7 +212,8 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
                 glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
-    //qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getTag();
+
+//    qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getTag();
 }
 /*
 * Function: setProjectionMatrix(int w, int h)
@@ -227,6 +228,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
+
     qDebug() << "setProjectionMatrix() on entity" << this->sceneEntity.getTag();
 }
 /*
@@ -256,7 +258,6 @@ void _Renderer::setPosition(QVector3D pos)
             translationMatrix[3][1],
             translationMatrix[3][2]));
 }
-
 void _Renderer::translate(QVector3D pos)
 {
     this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
@@ -270,14 +271,14 @@ void _Renderer::translate(QVector3D pos)
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     }
     this->sceneEntity.setPosition(QVector3D(translationMatrix[3][0], //sets the actual matrix positons to the Entity
-            translationMatrix[3][1],
-            translationMatrix[3][2]));
+                                            translationMatrix[3][1],
+                                            translationMatrix[3][2]));
 }
 /*
  * Function: setRotation(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the rotation
- * Used by: _render class in draw()
+ * Used by: _glwidgetClass on mousemovement
  * Created: 1_03_2019
 */
 void _Renderer::setRotation(QVector3D rot)
@@ -300,7 +301,33 @@ void _Renderer::setRotation(QVector3D rot)
                               this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         rotationMatrix = glm::mat4_cast(quat);
-        glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+        glm_model4x4 =  rotationMatrix * translationMatrix * scalingMatrix;
+    }
+}
+/*
+ * Function: setRotationAroundPivot(QVector3D rot, QVector3D pivot)
+ * sets the rotation to be around an defined point
+ * Used by: _glwidgetClass on Mousemovement
+ * Created: 16_05_2019
+*/
+void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
+{
+    glm::mat4x4 tempTrans = translationMatrix;
+    if(!isTranfomationLocal)
+    {
+        rotationMatrix = glm::mat4x4(1.f);
+        translationMatrix = glm::mat4x4(1.f);
+        translationMatrix[3][0] = pivot.x();
+        translationMatrix[3][1] = pivot.y();
+        translationMatrix[3][2] = pivot.z();
+        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                              this->sceneEntity.getRotation().y(),
+                              this->sceneEntity.getRotation().z());
+        glm::quat quat = glm::quat(EulerAngles);
+        rotationMatrix = glm::mat4_cast(quat);
+        glm_model4x4 =  rotationMatrix * translationMatrix * scalingMatrix;
+        translationMatrix = tempTrans;
+        glm_model4x4 =  rotationMatrix * translationMatrix * scalingMatrix;
     }
 }
 /*
@@ -318,6 +345,8 @@ void _Renderer::setscale(float scale)
                                                         this->sceneEntity.getScale(),
                                                         this->sceneEntity.getScale()));
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+
+    qDebug() << "scaling";
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
@@ -402,7 +431,8 @@ void _Renderer::transitionColors()
     else if(this->sceneEntity.getTag() == "mousePointerObject")
         glUniform4f(colorUniform, r, g, b, .8f);
 }
-
+/*
+ */
 void _Renderer::unProject(QVector2D mousePressPosition)
 {
     // Where The Viewport Values Will Be Stored
@@ -456,8 +486,10 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     ray_wor = glm::normalize(ray_wor);
     qDebug() << ray_wor.x << ray_wor.y << ray_wor.z;
 
-    if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,0.0,0.0),2,ray_wor,this->camPos) == true)
+    if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,0.0,0.0),1,ray_wor,this->camPos) == true)
         setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
+
+
 }
 
 bool _Renderer::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin)

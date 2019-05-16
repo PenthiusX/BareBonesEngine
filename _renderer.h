@@ -46,6 +46,7 @@ public:
     void setPosition(QVector3D pos);//resets the positon to the value that is required
     void translate(QVector3D pos);//update the current positon with the value that is set
     void setRotation(QVector3D rot);
+    void setRotationAroundPivot(QVector3D rot,QVector3D pivot);
     void setscale(float scale);
 
     void setSceneEntityInRenderer(_SceneEntity s);
