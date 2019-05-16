@@ -43,7 +43,7 @@ void _ScanCaliberationSection::init()
         ui->line_laser_slider_box->setValue(machine->config["Hardware"]["Controls"]["LineLaser"]["Data"]["Caliberation"].getFloatEntity("VALUE"));
 
         //parentWidget()->  setCurrentWidget(ui->light_caliberation_section);
-        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(markLineLaser(char* ,unsigned int,unsigned int))));
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int))));
 
         if(dynamic_cast<QStackedWidget*>(parentWidget()))
         {

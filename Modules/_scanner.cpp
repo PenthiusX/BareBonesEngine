@@ -113,7 +113,7 @@ void _Scanner::scan_generate_model()
 
     for(int t = 0;t<200;t++)
     {
-        QString filename = QString("scan_image_stage_%1.pgm").arg(t);
+        QString filename = QString("scan_image_stage_%1").arg(t);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
         //QThread::msleep(100);

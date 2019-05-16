@@ -30,7 +30,6 @@ public:
 
 protected:
     char *byteframe = nullptr;
-    char *image_header = nullptr;
     int Width = MAX_FRAME_WIDTH;
     int Height = MAX_FRAME_HEIGHT;
     FILE* imagefile;

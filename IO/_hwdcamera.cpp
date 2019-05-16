@@ -1,6 +1,9 @@
 #include "_hwdcamera.h"
 #include <QDebug>
 #include <QDir>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 _HWDCamera::_HWDCamera()
 {
@@ -20,7 +23,6 @@ _HWDCamera::~_HWDCamera()
 int _HWDCamera::init(int v)
 {
     byteframe = new char[Width*Height];
-    image_header = new char[17];
     return 0;
 }
 
@@ -44,6 +46,16 @@ int _HWDCamera::grab_frame()
     return 0;
 }
 
+/* Function : grab_frame(QString filename)\
+ * this function read image from .pgm file when no camera is connected
+ * fisrt lie contains "P5"
+ * the second line of .pgm file contains "<width> <height> <intensity_max>"
+ * eg:
+ *      P5
+ *      1360 1024 255
+ *      <binary_image_data>
+ *
+*/
 int _HWDCamera::grab_frame(QString filename)
 {
     //qDebug() <<"fallback camera grabframe";
@@ -54,14 +66,21 @@ int _HWDCamera::grab_frame(QString filename)
 
     if( imagefile == NULL) {
         qDebug() << "Can't open:" << filename;
+        fclose(imagefile);
+        return 0;
     }
+    char line[30];
+    fgets(line,30,imagefile);
+    fgets(line,30,imagefile);
+    QString resolution_line = QString::fromUtf8(line);
+    QStringList resolution = resolution_line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    Width = resolution[0].toInt();
+    Height = resolution[1].toInt();
 
-    fread(image_header, 17, 1, imagefile);
     fread(byteframe, Width*Height, 1, imagefile);
     fclose(imagefile);
 
-    qDebug() << "opened avt: " << filename;
-    return 0;
+    return 1;
 }
 
 void _HWDCamera::set_image_dir(QString dir)
