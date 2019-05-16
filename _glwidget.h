@@ -39,8 +39,8 @@ private:
     QOpenGLContext *context;
 
     _Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
-    _SceneEntity s, s1,s2,mpoint;
-    _SceneEntity background_quad;
+    _SceneEntity s, s1,s2,mpoint;//custom Objects
+    _SceneEntity background_quad,pivot;//default sceneobjects
     _AssetLoader assetLoader;
     _Camera cam;
 
