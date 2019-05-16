@@ -80,10 +80,14 @@ void _Scene::addCamera(_Camera c)
 */
 void _Scene::updateCamera(_Camera c)
 {
-	for (unsigned int i = 0; i < renderObjects.size(); i++)
-	{
-		renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
-	}
+    if(isCamera == true)
+    {
+        for (unsigned int i = 0; i < renderObjects.size(); i++)
+        {
+            renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
+        }
+    }
+
 }
 /*
  * Function: onResize(int w,int h)
