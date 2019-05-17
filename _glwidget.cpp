@@ -63,36 +63,36 @@ void _GLWidget::initializeGL()
     background_quad.setScale(1.0);
     background_quad.setModelData(vertsV,indiceV);
     //default object
-    pivot.setId(0);
-    pivot.setTag("pivot");
-    pivot.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
-    pivot.setScale(.5);
-    pivot.setModelData(":/models/pivot.obj");
+//    pivot.setId(0);
+//    pivot.setTag("pivot");
+//    pivot.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+//    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
+//    pivot.setScale(.5);
+//    pivot.setModelData(":/models/pivot.obj");
     //
-    s.setId(2);
+    s.setId(1);
     s.setTag("object1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setPosition(QVector3D(0.0,0.0, 0.0));
-    s.setScale(2.0f);
+    s.setScale(0.05f);
     s.setModelData(":/models/sphere.obj");
     //
-    s1.setId(3);
+    s1.setId(2);
     s1.setTag("object2");
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,0.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s1.setScale(1.0f);
+    s1.setScale(0.05f);
     s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
     //
-    s2.setId(1);
+    s2.setId(3);
     s2.setTag("clickSurface");
     s2.setIsTransfomationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
     s2.setScale(1.0f);
-    s2.setPivot(QVector3D(2.0,0.0,0.0));
+//  s2.setPivot(QVector3D(2.0,0.0,0.0));
     s2.setModelData(vertsV,indiceV);
     //
     mpoint.setId(10);
@@ -106,7 +106,7 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-    scene->addSceneObject(s2);
+//    scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
 }
 /*
@@ -198,7 +198,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
                 mosPosL = maxpoint;
             }
             double damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
-            rotRads = rotRads + mousePositionL - mosPosL;
+            rotRads  += mousePositionL - mosPosL;
             for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
                 if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
                     scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));

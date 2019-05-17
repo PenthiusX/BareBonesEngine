@@ -11,9 +11,12 @@
 */
 _AssetLoader::_AssetLoader()
 {
+    vertMax.setX(0.0);
+    vertMax.setY(0.0);
 }
 _AssetLoader::~_AssetLoader()
 {
+
 }
 /*
 * Function:getAssetVertices()
@@ -62,18 +65,21 @@ void _AssetLoader::objLoader(QString pathToFile)
         ssv >> temp;
         if (std::stringstream(temp) >> foundf)
         {
-            vertices.push_back(foundf - 1);
+            vertices.push_back(foundf);
             posCounter++;
         }
         temp = "";
         //assigning the max and min values for vertices
-        if(posCounter >= 3)
+        if(posCounter >= 3 && (arrayCounter + 2) < vertices.size())
         {
             posCounter = 0;
-            if(vertices[arrayCounter] > vertMax.x())
-                vertMax.x() > vertices[arrayCounter];
-            else if(vertices[arrayCounter] > vertMax.y())
-                vertMax.y() > vertices[arrayCounter];
+            if(vertices[arrayCounter] >= vertMax.x())
+                vertMax.setX(vertices[arrayCounter]);
+            if(vertices[arrayCounter + 1] >= vertMax.y())
+                vertMax.setY(vertices[arrayCounter + 1]);
+            if(vertices[arrayCounter + 2] >= vertMax.z())
+                vertMax.setZ(vertices[arrayCounter + 2]);
+            arrayCounter += 3;
         }
     }
 
