@@ -30,5 +30,9 @@
         <file>shaders/compute_mask_image_rgba_r.glsl</file>
         <file>shaders/compute_create_region_image_mask.glsl</file>
         <file>shaders/compute_mix_with_mask_rgba_r_rgba.glsl</file>
+        <file>shaders/compute_saturate_color.glsl</file>
+        <file>../DiamondPal/shaders/compute_gradient_to_descrete_rgba_color_value.glsl</file>
+        <file>shaders/compute_mask_image_r_r.glsl</file>
+        <file>shaders/compute_mark_hough_wave.glsl</file>
     </qresource>
 </RCC>

@@ -2,7 +2,8 @@
 #include <_shader.h>
 #include <QDebug>
 #include <_tools.h>
-
+#include <vector>
+#include <cmath>
 
 /* _GPU_Compute Class
  * for handling all compute operations
@@ -548,6 +549,31 @@ void _GPU_Compute::compute_mix_with_mask_rgba_r_rgba(_Texture& input_img_1,_Text
 
 }
 
+void _GPU_Compute::computeMaskImageRR(_Texture& input_img,_Texture& mask_img,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_mask_image_r_r.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    mask_img.bindForCompute(1,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(2,GL_R8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 void _GPU_Compute::create_region_image_mask(_Texture &output_img, glm::ivec4 region)
 {
     //8 bit image as 255-0 mask
@@ -601,6 +627,30 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img,un
 
 }
 
+void _GPU_Compute::compute_saturate_color(_Texture& input_img,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_saturate_color.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_RGBA8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_RGBA8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 void _GPU_Compute::compute_gradient_to_descrete_color(_Texture& texture_sobel_mag_,_Texture& texture_sobel_theta_,_Texture& output_img)
 {
     static _Shader shader;
@@ -625,6 +675,152 @@ void _GPU_Compute::compute_gradient_to_descrete_color(_Texture& texture_sobel_ma
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 }
 
+void _GPU_Compute::computeGradientToDescreteColorAndValue(_Texture& texture_sobel_mag_,_Texture& texture_sobel_theta_,_Texture& output_img,_Texture& output_img_value)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(texture_sobel_mag_.getWidth(), texture_sobel_mag_.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_gradient_to_descrete_rgba_color_value.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    texture_sobel_mag_.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    texture_sobel_theta_.bindForCompute(1,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(2,GL_RGBA8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+}
+
+std::vector<_GPU_Compute::LineEquation> _GPU_Compute::computeHoughLines(_Texture& texture_edge,_Texture& texture_hough_space)
+{
+    std::vector<LineEquation> equations;
+
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(texture_edge.getWidth(), texture_edge.getHeight());
+
+    //static _Texture texture_hough_space(nullptr,720,glm::sqrt((texture_edge.getWidth()^2)+(texture_edge.getHeight()^2)));
+
+    //texture_hough_space.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+
+//    //if shader not initialized
+//    if(shader.getShaderProgram() == 0)
+//    {
+//        shader.setChildShader(":/shaders/compute_gradient_to_descrete_rgba_color_value.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+//        shader.attachShaders();
+//        qDebug() << "shader initialized";
+//    }
+
+    char *colorFrame = get_texture_image_framebuffer(texture_edge);
+
+    texture_hough_space.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+
+    //QImage::fromData(colorFrame);
+
+    glUniform3i(6,315,946,761);
+
+    unsigned int index=0;
+
+    for (unsigned int w = 0; w < texture_edge.getWidth(); w++) {
+        for (unsigned int h = 0; h < texture_edge.getHeight(); h++) {
+            index = texture_edge.getWidth()*h+w;
+            if(colorFrame[index]!=0)
+            {
+                computeMarkHoughWave(texture_hough_space,glm::ivec2(w,h));
+            }
+        }
+    }
+
+//    texture_sobel_mag_.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+//    texture_sobel_theta_.bindForCompute(1,GL_R8UI,GL_READ_ONLY);
+//    output_img.bindForCompute(2,GL_RGBA8UI,GL_WRITE_ONLY);
+
+//    shader.useShaderProgram();
+
+    colorFrame = get_texture_image_framebuffer(texture_hough_space);
+
+    LineEquation left_vert,right_vert,middle_hor;
+    int left_vert_max=0,right_vert_max=0,middle_hor_max=0;
+
+    //highly jugaad implementation needs to be corrected afterwards
+    for (unsigned int w = 0; w < texture_hough_space.getWidth(); w++) {
+        for (unsigned int h = 0; h < texture_hough_space.getHeight(); h++) {
+            index = texture_edge.getWidth()*h+w;
+            uchar value = colorFrame[index];
+            if(value!=0)
+            {
+                if(w<(texture_hough_space.getWidth()/2))
+                {
+                    if(middle_hor_max>value)
+                    {
+                        middle_hor_max=value;
+                        middle_hor.r=(h*2)-texture_hough_space.getHeight();
+                        middle_hor.theta=w-(texture_hough_space.getWidth()/4);
+                    }
+                }
+                else {
+                    if(h<(texture_hough_space.getHeight()/4))
+                    {
+                        if(middle_hor_max>value)
+                        {
+                            left_vert_max=value;
+                            left_vert.r=(h*2)-texture_hough_space.getHeight();
+                            left_vert.theta=w-(texture_hough_space.getWidth()/4);
+                        }
+                    }
+                    else {
+                        if(middle_hor_max>value)
+                        {
+                            right_vert_max=value;
+                            right_vert.r=(h*2)-texture_hough_space.getHeight();
+                            right_vert.theta=w-(texture_hough_space.getWidth()/4);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    _Tools::SaveImageToPgm(colorFrame,texture_hough_space.getWidth(),texture_hough_space.getHeight(),"texture_hough_space.pgm");
+
+    return equations;
+}
+
+void _GPU_Compute::computeMarkHoughWave(_Texture& output_img,glm::ivec2 cordinate)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(output_img.getWidth(),1,_ROW_WISE_LOCAL_GROUP);
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_mark_hough_wave.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    output_img.bindForCompute(0,GL_R32I,GL_READ_WRITE);
+
+    shader.useShaderProgram();
+
+    glUniform2i(0,cordinate.x,cordinate.y);
+    glUniform2i(1,output_img.getWidth(),output_img.getHeight());
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 float _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img)
 {
     static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
@@ -634,14 +830,18 @@ float _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img
     static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_hough_space(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
 
     texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_mask.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_mask_inv.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_descrete_gradient_value.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_rgba.load(GL_RGBA,GL_UNSIGNED_BYTE);
     texture_out_rgba.load(GL_RGBA,GL_UNSIGNED_BYTE);
+    texture_hough_space.load(GL_R32I,GL_RED_INTEGER, GL_INT);
 
     //compute_guassian_blur_5_5(input_img,texture_blur);
     //compute_canny_edge(input_img,texture_edge);
@@ -663,7 +863,9 @@ float _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img
 
     //compute_copy_red_to_rgba(input_img,texture_out_rgba);
 
-    compute_gradient_to_descrete_color(texture_sobel_mag_,texture_sobel_theta_,output_img);
+    //compute_gradient_to_descrete_color(texture_sobel_mag_,texture_sobel_theta_,output_img);
+
+    computeGradientToDescreteColorAndValue(texture_sobel_mag_,texture_sobel_theta_,output_img,texture_descrete_gradient_value);
 
     create_region_image_mask(texture_mask,glm::ivec4(16,16,input_img.getWidth()-16,input_img.getHeight()-16));
 
@@ -673,10 +875,23 @@ float _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img
 
     compute_mask_image_rgba_r(texture_out_rgba,texture_mask,texture_rgba);
 
+    compute_saturate_color(texture_rgba,texture_rgba);
+
     compute_copy_red_to_rgba(input_img,output_img);
 
     compute_mix_with_mask_rgba_r_rgba(texture_rgba,texture_mask,output_img,output_img);
 
+    create_region_image_mask(texture_edge,glm::ivec4(16,16,input_img.getWidth()-16,input_img.getHeight()-16));
+
+    computeMaskImageRR(texture_mask,texture_edge,texture_edge);
+
+    compute_copy_red_to_rgba(texture_edge,output_img);
+
+    std::vector<LineEquation> equations = computeHoughLines(texture_edge,texture_hough_space);
+
+
+
+    //computeGetVerticalGradientAngle()
 
 //    static _Shader shader;
 //    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
@@ -797,7 +1012,7 @@ void _GPU_Compute::compute_canny_edge_from_sobel(_Texture& texture_sobel_mag_,_T
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 }
-char* _GPU_Compute::get_texture_image_framebuffer(_Texture& input_img)
+char* _GPU_Compute::get_texture_image_framebuffer(_Texture& input_img,unsigned int format)
 {
     static unsigned int framebuffer=0,renderbuffer=0;
     static char* colorFrame=nullptr;
@@ -823,11 +1038,10 @@ char* _GPU_Compute::get_texture_image_framebuffer(_Texture& input_img)
     glViewport(0, 0, input_img.getWidth(), input_img.getHeight());
 
     input_img.bindForFramebuffer();
-    unsigned int format = input_img.getColorformat();
+
+    if(format==0) format = input_img.getColorformat();
 
     glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),format, GL_UNSIGNED_BYTE,colorFrame);
-
-    format = GL_RED;
 
     return colorFrame;
 }

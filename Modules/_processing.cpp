@@ -240,7 +240,6 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
     //static _Texture texture_thres(nullptr,iwidth,iheight);
     static _Texture texture_edge(nullptr,iwidth,iheight);
     static _Texture texture_out(nullptr,iwidth,iheight);
-    //static _Texture texture_outt(nullptr,iwidth,iheight);
 
     if(init)
     {
@@ -249,7 +248,6 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
     //texture_thres.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
-    //texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
 
     //texture.unbind();
     init = false;
@@ -283,7 +281,7 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
 
 
     //histogram(gpu_compute->get_texture_image_framebuffer(texture_edge),iwidth,iheight);
-    emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out),iwidth,iheight);
+    emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
 }
 
 /* function: makeCurrent

@@ -22,9 +22,6 @@ ivec2 getPixelCord(){
 void main()
 {
        ivec2 image_pixel_cord = getPixelCord();
-       //ivec2 image_pixel_cord = i
-
-       vec2(gl_GlobalInvocationID.xy);
 
        uint a = getImagePixel(inputImage,image_pixel_cord);
        setImagePixel(resultImage,ivec2(mod(a,256*256),image_pixel_cord.y),255);

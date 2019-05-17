@@ -18,6 +18,13 @@ class _GPU_Compute : private QOpenGLExtraFunctions
         glm::vec3 NumWorkGroups;
         glm::vec3 WorkGroupSize;
     };
+
+    struct LineEquation
+    {
+        int r;
+        int theta;
+    };
+
 public:
     _GPU_Compute();
 
@@ -41,7 +48,7 @@ public:
     void compute_divide_mark_column_index(_Texture &input_img, _Texture &input_img2, _Texture &output_img);
     void compute_copy_red_to_rgba(_Texture &input_img, _Texture &output_img);
     float compute_stage_angle(_Texture &input_img, _Texture &output_img);
-    char *get_texture_image_framebuffer(_Texture &input_img);
+    char *get_texture_image_framebuffer(_Texture &input_img,unsigned int format=0);
     //void compute_gradient_to_descrete_color(_Texture &input_mag, _Texture &input_theta, _Texture &output_img);
     //void compute_gradient_to_descrete_color(_Texture &input_img, _Texture &output_img);
     void compute_mask_image_rgba_r(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
@@ -51,6 +58,12 @@ public:
 
     void compute_gradient_to_descrete_color(_Texture &input_img, _Texture &output_img);
     void compute_mix_with_mask_rgba_r_rgba(_Texture &input_img_1, _Texture &mask_img, _Texture &input_img_2, _Texture &output_img);
+    void compute_saturate_color(_Texture &input_img, _Texture &output_img);
+    void computeGradientToDescreteColorAndValue(_Texture &texture_sobel_mag_, _Texture &texture_sobel_theta_, _Texture &output_img, _Texture &output_img_value);
+    void computeMaskImageRR(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
+    //std::vector<LineEquation> computeHoughLines(_Texture &texture_sobel_mag_);
+    void computeMarkHoughWave(_Texture &output_img, glm::ivec2 cordinate);
+    std::vector<_GPU_Compute::LineEquation> computeHoughLines(_Texture &texture_edge, _Texture &texture_hough_space);
 };
 
 #endif // _GPU_COMPUTE_H

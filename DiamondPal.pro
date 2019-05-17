@@ -100,9 +100,9 @@ DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 DEFINES += MAX_FRAME_WIDTH=1360
 DEFINES += MAX_FRAME_HEIGHT=1024
 
-#DEFINES += PICOLO_CAMERA=true
+DEFINES += PICOLO_CAMERA=true
 #DEFINES += AVT_CAMERA=true
-DEFINES += NO_CAMERA=true
+#DEFINES += NO_CAMERA=true
 
 linux-g++ { #check if platform is linux
 message(Linux)
