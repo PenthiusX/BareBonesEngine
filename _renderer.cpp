@@ -355,8 +355,7 @@ void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
                               this->sceneEntity.getRotation().z());
         glm::quat quat = glm::quat(EulerAngles);
         rotationMatrix = glm::mat4_cast(quat);
-        glm_model4x4 = rotationMatrix * pivotTmat * scalingMatrix;
-        glm_model4x4 *= translationMatrix;
+        glm_model4x4 = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
     }
 
     //get the real position values from the modelMatrix
@@ -502,7 +501,7 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     qDebug() << glGetError();
     qDebug() << mousePressPosition <<"-index"<< index;
 */
-    //qDebug() << mousePressPosition;
+    // qDebug() << mousePressPosition;
     // viewport coordinate system
     // normalized device coordinates
     auto x = (2.0f * mousePressPosition.x()) / viewport[2] - 1.0f;
