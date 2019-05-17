@@ -76,7 +76,7 @@ void _GLWidget::initializeGL()
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setPosition(QVector3D(0.0,0.0, 0.0));
     s.setScale(0.05f);
-    s.setModelData(":/models/sphere.obj");
+    s.setModelData(":/models/car.obj");
     //
     s1.setId(2);
     s1.setTag("object2");
