@@ -11,6 +11,7 @@ _SceneEntity::_SceneEntity()
     this->scale = 1.0;
     this->isActive = false;
     this->isTransfomationLocal = false;
+    this->isPivotSet = false;
     this->tag = new char();
 }
 /*
@@ -95,10 +96,16 @@ QVector3D _SceneEntity::getRotation() const
 void _SceneEntity::setPivot(QVector3D pivot)
 {
     this->pivot = pivot;
+    isPivotSet = true;
 }
 QVector3D _SceneEntity::getPivot()
 {
     return this->pivot;
+}
+//return if the pivot is set or not
+bool _SceneEntity::getIsPivotSet()
+{
+    return this->isPivotSet;
 }
 /*
  * Function: setScale(float scale) & getScale()

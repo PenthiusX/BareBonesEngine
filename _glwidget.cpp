@@ -92,6 +92,7 @@ void _GLWidget::initializeGL()
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
     s2.setScale(1.0f);
+    s2.setPivot(QVector3D(2.0,0.0,0.0));
     s2.setModelData(vertsV,indiceV);
     //
     mpoint.setId(10);
@@ -200,8 +201,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             rotRads = rotRads + mousePositionL - mosPosL;
             for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
                 if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
-                    scene->getSceneObjects()[i]->setRotationAroundPivot(QVector3D(0.0/*rotRads.y() * damp*/, rotRads.x() * damp, 0.f),QVector3D(0.5,0.0,0.0));
-//                    scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
+                    scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
                 }
                 if(this->scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject"){
                     this->scene->getSceneObjects()[i]->getSceneEntity().setPosition(QVector3D(0.10,0.0,0.0));

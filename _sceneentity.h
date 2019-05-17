@@ -30,6 +30,7 @@ public:
     void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
     QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
     void setPivot(QVector3D pivot);//sets the pivot point to rotate around
+    bool getIsPivotSet();
     QVector3D getPivot();//gets the pivot point to rotate around
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
     float getScale() const;//get the float  value of the rotation of the relavant object instance.
@@ -78,6 +79,7 @@ private:
     void setnormalData(std::vector<float> normalData);//sets the normal data.
     //
     bool isTransfomationLocal;
+    bool isPivotSet;
 };
 
 #endif // _SCENEENTITY_H
