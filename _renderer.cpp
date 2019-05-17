@@ -452,18 +452,33 @@ void _Renderer::_Renderer::draw()
  * based on the tag attached to the scenceObjects
  * hot reloding of shaders also needs to be implemented instead
 */
+
+bool shift = false;
 void _Renderer::transitionColors()
 {
     double r = abs(cos(timer.elapsed() * 0.002));
     double g = abs(sin(timer.elapsed() * 0.003));
     double b = abs(cos(timer.elapsed() * 0.005));
     //  glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
-    if(this->sceneEntity.getTag() == "object1")
-        glUniform4f(colorUniform, 0.5, 0.5,0.5, 1.0f);
-    else if(this->sceneEntity.getTag() == "object2")
-        glUniform4f(colorUniform, 1.0, 0.0, 0.0, .3f);
-    else if(this->sceneEntity.getTag() == "mousePointerObject")
-        glUniform4f(colorUniform, r, g, b, .8f);
+//    if(shift == false)
+//    {
+//        if(this->sceneEntity.getTag() == "object1")
+//            glUniform4f(colorUniform, 0.5, 0.5,0.5, 0.3f);
+//        else if(this->sceneEntity.getTag() == "object2")
+//            glUniform4f(colorUniform, 1.0, 0.0, 0.0, .3f);
+//        else if(this->sceneEntity.getTag() == "mousePointerObject")
+//            glUniform4f(colorUniform, r, g, b, .8f);
+//    }
+//    else if(shift == true)
+//    {
+//        if(this->sceneEntity.getTag() == "object1")
+//            glUniform4f(colorUniform, 0.5, 0.5,0.5, 1.0f);
+//        else if(this->sceneEntity.getTag() == "object2")
+//            glUniform4f(colorUniform, 1.0, 0.0, 0.0, 1.0f);
+//        else if(this->sceneEntity.getTag() == "mousePointerObject")
+//            glUniform4f(colorUniform, r, g, b, .8f);
+//    }
+     glUniform4f(colorUniform, r, g, b, .8f);
 }
 /*
  *
@@ -519,9 +534,15 @@ void _Renderer::unProject(QVector2D mousePressPosition)
     glm::vec3 ray_wor = glm::inverse(glm_view4x4) * rayEye;
     // don't forget to normalise the vector at some point
     ray_wor = glm::normalize(ray_wor);
-    //    qDebug() << ray_wor.x << ray_wor.y << ray_wor.z;
-    //    if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,0.0,0.0),1,ray_wor,this->camPos) == true)
-    //        setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
+
+//        qDebug() << ray_wor.x << ray_wor.y << ray_wor.z;
+        if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,2.0,0.0),1,ray_wor,this->camPos) == true){
+            setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
+            shift = false;}
+        if(this->sceneEntity.getTag() == "mousePointerObject" && hitSphere(glm::vec3(0.0,-2.0,0.0),1,ray_wor,this->camPos) == true){
+            setPosition(QVector3D(ray_wor.x,ray_wor.y,ray_wor.z));
+            shift = true;
+        }
 }
 /*
  *

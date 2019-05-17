@@ -3,11 +3,15 @@
 #include <QString>
 
 
-//Commonly used Functions
 
+
+//Commonly used Functions
+QElapsedTimer timer;
+unsigned int frameCounter;
 _Tools::_Tools()
 {
-
+    timer.start();
+    frameCounter = 0;
 }
 /*
  * Function:ReadStringFromQrc(QString Filename)
@@ -59,4 +63,25 @@ void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
         qInfo() << mat4[i][0] <<" "<< mat4[i][1] <<" "<< mat4[i][2] <<" "<< mat4[i][3];
     }
     qInfo() << "----------------------------------------------------";
+}
+
+
+void _Tools::printFrameRate()
+{
+    frameCounter++;
+    int t = timer.elapsed()/1000;
+    int interval = 1;
+//    qDebug() << t;
+    if(t > interval)
+    {
+        qInfo() <<"Framerate:"<< frameCounter / interval;
+        frameCounter = 0;
+        timer.restart();
+    }
+}
+
+float _Tools::getRandomNumberfromRange(float min, float max)
+{
+//    std::srand(timer.elapsed());
+    return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
 }

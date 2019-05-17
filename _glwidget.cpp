@@ -74,16 +74,16 @@ void _GLWidget::initializeGL()
     s.setTag("object1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s.setPosition(QVector3D(0.0,0.0, 0.0));
-    s.setScale(0.05f);
-    s.setModelData(":/models/car.obj");
+    s.setPosition(QVector3D(0.0,2.0, 0.0));
+    s.setScale(1.0f);
+    s.setModelData(":/models/sphere.obj");
     //
     s1.setId(2);
     s1.setTag("object2");
     s1.setIsTransfomationLocal(false);
-    s1.setPosition(QVector3D(0.0,0.0, 0.0));
+    s1.setPosition(QVector3D(0.0,-5.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s1.setScale(0.05f);
+    s1.setScale(4.0f);
     s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
     //
     s2.setId(3);
@@ -92,22 +92,36 @@ void _GLWidget::initializeGL()
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
     s2.setScale(1.0f);
-//  s2.setPivot(QVector3D(2.0,0.0,0.0));
+    s2.setPivot(QVector3D(2.0,0.0,0.0));
     s2.setModelData(vertsV,indiceV);
     //
     mpoint.setId(10);
     mpoint.setTag("mousePointerObject");
     mpoint.setIsTransfomationLocal(false);
     mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    mpoint.setScale(.1f);
+    mpoint.setScale(.05f);
     mpoint.setModelData(s.getvertexData(),s.getIndexData());
     //
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-//    scene->addSceneObject(s2);
+    scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
+    //
+    /*
+    for(int i = 5 ; i < 1000 ; i ++)
+    {
+        s.setId(i);
+        s.setIsTransfomationLocal(false);
+        s.setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
+        s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        s.setScale(_Tools::getRandomNumberfromRange(1,5));
+        s.setModelData(s1.getvertexData(),s1.getIndexData());//dont need to reparse modelfile
+        scene->addSceneObject(s);
+        qInfo() << i <<"th object";
+    }
+    */
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -140,6 +154,7 @@ void _GLWidget::paintGL()//the renderloop
     scene->setMousePositionInScene(this->mousePositionR);//sets the mouse position in the scene for use in the scene
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
+    _Tools::printFrameRate();//prints the frame rate in the application output
 }
 /*
 * Function: mousePressEvent(QMouseEvent *e)
@@ -166,7 +181,6 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     //-----------------------------------------------------------
     for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
     {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-        if(scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject")
             scene->getSceneObjects()[i]->unProject(this->mousePressPosition);
     }
     //-----------------------------------------------------------
@@ -185,7 +199,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
         //send values to unProject for the pointerObjet---------------
         for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
         {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-            if(scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject")
                 scene->getSceneObjects()[i]->unProject(QVector2D(e->localPos().x(),e->localPos().y()));
         }
         //-----------------------------------------------------------

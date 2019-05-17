@@ -31,7 +31,7 @@ public:
     QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
     void setPivot(QVector3D pivot);//sets the pivot point to rotate around
     bool getIsPivotSet();
-    QVector3D getPivot();//gets the pivot point to rotate around
+    QVector3D getPivot() const;//gets the pivot point to rotate around
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
     float getScale() const;//get the float  value of the rotation of the relavant object instance.
     //

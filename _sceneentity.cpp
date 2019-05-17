@@ -98,7 +98,7 @@ void _SceneEntity::setPivot(QVector3D pivot)
     this->pivot = pivot;
     isPivotSet = true;
 }
-QVector3D _SceneEntity::getPivot()
+QVector3D _SceneEntity::getPivot() const
 {
     return this->pivot;
 }
