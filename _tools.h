@@ -6,6 +6,7 @@
 #include <QVector3D>
 #include <QVector2D>
 #include <cstdlib>  // For srand() and rand()
+#include <vector>
 #include <QElapsedTimer>
 #include <glm/glm.hpp>
 
@@ -31,6 +32,8 @@ public:
     static void Debugmatrix4x4(glm::mat4x4 mat4);
     static void printFrameRate();
     static float getRandomNumberfromRange(float min , float max);
+
+private:
 
 };
 
