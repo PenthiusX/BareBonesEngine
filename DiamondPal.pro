@@ -30,7 +30,8 @@ HEADERS  += mainwindow.h \
            Modules/_scanner.h \
            _tools.h \
     _framebuffer.h \
-    _compute.h
+    _compute.h \
+    _physics.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -51,7 +52,8 @@ SOURCES += main.cpp\
            Modules/_scanner.cpp \
            _tools.cpp \
     _framebuffer.cpp \
-    _compute.cpp
+    _compute.cpp \
+    _physics.cpp
 
 FORMS    += mainwindow.ui
 

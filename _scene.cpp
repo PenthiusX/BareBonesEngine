@@ -87,7 +87,6 @@ void _Scene::updateCamera(_Camera c)
             renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
         }
     }
-
 }
 /*
  * Function: onResize(int w,int h)

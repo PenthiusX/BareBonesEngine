@@ -1,6 +1,7 @@
 #include <iostream>
 #include "_glwidget.h"
 #include "_tools.h"
+#include "_physics.h"
 
 /*
  * The _GLWidget Class:
@@ -104,8 +105,8 @@ void _GLWidget::initializeGL()
     //
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-    scene->addSceneObject(s);
-    scene->addSceneObject(s1);
+//    scene->addSceneObject(s);
+//    scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
     //
@@ -122,6 +123,10 @@ void _GLWidget::initializeGL()
         qInfo() << i <<"th object";
     }
     */
+
+    _Physics p;
+    std::vector<_Phy_Triangle> pv;
+    p.filltrianglesfromVerIndexArrays(s.getvertexData(),s.getIndexData());
 }
 /*
  * Function: resizeGL(int w, int h) overides the
