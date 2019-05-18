@@ -23,6 +23,7 @@ signals:
     void outputImage(char *img, unsigned int iwidth, unsigned int iheight);
     void outputImage2(char *img, unsigned int iwidth, unsigned int iheight);
     void inputImageRecived(char *img, unsigned int iwidth, unsigned int iheight);
+    void stageCenterAngleOut(float center_x,float center_y,float angle);
 
 public slots:
     void inputImage(char *img, unsigned int iwidth, unsigned int iheight);

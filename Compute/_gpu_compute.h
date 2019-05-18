@@ -22,7 +22,13 @@ class _GPU_Compute : private QOpenGLExtraFunctions
     struct LineEquation
     {
         int r;
-        int theta;
+        float theta;
+    };
+
+    struct LineEquationMC
+    {
+        float m;
+        float c;
     };
 
 public:
@@ -47,7 +53,7 @@ public:
     void compute_row_wise_mean(_Texture &input_img, _Texture &output_img);
     void compute_divide_mark_column_index(_Texture &input_img, _Texture &input_img2, _Texture &output_img);
     void compute_copy_red_to_rgba(_Texture &input_img, _Texture &output_img);
-    float compute_stage_angle(_Texture &input_img, _Texture &output_img);
+    glm::vec3 compute_stage_angle(_Texture &input_img, _Texture &output_img);
     char *get_texture_image_framebuffer(_Texture &input_img,unsigned int format=0);
     //void compute_gradient_to_descrete_color(_Texture &input_mag, _Texture &input_theta, _Texture &output_img);
     //void compute_gradient_to_descrete_color(_Texture &input_img, _Texture &output_img);
@@ -64,6 +70,11 @@ public:
     //std::vector<LineEquation> computeHoughLines(_Texture &texture_sobel_mag_);
     void computeMarkHoughWave(_Texture &output_img, glm::ivec2 cordinate);
     std::vector<_GPU_Compute::LineEquation> computeHoughLines(_Texture &texture_edge, _Texture &texture_hough_space);
+    char *getTextureImageFramebuffer(_Texture &input_img, unsigned int format=0);
+    void compute_clear_32_i_texture(_Texture &input_img, unsigned int value);
+    void computeFrom32iTo8uiDevide(_Texture &input_img, _Texture &output_img, unsigned int devide_value=1);
+
+    LineEquationMC convertLineEquationPolarToMc(_GPU_Compute::LineEquation eqn);
 };
 
 #endif // _GPU_COMPUTE_H

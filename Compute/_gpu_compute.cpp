@@ -5,6 +5,8 @@
 #include <vector>
 #include <cmath>
 
+#define PI 3.1415926535897932384626433832795
+
 /* _GPU_Compute Class
  * for handling all compute operations
  * should be created when a gl context is active
@@ -83,7 +85,31 @@ void _GPU_Compute::compute_copy_32_to_8(_Texture &input_img, _Texture &output_im
 
     shader.useShaderProgram();
 
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+void _GPU_Compute::computeFrom32iTo8uiDevide(_Texture &input_img, _Texture &output_img,unsigned int devide_value)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_devide_32_to_8.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R32I,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glUniform1ui(0,devide_value);
 
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -241,6 +267,33 @@ void _GPU_Compute::compute_clear_8_ui_texture(_Texture& input_img,unsigned int v
     }
 
     input_img.bindForCompute(0,GL_R8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glUniform1ui(0,value);
+
+    //calculate size of workgroups based on image resolution here
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+void _GPU_Compute::compute_clear_32_i_texture(_Texture& input_img,unsigned int value)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_clear_32_ui_texture.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R32I,GL_WRITE_ONLY);
 
     shader.useShaderProgram();
 
@@ -706,6 +759,10 @@ std::vector<_GPU_Compute::LineEquation> _GPU_Compute::computeHoughLines(_Texture
     static _Shader shader;
     static GroupSize groupsize = getWorkGroupSize(texture_edge.getWidth(), texture_edge.getHeight());
 
+    static _Texture texture_hough_space_8_bit(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
+
+    texture_hough_space_8_bit.load(GL_RED,GL_UNSIGNED_BYTE);
+
     //static _Texture texture_hough_space(nullptr,720,glm::sqrt((texture_edge.getWidth()^2)+(texture_edge.getHeight()^2)));
 
     //texture_hough_space.load(GL_R32I,GL_RED_INTEGER, GL_INT);
@@ -718,9 +775,15 @@ std::vector<_GPU_Compute::LineEquation> _GPU_Compute::computeHoughLines(_Texture
 //        qDebug() << "shader initialized";
 //    }
 
-    char *colorFrame = get_texture_image_framebuffer(texture_edge);
+    char *colorFrame = getTextureImageFramebuffer(texture_edge);
 
-    texture_hough_space.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+    //texture_hough_space.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+
+    compute_clear_32_i_texture(texture_hough_space,0);
+
+//    colorFrame = getTextureImageFramebuffer(texture_hough_space);
+
+//    _Tools::SaveImageToPgm(colorFrame,texture_hough_space.getWidth(),texture_hough_space.getHeight(),"texture_hough_space_before.pgm");
 
     //QImage::fromData(colorFrame);
 
@@ -744,53 +807,70 @@ std::vector<_GPU_Compute::LineEquation> _GPU_Compute::computeHoughLines(_Texture
 
 //    shader.useShaderProgram();
 
-    colorFrame = get_texture_image_framebuffer(texture_hough_space);
+    computeFrom32iTo8uiDevide(texture_hough_space,texture_hough_space_8_bit,8);
+
+    colorFrame = getTextureImageFramebuffer(texture_hough_space_8_bit);
 
     LineEquation left_vert,right_vert,middle_hor;
-    int left_vert_max=0,right_vert_max=0,middle_hor_max=0;
+    int left_vert_max=-129,right_vert_max=-129,middle_hor_max=-129;
 
     //highly jugaad implementation needs to be corrected afterwards
-    for (unsigned int w = 0; w < texture_hough_space.getWidth(); w++) {
-        for (unsigned int h = 0; h < texture_hough_space.getHeight(); h++) {
-            index = texture_edge.getWidth()*h+w;
+    for (unsigned int w = 0; w < texture_hough_space_8_bit.getWidth(); w++) {
+        for (unsigned int h = 0; h < texture_hough_space_8_bit.getHeight(); h++) {
+            index = texture_hough_space_8_bit.getWidth()*h+w;
             uchar value = colorFrame[index];
-            if(value!=0)
-            {
                 if(w<(texture_hough_space.getWidth()/2))
                 {
-                    if(middle_hor_max>value)
+                    if(middle_hor_max<value)
                     {
                         middle_hor_max=value;
                         middle_hor.r=(h*2)-texture_hough_space.getHeight();
-                        middle_hor.theta=w-(texture_hough_space.getWidth()/4);
+                        middle_hor.theta=float(w-(texture_hough_space.getWidth()/4))*PI/texture_hough_space.getWidth();
                     }
                 }
                 else {
                     if(h<(texture_hough_space.getHeight()/4))
                     {
-                        if(middle_hor_max>value)
+                        if(left_vert_max<value)
                         {
                             left_vert_max=value;
                             left_vert.r=(h*2)-texture_hough_space.getHeight();
-                            left_vert.theta=w-(texture_hough_space.getWidth()/4);
+                            left_vert.theta=float(w-(texture_hough_space.getWidth()/4))*PI/texture_hough_space.getWidth();
                         }
                     }
                     else {
-                        if(middle_hor_max>value)
+                        if(right_vert_max<value)
                         {
                             right_vert_max=value;
                             right_vert.r=(h*2)-texture_hough_space.getHeight();
-                            right_vert.theta=w-(texture_hough_space.getWidth()/4);
+                            right_vert.theta=float(w-(texture_hough_space.getWidth()/4))*PI/texture_hough_space.getWidth();
                         }
                     }
-                }
             }
         }
     }
 
+    //colorFrame[texture_hough_space.getWidth()*right_vert.r+right_vert.theta]=255;
+    //colorFrame[texture_hough_space.getWidth()*left_vert.r+left_vert.theta]=255;
+    //colorFrame[texture_hough_space.getWidth()*middle_hor.r+middle_hor.theta]=255;
 
+    equations.push_back(middle_hor);
+    equations.push_back(left_vert);
+    equations.push_back(right_vert);
 
-    _Tools::SaveImageToPgm(colorFrame,texture_hough_space.getWidth(),texture_hough_space.getHeight(),"texture_hough_space.pgm");
+    //colorFrame = getTextureImageFramebuffer(texture_hough_space_8_bit);
+
+    //_Tools::SaveImageToPgm(colorFrame,texture_hough_space_8_bit.getWidth(),texture_hough_space_8_bit.getHeight(),"texture_hough_space.pgm");
+
+    //compute_clear_32_i_texture(texture_hough_space,0);
+
+    //colorFrame = getTextureImageFramebuffer(texture_hough_space);
+
+    //colorFrame[texture_hough_space.getWidth()*right_vert.r+right_vert.theta]=255;
+    //colorFrame[texture_hough_space.getWidth()*left_vert.r+left_vert.theta]=255;
+    //colorFrame[texture_hough_space.getWidth()*texture_hough_space.getHeight()*3/4+texture_hough_space.getWidth()*3/4]=255;
+
+    //_Tools::SaveImageToPgm(colorFrame,texture_hough_space.getWidth(),texture_hough_space.getHeight(),"texture_hough_space_max.pgm");
 
     return equations;
 }
@@ -821,7 +901,7 @@ void _GPU_Compute::computeMarkHoughWave(_Texture& output_img,glm::ivec2 cordinat
 
 }
 
-float _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img)
+glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img)
 {
     static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
@@ -889,7 +969,17 @@ float _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img
 
     std::vector<LineEquation> equations = computeHoughLines(texture_edge,texture_hough_space);
 
+    std::vector<LineEquationMC> eqns;
 
+    for (auto eq:equations) {
+        eqns.push_back(convertLineEquationPolarToMc(eq));
+    }
+
+    float center_x = (((eqns[0].c-eqns[1].c)/(eqns[1].m-eqns[0].m))+((eqns[2].c-eqns[1].c)/(eqns[1].m-eqns[2].m)))/2.0;
+
+    float center_y = (eqns[0].m*center_x)+eqns[0].c;
+
+    return glm::vec3(center_x,center_y,equations[0].theta);
 
     //computeGetVerticalGradientAngle()
 
@@ -913,7 +1003,14 @@ float _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img
 //    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
 //    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-    return 0.0;
+}
+
+_GPU_Compute::LineEquationMC _GPU_Compute::convertLineEquationPolarToMc(_GPU_Compute::LineEquation eqn)
+{
+    LineEquationMC mceqn;
+    mceqn.m = -1.0/glm::tan(eqn.theta);
+    mceqn.c = eqn.r/glm::sin(eqn.theta);
+    return mceqn;
 }
 
 void _GPU_Compute::compute_gradient_to_descrete_color(_Texture& input_img,_Texture& output_img)
@@ -1013,6 +1110,40 @@ void _GPU_Compute::compute_canny_edge_from_sobel(_Texture& texture_sobel_mag_,_T
 
 }
 char* _GPU_Compute::get_texture_image_framebuffer(_Texture& input_img,unsigned int format)
+{
+    static unsigned int framebuffer=0,renderbuffer=0;
+    static char* colorFrame=nullptr;
+
+    if(!framebuffer)
+    {
+        glGenFramebuffers(1,&framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
+
+        glGenRenderbuffers(1,&renderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
+
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
+        else qDebug() << "incomplete";
+
+        colorFrame = new char[MAX_FRAME_WIDTH*MAX_FRAME_HEIGHT*4];
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
+
+    glViewport(0, 0, input_img.getWidth(), input_img.getHeight());
+
+    input_img.bindForFramebuffer();
+
+    if(format==0) format = input_img.getColorformat();
+
+    glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),format, GL_UNSIGNED_BYTE,colorFrame);
+
+    return colorFrame;
+}
+
+char* _GPU_Compute::getTextureImageFramebuffer(_Texture& input_img,unsigned int format)
 {
     static unsigned int framebuffer=0,renderbuffer=0;
     static char* colorFrame=nullptr;

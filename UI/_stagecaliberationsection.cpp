@@ -52,6 +52,7 @@ void _StageCaliberationSection::init()
 
         QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(markStageEdge(char* ,unsigned int,unsigned int))));
 
+
         if(dynamic_cast<QStackedWidget*>(parentWidget()))
         {
             //setting the stacked widget page to this widget
@@ -76,6 +77,7 @@ bool _StageCaliberationSection::setupConnections()
 
         connect(ui->save_button,SIGNAL(clicked()),this,SLOT(save()));
         connect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),this,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
+        connect(processing,SIGNAL(stageCenterAngleOut(float,float,float)),this,SLOT(stageCenterAngleIn(float,float,float)));
         return true;
     }
     return false;
@@ -94,6 +96,7 @@ bool _StageCaliberationSection::deleteConnections()
         //delete connections here
         disconnect(ui->save_button,SIGNAL(clicked()),this,SLOT(save()));
         disconnect(processing,SIGNAL(outputImage2(char*,unsigned int,unsigned int)),this,SLOT(updateHistogramImage(char*,unsigned int ,unsigned int)));
+        disconnect(processing,SIGNAL(stageCenterAngleOut(float,float,float)),this,SLOT(stageCenterAngleIn(float,float,float)));
         return true;
     }
     return false;
@@ -152,3 +155,12 @@ void _StageCaliberationSection::updateHistogramImage(char *img, unsigned int w, 
     // set a scaled pixmap to a w x h window keeping its aspect ratio
     ui->histogram_image_label->setPixmap(pixmap.scaled(lw,lh));
 }
+
+void _StageCaliberationSection::stageCenterAngleIn(float center_x, float center_y, float angle)
+{
+    ui->stage_angle_out_browser->setText(QString::number(angle));
+    ui->stage_angle_out_browser_X->setText(QString::number(center_x));
+    ui->stage_angle_out_browser_Y->setText(QString::number(center_y));
+}
+
+

@@ -24,6 +24,7 @@ public slots:
     void init();
     void save();
     void updateHistogramImage(char *img, unsigned int w, unsigned int h);
+    void stageCenterAngleIn(float center_x,float center_y,float angle);
 private:
     Ui::_StageCaliberationSection *ui;
 };

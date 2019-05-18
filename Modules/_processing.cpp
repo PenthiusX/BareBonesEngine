@@ -269,7 +269,7 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
     //gpu_compute->compute_sobel_edge(texture_in,texture_edge);
     //gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
     //gpu_compute->compute_threshold(texture_edge,texture_thres,60);
-    gpu_compute->compute_stage_angle(texture_in,texture_out);
+    glm::vec3 angle_x_y = gpu_compute->compute_stage_angle(texture_in,texture_out);
     //gpu_compute->compute_copy_red_to_rgba(texture_edge,texture_out);
     //gpu_compute->compute_mark_column_index(texture_outt,texture_out);
     //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);
@@ -282,6 +282,8 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
 
     //histogram(gpu_compute->get_texture_image_framebuffer(texture_edge),iwidth,iheight);
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
+    emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
+
 }
 
 /* function: makeCurrent
