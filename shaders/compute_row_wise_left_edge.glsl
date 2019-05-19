@@ -31,8 +31,8 @@ void main()
        int a = int(getImagePixel(inputImage,image_pixel_cord));
        int b = int(getImagePixel(inputImage,image_pixel_cord+ivec2(1,0)));
 
-       int c = 740;
-       int d = 740;
+       int c = image_resolution.x;
+       int d = image_resolution.x;
 
        if(a!=0) c = int(image_pixel_cord.x);
        if(b!=0) d = int(image_pixel_cord.x+1);

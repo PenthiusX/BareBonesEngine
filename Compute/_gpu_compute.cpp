@@ -18,6 +18,7 @@ _GPU_Compute::_GPU_Compute() : QOpenGLExtraFunctions(QOpenGLContext::currentCont
 {
 
 }
+
 void _GPU_Compute::compute_copy_8_to_32(_Texture &input_img, _Texture &output_img)
 {
     static _Shader shader;
@@ -221,6 +222,35 @@ void _GPU_Compute::compute_mark_column_index(_Texture& input_img,_Texture& outpu
 
 }
 
+void _GPU_Compute::compute_copy_column_from_to(_Texture& input_img,_Texture& output_img,int from_,int to_)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(1, input_img.getHeight(),_COLUMN_WISE_LOCAL_GROUP);
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_copy_column_from_to.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R32I,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R32I,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glUniform1i(0,from_);
+    glUniform1i(1,to_);
+
+    //calculate size of workgroups based on image resolution here
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 void _GPU_Compute::compute_divide_mark_column_index(_Texture& input_img,_Texture& input_img2,_Texture& output_img)
 {
     static _Shader shader;
@@ -375,6 +405,9 @@ void _GPU_Compute::compute_row_wise_sum(_Texture& input_img,_Texture& output_img
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 }
+
+
+
 
 void _GPU_Compute::compute_row_wise_left_edge(_Texture& input_img,_Texture& output_img)
 {
@@ -1092,9 +1125,38 @@ glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output
 //    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 }
 
-void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Texture& texture_model_wrap,glm::vec2 stage_center)
+void _GPU_Compute::compute_register_wrap_mesh(_Texture& texture_edge_bounds,_Texture& output_img,int rotation_step,glm::vec2 stage_center)
 {
-    static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
+
+        static _Shader shader;
+        static GroupSize groupsize = getWorkGroupSize(output_img.getWidth(),output_img.getHeight(),_ROW_WISE_LOCAL_GROUP);
+
+        //if shader not initialized
+        if(shader.getShaderProgram() == 0)
+        {
+            shader.setChildShader(":/shaders/compute_register_wrap_mesh.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+            shader.attachShaders();
+            qDebug() << "shader initialized";
+        }
+
+        texture_edge_bounds.bindForCompute(0,GL_R32I,GL_READ_ONLY);
+        output_img.bindForCompute(1,GL_R32I,GL_READ_WRITE);
+
+        shader.useShaderProgram();
+
+        glUniform2i(0,stage_center.x,stage_center.y);
+        glUniform2i(1,output_img.getWidth(),output_img.getHeight());
+        glUniform1i(2,rotation_step);
+
+        glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+        glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Texture& texture_model_wrap,int rotation_step,glm::vec2 stage_center)
+{
+    static _Texture texture_edge_bounds(nullptr,2,input_img.getHeight());
     static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
@@ -1106,7 +1168,7 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
     static _Texture texture_max_extent(nullptr,input_img.getWidth(),input_img.getHeight());
 
     static char* colorFrame = nullptr;
-    texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_edge_bounds.load(GL_R32I,GL_RED_INTEGER, GL_INT);
     texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_thres.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
@@ -1136,14 +1198,19 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
 
     compute_mark_column_index(texture_max_extent,output_img);
 
+    compute_copy_column_from_to(texture_max_extent,texture_edge_bounds,0,0);
+
     compute_row_wise_right_edge(texture_thres,texture_max_extent);
 
     compute_mark_column_index(texture_max_extent,output_img);
 
+    compute_copy_column_from_to(texture_max_extent,texture_edge_bounds,0,1);
+
+    compute_register_wrap_mesh(texture_edge_bounds,output_img,rotation_step,glm::vec2 stage_center);
+
     colorFrame = getTextureImageFramebuffer(texture_thres);
 
     _Tools::SaveImageToPgm(colorFrame,texture_thres.getWidth(),texture_thres.getHeight(),"texture_thres.pgm");
-
 
     //sobel edge
 //    compute_sobel_edge(input_img,texture_sobel_mag_,texture_sobel_theta_);

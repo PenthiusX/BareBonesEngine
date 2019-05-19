@@ -40,5 +40,7 @@
         <file>shaders/compute_threshold_inv.glsl</file>
         <file>shaders/compute_row_wise_left_edge.glsl</file>
         <file>shaders/compute_row_wise_right_edge.glsl</file>
+        <file>shaders/compute_copy_column_from_to.glsl</file>
+        <file>shaders/compute_register_wrap_mesh.glsl</file>
     </qresource>
 </RCC>

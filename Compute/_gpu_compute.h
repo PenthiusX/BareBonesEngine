@@ -75,10 +75,12 @@ public:
     void computeFrom32iTo8uiDevide(_Texture &input_img, _Texture &output_img, unsigned int devide_value=1);
 
     LineEquationMC convertLineEquationPolarToMc(_GPU_Compute::LineEquation eqn);
-    void computeEdgeModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap,glm::vec2 stage_center=glm::vec2(400,480));
+    void computeEdgeModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap,int rotation_step,glm::vec2 stage_center=glm::vec2(400,480));
     void compute_threshold_inv(_Texture &input_img, _Texture &output_img, unsigned int threshold_value);
     void compute_row_wise_left_edge(_Texture &input_img, _Texture &output_img);
     void compute_row_wise_right_edge(_Texture &input_img, _Texture &output_img);
+    void compute_copy_column_from_to(_Texture &input_img, _Texture &output_img, int from_ = 0, int to_ = 0);
+    void compute_register_wrap_mesh(_Texture &texture_edge_bounds, _Texture &output_img, int rotation_step,glm::vec2 stage_center);
 };
 
 #endif // _GPU_COMPUTE_H
