@@ -376,6 +376,67 @@ void _GPU_Compute::compute_row_wise_sum(_Texture& input_img,_Texture& output_img
 
 }
 
+void _GPU_Compute::compute_row_wise_left_edge(_Texture& input_img,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth()/2, input_img.getHeight(),_ROW_WISE_LOCAL_GROUP);
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_row_wise_left_edge.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R32I,GL_READ_WRITE);
+
+    shader.useShaderProgram();
+
+    int levels = glm::ceil(glm::log2(float(input_img.getWidth())));
+
+    glUniform1ui(0,levels);
+    glUniform2i(1,output_img.getWidth(),output_img.getHeight());
+
+    //calculate size of workgroups based on image resolution here
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+void _GPU_Compute::compute_row_wise_right_edge(_Texture& input_img,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth()/2, input_img.getHeight(),_ROW_WISE_LOCAL_GROUP);
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_row_wise_right_edge.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R32I,GL_READ_WRITE);
+
+    shader.useShaderProgram();
+
+    int levels = glm::ceil(glm::log2(float(input_img.getWidth())));
+
+    glUniform1ui(0,levels);
+    glUniform2i(1,output_img.getWidth(),output_img.getHeight());
+
+    //calculate size of workgroups based on image resolution here
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
 
 void _GPU_Compute::compute_row_wise_mean(_Texture& input_img,_Texture& output_img)
 {
@@ -663,6 +724,32 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img,un
     if(shader.getShaderProgram() == 0)
     {
         shader.setChildShader(":/shaders/compute_threshold.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glUniform1ui(0,threshold_value);
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
+void _GPU_Compute::compute_threshold_inv(_Texture& input_img,_Texture& output_img,unsigned int threshold_value)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_threshold_inv.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
         shader.attachShaders();
         qDebug() << "shader initialized";
     }
@@ -980,6 +1067,128 @@ glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output
     float center_y = (eqns[0].m*center_x)+eqns[0].c;
 
     return glm::vec3(center_x,center_y,equations[0].theta);
+
+    //computeGetVerticalGradientAngle()
+
+//    static _Shader shader;
+//    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+//    //if shader not initialized
+//    if(shader.getShaderProgram() == 0)
+//    {
+//        shader.setChildShader(":/shaders/compute_gradient_to_descrete_rgba_color.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+//        shader.attachShaders();
+//        qDebug() << "shader initialized";
+//    }
+
+//    texture_sobel_mag_.bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+//    texture_sobel_theta_.bindForCompute(1,GL_R8UI,GL_READ_ONLY);
+//    output_img.bindForCompute(2,GL_RGBA8UI,GL_WRITE_ONLY);
+
+//    shader.useShaderProgram();
+
+//    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+//    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+}
+
+void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Texture& texture_model_wrap,glm::vec2 stage_center)
+{
+    static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_thres(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_max_extent(nullptr,input_img.getWidth(),input_img.getHeight());
+
+    static char* colorFrame = nullptr;
+    texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_thres.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_mask.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_mask_inv.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_descrete_gradient_value.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_rgba.load(GL_RGBA,GL_UNSIGNED_BYTE);
+    texture_out_rgba.load(GL_RGBA,GL_UNSIGNED_BYTE);
+    texture_max_extent.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+
+    //compute_guassian_blur_5_5(input_img,texture_blur);
+    //compute_canny_edge(input_img,texture_edge);
+    //gpu_compute->compute_gradient_to_descrete_color(texture_in,texture_out);
+    //gpu_compute->compute_copy_8_to_32(texture,texture_outt);
+    //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+    //gpu_compute->compute_sobel_edge(texture_in,texture_edge);
+    //gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
+    compute_threshold_inv(input_img,texture_thres,100);
+
+    create_region_image_mask(texture_mask,glm::ivec4(16,16,input_img.getWidth()-16,stage_center.y));
+
+    computeMaskImageRR(texture_thres,texture_mask,texture_thres);
+
+    compute_copy_red_to_rgba(input_img,output_img);
+
+    compute_row_wise_left_edge(texture_thres,texture_max_extent);
+
+    compute_mark_column_index(texture_max_extent,output_img);
+
+    compute_row_wise_right_edge(texture_thres,texture_max_extent);
+
+    compute_mark_column_index(texture_max_extent,output_img);
+
+    colorFrame = getTextureImageFramebuffer(texture_thres);
+
+    _Tools::SaveImageToPgm(colorFrame,texture_thres.getWidth(),texture_thres.getHeight(),"texture_thres.pgm");
+
+
+    //sobel edge
+//    compute_sobel_edge(input_img,texture_sobel_mag_,texture_sobel_theta_);
+
+//    compute_canny_edge_from_sobel(texture_sobel_mag_,texture_sobel_theta_,texture_edge);
+
+//    //compute_copy_red_to_rgba(input_img,texture_out_rgba);
+
+//    //compute_gradient_to_descrete_color(texture_sobel_mag_,texture_sobel_theta_,output_img);
+
+//    computeGradientToDescreteColorAndValue(texture_sobel_mag_,texture_sobel_theta_,output_img,texture_descrete_gradient_value);
+
+//    create_region_image_mask(texture_mask,glm::ivec4(16,16,input_img.getWidth()-16,input_img.getHeight()-16));
+
+//    compute_mask_image_rgba_r(output_img,texture_mask,texture_out_rgba);
+
+//    compute_threshold(texture_edge,texture_mask,60);
+
+//    compute_mask_image_rgba_r(texture_out_rgba,texture_mask,texture_rgba);
+
+//    compute_saturate_color(texture_rgba,texture_rgba);
+
+//    compute_copy_red_to_rgba(input_img,output_img);
+
+//    compute_mix_with_mask_rgba_r_rgba(texture_rgba,texture_mask,output_img,output_img);
+
+//    create_region_image_mask(texture_edge,glm::ivec4(16,16,input_img.getWidth()-16,input_img.getHeight()-16));
+
+//    computeMaskImageRR(texture_mask,texture_edge,texture_edge);
+
+//    compute_copy_red_to_rgba(texture_edge,output_img);
+
+//    std::vector<LineEquation> equations = computeHoughLines(texture_edge,texture_hough_space);
+
+//    std::vector<LineEquationMC> eqns;
+
+//    for (auto eq:equations) {
+//        eqns.push_back(convertLineEquationPolarToMc(eq));
+//    }
+
+//    float center_x = (((eqns[0].c-eqns[1].c)/(eqns[1].m-eqns[0].m))+((eqns[2].c-eqns[1].c)/(eqns[1].m-eqns[2].m)))/2.0;
+
+//    float center_y = (eqns[0].m*center_x)+eqns[0].c;
+
+//    return glm::vec3(center_x,center_y,equations[0].theta);
 
     //computeGetVerticalGradientAngle()
 

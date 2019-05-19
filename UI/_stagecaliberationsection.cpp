@@ -109,10 +109,8 @@ bool _StageCaliberationSection::deleteConnections()
 void _StageCaliberationSection::save()
 {
     //save caliberated values
-//    machine->config["Camera"]["Lens"].getFloatEntity("LENS_NUMBER") = ui->lens_number_dropdown->currentIndex() ;
-//    QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, ui->backlight_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
-//    QMetaObject::invokeMethod(machine, "setGain", Qt::QueuedConnection,Q_ARG(int, ui->gain_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
-//    QMetaObject::invokeMethod(machine, "setOffset", Qt::QueuedConnection,Q_ARG(int, ui->offset_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
+    //machine->config["Camera"]["Lens"].getFloatEntity("LENS_NUMBER") = ui->lens_number_dropdown->currentIndex() ;
+    //QMetaObject::invokeMethod(machine, "BackLight", Qt::QueuedConnection,Q_ARG(int, ui->backlight_slider_box->value()),Q_ARG(ActionType,_CALIBERATION_CONFIG_UPDATE));
 
     saveConfig();
 }

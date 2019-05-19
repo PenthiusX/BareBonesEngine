@@ -155,7 +155,7 @@ void _Tools::SaveImageToPgm(char* img,unsigned int rttWidth, unsigned int rttHei
             fwrite(img, 1, rttWidth*rttHeight, imagefile);
             fclose(imagefile);
 
-    qDebug() << "wrote: " << filename;
+    //qDebug() << "wrote: " << filename;
     //delete imagefile;
     //deleting file pointer is giving error
 }

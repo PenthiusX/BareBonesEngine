@@ -25,12 +25,14 @@ signals:
     void inputImageRecived(char *img, unsigned int iwidth, unsigned int iheight);
     void stageCenterAngleOut(float center_x,float center_y,float angle);
 
+
 public slots:
     void inputImage(char *img, unsigned int iwidth, unsigned int iheight);
     void passThroughFrame(char *img, unsigned int iwidth, unsigned int iheight);
     void histogram(char *img, unsigned int iwidth, unsigned int iheight);
     void markLineLaser(char *img, unsigned int iwidth, unsigned int iheight);
     void markStageEdge(char *img, unsigned int iwidth, unsigned int iheight);
+    void generateEdgeModel(char *img, unsigned int iwidth, unsigned int iheight);
 
     void init();
     void setActiveProcess(const char *slot);

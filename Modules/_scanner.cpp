@@ -145,3 +145,42 @@ void _Scanner::scanGenerateModel()
 
     //delete imagefile;
 }
+
+/* Function : scan_generate_model()
+ * this function scans the stone by rotating stage by 1.8 degrees every step
+ * captures the image and does preprocessing on the image(currently)
+ * this function should generate a 3d model of stone-- afterwards
+*/
+void _Scanner::scanGenerateModelEdge()
+{
+    bool success = processing->makeCurrent();
+    qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
+
+
+    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
+
+    for(int t = 0;t<200;t++)
+    {
+        QString filename = QString("scan_image_stage_%1").arg(t);
+        //move the stage by 80 steps
+        machine->TurnTableMotorDiff(80);
+        //QThread::msleep(100);
+
+        //grab new frame from camera
+        machine->GrabFrame(filename);
+
+        //send the grabbed frame to gui widget for display
+        //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+
+        processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+
+        //For saving processed image
+        //filename = QString("processed_image_stage_%1.pgm").arg(t);
+        //_Tools::SaveImageToPgm(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), filename);
+
+    }
+
+    machine->frameUpdateMutex.unlock();
+
+    //delete imagefile;
+}
