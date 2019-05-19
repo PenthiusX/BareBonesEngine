@@ -45,6 +45,10 @@ void _MachineSelectionSection::init()
                               Q_RETURN_ARG(QString, infoString));
         ui->machine_info_text_browser->setText(infoString);
 
+        QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
+
+        machine->camera->setImageDir(dir);
+
         QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int))));
 
         //this part sets the current page of stacked widget to this widget

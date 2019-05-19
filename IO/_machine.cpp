@@ -532,7 +532,12 @@ void _Machine::setImageDir(QString dir)
 
 void _Machine::GrabFrame()
 {
+#ifndef NO_CAMERA
     camera->grab_frame();
+#else
+    QString filename = QString("scan_image_stage_%1").arg(0);
+    camera->grab_frame(filename);
+#endif
 }
 
 void _Machine::updateImageCamera()
@@ -540,7 +545,7 @@ void _Machine::updateImageCamera()
     if(frameUpdateMutex.tryLock(0))
     {
         //lock is aquired
-        camera->grab_frame();
+        GrabFrame();
         if(camera->get_frame())
             emit cameraFrameRecieved(camera->get_frame(),camera->getWidth(),camera->getHeight());
         frameUpdateMutex.unlock();
