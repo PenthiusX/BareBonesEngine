@@ -14,17 +14,23 @@ layout( location=2 ) uniform int rotation_step;
 
 #define PI 3.1415926535897932384626433832795
 
+ivec2 getPixelCord(){
+
+    return ivec2(gl_LocalInvocationIndex,dot(uvec3(1,gl_NumWorkGroups.x,gl_NumWorkGroups.x*gl_NumWorkGroups.y),gl_WorkGroupID));
+}
 
 void main()
 {
-       ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.xy);
+       ivec2 image_pixel_cord = getPixelCord();
 
        float theta = float(image_pixel_cord.x-rotation_step) * 2 * PI / image_resolution.x;
-       
+
        float cosine=cos(theta);
-       int side = if(cosine>0.0) ? 0 : 1;
+       int side = (cosine>0.0) ? 0 : 1;
 
-       int r = ceil(float(getImagePixel(inputImage,ivec2(side,image_pixel_cord.y))-stage_center.x)/cosine);
+       int r = int(ceil(float(getImagePixel(inputImage,ivec2(side,image_pixel_cord.y))-stage_center.x)/cosine));
 
-       imageAtomicMin(resultImage,image_pixel_cord,r);
+       //imageAtomicMin(resultImage,image_pixel_cord,r);
+       setImagePixel(resultImage,image_pixel_cord,r);
+
 }

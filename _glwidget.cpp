@@ -40,20 +40,20 @@ void _GLWidget::initializeGL()
 
 	s.setId(0);
 	s.setShader(":/shaders/vshader1.glsl", ":/shaders/fshader1.glsl");
-    s.setPosition(QVector3D(8.0,5.0f, 6.0));
+    s.setPosition(QVector3D(0.0,0.0,0.0));
 	s.setScale(0.5);
 	s.setModelData(":/models/torus.obj");
 
 	s1.setId(1);
 	s1.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-    s1.setPosition(QVector3D(8.0,5.7f,6.0));
+    s1.setPosition(QVector3D(0.0,0.0,0.0));
 	s1.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
     s1.setScale(0.5);
     s1.setModelData(":/models/cone.obj");
 
     s2.setId(2);
     s2.setShader(":/shaders/texVshader.glsl", ":/shaders/texFshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    s2.setPosition(QVector3D(8.0, 6.7f, 6.0));
+    s2.setPosition(QVector3D(0.0,0.0,0.0));
     s2.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
     s2.setScale(0.5);
     s2.setModelData(":/models/monkey.obj");
@@ -89,14 +89,82 @@ void _GLWidget::initializeGL()
     //background_quad.setModelData(":/models/monkey.obj");
     //background_quad.setTexturePath(":textures/eye.png");//do not set texture from file since format mismatch will occur
 
+
+    /*Hard coded vertices of background quad the vertices are
+     * directly asiigned to gl_Position(screen cordinates)
+     * such that position of background always remain same*/
+
+    ///////// temporary
+    ///
+
+    generated_model.setId(4);//keep the id it will be required while updating texture
+    generated_model.setShader(":/shaders/generated_model_vertex.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+
+    //background quad is not affected by mvp hence this functions will not work :-
+    generated_model.setPosition(QVector3D(0.0, 0.0, 0.0));
+    generated_model.setRotation(QQuaternion(QVector3D(0.70, 0.0, 0.0)));
+
+    generated_model.setScale(4);
+
+    std::vector<float> vertsG;
+    std::vector<unsigned int> indiceG;
+
+    glm::ivec2 resolution = glm::ivec2(200,576);//wrap texture size
+    unsigned int index[4] = {0,0,0,0};
+
+    for (unsigned int h = 0; h < resolution.y; h++) {
+        for (unsigned int w = 0; w < resolution.x; w++) {
+
+            glm::vec2 pixel_cord = glm::vec2(w,h);
+
+            glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
+
+            //texture_positions
+            vertsG.push_back(texture_cord.x);//x = s
+            vertsG.push_back(texture_cord.y);//y = t
+            vertsG.push_back(0.0);//z = 0.0
+
+            //indexes of neibhouring vertexes
+            index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(1,0),resolution);
+            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(1,1),resolution);
+            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,1),resolution);
+
+//            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
+//            {
+            if((pixel_cord.y < resolution.y))
+            {
+                //indexs of fisrt triangle in quad
+                indiceG.push_back(index[0]);
+                indiceG.push_back(index[1]);
+                indiceG.push_back(index[2]);
+
+                //indexs of second triangle in quad
+                indiceG.push_back(index[0]);
+                indiceG.push_back(index[2]);
+                indiceG.push_back(index[3]);
+            }
+        }
+    }
+
+    //generated_model.setTexturePath(":/textures/cylinder_wrap.png");
+    //generated_model.setTexturePath(":textures/eye.png");
+
+
+    generated_model.setModelData(vertsG,indiceG);
+
+    ///////// /temporary
+
+
 	scene = new _Scene();
 	scene->addCamera(cam);
 
     scene->addSceneObject(background_quad);
 
-	scene->addSceneObject(s);
-	scene->addSceneObject(s1);
-	scene->addSceneObject(s2);
+    //scene->addSceneObject(s);
+    //scene->addSceneObject(s1);
+    //scene->addSceneObject(s2);
+    scene->addSceneObject(generated_model);
 
 }
 /*
@@ -196,6 +264,32 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
         render_object = scene->getSceneObjectsArray()[i];
 
         if (render_object->getSceneEntity().getId() == background_quad.getId())
+        {
+            //make context active
+            makeCurrent();
+
+            if(render_object->isTexturePresent()){
+                //updating predefined texture
+                render_object->setTexture(img,w,h);
+            }
+            else {
+                //setting up new 8 bit grayscale GL_RGBA texture for first time
+                render_object->setupTexture(img,w,h,GL_RGBA);
+            }
+
+            doneCurrent();
+        }
+    }
+}
+
+void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
+{
+    static _Renderer *render_object = nullptr;
+    for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+    {
+        render_object = scene->getSceneObjectsArray()[i];
+
+        if (render_object->getSceneEntity().getId() == generated_model.getId())
         {
             //make context active
             makeCurrent();

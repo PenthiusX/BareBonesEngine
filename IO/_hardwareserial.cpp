@@ -127,7 +127,7 @@ void _HardwareSerial::writeData(const QString data)
         qDebug() << "written" << d << QThread::currentThread();
     }
     else {
-         qDebug() << "written virtually" << d << QThread::currentThread();
+         //qDebug() << "written virtually" << d << QThread::currentThread();
     }
 
 
@@ -160,7 +160,7 @@ QString _HardwareSerial::writeDataAndWait(const QString data)
     }
     }
     else {
-        qDebug() << "written virtually" << data << QThread::currentThread();
+        //qDebug() << "written virtually" << data << QThread::currentThread();
         return "=\n";
     }
 }

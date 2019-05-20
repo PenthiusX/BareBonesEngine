@@ -133,13 +133,16 @@ void _Scanner::scanGenerateModel()
         //send the grabbed frame to gui widget for display
         //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
-        processing->markLineLaser(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+        processing->markLineLaser(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t);
+
 
         //For saving processed image
         //filename = QString("processed_image_stage_%1.pgm").arg(t);
         //_Tools::SaveImageToPgm(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), filename);
 
     }
+
+    glUniform1f(4,4);
 
     machine->frameUpdateMutex.unlock();
 
@@ -159,12 +162,17 @@ void _Scanner::scanGenerateModelEdge()
 
     machine->frameUpdateMutex.lock();// display will not be updated by camera frame
 
+    glm::vec2 stage_center;
+
+    stage_center.x = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_X");
+    stage_center.y = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_Y");
+
     for(int t = 0;t<200;t++)
     {
         QString filename = QString("scan_image_stage_%1").arg(t);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
-        //QThread::msleep(100);
+        QThread::msleep(100);
 
         //grab new frame from camera
         machine->GrabFrame(filename);
@@ -172,7 +180,7 @@ void _Scanner::scanGenerateModelEdge()
         //send the grabbed frame to gui widget for display
         //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
-        processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+        processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
 
         //For saving processed image
         //filename = QString("processed_image_stage_%1.pgm").arg(t);

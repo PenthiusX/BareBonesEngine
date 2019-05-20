@@ -3,5 +3,6 @@
         <file>textures/cube.png</file>
         <file>textures/eye.png</file>
         <file>textures/eye2.png</file>
+        <file>textures/cylinder_wrap.png</file>
     </qresource>
 </RCC>

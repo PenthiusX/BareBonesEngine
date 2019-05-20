@@ -63,7 +63,7 @@ bool _AssetLoader::objLoader(QString pathToFile)
 		ssv >> temp;
 		if (std::stringstream(temp) >> foundf)
 		{
-			vertices.push_back(foundf - 1);
+            vertices.push_back(foundf);
 		}
 		temp = "";
 	}

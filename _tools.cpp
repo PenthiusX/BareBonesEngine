@@ -245,3 +245,8 @@ glm::ivec3 _Tools::GetGroupSize(int n,glm::vec3 ratio)
     }
     return bins;
 }
+
+int _Tools::indexFromPixelCordinates(glm::vec2 pixel_cord,glm::ivec2 resolution)
+{
+    return resolution.x*pixel_cord.y+pixel_cord.x;
+}

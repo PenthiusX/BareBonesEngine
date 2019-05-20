@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionApplication_Settings,SIGNAL(triggered()),this,SLOT(openSettingsDialog()));
     _CaliberationSection::setApplicationSettings(application_settings);
+    processing->setApplicationSettings(application_settings);
     qRegisterMetaType<ActionType>("ActionType");
 
     //machine,marker,scanner should be in same thread -
@@ -122,6 +123,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));    
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
+    connect(processing,SIGNAL(generatedModelTextureOut(char*,unsigned int,unsigned int)),this,SLOT(showGeneratedModel(char*,unsigned int ,unsigned int)));
 
     connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
     //connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
@@ -173,6 +175,7 @@ void MainWindow::setConfigSettings()
     }
 
     _CaliberationSection::setApplicationSettings(application_settings);
+    processing->setApplicationSettings(application_settings);
 }
 
 /*
@@ -191,9 +194,16 @@ void MainWindow::openSettingsDialog()
     _Tools::WriteJsonToFile(filename,application_settings->toJson());
 
     _CaliberationSection::setApplicationSettings(application_settings);
+    processing->setApplicationSettings(application_settings);
 }
 
 void MainWindow::msgBox(QString windowname,QString info)
 {
     QMessageBox::information(0, windowname, info);
+}
+
+
+void MainWindow::showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight)
+{
+    ui->widget->showGeneratedModel(img,iwidth,iheight);
 }

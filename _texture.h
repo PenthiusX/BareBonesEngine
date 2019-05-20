@@ -45,6 +45,8 @@ public:
 
     unsigned int getColorformat() const;
 
+    unsigned int getDataType() const;
+
 protected:
     std::map<unsigned int,unsigned int> parameters;
     char* image;
@@ -52,6 +54,7 @@ protected:
     unsigned int m_ID = 0;
     unsigned int shaderProgram;
     unsigned int color_format = GL_RGBA;
+    unsigned int data_type = GL_UNSIGNED_BYTE;
     unsigned int slot;
     unsigned int slot_uniform;
     unsigned int width;

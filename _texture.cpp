@@ -201,6 +201,7 @@ void _Texture::load( GLenum format, GLenum datatype)
         color_format = format;
         //qDebug() << "setting image in load" << GL_RED << color_format;
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
+        data_type = datatype;
 
         //glGenerateMipmap(GL_TEXTURE_2D);
 }
@@ -212,7 +213,7 @@ void _Texture::load( GLenum format, GLenum datatype)
 */
 void _Texture::load(GLenum internal_format, GLenum format, GLenum datatype)
 {
-    qDebug() << "tex load";
+    //qDebug() << "tex load";
 
     if(m_ID==0){
         qDebug() << "tex gen b" << m_ID;
@@ -230,7 +231,7 @@ void _Texture::load(GLenum internal_format, GLenum format, GLenum datatype)
     color_format = format;
     glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, datatype, image);
     //glGenerateMipmap(GL_TEXTURE_2D);
-
+    data_type = datatype;
 }
 
 //return width of loaded texture image
@@ -248,4 +249,9 @@ unsigned int _Texture::getHeight() const
 unsigned int _Texture::getColorformat() const
 {
     return color_format;
+}
+
+unsigned int _Texture::getDataType() const
+{
+    return data_type;
 }

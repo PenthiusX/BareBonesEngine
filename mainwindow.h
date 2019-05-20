@@ -28,6 +28,7 @@ public slots:
     void setConfigSettings();
 
     void msgBox(QString windowname, QString info);
+    void showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight);
 private:
     Ui::MainWindow *ui;
 

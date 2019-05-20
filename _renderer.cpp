@@ -287,8 +287,8 @@ _SceneEntity _Renderer::getSceneEntity()
 void _Renderer::_Renderer::draw()
 {
 	//----------------------TestUse----------------------------------------------------
-    glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 1.0f));
-    glm::quat quat = glm::quat(0.0,90.0,45.0,0.0);
+    //glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 0.0f));
+//    glm::quat quat = glm::quat(0.0,90.0,45.0,0.0);
 
 	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
     //---------------------------------------------------------------------------------

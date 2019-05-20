@@ -555,6 +555,16 @@
 					}
 				}
 			}
+		},
+		"Scan" : {
+			"Caliberation" : {
+				"STAGE_CENTER_X" : 400,
+				"STAGE_CENTER_Y" : 480
+			},
+			"Default" : {
+				"ROTATION_STEP" : 200,
+				"SMOOTHNESS_FACTOR" : 2
+			}
 		}
 	},
 	"LensStageDetector" : {},

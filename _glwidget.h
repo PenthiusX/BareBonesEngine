@@ -13,6 +13,7 @@ explicit _GLWidget(QWidget *parent = 0);
 ~_GLWidget();
 public slots:
 void update_background_image(char *img, unsigned int w, unsigned int h);
+void showGeneratedModel(char *img, unsigned int w, unsigned int h);
 protected:
 void initializeGL() Q_DECL_OVERRIDE;
 void resizeGL(int w, int h)Q_DECL_OVERRIDE;
@@ -34,6 +35,7 @@ int height;
 
 _Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
 _SceneEntity s, s1,s2;
+_SceneEntity generated_model;
 _SceneEntity background_quad;
 _AssetLoader assetLoader;
 _Camera cam;

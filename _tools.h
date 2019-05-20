@@ -21,6 +21,7 @@ public:
     static QString getFolderFromDialog(QString aplicationRelativePath);
     static QJsonObject ReadJsonFromSystem(QString Filename);
     static bool WriteJsonToFileSystem(QString filename, QJsonObject config);
+    static int indexFromPixelCordinates(glm::vec2 pixel_cord, glm::ivec2 resolution);
 };
 
 

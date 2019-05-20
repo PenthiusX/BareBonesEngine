@@ -18,6 +18,8 @@
  * created:22_04_2019
 */
 
+_ConfigControlEntity* _Processing::application_settings = nullptr;
+
 /* _Processing constructor
  * creates offscreen render surface and context
  * instance should be created in parent gui thread
@@ -74,7 +76,6 @@ void _Processing::setActiveProcess(const char* slot)
         connect(this,SIGNAL(inputImageRecived(char*,unsigned int,unsigned int)),this,slot);
     active_slot = slot;
 }
-
 
 /* slot : inputImage(char *img, unsigned int iwidth, unsigned int iheight)
  * connet this to image source in machine->camera
@@ -187,21 +188,27 @@ void _Processing::init()
  * marks red line on detected line laser path
  *
 */
-void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int iheight)
+void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step,glm::vec2 stage_center)
 {
     static bool init = true;
 
     //initialise empty textures for processing
     static _Texture texture(nullptr,iwidth,iheight);
+    static _Texture texture_mask(nullptr,200,iheight);
     static _Texture texture_out(nullptr,iwidth,iheight);
     static _Texture texture_outt(nullptr,iwidth,iheight);
+    static _Texture texture_model_wrap(nullptr,200,iheight);
+    static _Texture texture_model_wrap_8_bit(nullptr,200,iheight);
 
     if(init)
     {
     //load texture
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_mask.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
     texture_outt.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+    texture_model_wrap.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+    texture_model_wrap_8_bit.load(GL_RED,GL_UNSIGNED_BYTE);
 
     //texture.unbind();
     init = false;
@@ -218,16 +225,37 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
 //        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
 //        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
     //gpu_compute->compute_canny_edge(texture_outt,texture_out);
+
     gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
+
     gpu_compute->compute_copy_red_to_rgba(texture,texture_out);
+
     gpu_compute->compute_mark_column_index(texture_outt,texture_out);
+
+    gpu_compute->compute_retrive_lower_2_bytes(texture_outt,texture_outt);
+
+    gpu_compute->compute_subtract_value_from_column(texture_outt,texture_outt,stage_center.x);
+
+    gpu_compute->compute_copy_column_from_to(texture_outt,texture_model_wrap,0,rotation_step);
+
+    gpu_compute->computeFrom32iTo8uiDevide(texture_model_wrap,texture_model_wrap_8_bit,2);
+
     //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);
 
     //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
 
+    //gpu_compute->compute_clear_8_ui_texture(texture_model_wrap_8_bit,100);
     //get image from gpu texture
     //send signal to update display texture
+
+    gpu_compute->create_region_image_mask(texture_mask,glm::ivec4(0,82,texture_mask.getWidth(),stage_center.y));
+
+    gpu_compute->computeMaskImageRR(texture_model_wrap_8_bit,texture_mask,texture_model_wrap_8_bit);
+
+    gpu_compute->compute_guassian_blur_5_5(texture_model_wrap_8_bit,texture_model_wrap_8_bit);
+
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out),iwidth,iheight);
+    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
 
 }
 
@@ -286,28 +314,31 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
 
 }
 
-
-
-void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int iheight)
+void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step,glm::vec2 stage_center)
 {
     static bool init = true;
 
     //initialise empty textures for processing
     static _Texture texture_model_wrap(nullptr,200,iheight);
+    static _Texture texture_model_wrap_8_bit(nullptr,200,iheight);
     static _Texture texture_in(nullptr,iwidth,iheight);
     static _Texture texture_edge(nullptr,iwidth,iheight);
     static _Texture texture_out(nullptr,iwidth,iheight);
-
     if(init)
     {
     //load texture
     texture_model_wrap.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+    texture_model_wrap_8_bit.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_in.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
 
+
     //texture.unbind();
     init = false;
+
+    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+
     }
     //Do the Processing
 
@@ -328,7 +359,7 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     //gpu_compute->compute_threshold(texture_edge,texture_thres,60);
     //glm::vec3 angle_x_y = gpu_compute->compute_stage_angle(texture_in,texture_out);
     //gpu_compute->compute_copy_red_to_rgba(texture_edge,texture_out);
-    gpu_compute->computeEdgeModel(texture_in,texture_out,texture_model_wrap);
+    gpu_compute->computeEdgeModel(texture_in,texture_out,texture_model_wrap,texture_model_wrap_8_bit,rotation_step,stage_center);
     //gpu_compute->compute_mark_column_index(texture_in,texture_out);
     //gpu_compute->compute_mark_column_index(texture_outt,texture_out);
     //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);
@@ -341,6 +372,9 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
 
     //histogram(gpu_compute->get_texture_image_framebuffer(texture_edge),iwidth,iheight);
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
+    //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
+    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+
     //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
 
 }
@@ -359,4 +393,13 @@ bool _Processing::makeCurrent()
 void _Processing::doneCurrent()
 {
     context->doneCurrent();
+}
+
+/* Function : setApplicationSettings(_ConfigControlEntity* app_sett)
+ * this function sets the global application_settings inside this class
+ * Created: 15_05_2019
+*/
+void _Processing::setApplicationSettings(_ConfigControlEntity* app_sett)
+{
+    application_settings = app_sett;
 }

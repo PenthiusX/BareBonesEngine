@@ -42,5 +42,9 @@
         <file>shaders/compute_row_wise_right_edge.glsl</file>
         <file>shaders/compute_copy_column_from_to.glsl</file>
         <file>shaders/compute_register_wrap_mesh.glsl</file>
+        <file>shaders/generated_model_fragment.glsl</file>
+        <file>shaders/generated_model_vertex.glsl</file>
+        <file>shaders/compute_subtract_value_from_column.glsl</file>
+        <file>shaders/compute_retrive_lower_2_bytes.glsl</file>
     </qresource>
 </RCC>
