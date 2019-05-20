@@ -56,7 +56,6 @@ void _SceneEntity::setTag(const char *tag)
 {
     this->tag = tag;
 }
-
 const char *_SceneEntity::getTag() const
 {
     return this->tag;
@@ -120,6 +119,35 @@ float _SceneEntity::getScale() const
 {
     return this->scale;
 }
+
+void _SceneEntity::setTranslationMatrix(glm::mat4x4 tmat)
+{
+    this->TranslationMatrix = tmat;
+}
+glm::mat4x4 _SceneEntity::getTranslationMatrix() const
+{
+    return this->TranslationMatrix;
+}
+
+void _SceneEntity::setRotationmatrix(glm::mat4x4 rmat)
+{
+    this->RotationMatrix = rmat;
+}
+glm::mat4x4 _SceneEntity::getRotationmatrix() const
+{
+    return this->RotationMatrix;
+}
+
+void _SceneEntity::setScaleingMatrix(glm::mat4x4 smat)
+{
+    this->ScaleMatirx = smat;
+}
+
+glm::mat4x4 _SceneEntity::getScaleingMatrix() const
+{
+    return this->ScaleMatirx;
+}
+
 /*
  * Function: setVertexData(std::vector<float> vertices) & getvertexData()
  * sets/gets the vertexData for the current object.

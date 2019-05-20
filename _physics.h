@@ -2,7 +2,6 @@
 #define _PHYSICS_H
 
 #include <vector>
-#include <QVector3D>
 #include <QOpenGLExtraFunctions>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,13 +9,13 @@
 
 
 typedef struct Phy_Triangle{
-   QVector3D pointA;
-   QVector3D pointB;
-   QVector3D pointC;
+    glm::vec3 pointA;
+    glm::vec3 pointB;
+    glm::vec3 pointC;
 }_Phy_Triangle;
 
 typedef struct Phy_Sphere{
-    QVector3D center;
+    glm::vec3 center;
     float radius;
 }_Phy_Sphere;
 
@@ -26,11 +25,13 @@ public:
     _Physics();
     ~_Physics();
 
-    std::vector<_Phy_Triangle> filltrianglesfromVerIndexArrays(std::vector<float>vert,std::vector<unsigned int> index);
+    std::vector<_Phy_Triangle> generatetrianglesfromVerticesIndices(std::vector<float>vert,std::vector<unsigned int> index);
+    glm::vec3 emitMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat);//returns the worldSpace ray cast from mousePosition,must be run in update
+    bool hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin);
 
 private:
     std::vector<_Phy_Triangle> triVector;
-    std::vector<_Phy_Triangle> sphVector;
+    std::vector<_Phy_Sphere> sphVector;
 };
 
 #endif // _PHYSICS_H

@@ -1,4 +1,4 @@
-#version 310 es
+#version 330 core
 
 // The uniform parameters that are passed from application for every frame.
 uniform float radius;

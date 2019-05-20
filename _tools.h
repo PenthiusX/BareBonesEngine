@@ -30,10 +30,14 @@ public:
     static QVector2D retunrnMaxPoint(QVector2D mousepos);
     static QVector3D translateToPoint(QVector3D pointLocation,float stepDistance);
     static void Debugmatrix4x4(glm::mat4x4 mat4);
-    static void printFrameRate();
     static float getRandomNumberfromRange(float min , float max);
+    //Debug use
+    static void printFrameRate();
 
 private:
+
+//    static QElapsedTimer timer;
+//    static unsigned int frameCounter;
 
 };
 

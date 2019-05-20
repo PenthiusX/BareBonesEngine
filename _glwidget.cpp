@@ -105,8 +105,8 @@ void _GLWidget::initializeGL()
     //
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-//    scene->addSceneObject(s);
-//    scene->addSceneObject(s1);
+    scene->addSceneObject(s);
+//  scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
     //
@@ -126,7 +126,7 @@ void _GLWidget::initializeGL()
 
     _Physics p;
     std::vector<_Phy_Triangle> pv;
-    p.filltrianglesfromVerIndexArrays(s.getvertexData(),s.getIndexData());
+    pv = p.generatetrianglesfromVerticesIndices(s.getvertexData(),s.getIndexData());
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -183,12 +183,6 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
-    //-----------------------------------------------------------
-    for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-    {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-            scene->getSceneObjects()[i]->unProject(this->mousePressPosition);
-    }
-    //-----------------------------------------------------------
 }
 /*
 * Function: mouseMoveEvent(QMouseEvent *e)
