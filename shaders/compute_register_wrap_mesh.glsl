@@ -1,10 +1,10 @@
 #version 430
 
 //layout (local_size_x =17, local_size_y = 8,local_size_z = 5) in;
-//layout (local_size_x =16, local_size_y = 16) in;
+//layout (local_size_x =5, local_size_y = 5) in;
 #local_size_define
 layout(binding=0, r32i) uniform mediump iimage2D inputImage;
-layout(binding=0, r32i) uniform mediump iimage2D resultImage;
+layout(binding=1, r32i) uniform mediump iimage2D resultImage;
 
 layout( location=0 ) uniform ivec2 stage_center;
 layout( location=1 ) uniform ivec2 image_resolution;
@@ -20,8 +20,11 @@ void main()
        ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.xy);
 
        float theta = float(image_pixel_cord.x-rotation_step) * 2 * PI / image_resolution.x;
+       
+       float cosine=cos(theta);
+       int side = if(cosine>0.0) ? 0 : 1;
 
-       int r = ceil(float(getImagePixel(inputImage,ivec2(0,image_pixel_cord.h)))/cos(theta));
+       int r = ceil(float(getImagePixel(inputImage,ivec2(side,image_pixel_cord.y))-stage_center.x)/cosine);
 
-       imageAtomicMin(resultImage,ivec2(image_pixel_cord.x,r),r);
+       imageAtomicMin(resultImage,image_pixel_cord,r);
 }
