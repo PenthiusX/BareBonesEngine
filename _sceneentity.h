@@ -4,6 +4,7 @@
 #include <qquaternion.h>
 #include <vector>
 #include <_assetloader.h>
+#include <glm/glm.hpp>
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -21,8 +22,8 @@ public:
     _SceneEntity();
     ~_SceneEntity();
     void setId(unsigned int id);//sets the iD either externaly or internally generated
-    unsigned int getId() const;// call to retrieve unique id for the object instance.
-    void setTag(const char* tag);//sts a name based identifier for the object
+    unsigned int getId() const;
+    void setTag(const char* tag);//sets a name based identifier for the object
     const char* getTag() const;
     //
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
@@ -31,12 +32,18 @@ public:
     QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
     void setPivot(QVector3D pivot);//sets the pivot point to rotate around
     bool getIsPivotSet();
-    QVector3D getPivot() const;//gets the pivot point to rotate around
+    QVector3D getPivot() const;
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
-    float getScale() const;//get the float  value of the rotation of the relavant object instance.
+    float getScale() const;
+    void setTranslationMatrix(glm::mat4x4 tmat);
+    void setRotationmatrix(glm::mat4x4 rmat);
+    void setScaleingMatrix(glm::mat4x4 smat);
+    glm::mat4x4 getTranslationMatrix()const;
+    glm::mat4x4 getRotationmatrix()const;
+    glm::mat4x4 getScaleingMatrix()const;
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
-    void _SceneEntity::setModelData(QString path);//takes the relative path via a qrc file path
+    void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
     QString getTexturePath() const;
@@ -44,10 +51,10 @@ public:
     QString getVertexShaderPath() const;//returns the vertexshader path
     QString getFragmentShaderPath() const;//returns the fragment shader path
     //
-    std::vector<float> getvertexData() const;//can get  the array of verterticess for refrence
-    std::vector<unsigned int> getIndexData() const;//can get the array of indices for refrence
-    std::vector<int> getUvData() const;// can get the array of UVs for refrence
-    std::vector<float> getNormalData() const;// can get the Array of normals for refrence
+    std::vector<float> getvertexData() const;// get  the array of verterticess for refrence
+    std::vector<unsigned int> getIndexData() const;// get the array of indices for refrence
+    std::vector<int> getUvData() const;// get the array of UVs for refrence
+    std::vector<float> getNormalData() const;// get the Array of normals for refrence
     //
     bool getIsActive();
     //
@@ -80,6 +87,10 @@ private:
     //
     bool isTransfomationLocal;
     bool isPivotSet;
+    //
+    glm::mat4x4 TranslationMatrix;
+    glm::mat4x4 RotationMatrix;
+    glm::mat4x4 ScaleMatirx;
 };
 
 #endif // _SCENEENTITY_H
