@@ -54,7 +54,7 @@ void _GLWidget::initializeGL()
     };
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
-    //default object
+    //essential rear background object
     background_quad.setId(100);
     background_quad.setTag("background");
     background_quad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
@@ -63,7 +63,7 @@ void _GLWidget::initializeGL()
     background_quad.setRotation(QVector3D(0.0, 0.0, 0.0));
     background_quad.setScale(1.0);
     background_quad.setModelData(vertsV,indiceV);
-    //default object
+    //essential default pivot object
     pivot.setId(999);
     pivot.setTag("pivot");
     pivot.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
