@@ -28,7 +28,7 @@ std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::v
     return triVector;
 }
 
-void _Physics::emitMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4)
+glm::vec3 _Physics::emitMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4)
 {
     // Where The Viewport Values Will Be Stored
     GLint viewport[4];
@@ -53,7 +53,6 @@ void _Physics::emitMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm
     // don't forget to normalise the vector at some point
     return ray_wor = glm::normalize(ray_wor);
 }
-
 
 bool _Physics::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin)
 {

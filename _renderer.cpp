@@ -414,25 +414,28 @@ _SceneEntity _Renderer::getSceneEntity() const
 */
 void _Renderer::_Renderer::draw()
 {
-    //Using the shader program in the current context
-    shdr->useShaderProgram();
-    //Bind Textures
-    for(unsigned int t=0;t<textures.size();t++){
-        textures[t].bind();
+    if(this->sceneEntity.getIsActive())
+    {
+        //Using the shader program in the current context
+        shdr->useShaderProgram();
+        //Bind Textures
+        for(unsigned int t=0;t<textures.size();t++){
+            textures[t].bind();
+        }
+        //Bind the Buffers data of the respective buffer object
+        glBindBuffer(GL_ARRAY_BUFFER,VBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+        //Sets the values for the MVP matrix in the vertex shader
+        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
+        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
+        glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
+        //
+        setColors();//Setting the uniform for color
+        //
+        //The Final draw call for each frame
+        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
     }
-    //Bind the Buffers data of the respective buffer object
-    glBindBuffer(GL_ARRAY_BUFFER,VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
-    //Sets the values for the MVP matrix in the vertex shader
-    glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
-    glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
-    glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
-    //
-    transitionColors();//Setting the uniform for color trnasitioning//just a temporary debug use
-    //
-    //The Final draw call for each frame
-    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 /*
   _______
@@ -450,37 +453,26 @@ void _Renderer::_Renderer::draw()
  * based on the tag attached to the scenceObjects
  * hot reloding of shaders also needs to be implemented instead
 */
-void _Renderer::transitionColors()
+void _Renderer::setColors()
 {
-    double r = abs(cos(timer.elapsed() * 0.002));
-    double g = abs(sin(timer.elapsed() * 0.003));
-    double b = abs(cos(timer.elapsed() * 0.005));
-//  glUniform4f(colorUniform, r, g, b, 1.0f);//will be replaced by Texture
-//    if(shift == false)
-//    {
-//        if(this->sceneEntity.getTag() == "object1")
-//            glUniform4f(colorUniform, 0.5, 0.5,0.5, 0.3f);
-//        else if(this->sceneEntity.getTag() == "object2")
-//            glUniform4f(colorUniform, 1.0, 0.0, 0.0, .3f);
-//        else if(this->sceneEntity.getTag() == "mousePointerObject")
-//            glUniform4f(colorUniform, r, g, b, .8f);
-//    }
-//    else if(shift == true)
-//    {
-//        if(this->sceneEntity.getTag() == "object1")
-//            glUniform4f(colorUniform, 0.5, 0.5,0.5, 1.0f);
-//        else if(this->sceneEntity.getTag() == "object2")
-//            glUniform4f(colorUniform, 1.0, 0.0, 0.0, 1.0f);
-//        else if(this->sceneEntity.getTag() == "mousePointerObject")
-//            glUniform4f(colorUniform, r, g, b, .8f);
-//    }
-     glUniform4f(colorUniform, r, g, b, .5f);
+    QVector4D col = this->sceneEntity.getColor();
+
+    col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
+    col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
+    col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
+
+//    glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+    glUniform4f(colorUniform, this->sceneEntity.getColor().x(),this->sceneEntity.getColor().y(), this->sceneEntity.getColor().z(), this->sceneEntity.getColor().w());
 }
 /*
  *
 */
 void _Renderer::unProject(QVector2D mousePressPosition)
 {
+    // Where The Viewport Values Will Be Stored
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);           // Retrieves The Viewport Values (X, Y, Width, Height)
+
     /*
     for(int i = 0 ; i < 4 ;i++){
         qDebug() << viewport[i];

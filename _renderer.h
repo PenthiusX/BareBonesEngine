@@ -56,9 +56,7 @@ public:
 
     //Debug implentation
     glm::vec3 camPos;
-    void transitionColors();
     void unProject(QVector2D mousePressPosition);
-    bool hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin);
 
 private:
     unsigned int VBO;//vertex buffer object
@@ -97,5 +95,7 @@ private:
 
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
     bool isTranfomationLocal;//Sets the flag to determine if tranformations need to be set on a local or world pivot
+
+    void setColors();
 };
 #endif // _RENDERER_H
