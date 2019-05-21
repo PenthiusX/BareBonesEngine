@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QVector3D>
 #include <QVector2D>
+#include <QVector4D>
 #include <cstdlib>  // For srand() and rand()
 #include <vector>
 #include <QElapsedTimer>

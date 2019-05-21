@@ -64,17 +64,18 @@ void _GLWidget::initializeGL()
     background_quad.setScale(1.0);
     background_quad.setModelData(vertsV,indiceV);
     //default object
-//    pivot.setId(0);
-//    pivot.setTag("pivot");
-//    pivot.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-//    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
-//    pivot.setScale(.5);
-//    pivot.setModelData(":/models/pivot.obj");
+    //    pivot.setId(0);
+    //    pivot.setTag("pivot");
+    //    pivot.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    //    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
+    //    pivot.setScale(.5);
+    //    pivot.setModelData(":/models/pivot.obj");
     //
     s.setId(1);
     s.setTag("object1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    s.setColor(QVector4D(0.3,0.5,0.0,0.5));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
     s.setScale(1.0f);
     s.setModelData(":/models/sphere.obj");
@@ -82,16 +83,18 @@ void _GLWidget::initializeGL()
     s1.setId(2);
     s1.setTag("object2");
     s1.setIsTransfomationLocal(false);
-    s1.setPosition(QVector3D(0.0,-5.0, 0.0));
+    s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s1.setScale(4.0f);
+    s1.setColor(QVector4D(0.0,0.0,0.5,0.5));
+    s1.setScale(1.0f);
     s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
     //
     s2.setId(3);
     s2.setTag("clickSurface");
     s2.setIsTransfomationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
-    s2.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
+    s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    s2.setColor(QVector4D(0.0,0.0,0.5,1.0));
     s2.setScale(1.0f);
     s2.setPivot(QVector3D(2.0,0.0,0.0));
     s2.setModelData(vertsV,indiceV);
@@ -100,13 +103,14 @@ void _GLWidget::initializeGL()
     mpoint.setTag("mousePointerObject");
     mpoint.setIsTransfomationLocal(false);
     mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    mpoint.setColor(QVector4D(1.0,0.0,0.5,1.0));
     mpoint.setScale(.05f);
     mpoint.setModelData(s.getvertexData(),s.getIndexData());
     //
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
     scene->addSceneObject(s);
-//  scene->addSceneObject(s1);
+    //  scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
     //
@@ -123,7 +127,6 @@ void _GLWidget::initializeGL()
         qInfo() << i <<"th object";
     }
     */
-
     _Physics p;
     std::vector<_Phy_Triangle> pv;
     pv = p.generatetrianglesfromVerticesIndices(s.getvertexData(),s.getIndexData());
@@ -198,7 +201,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
         //send values to unProject for the pointerObjet---------------
         for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
         {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-                scene->getSceneObjects()[i]->unProject(QVector2D(e->localPos().x(),e->localPos().y()));
+            scene->getSceneObjects()[i]->unProject(QVector2D(e->localPos().x(),e->localPos().y()));
         }
         //-----------------------------------------------------------
         mousePositionL = QVector2D(e->localPos());

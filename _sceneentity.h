@@ -35,11 +35,14 @@ public:
     QVector3D getPivot() const;
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
     float getScale() const;
+    void setColor(QVector4D col);
+    QVector4D getColor() const;
+    //
     void setTranslationMatrix(glm::mat4x4 tmat);
-    void setRotationmatrix(glm::mat4x4 rmat);
-    void setScaleingMatrix(glm::mat4x4 smat);
     glm::mat4x4 getTranslationMatrix()const;
+    void setRotationmatrix(glm::mat4x4 rmat);
     glm::mat4x4 getRotationmatrix()const;
+    void setScaleingMatrix(glm::mat4x4 smat);
     glm::mat4x4 getScaleingMatrix()const;
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
@@ -68,12 +71,12 @@ private:
     QVector3D rotation;
     QVector3D pivot;
     float scale;
+    QVector4D color;
     //
     std::vector<float> vertexData;
     std::vector<unsigned int> indexData;
     std::vector<int> uvData;
     std::vector<float> normalData;
-    bool isActive;
     //
     QString vShaderPath;
     QString fShaderPath;
@@ -87,10 +90,13 @@ private:
     //
     bool isTransfomationLocal;
     bool isPivotSet;
+    bool isActive;
     //
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
     glm::mat4x4 ScaleMatirx;
+    //
+    _AssetLoader assetLoader;
 };
 
 #endif // _SCENEENTITY_H

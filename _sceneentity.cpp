@@ -9,7 +9,7 @@ _SceneEntity::_SceneEntity()
     this->rotation = QVector3D(0.0,0.0,0.0);
     this->postion = QVector3D(0.0, 0.0, 0.0);
     this->scale = 1.0;
-    this->isActive = false;
+    this->isActive = true;
     this->isTransfomationLocal = false;
     this->isPivotSet = false;
     this->tag = new char();
@@ -119,7 +119,26 @@ float _SceneEntity::getScale() const
 {
     return this->scale;
 }
-
+/*
+ * Function: set/getColor
+ * sts gets the color variable of the
+ * sceneObject
+ * Created: 21_05_2019
+*/
+void _SceneEntity::setColor(QVector4D col)
+{
+    this->color = col;
+}
+QVector4D _SceneEntity::getColor() const
+{
+    return this->color;
+}
+/*
+ * Function: set/get translationMatrix()
+ * that stores the traslation part of the modelMatrix
+ * locally
+ * Created: 20_05_2019
+*/
 void _SceneEntity::setTranslationMatrix(glm::mat4x4 tmat)
 {
     this->TranslationMatrix = tmat;
@@ -128,7 +147,12 @@ glm::mat4x4 _SceneEntity::getTranslationMatrix() const
 {
     return this->TranslationMatrix;
 }
-
+/*
+ * Function: set/get Rotationmatrix()
+ * that stores the rotation part of the modelMatrix
+ * locally
+ * Created: 20_05_2019
+*/
 void _SceneEntity::setRotationmatrix(glm::mat4x4 rmat)
 {
     this->RotationMatrix = rmat;
@@ -137,12 +161,16 @@ glm::mat4x4 _SceneEntity::getRotationmatrix() const
 {
     return this->RotationMatrix;
 }
-
+/*
+ * Function: set/get ScaleingMatrix()
+ * that stores the scaling part of the modelMatrix
+ * locally
+ * Created: 20_05_2019
+*/
 void _SceneEntity::setScaleingMatrix(glm::mat4x4 smat)
 {
     this->ScaleMatirx = smat;
 }
-
 glm::mat4x4 _SceneEntity::getScaleingMatrix() const
 {
     return this->ScaleMatirx;
@@ -226,7 +254,6 @@ bool _SceneEntity::getIsTransfomationLocal()
 */
 void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
 {
-    this->isActive = true;
     this->vertexData = vertices;
     this->indexData = indices;
 }
@@ -239,11 +266,9 @@ void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigne
  */
 void _SceneEntity::setModelData(QString path)
 {
-    this->isActive = true;
-    _AssetLoader a;
-    a.objLoader(path);
-    this->vertexData = a.getAssetVertices();
-    this->indexData = a.getAssetIndices();
+    assetLoader.objLoader(path);
+    this->vertexData = assetLoader.getAssetVertices();
+    this->indexData = assetLoader.getAssetIndices();
 }
 /*
  * Function: setShaderPath(QString vSh, QString fSh)
