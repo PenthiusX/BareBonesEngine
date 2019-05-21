@@ -248,5 +248,5 @@ glm::ivec3 _Tools::GetGroupSize(int n,glm::vec3 ratio)
 
 int _Tools::indexFromPixelCordinates(glm::vec2 pixel_cord,glm::ivec2 resolution)
 {
-    return resolution.x*pixel_cord.y+pixel_cord.x;
+    return resolution.x*(glm::mod(pixel_cord.y , float(resolution.y)))+(glm::mod(pixel_cord.x , float(resolution.x)));
 }

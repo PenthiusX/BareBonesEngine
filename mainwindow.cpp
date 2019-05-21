@@ -77,8 +77,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->scan_calibration_button, SIGNAL(clicked()),ui->scan_caliberation_section,SLOT(init()));
     connect(ui->stage_calibration_button, SIGNAL(clicked()),ui->stage_caliberation_section,SLOT(init()));
 
-    connect(ui->stage_left, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));});
-    connect(ui->stage_right, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "TurnTableMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});
+    //connect(machine,SIGNAL(stageAngleChanged()),ui->widget,SLOT(rotateGeneratedModel()));
+
+//    connect(machine, &_Machine::stageAngleChanged,[this]() {
+//        ui->widget->rotateGeneratedModel()
+//    });
+
+    connect(machine, &_Machine::stageAngleChanged,ui->widget,&_GLWidget::rotateGeneratedModel);
+
+    connect(ui->stage_left, &QPushButton::clicked,[this]() {
+        QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));
+    });
+    connect(ui->stage_right, &QPushButton::clicked,[this]() {
+        QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, -100));
+    });
     connect(ui->laser_height_up, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, 100));});
     connect(ui->laser_height_down, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});
     connect(ui->laser_focus_in, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserFocusMotorDiff", Qt::QueuedConnection,Q_ARG(int, -300));});
@@ -206,4 +218,19 @@ void MainWindow::msgBox(QString windowname,QString info)
 void MainWindow::showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight)
 {
     ui->widget->showGeneratedModel(img,iwidth,iheight);
+}
+
+void MainWindow::rotateGeneratedModel()
+{
+//    static _Renderer *render_object = nullptr;
+//    for (unsigned int i = 0; i < ui->widget->scene->getSceneObjectsArray().size(); i++)
+//    {
+//        render_object = scene->getSceneObjectsArray()[i];
+
+//        if (render_object->getSceneEntity().getId() == generated_model.getId())
+//        {
+//            render_object->setModelMatrix(glm::rotate(render_object->getModelMatrix(), (angle), glm::vec3(0.0f, 1.0f, 0.0f)));
+//        }
+//    }
+
 }

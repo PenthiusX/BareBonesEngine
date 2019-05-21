@@ -15,7 +15,7 @@
 #define NEWLINE "\n"
 #define NULL_STR ""
 
-
+#define PI 3.1415926535897932384626433832795
 
 /*
  * The Machine class
@@ -91,6 +91,8 @@ void _Machine::TurnTableMotorDiff(int steps,ActionType action)
     static QString prefix = config["Hardware"]["Controls"]["StageMotor"]["Commands"]["RS232"].getStringEntity("SET")+config["Hardware"]["Controls"]["SetDistance"]["Commands"]["RS232"].getStringEntity("SET");
     static QString postfix = config["Hardware"]["Controls"]["MoveAcceleration"]["Commands"]["RS232"].getStringEntity("SET");
     hardware_serial->waitAndWriteData(QString(prefix+"%1"+postfix).arg(steps));
+    emit stageAngleChanged(PI*float(steps)/8000);
+    //stageAngleChanged();
 }
 
 /* Slide Marking Laser Focus Motor by specified steps
@@ -484,7 +486,7 @@ void _Machine::init()
     connect(timer, SIGNAL(timeout()), this, SLOT(updateImageCamera()));
     timer->start(40);
 
-    callCommandFunction("StageMotor",10000);
+    //callCommandFunction("StageMotor",10000);
 
     initialised = true;
 

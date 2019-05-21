@@ -22,6 +22,8 @@ public:
     void addCamera(_Camera c);
     void onResize(int w,int h);
     void render();
+    std::vector<_SceneEntity> getSceneEntityVector() const;
+
 private:
     std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> renderObjects;

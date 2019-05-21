@@ -58,6 +58,7 @@ signals:
     void guiFrameOut(char *img,unsigned int w,unsigned h);//goes from machine to ui(gl_widget) for displaying
     void cameraFrameRecieved(char *img,unsigned int w,unsigned h);
     void initMachine();
+    void stageAngleChanged(float angle);
 
 public slots:
     void init();

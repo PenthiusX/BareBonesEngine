@@ -101,3 +101,8 @@ void _Scene::render()
         renderObjects[i]->draw();
     }
 }
+
+std::vector<_SceneEntity> _Scene::getSceneEntityVector() const
+{
+    return sceneEntityVector;
+}

@@ -11,9 +11,11 @@ public:
 _GLWidget();
 explicit _GLWidget(QWidget *parent = 0);
 ~_GLWidget();
+bool isInitialised();
 public slots:
 void update_background_image(char *img, unsigned int w, unsigned int h);
 void showGeneratedModel(char *img, unsigned int w, unsigned int h);
+void rotateGeneratedModel(float angle);
 protected:
 void initializeGL() Q_DECL_OVERRIDE;
 void resizeGL(int w, int h)Q_DECL_OVERRIDE;
@@ -32,6 +34,7 @@ unsigned int shaderProgram;
 //Resolution variables
 int width;
 int height;
+bool initialised=false;
 
 _Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
 _SceneEntity s, s1,s2;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "_glwidget.h"
+#include <QDebug>
 
 /*
  * The _GLWidget Class:
@@ -67,7 +68,7 @@ void _GLWidget::initializeGL()
     background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
     background_quad.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 
-    background_quad.setScale(1.0);
+    background_quad.setScale(0.1);
 
     /*Hard coded vertices of background quad the vertices are
      * directly asiigned to gl_Position(screen cordinates)
@@ -101,10 +102,10 @@ void _GLWidget::initializeGL()
     generated_model.setShader(":/shaders/generated_model_vertex.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
-    generated_model.setPosition(QVector3D(0.0, 0.0, 0.0));
-    generated_model.setRotation(QQuaternion(QVector3D(0.70, 0.0, 0.0)));
+    generated_model.setPosition(QVector3D(0.125, -2.354, 0.0));
+    generated_model.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 
-    generated_model.setScale(4);
+    generated_model.setScale(2.165);
 
     std::vector<float> vertsG;
     std::vector<unsigned int> indiceG;
@@ -166,6 +167,9 @@ void _GLWidget::initializeGL()
     //scene->addSceneObject(s2);
     scene->addSceneObject(generated_model);
 
+    initialised=true;
+
+    rotateGeneratedModel(5.23598);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -306,4 +310,26 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
             doneCurrent();
         }
     }
+}
+
+void _GLWidget::rotateGeneratedModel(float angle)
+{
+    static _Renderer *render_object = nullptr;
+    if(initialised)
+    {
+    for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
+    {
+        render_object = scene->getSceneObjectsArray()[i];
+
+        if (render_object->getSceneEntity().getId() == generated_model.getId())
+        {
+            render_object->setModelMatrix(glm::rotate(render_object->getModelMatrix(), (-angle), glm::vec3(0.0f, 1.0f, 0.0f)));
+        }
+    }
+    }
+}
+
+bool _GLWidget::isInitialised()
+{
+    return initialised;
 }

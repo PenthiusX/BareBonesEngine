@@ -215,6 +215,9 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     }
     //Do the Processing
 
+    if(rotation_step == 0)
+        gpu_compute->compute_clear_32_i_texture(texture_model_wrap,0);
+
     //send the image to gpu texture
     texture.setImage(img,iwidth,iheight);
 

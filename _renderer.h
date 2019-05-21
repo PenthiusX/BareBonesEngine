@@ -43,6 +43,8 @@ public:
     void setupTexture(QString texfile); //initializes texture from file
 
     void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix
+    void setModelMatrix(glm::mat4 mat);//set the model matrix
+    glm::mat4 getModelMatrix();//set the model matrix
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
     void updateTrasformations(QVector3D pos,QQuaternion, float scale);//

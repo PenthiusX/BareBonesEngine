@@ -29,6 +29,7 @@ public slots:
 
     void msgBox(QString windowname, QString info);
     void showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight);
+    void rotateGeneratedModel();
 private:
     Ui::MainWindow *ui;
 

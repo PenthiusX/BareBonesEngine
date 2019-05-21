@@ -17,6 +17,8 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRONT_AND_BACK);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1, 0.1, 0.3, 1.0);//sets the bckground color of the openglContext.
 	//
@@ -184,7 +186,17 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QQuaternion rotati
 //	QVector3D q = rotation.toEulerAngles();
 	glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(position.x(), position.y(), position.z()));
   //glm_model4x4 = glm::rotate(glm_model4x4, glm::radians(0.0f), glm::vec3(0.0, 0.0, 0.1)); //Note : needs work rotation is not proper--------------------!!!!
-	glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
+    glm_model4x4 = glm::scale(glm_model4x4, glm::vec3(scale, scale, scale));
+}
+
+void _Renderer::setModelMatrix(glm::mat4 mat)
+{
+    glm_model4x4 = mat;
+}
+
+glm::mat4 _Renderer::getModelMatrix()
+{
+    return glm_model4x4;
 }
 
 /*
@@ -216,7 +228,8 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zFar, f
 	// Calculate aspect ratio
 	qreal aspect = qreal(resW) / qreal(resH ? resH : 1);
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	glm_projection4x4 = glm::perspective(fov, float(aspect), zNear, zFar);
+    glm_projection4x4 = glm::perspective(fov, float(aspect), zNear, zFar);
+    //glm_projection4x4 = glm::perspective(fov, float(aspect), zNear, zFar);
 }
 /*
 * Function: updateTransformations()
@@ -287,7 +300,8 @@ _SceneEntity _Renderer::getSceneEntity()
 void _Renderer::_Renderer::draw()
 {
 	//----------------------TestUse----------------------------------------------------
-    //glm_model4x4 = glm::rotate(glm_model4x4, (0.02f), glm::vec3(0.0f, 1.0f, 0.0f));
+    //glm_model4x4 = glm::rotate(glm_model4x4, (0.01f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::rotate(glm_model4x4, (0.01f), glm::vec3(0.0f, 1.0f, 0.0f));
 //    glm::quat quat = glm::quat(0.0,90.0,45.0,0.0);
 
 	//glm_model4x4 = glm::translate(glm_model4x4, glm::vec3((sin(timer.elapsed() * 0.005)* 0.3), 0.0, 0.00));
@@ -310,11 +324,17 @@ void _Renderer::_Renderer::draw()
     GLfloat r = abs(cos(timer.elapsed() * 0.002));
     GLfloat g = abs(sin(timer.elapsed() * 0.003));
     GLfloat b = abs(cos(timer.elapsed() * 0.005));
+
+    glm_projection4x4 = glm::mat4x4(1.0f);
+    //glm_projection4x4 = glm::mat4x4(1.0f);
+    glm_view4x4 = glm::mat4x4(1.0f);
+
 	glUniform4f(colorUniform, r,g,b, 1.0f);//will be replaced by Texture
 	//sets the values for the MVP matrix in the vertex shader
 	glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
 	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
-	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
+
+    glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
 	//The Final draw call for each frame
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 
