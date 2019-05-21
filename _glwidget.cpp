@@ -64,13 +64,14 @@ void _GLWidget::initializeGL()
     background_quad.setScale(1.0);
     background_quad.setModelData(vertsV,indiceV);
     //default object
-    //    pivot.setId(0);
-    //    pivot.setTag("pivot");
-    //    pivot.setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    //    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
-    //    pivot.setScale(.5);
-    //    pivot.setModelData(":/models/pivot.obj");
-    //
+    pivot.setId(999);
+    pivot.setTag("pivot");
+    pivot.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    pivot.setColor(QVector4D(1.0,1.0,1.0,1.0));
+    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
+    pivot.setScale(0.8f);
+    pivot.setModelData(":/models/pivot.obj");
+    //-----------------
     s.setId(1);
     s.setTag("object1");
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
@@ -93,10 +94,10 @@ void _GLWidget::initializeGL()
     s2.setTag("clickSurface");
     s2.setIsTransfomationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
+    s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s2.setColor(QVector4D(0.0,0.0,0.5,1.0));
+    s2.setColor(QVector4D(0.0,0.0,0.5,0.8));
     s2.setScale(1.0f);
-    s2.setPivot(QVector3D(2.0,0.0,0.0));
     s2.setModelData(vertsV,indiceV);
     //
     mpoint.setId(10);
@@ -106,11 +107,12 @@ void _GLWidget::initializeGL()
     mpoint.setColor(QVector4D(1.0,0.0,0.5,1.0));
     mpoint.setScale(.05f);
     mpoint.setModelData(s.getvertexData(),s.getIndexData());
-    //
+    //-----------------
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
+    scene->addSceneObject(pivot);
     scene->addSceneObject(s);
-    //  scene->addSceneObject(s1);
+    scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
     //
@@ -149,17 +151,20 @@ void _GLWidget::resizeGL(int w, int h)
  * till the application ends.
  * Created: 5_02_2019
 */
+
 void _GLWidget::paintGL()//the renderloop
 {
-    //debug use,sets camfocus on object with the iD that is selected---
+    //debug use,sets camfocus on object with the iD that is selected---------------
+
     for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
         if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
-            cam.setFocalPoint(QVector3D(scene->getSceneObjects()[i]->getSceneEntity().getPostion()));
+            cam.setFocalPoint(scene->getSceneObjects()[i]->getSceneEntity().getPostion());
+            scene->getSceneObjects()[1]->setPosition(scene->getSceneObjects()[i]->getSceneEntity().getPostion());
+            scene->getSceneObjects()[1]->setRotation(scene->getSceneObjects()[i]->getSceneEntity().getRotation());
         }
     }
     //-----------------------------------------------------------------------------
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
-    scene->setMousePositionInScene(this->mousePositionR);//sets the mouse position in the scene for use in the scene
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
     _Tools::printFrameRate();//prints the frame rate in the application output
@@ -218,15 +223,13 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
                 if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
                     scene->getSceneObjects()[i]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
                 }
-                if(this->scene->getSceneObjects()[i]->getSceneEntity().getTag() == "mousePointerObject"){
-                    this->scene->getSceneObjects()[i]->getSceneEntity().setPosition(QVector3D(0.10,0.0,0.0));
-                }
             }
         }
     }
     if(e->buttons() == Qt::RightButton)
     {
         mousePositionR = QVector2D(e->localPos());
+        scene->setMousePositionInScene(this->mousePositionR);//sets the mouse position in the scene for use
     }
 }
 /*
@@ -349,3 +352,4 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         this->isCamFocus = !isCamFocus;
     }
 }
+
