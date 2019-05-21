@@ -344,7 +344,6 @@ void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
         rotationMatrix = glm::mat4_cast(quat);
         glm_model4x4 = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
     }
-
     keepSceneEntityUpdated();
 }
 /*
@@ -393,7 +392,21 @@ void _Renderer::keepSceneEntityUpdated()
             tmat4[3][1],
             tmat4[3][2]));
 
-    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
+//    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
+}
+
+void _Renderer::setColors()
+{
+    glUniform4f(colorUniform, this->sceneEntity.getColor().x(),this->sceneEntity.getColor().y(), this->sceneEntity.getColor().z(), this->sceneEntity.getColor().w());
+
+    if(this->sceneEntity.getId() == 999)//pivot
+    {
+      QVector4D col = this->sceneEntity.getColor();
+      col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
+      col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
+      col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
+      glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+    }
 }
 
 /*
@@ -452,20 +465,6 @@ void _Renderer::_Renderer::draw()
  * Temporary debugging implemetation, transistion colors of object
  * based on the tag attached to the scenceObjects
  * hot reloding of shaders also needs to be implemented instead
-*/
-void _Renderer::setColors()
-{
-    QVector4D col = this->sceneEntity.getColor();
-
-    col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
-    col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
-    col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
-
-//    glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
-    glUniform4f(colorUniform, this->sceneEntity.getColor().x(),this->sceneEntity.getColor().y(), this->sceneEntity.getColor().z(), this->sceneEntity.getColor().w());
-}
-/*
- *
 */
 void _Renderer::unProject(QVector2D mousePressPosition)
 {
