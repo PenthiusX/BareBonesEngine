@@ -1141,6 +1141,7 @@ void _GPU_Compute::compute_register_wrap_mesh(_Texture& texture_edge_bounds,_Tex
         glUniform2i(0,stage_center.x,stage_center.y);
         glUniform2i(1,output_img.getWidth(),output_img.getHeight());
         glUniform1i(2,rotation_step);
+        glUniform2i(3,768,576);
 
         glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
@@ -1151,6 +1152,7 @@ void _GPU_Compute::compute_register_wrap_mesh(_Texture& texture_edge_bounds,_Tex
 void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Texture& texture_model_wrap,_Texture& texture_out_8_bit,int rotation_step,glm::vec2 stage_center)
 {
     static _Texture texture_edge_bounds(nullptr,2,input_img.getHeight());
+    static _Texture texture_out_mask(nullptr,texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
     //static _Texture texture_out_8_bit(nullptr,texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
     static _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
@@ -1165,7 +1167,7 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
     texture_edge_bounds.load(GL_R32I,GL_RED_INTEGER, GL_INT);
     texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_thres.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_out_8_bit.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_out_mask.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_mask.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_mask_inv.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_descrete_gradient_value.load(GL_RED,GL_UNSIGNED_BYTE);
@@ -1192,23 +1194,29 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
 
     compute_mark_column_index(texture_max_extent,output_img);
 
-    compute_copy_column_from_to(texture_max_extent,texture_edge_bounds,0,1);
+    compute_copy_column_from_to(texture_max_extent,texture_edge_bounds,0,0);
 
     compute_row_wise_right_edge(texture_thres,texture_max_extent);
 
     compute_mark_column_index(texture_max_extent,output_img);
 
-    compute_copy_column_from_to(texture_max_extent,texture_edge_bounds,0,0);
+    compute_copy_column_from_to(texture_max_extent,texture_edge_bounds,0,1);
 
     //compute_mark_column_index(texture_edge_bounds,output_img);
 
     compute_register_wrap_mesh(texture_edge_bounds,texture_model_wrap,rotation_step,stage_center);
 
-    computeFrom32iTo8uiDevide(texture_model_wrap,texture_out_8_bit,4);
+    computeFrom32iTo8uiDevide(texture_model_wrap,texture_out_8_bit,2);
 
-    colorFrame = getTextureImageFramebuffer(texture_out_8_bit);
+    //compute_clear_8_ui_texture(texture_out_8_bit,100);
 
-    _Tools::SaveImageToPgm(colorFrame,texture_out_8_bit.getWidth(),texture_out_8_bit.getHeight(),"texture_wrap.pgm");
+    create_region_image_mask(texture_out_mask,glm::ivec4(-1,68,texture_out_mask.getWidth(),460));
+
+    computeMaskImageRR(texture_out_8_bit,texture_out_mask,texture_out_8_bit);
+
+    //compute_guassian_blur_5_5(texture_out_8_bit,texture_out_8_bit);
+
+    _Tools::SaveImageToPgm(getTextureImageFramebuffer(texture_out_8_bit),texture_out_8_bit.getWidth(),texture_out_8_bit.getHeight(),"texture_wrap.pgm");
 
     //sobel edge
 //    compute_sobel_edge(input_img,texture_sobel_mag_,texture_sobel_theta_);

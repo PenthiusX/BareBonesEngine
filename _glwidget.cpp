@@ -99,13 +99,13 @@ void _GLWidget::initializeGL()
     ///
 
     generated_model.setId(4);//keep the id it will be required while updating texture
-    generated_model.setShader(":/shaders/generated_model_vertex.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
-    generated_model.setPosition(QVector3D(0.125, -2.354, 0.0));
+    generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
     generated_model.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 
-    generated_model.setScale(2.165);
+    generated_model.setScale(0.524);
 
     std::vector<float> vertsG;
     std::vector<unsigned int> indiceG;
@@ -169,7 +169,7 @@ void _GLWidget::initializeGL()
 
     initialised=true;
 
-    rotateGeneratedModel(5.23598);
+    rotateGeneratedModel(0.0);
 }
 /*
  * Function: resizeGL(int w, int h) overides the

@@ -86,10 +86,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(machine, &_Machine::stageAngleChanged,ui->widget,&_GLWidget::rotateGeneratedModel);
 
     connect(ui->stage_left, &QPushButton::clicked,[this]() {
-        QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 100));
+        QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 400));
     });
     connect(ui->stage_right, &QPushButton::clicked,[this]() {
-        QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, -100));
+        QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, -400));
     });
     connect(ui->laser_height_up, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, 100));});
     connect(ui->laser_height_down, &QPushButton::clicked,[this]() {QMetaObject::invokeMethod(machine, "LaserHeightMotorDiff", Qt::QueuedConnection,Q_ARG(int, -100));});

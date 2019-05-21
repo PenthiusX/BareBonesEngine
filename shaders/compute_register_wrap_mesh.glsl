@@ -7,8 +7,9 @@ layout(binding=0, r32i) uniform mediump iimage2D inputImage;
 layout(binding=1, r32i) uniform mediump iimage2D resultImage;
 
 layout( location=0 ) uniform ivec2 stage_center;
-layout( location=1 ) uniform ivec2 image_resolution;
+layout( location=1 ) uniform ivec2 mesh_wrap_resolution;
 layout( location=2 ) uniform int rotation_step;
+layout( location=3 ) uniform ivec2 image_resolution;
 
 #include compute_basic_functions.glsl
 
@@ -23,14 +24,31 @@ void main()
 {
        ivec2 image_pixel_cord = getPixelCord();
 
-       float theta = float(image_pixel_cord.x-rotation_step) * 2 * PI / image_resolution.x;
+       float theta = float(image_pixel_cord.x-rotation_step) * 2 * PI / mesh_wrap_resolution.x;
 
        float cosine=cos(theta);
        int side = (cosine>0.0) ? 0 : 1;
 
-       int r = int(ceil(float(getImagePixel(inputImage,ivec2(side,image_pixel_cord.y))-stage_center.x)/cosine));
+       int value = getImagePixel(inputImage,ivec2(side,image_pixel_cord.y));
 
-       //imageAtomicMin(resultImage,image_pixel_cord,r);
-       setImagePixel(resultImage,image_pixel_cord,r);
+
+       if(side == 0)
+       {
+           if(value != (image_resolution.x-1))
+           {
+               float r_max = (float(stage_center.x - value)/cosine);
+               int r = int(ceil(r_max));
+
+               imageAtomicMin(resultImage,image_pixel_cord,r);
+               //setImagePixel(resultImage,image_pixel_cord,r);
+           }
+           else
+           {
+               imageAtomicMin(resultImage,image_pixel_cord,0);
+
+           }
+
+       }
+
 
 }

@@ -172,7 +172,7 @@ void _Scanner::scanGenerateModelEdge()
         QString filename = QString("scan_image_stage_%1").arg(t);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
-        QThread::msleep(100);
+        //QThread::msleep(10);
 
         //grab new frame from camera
         machine->GrabFrame(filename);

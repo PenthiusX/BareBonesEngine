@@ -46,5 +46,6 @@
         <file>shaders/generated_model_vertex.glsl</file>
         <file>shaders/compute_subtract_value_from_column.glsl</file>
         <file>shaders/compute_retrive_lower_2_bytes.glsl</file>
+        <file>shaders/generated_model_vertex_edge.glsl</file>
     </qresource>
 </RCC>
