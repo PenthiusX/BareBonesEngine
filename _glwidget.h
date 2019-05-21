@@ -46,7 +46,7 @@ private:
 
     //Varible for InputCallbackFunctions
     unsigned int idmatch;
-    float scroolScale;
+    double scroolScale;
     QVector2D rotRads;
 	bool isCamFocus;
     QVector2D mousePressPosition;
