@@ -716,6 +716,31 @@ void _GPU_Compute::computeMaskImageRR(_Texture& input_img,_Texture& mask_img,_Te
 
 }
 
+void _GPU_Compute::computeMaskImageR32IR(_Texture& input_img,_Texture& mask_img,_Texture& output_img)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img.getWidth(), input_img.getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_mask_image_r32i_r.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img.bindForCompute(0,GL_R32I,GL_READ_ONLY);
+    mask_img.bindForCompute(1,GL_R8UI,GL_READ_ONLY);
+    output_img.bindForCompute(2,GL_R32I,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 void _GPU_Compute::create_region_image_mask(_Texture &output_img, glm::ivec4 region)
 {
     //8 bit image as 255-0 mask
@@ -1216,7 +1241,83 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
 
     //compute_guassian_blur_5_5(texture_out_8_bit,texture_out_8_bit);
 
-    _Tools::SaveImageToPgm(getTextureImageFramebuffer(texture_out_8_bit),texture_out_8_bit.getWidth(),texture_out_8_bit.getHeight(),"texture_wrap.pgm");
+    if(rotation_step == 199)
+    {
+        computeMaskImageR32IR(texture_model_wrap,texture_out_mask,texture_model_wrap);
+
+        int* wrap_frame = getTextureModelFramebuffer32I(texture_model_wrap,0);
+
+        std::vector<double> vertsG;
+        std::vector<unsigned int> indiceG;
+        unsigned int index[4] = {0,0,0,0};
+
+        glm::ivec2 resolution = glm::ivec2(texture_model_wrap.getWidth(),texture_model_wrap.getHeight());//wrap texture size
+
+        for (unsigned int h = 0; h < resolution.y; h++) {
+            for (unsigned int w = 0; w < resolution.x; w++) {
+
+                glm::vec2 pixel_cord = glm::vec2(w,h);
+
+                glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
+
+                int index = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+                //texture_positions
+                float r = wrap_frame[index];
+                float theta = 2 * PI * w;
+
+
+                vertsG.push_back(r*cos(theta));//x = s
+                vertsG.push_back(r*sin(theta));//y = t
+                vertsG.push_back(h);//z = 0.0
+
+            }
+        }
+
+        glm::ivec2 step_size = glm::ivec2(1,1);
+
+        glm::vec3 origin = glm::vec3(0,0,resolution.y/2);
+
+        float volume = 0.0;
+
+        for (unsigned int h = 0; h < resolution.y; h+=step_size.y) {
+            for (unsigned int w = 0; w < resolution.x; w+=step_size.x) {
+
+                glm::vec2 pixel_cord = glm::vec2(w,h);
+
+                //indexes of neibhouring vertexes
+                index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+                index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,0),resolution);
+                index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
+                index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
+
+                if((pixel_cord.y < resolution.y))
+                {
+                    glm::ivec3 tri_verts_indexes[4] = {
+                        _Tools::vertIndexesFromElementIndex(index[0]),
+                        _Tools::vertIndexesFromElementIndex(index[1]),
+                        _Tools::vertIndexesFromElementIndex(index[2]),
+                        _Tools::vertIndexesFromElementIndex(index[3])
+                    };
+                    std::vector<glm::vec3> tri_verts = {
+                        glm::vec3(vertsG[tri_verts_indexes[0].x],vertsG[tri_verts_indexes[0].y],vertsG[tri_verts_indexes[0].z]),
+                        glm::vec3(vertsG[tri_verts_indexes[1].x],vertsG[tri_verts_indexes[1].y],vertsG[tri_verts_indexes[1].z]),
+                        glm::vec3(vertsG[tri_verts_indexes[2].x],vertsG[tri_verts_indexes[2].y],vertsG[tri_verts_indexes[2].z]),
+                        glm::vec3(vertsG[tri_verts_indexes[3].x],vertsG[tri_verts_indexes[3].y],vertsG[tri_verts_indexes[3].z])
+                    };
+
+                    volume += (glm::determinant(glm::mat3x3(tri_verts[0],tri_verts[1],tri_verts[2]))+glm::determinant(glm::mat3x3(tri_verts[0],tri_verts[2],tri_verts[3])));
+
+                    //indexs of second triangle in quad
+                }
+            }
+        }
+
+        volume = volume /6.0;
+        glUniform2f(5,volume,volume);
+        qDebug() << "volume : " << volume;
+    }
+
+    _Tools::SaveImageToPgm(getTextureImageFramebuffer(texture_model_wrap,GL_RED),texture_out_8_bit.getWidth(),texture_out_8_bit.getHeight(),"texture_wrap.pgm");
 
     //sobel edge
 //    compute_sobel_edge(input_img,texture_sobel_mag_,texture_sobel_theta_);
@@ -1421,6 +1522,8 @@ char* _GPU_Compute::get_texture_image_framebuffer(_Texture& input_img,unsigned i
 
     if(format==0) format = input_img.getColorformat();
 
+    //glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, colorFrame);
+
     glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),format, GL_UNSIGNED_BYTE,colorFrame);
 
     return colorFrame;
@@ -1455,7 +1558,7 @@ char* _GPU_Compute::getTextureImageFramebuffer(_Texture& input_img,unsigned int 
 
     if(format==0) format = input_img.getColorformat();
 
-    glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),format, input_img.getDataType(),colorFrame);
+    glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),format, GL_UNSIGNED_BYTE,colorFrame);
 
     return colorFrame;
 }
@@ -1546,4 +1649,38 @@ void _GPU_Compute::compute_retrive_lower_2_bytes(_Texture& input_img,_Texture& o
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
+}
+
+int* _GPU_Compute::getTextureModelFramebuffer32I(_Texture& input_img,unsigned int format)
+{
+    static unsigned int framebuffer=0,renderbuffer=0;
+    static int* colorFrame=nullptr;
+
+    if(!framebuffer)
+    {
+        glGenFramebuffers(1,&framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
+
+        glGenRenderbuffers(1,&renderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, renderbuffer);
+
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) qDebug() << "fbo complete";
+        else qDebug() << "incomplete";
+
+        colorFrame = new int[input_img.getWidth()*input_img.getHeight()];
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
+
+    glViewport(0, 0, input_img.getWidth(), input_img.getHeight());
+
+    input_img.bindForFramebuffer();
+
+    if(format==0) format = input_img.getColorformat();
+
+    glReadPixels(0, 0, input_img.getWidth(), input_img.getHeight(),GL_RED_INTEGER, GL_INT,colorFrame);
+
+    return colorFrame;
 }

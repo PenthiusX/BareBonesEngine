@@ -22,6 +22,8 @@ public:
     static QJsonObject ReadJsonFromSystem(QString Filename);
     static bool WriteJsonToFileSystem(QString filename, QJsonObject config);
     static int indexFromPixelCordinates(glm::vec2 pixel_cord, glm::ivec2 resolution);
+    static glm::ivec3 vertIndexesFromElementIndex(int i);
+    static glm::vec3 vertsFromIndex(glm::ivec3 indexes);
 };
 
 

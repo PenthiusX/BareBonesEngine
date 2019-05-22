@@ -282,7 +282,7 @@
 				"Data" : {
 					"Caliberation" : {
 						"STATE" : true,
-						"VALUE" : 65
+						"VALUE" : 60
 					},
 					"Default" : {
 						"MAX" : 255,

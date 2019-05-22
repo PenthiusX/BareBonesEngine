@@ -1,6 +1,7 @@
 #include <iostream>
 #include "_glwidget.h"
 #include <QDebug>
+#define PI 3.1415926535897932384626433832795
 
 /*
  * The _GLWidget Class:
@@ -128,16 +129,18 @@ void _GLWidget::initializeGL()
         }
     }
 
-    for (unsigned int h = 0; h < resolution.y; h+=8) {
-        for (unsigned int w = 0; w < resolution.x; w+=8) {
+    glm::ivec2 step_size = glm::ivec2(2,8);
+
+    for (unsigned int h = 0; h < resolution.y; h+=step_size.y) {
+        for (unsigned int w = 0; w < resolution.x; w+=step_size.x) {
 
             glm::vec2 pixel_cord = glm::vec2(w,h);
 
             //indexes of neibhouring vertexes
             index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
-            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(8,0),resolution);
-            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(8,8),resolution);
-            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,8),resolution);
+            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,0),resolution);
+            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
+            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
 
 //            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
 //            {
@@ -179,7 +182,7 @@ void _GLWidget::initializeGL()
 
     initialised=true;
 
-    rotateGeneratedModel(0.0);
+    rotateGeneratedModel(PI/200);
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -215,6 +218,7 @@ void _GLWidget::paintGL()//the renderloop
 void _GLWidget::mousePressEvent(QMouseEvent *e)
 {
 	mousePressPosition = QVector2D(e->localPos());
+    m_lastPos = e->pos();
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
@@ -322,9 +326,15 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
     }
 }
 
+
 void _GLWidget::rotateGeneratedModel(float angle)
 {
+    rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
+}
+void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
+{
     static _Renderer *render_object = nullptr;
+
     if(initialised)
     {
     for (unsigned int i = 0; i < scene->getSceneObjectsArray().size(); i++)
@@ -333,7 +343,18 @@ void _GLWidget::rotateGeneratedModel(float angle)
 
         if (render_object->getSceneEntity().getId() == generated_model.getId())
         {
-            render_object->setModelMatrix(glm::rotate(render_object->getModelMatrix(), (-angle), glm::vec3(0.0f, 1.0f, 0.0f)));
+            if(with_stage){
+                static glm::mat4x4 rot_mat = render_object->getModelMatrix();
+                glm::mat4x4 rot_mat_local = glm::rotate(rot_mat, (-angle), axis);
+                render_object->setModelMatrix(rot_mat_local);
+                rot_mat = rot_mat_local;
+
+            }
+            else {
+                glm::mat4x4 rot_mat_local = glm::rotate(render_object->getModelMatrix(), (-angle), axis);
+                render_object->setModelMatrix(rot_mat_local);
+            }
+
         }
     }
     }
@@ -342,4 +363,60 @@ void _GLWidget::rotateGeneratedModel(float angle)
 bool _GLWidget::isInitialised()
 {
     return initialised;
+}
+
+static void qNormalizeAngle(int &angle)
+{
+    while (angle < 0)
+        angle += 360 * 16;
+    while (angle > 360 * 16)
+        angle -= 360 * 16;
+}
+
+void _GLWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    int dx = event->x() - m_lastPos.x();
+    int dy = event->y() - m_lastPos.y();
+
+    if (event->buttons() & Qt::LeftButton) {
+        setXRotation(m_xRot + dy);
+        setYRotation(m_yRot + dx);
+    } else if (event->buttons() & Qt::RightButton) {
+        setXRotation(m_xRot +  dy);
+        setZRotation(m_zRot +  dx);
+    }
+    m_lastPos = event->pos();
+}
+
+void _GLWidget::setXRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != m_xRot) {
+        m_xRot = angle;
+        //emit xRotationChanged(angle);
+        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(1.0,0.0,0.0),false);
+        update();
+    }
+}
+
+void _GLWidget::setYRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != m_yRot) {
+        m_yRot = angle;
+        //emit yRotationChanged(angle);
+        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(0.0,1.0,0.0),false);
+        update();
+    }
+}
+
+void _GLWidget::setZRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != m_zRot) {
+        m_zRot = angle;
+        //emit zRotationChanged(angle);
+        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(0.0,0.0,1.0),false);
+        update();
+    }
 }

@@ -1,6 +1,6 @@
 {
-	"Paths" : {
-		"MACHINE_CONFIG_FILE" : "aetsvrvac",
-		"SCAN_STORE_PATH" : "Fvragfcgz"
-	}
+    "Paths": {
+        "MACHINE_CONFIG_FILE": "C:/Users/prophesys4/Documents/DiamondSurat/Projects/build-DiamondPal-Desktop_Qt_5_12_0_MSVC2017_64bit-Debug/debug/../configuration.json",
+        "SCAN_STORE_PATH": "C:/Users/prophesys4/Documents/DiamondSurat/Data/scan_images/stage_ball"
+    }
 }

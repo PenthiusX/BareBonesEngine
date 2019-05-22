@@ -250,3 +250,15 @@ int _Tools::indexFromPixelCordinates(glm::vec2 pixel_cord,glm::ivec2 resolution)
 {
     return resolution.x*(glm::mod(pixel_cord.y , float(resolution.y)))+(glm::mod(pixel_cord.x , float(resolution.x)));
 }
+
+glm::ivec3 _Tools::vertIndexesFromElementIndex(int i)
+{
+    i=3*i;
+    glm::ivec3 bins=glm::ivec3(i,i+1,i+2);
+    return bins;
+}
+
+glm::vec3 _Tools::vertsFromIndex(glm::ivec3 indexes)
+{
+    return glm::vec3(0,0,0);
+}

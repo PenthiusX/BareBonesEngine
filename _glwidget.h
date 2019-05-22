@@ -12,6 +12,10 @@ _GLWidget();
 explicit _GLWidget(QWidget *parent = 0);
 ~_GLWidget();
 bool isInitialised();
+void setXRotation(int angle);
+void setYRotation(int angle);
+void setZRotation(int angle);
+void rotateGeneratedmodel(float angle, glm::vec3 axis, bool with_stage);
 public slots:
 void update_background_image(char *img, unsigned int w, unsigned int h);
 void showGeneratedModel(char *img, unsigned int w, unsigned int h);
@@ -25,6 +29,13 @@ void mousePressEvent(QMouseEvent *e) override;
 void mouseReleaseEvent(QMouseEvent *e) override;
 virtual void  keyPressEvent(QKeyEvent *event) override;
 
+void mouseMoveEvent(QMouseEvent *event);
+
+
+QPoint m_lastPos;
+int m_xRot;
+int m_yRot;
+int m_zRot;
 private:
 unsigned int VBO;
 unsigned int VAO;

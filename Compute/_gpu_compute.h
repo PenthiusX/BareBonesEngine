@@ -85,6 +85,8 @@ public:
     void computeEdgeModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap, _Texture &texture_out_8_bit, int rotation_step, glm::vec2 stage_center);
     void compute_subtract_value_from_column(_Texture &input_img, _Texture &output_img,int value = 400);
     void compute_retrive_lower_2_bytes(_Texture &input_img, _Texture &output_img);
+    int *getTextureModelFramebuffer32I(_Texture &input_img, unsigned int format);
+    void computeMaskImageR32IR(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
 };
 
 #endif // _GPU_COMPUTE_H

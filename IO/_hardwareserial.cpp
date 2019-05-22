@@ -143,14 +143,14 @@ QString _HardwareSerial::writeDataAndWait(const QString data)
     QByteArray d = data.toLocal8Bit();
     d.append(QByteArray::fromHex("0A"));
     m_serial->write(d);
-    qDebug() << "written" << d << QThread::currentThread();
+    //qDebug() << "written" << d << QThread::currentThread();
     if(m_serial->waitForReadyRead(settings.timeout)){
         QByteArray responseData = m_serial->readAll();
         while (m_serial->waitForReadyRead(10))
             responseData += m_serial->readAll();
 
         const QString response = QString::fromUtf8(responseData);
-        qDebug() << response;
+        //qDebug() << response;
         return response;
     }
     else {

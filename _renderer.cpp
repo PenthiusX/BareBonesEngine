@@ -16,8 +16,10 @@
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_FRONT_AND_BACK);
+    glEnable(GL_FRONT_AND_BACK);
     glEnable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1, 0.1, 0.3, 1.0);//sets the bckground color of the openglContext.
