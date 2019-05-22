@@ -101,7 +101,7 @@ void _GLWidget::initializeGL()
     s2.setScale(1.0f);
     s2.setModelData(vertsV,indiceV);
     //
-    mpoint.setId(10);
+    mpoint.setId(100);
     mpoint.setTag("mousePointerObject");
     mpoint.setIsTransfomationLocal(false);
     mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
@@ -116,7 +116,7 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
-    //
+    //-----------------
     /*
     for(int i = 5 ; i < 1000 ; i ++)
     {
@@ -223,7 +223,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     if(e->buttons() == Qt::RightButton)
     {
         mousePositionR = QVector2D(e->localPos());
-        scene->setMousePositionInScene(this->mousePositionR);//sets the mouse position in the scene for use
+        scene->setMousePositionInScene(this->mousePositionR,"Right");//sets the mouse position in the scene for use
     }
 }
 /*

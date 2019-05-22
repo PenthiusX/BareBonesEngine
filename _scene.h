@@ -26,7 +26,7 @@ public:
     void onResize(int w,int h);
     void render();
 
-    void setMousePositionInScene(QVector2D mousePos);
+    void setMousePositionInScene(QVector2D mousePos,std::string type);
 private:
     std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> renderObjects;
@@ -34,7 +34,7 @@ private:
     _Renderer* r;
     _Camera cam;
     bool isCamera;
-    QVector2D mousePosition;
+    QVector2D mousePositionR,mousePositionL;
     int resW,resH;
 };
 

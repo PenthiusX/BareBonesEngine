@@ -377,16 +377,18 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 
 void _Renderer::keepSceneEntityUpdated()
 {
+    //Keeps a copy of the current matrix info in the respective sceneEntity
     this->sceneEntity.setTranslationMatrix(this->translationMatrix);
     this->sceneEntity.setRotationmatrix(this->rotationMatrix);
     this->sceneEntity.setScaleingMatrix(this->scalingMatrix);
+    this->sceneEntity.setProjectionMatrix(this->glm_projection4x4);
+    this->sceneEntity.setProjectionMatrix(this->glm_view4x4);
 
     //get the real position values from the modelMatrix
     glm::mat4x4 tmat4 = glm_model4x4 * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
     this->sceneEntity.setPosition(QVector3D(tmat4[3][0],
             tmat4[3][1],
             tmat4[3][2]));
-
 //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 
