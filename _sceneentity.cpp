@@ -27,12 +27,11 @@ _SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale)
     this->rotation = rot;
     this->scale = scale;
 }
-/*
-*/
 _SceneEntity::~_SceneEntity(){
     tag = nullptr;
     delete tag;
 }
+
 /*
  * Function: setId(int id) & getId()
  * sets/gets the id for the current object.
@@ -48,6 +47,7 @@ unsigned int _SceneEntity::getId() const
 {
     return this->id;
 }
+
 /* Function: setTag(const char *tag)
  * sets/gets the tag for the scene object
  * Tag is a string name uniqe identifier for the
@@ -61,6 +61,7 @@ const char *_SceneEntity::getTag() const
 {
     return this->tag;
 }
+
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
  * sets/gets the position for the current object.
@@ -74,6 +75,7 @@ QVector3D _SceneEntity::getPostion() const
 {
     return this->postion;
 }
+
 /*
  * Function: setRotation(QQuaternion rot) & getRotation()
  * sets/gets the rotation for the current object.
@@ -87,6 +89,7 @@ QVector3D _SceneEntity::getRotation() const
 {
     return this->rotation;
 }
+
 /*
  * Function: set/getPivot
  * sets gets the pivot position for the
@@ -107,6 +110,7 @@ bool _SceneEntity::getIsPivotSet()
 {
     return this->isPivotSet;
 }
+
 /*
  * Function: setScale(float scale) & getScale()
  * sets/gets the scale for the current object.
@@ -120,6 +124,7 @@ float _SceneEntity::getScale() const
 {
     return this->scale;
 }
+
 /*
  * Function: set/getColor
  * sts gets the color variable of the
@@ -134,6 +139,7 @@ QVector4D _SceneEntity::getColor() const
 {
     return this->color;
 }
+
 /*
  * Function: set/get translationMatrix()
  * that stores the traslation part of the modelMatrix
@@ -176,6 +182,28 @@ glm::mat4x4 _SceneEntity::getScaleingMatrix() const
 {
     return this->ScaleMatirx;
 }
+/*
+ *
+*/
+void _SceneEntity::setProjectionMatrix(glm::mat4x4 proj)
+{
+    this->ProjectionMatrix = proj;
+}
+glm::mat4x4 _SceneEntity::getProjectionMatrix() const
+{
+    return this->ProjectionMatrix;
+}
+/*
+ *
+*/
+void _SceneEntity::setViewMatrix(glm::mat4x4 view)
+{
+    this->ViewMatrix = view;
+}
+glm::mat4x4 _SceneEntity::getViewMatrix() const
+{
+    return this->ViewMatrix;
+}
 
 /*
  * Function: setVertexData(std::vector<float> vertices) & getvertexData()
@@ -190,6 +218,7 @@ std::vector<float> _SceneEntity::getvertexData() const
 {
     return this->vertexData;
 }
+
 /*
  * Function: setIndexData(std::vector<unsigned int> indices) & getIndexData()
  * sets/gets the indexData for the current object.
@@ -216,6 +245,7 @@ std::vector<int> _SceneEntity::getUvData()const
 {
     return this->uvData;
 }
+
 /*
  * Function: setnormalData(std::vector<float> normalData) & getNormalData()
  * sets/gets the normaldata for the current object.
@@ -225,6 +255,7 @@ void _SceneEntity::setnormalData(std::vector<float> normalData)
 {
     this->normalData = normalData;
 }
+
 std::vector<float> _SceneEntity::getNormalData()const
 {
     return this->normalData;
@@ -249,6 +280,7 @@ bool _SceneEntity::getIsTransfomationLocal()
 {
     return this->isTransfomationLocal;
 }
+
 /*
  * Function: setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
  * sets the vertex and index data in one function, for the current object.
@@ -259,6 +291,7 @@ void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigne
     this->vertexData = vertices;
     this->indexData = indices;
 }
+
 /*
  * Function: setModelData(Qstring path)
  * sets the vertex and index data in one function, for the current object.
@@ -272,6 +305,7 @@ void _SceneEntity::setModelData(QString path)
     this->vertexData = assetLoader.getAssetVertices();
     this->indexData = assetLoader.getAssetIndices();
 }
+
 /*
  * Function: setShaderPath(QString vSh, QString fSh)
  * sets the path  for the shadert to be loaded ,for the current object.
@@ -282,6 +316,7 @@ void _SceneEntity::setShader(QString vSh, QString fSh)
     this->vShaderPath = vSh;
     this->fShaderPath = fSh;
 }
+
 /* Function:gets/sets texture path getTexturePath().
  * returns the path of the texture that is applied to the sceneObject.
  * Date: 26_02_2019
@@ -294,6 +329,7 @@ void _SceneEntity::setTexturePath(QString texPath)
 {
     this->texturePath = texPath;
 }
+
 /*
 * Function: getVertexShaderPath()
 * returns the Vertex shader path set in the object via set shader Path
@@ -303,6 +339,7 @@ QString _SceneEntity::getVertexShaderPath() const
 {
     return this->vShaderPath;
 }
+
 /*
 * Function: getFragmentShaderPath()
 * returns the fragment shader path set in the object via set shader Path
@@ -312,10 +349,35 @@ QString _SceneEntity::getFragmentShaderPath() const
 {
     return this->fShaderPath;
 }
-
+/*
+ * Function: setPhysicsObject(_Physics::PhysicsObjects penum)
+ * sets the physics object type in the scenEntity. Defines what
+ * kind of collision obbject is attached to the sceneEntity;
+*/
 void _SceneEntity::setPhysicsObject(_Physics::PhysicsObjects penum)
 {
     this->isPhysicsObject = true;
     this->phyObjtype = penum;
 }
 
+void _SceneEntity::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
+{
+    if(this->phyObjtype == true)
+    {
+        this->phys.setMousePointerRay(mousePos,this->ProjectionMatrix,this->ViewMatrix);
+
+        if(this->phyObjtype == 0)
+        {
+            qDebug() << "sphere collider on " << this->tag;
+        }
+        else if(this->phyObjtype == 1)
+        {
+            qDebug() << "box collider on " << this->tag;
+        }
+        else if(this->phyObjtype == 2)
+        {
+            qDebug() << "mesh collider on " << this->tag;
+        }
+
+    }
+}

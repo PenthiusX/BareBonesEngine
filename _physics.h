@@ -29,6 +29,7 @@ public:
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3& center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 rayDir, glm::vec3 s0, float sr);
+    //
     glm::vec3 getRayWorld();
 
     void hitTriangle();
@@ -42,7 +43,10 @@ public:
 private:
     std::vector<_Phy_Triangle> triVector;
     std::vector<_Phy_Sphere> sphVector;
-
+    //
+    Phy_Sphere sp;
+    Phy_Triangle tri;
+    //
     glm::vec4 rayEye;
     glm::vec3 ray_wor;
     glm::vec3 camPos;
