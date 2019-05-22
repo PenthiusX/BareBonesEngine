@@ -59,7 +59,7 @@ void _Scene::addSceneObject(_SceneEntity s)
     }
     else
     {
-       qDebug() << "scene object has not been set Properly";
+        qDebug() << "scene object has not been set Properly";
     }
 }
 /*
@@ -120,7 +120,12 @@ void _Scene::render()
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
         renderObjects[i]->draw();//calls the draw function unique to each renderObject
-//        renderObjects[i]->sceneEntity.updatePhysics();
+        renderObjects[i]->getSceneEntity().updatePhysics(glm::vec2(this->mousePositionL.x(),
+                                                                   this->mousePositionL.y()),//Mouse position
+                                                         glm::vec3(cam.getEyePosition().x(),
+                                                                   cam.getEyePosition().y(),
+                                                                   cam.getEyePosition().z()),//Cam Position
+                                                         glm::vec2(this->resW,this->resH));
     }
     fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues to the fbo object
     fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
@@ -129,11 +134,7 @@ void _Scene::render()
 void _Scene::setMousePositionInScene(QVector2D mousePos,std::string type)
 {
     if(type == "Right")
-    {
-      this->mousePositionR = mousePos;
-    }
+        this->mousePositionR = mousePos;
     else if(type == "Left")
-    {
-      this->mousePositionL = mousePos;
-    }
+        this->mousePositionL = mousePos;
 }

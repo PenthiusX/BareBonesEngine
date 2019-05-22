@@ -404,6 +404,10 @@ void _Renderer::setColors()
       col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
       glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
+    if(this->sceneEntity.getisHitRay())
+    {
+        glUniform4f(colorUniform, 0.0,0.0,0.0,1.0);
+    }
 }
 
 /*

@@ -73,7 +73,8 @@ public:
     void setIsTransfomationLocal(bool isLoc);
     bool getIsTransfomationLocal();
     //updates the physics values is calles in the scene class drawFunction
-    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos);
+    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes);
+    bool getisHitRay();
 
 private:
     unsigned int id;
@@ -114,6 +115,7 @@ private:
     _Physics phys;
     bool isPhysicsObject;
     _Physics::PhysicsObjects phyObjtype;
+    bool isHitRay;
 
 };
 
