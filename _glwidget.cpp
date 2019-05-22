@@ -125,14 +125,24 @@ void _GLWidget::initializeGL()
             vertsG.push_back(texture_cord.y);//y = t
             vertsG.push_back(0.0);//z = 0.0
 
+        }
+    }
+
+    for (unsigned int h = 0; h < resolution.y; h+=8) {
+        for (unsigned int w = 0; w < resolution.x; w+=8) {
+
+            glm::vec2 pixel_cord = glm::vec2(w,h);
+
             //indexes of neibhouring vertexes
             index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
-            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(1,0),resolution);
-            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(1,1),resolution);
-            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,1),resolution);
+            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(8,0),resolution);
+            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(8,8),resolution);
+            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,8),resolution);
 
 //            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
 //            {
+
+
             if((pixel_cord.y < resolution.y))
             {
                 //indexs of fisrt triangle in quad
