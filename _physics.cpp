@@ -1,6 +1,6 @@
 #include "_physics.h"
 
-_Physics::_Physics() : QOpenGLExtraFunctions(QOpenGLContext::currentContext()){}
+_Physics::_Physics(){}
 _Physics::~_Physics(){}
 
 std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::vector<float> vert, std::vector<unsigned int> index)
@@ -28,17 +28,15 @@ std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::v
     return triVector;
 }
 
-void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4)
+void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4, glm::vec2 res)
 {
-    // Where The Viewport Values Will Be Stored
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);// Retrieves The Viewport Values (X, Y, Width, Height)
-    // qDebug() << mousePressPosition;
+    this->resW = res.x;
+    this->resH = res.y;
 
     // viewport coordinate system
     // normalized device coordinates
-    auto x = (2.0f * mousePressPosition.x) / viewport[2] - 1.0f;
-    auto y = 1.f - (2.0f * mousePressPosition.y) / viewport[3];
+    auto x = (2.0f * mousePressPosition.x) / resW - 1.0f;
+    auto y = 1.f - (2.0f * mousePressPosition.y) / resH;
     auto z = 1.f;
     auto rayNormalizedDeviceCoordinates = glm::vec3(x, y, z);
 
@@ -55,7 +53,7 @@ void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_
 }
 
 // returns yes or no on intersection
-bool _Physics::hitSphere(glm::vec3& center, float radius , glm::vec3 rayOrigin)
+bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin)
 {
     glm::vec3 rayDir = this->ray_wor;
     glm::vec3 oc = rayOrigin - center;

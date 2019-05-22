@@ -1,4 +1,5 @@
 #include "_sceneentity.h"
+#include <QDebug>
 
 /* Constructor: _SceneEntity()
  * Takes the values for diffrent aspects of a renderable model.
@@ -12,8 +13,9 @@ _SceneEntity::_SceneEntity()
     this->isActive = true;
     this->isTransfomationLocal = false;
     this->isPivotSet = false;
-    this->isPhysicsObject = true;
+    this->isPhysicsObject = false;
     this->tag = new char();
+    isHitRay = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -352,32 +354,50 @@ QString _SceneEntity::getFragmentShaderPath() const
 /*
  * Function: setPhysicsObject(_Physics::PhysicsObjects penum)
  * sets the physics object type in the scenEntity. Defines what
- * kind of collision obbject is attached to the sceneEntity;
+ * kind of collision obbject is attached to the sceneEntity;=
+ * Created: 22_05_2019
 */
 void _SceneEntity::setPhysicsObject(_Physics::PhysicsObjects penum)
 {
     this->isPhysicsObject = true;
     this->phyObjtype = penum;
 }
-
-void _SceneEntity::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
+/*
+ *Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
+ * update the physcs variables realtime and is callsed in the scene class
+ * in the drawFunction
+ * Created: 22_05_2019
+ */
+void _SceneEntity::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes)
 {
-    if(this->phyObjtype == true)
+    if(this->isPhysicsObject == true)
     {
-        this->phys.setMousePointerRay(mousePos,this->ProjectionMatrix,this->ViewMatrix);
-
+        this->phys.setMousePointerRay(mousePos,this->ProjectionMatrix,this->ViewMatrix,screenRes);
         if(this->phyObjtype == 0)
         {
-            qDebug() << "sphere collider on " << this->tag;
+            if(phys.hitSphere(glm::vec3(this->postion.x(),this->postion.y(),this->postion.z()),1.5f,camPos)){
+                this->isHitRay = true;}
+            else{
+                this->isHitRay = false;}
+
         }
         else if(this->phyObjtype == 1)
         {
-            qDebug() << "box collider on " << this->tag;
+
         }
         else if(this->phyObjtype == 2)
         {
-            qDebug() << "mesh collider on " << this->tag;
+
         }
 
     }
+}
+/*
+ * Funtion: getisHitRay()
+ * reutrn is this sceneEntity has been
+ * hit by the mousPointRay or not
+ * Created: 22_05_2019
+*/
+bool _SceneEntity::getisHitRay(){
+    return this->isHitRay;
 }

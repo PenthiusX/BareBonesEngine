@@ -204,6 +204,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     {
         //-----------------------------------------------------------
         mousePositionL = QVector2D(e->localPos());
+        scene->setMousePositionInScene(this->mousePositionL,"Left");
         //RotateTarget with mouse
         {
             QVector2D mosPosL = mousePressPosition;
