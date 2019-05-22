@@ -4,6 +4,7 @@
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 #include "_scene.h"
+#include "_physics.h"
 
 /*
  * Class: _GLWidget
@@ -51,6 +52,8 @@ private:
 	bool isCamFocus;
     QVector2D mousePressPosition;
     QVector2D mousePositionL,mousePositionR;
+    //Physics object
+    _Physics p;
 };
 
 #endif // _GLWIDGET_H

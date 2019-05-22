@@ -26,8 +26,9 @@ public:
     ~_Physics();
 
     std::vector<_Phy_Triangle> generatetrianglesfromVerticesIndices(std::vector<float>vert,std::vector<unsigned int> index);
-    glm::vec3 emitMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat);//returns the worldSpace ray cast from mousePosition,must be run in update
-    bool hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin);
+    glm::vec3 getMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat);//returns the worldSpace ray cast from mousePosition,must be run in update
+    bool hitSphere(const glm::vec3 &center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin);
+    float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 rayDir, glm::vec3 s0, float sr);
     void hitTriangle();
     void hitBox();
 

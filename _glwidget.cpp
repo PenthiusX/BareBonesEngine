@@ -1,7 +1,7 @@
 #include <iostream>
 #include "_glwidget.h"
 #include "_tools.h"
-#include "_physics.h"
+
 
 /*
  * The _GLWidget Class:
@@ -116,6 +116,7 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
     //
+
     /*
     for(int i = 5 ; i < 1000 ; i ++)
     {
@@ -129,7 +130,7 @@ void _GLWidget::initializeGL()
         qInfo() << i <<"th object";
     }
     */
-    _Physics p;
+
     std::vector<_Phy_Triangle> pv;
     pv = p.generatetrianglesfromVerticesIndices(s.getvertexData(),s.getIndexData());
 }
@@ -155,7 +156,6 @@ void _GLWidget::resizeGL(int w, int h)
 void _GLWidget::paintGL()//the renderloop
 {
     //debug use,sets camfocus on object with the iD that is selected---------------
-
     for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
         if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
             cam.setFocalPoint(scene->getSceneObjects()[i]->getSceneEntity().getPostion());
@@ -163,11 +163,14 @@ void _GLWidget::paintGL()//the renderloop
             scene->getSceneObjects()[1]->setRotation(scene->getSceneObjects()[i]->getSceneEntity().getRotation());
         }
     }
+    //-------------------------Physics---------------------------------------------
+//       glm::vec3 =  p.getMousePointerRay();
     //-----------------------------------------------------------------------------
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
     _Tools::printFrameRate();//prints the frame rate in the application output
+
 }
 /*
 * Function: mousePressEvent(QMouseEvent *e)
@@ -203,11 +206,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     //selet button is pressed when updating mousevalues
     if(e->buttons() == Qt::LeftButton)
     {
-        //send values to unProject for the pointerObjet---------------
-        for(unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-        {   //Debug function needs to be reemplementd// fo now should returns the Stencil/Depth and color info but not working
-            scene->getSceneObjects()[i]->unProject(QVector2D(e->localPos().x(),e->localPos().y()));
-        }
         //-----------------------------------------------------------
         mousePositionL = QVector2D(e->localPos());
         //RotateTarget with mouse
@@ -255,13 +253,14 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     }
     else
     {
-        for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+        for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++){
             if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch)
             {
                 scroolScale = scene->getSceneObjects()[i]->getSceneEntity().getScale() + (numSteps * 0.005);
                 scene->getSceneObjects()[i]->setscale(scroolScale);
-                //                qInfo() << scroolScale;
+                // qInfo() << scroolScale;
             }
+        }
     }
 }
 /*

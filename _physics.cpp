@@ -28,13 +28,13 @@ std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::v
     return triVector;
 }
 
-glm::vec3 _Physics::emitMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4)
+glm::vec3 _Physics::getMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4)
 {
     // Where The Viewport Values Will Be Stored
     GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);           // Retrieves The Viewport Values (X, Y, Width, Height)
-
+    glGetIntegerv(GL_VIEWPORT, viewport);// Retrieves The Viewport Values (X, Y, Width, Height)
     // qDebug() << mousePressPosition;
+
     // viewport coordinate system
     // normalized device coordinates
     auto x = (2.0f * mousePressPosition.x) / viewport[2] - 1.0f;
@@ -54,6 +54,7 @@ glm::vec3 _Physics::emitMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x
     return ray_wor = glm::normalize(ray_wor);
 }
 
+// returns yes or no on intersection
 bool _Physics::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin)
 {
     glm::vec3 oc = rayOrigin - center;
@@ -62,4 +63,24 @@ bool _Physics::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir
     float c = dot(oc,oc) - radius*radius;
     float discriminant = b*b - 4*a*c;
     return (discriminant>0);
+}
+
+// rayOrigin: cam position
+// rayDir: normalized ray direction
+// s0: sphere center
+// sr: sphere radius
+// Returns distance from r0 to first intersecion with sphere,
+// or -1.0 if no intersection.
+float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 rayDir, glm::vec3 s0, float sr)
+{
+
+
+    float a = dot(rayDir, rayDir);
+    glm::vec3 s0_r0 = rayOrigin - s0;
+    float b = 2.0 * glm::dot(rayDir, s0_r0);
+    float c = glm::dot(s0_r0, s0_r0) - (sr * sr);
+    if (b*b - 4.0*a*c < 0.0) {
+        return -1.0;
+    }
+    return (-b - sqrt((b*b) - 4.0*a*c))/(2.0*a);
 }

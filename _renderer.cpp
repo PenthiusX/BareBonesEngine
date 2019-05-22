@@ -202,10 +202,6 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
-    //Test var
-    camPos.x = eyePos.x();
-    camPos.y = eyePos.y();
-    camPos.z = eyePos.z();
     //
     glm_view4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::lookAt(
