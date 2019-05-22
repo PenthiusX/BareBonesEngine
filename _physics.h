@@ -26,15 +26,26 @@ public:
     ~_Physics();
 
     std::vector<_Phy_Triangle> generatetrianglesfromVerticesIndices(std::vector<float>vert,std::vector<unsigned int> index);
-    glm::vec3 getMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat);//returns the worldSpace ray cast from mousePosition,must be run in update
-    bool hitSphere(const glm::vec3 &center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin);
+    void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat);//returns the worldSpace ray cast from mousePosition,must be run in update
+    bool hitSphere(glm::vec3& center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 rayDir, glm::vec3 s0, float sr);
+    glm::vec3 getRayWorld();
+
     void hitTriangle();
     void hitBox();
 
+    enum PhysicsObjects {
+        Sphere = 0,
+        Box = 1,
+        Mesh = 2,
+    };
 private:
     std::vector<_Phy_Triangle> triVector;
     std::vector<_Phy_Sphere> sphVector;
+
+    glm::vec4 rayEye;
+    glm::vec3 ray_wor;
+    glm::vec3 camPos;
 };
 
 #endif // _PHYSICS_H

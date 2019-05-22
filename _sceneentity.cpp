@@ -12,6 +12,7 @@ _SceneEntity::_SceneEntity()
     this->isActive = true;
     this->isTransfomationLocal = false;
     this->isPivotSet = false;
+    this->isPhysicsObject = true;
     this->tag = new char();
 }
 /*
@@ -228,6 +229,7 @@ std::vector<float> _SceneEntity::getNormalData()const
 {
     return this->normalData;
 }
+
 bool _SceneEntity::getIsActive()
 {
     return this->isActive;
@@ -310,3 +312,10 @@ QString _SceneEntity::getFragmentShaderPath() const
 {
     return this->fShaderPath;
 }
+
+void _SceneEntity::setPhysicsObject(_Physics::PhysicsObjects penum)
+{
+    this->isPhysicsObject = true;
+    this->phyObjtype = penum;
+}
+
