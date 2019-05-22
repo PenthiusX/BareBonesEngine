@@ -28,7 +28,7 @@ std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::v
     return triVector;
 }
 
-glm::vec3 _Physics::getMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4)
+void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4)
 {
     // Where The Viewport Values Will Be Stored
     GLint viewport[4];
@@ -46,17 +46,18 @@ glm::vec3 _Physics::getMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4
     auto rayClip = glm::vec4(rayNormalizedDeviceCoordinates.x, rayNormalizedDeviceCoordinates.y, -1.f, 1.f);
 
     // 4D eye (camera) coordinates
-    glm::vec4 rayEye = glm::inverse(glm_projection4x4) * rayClip;
+    rayEye = glm::inverse(glm_projection4x4) * rayClip;
     rayEye = glm::vec4(rayEye.x,rayEye.y, -1.0, 0.0);
+    ray_wor = glm::inverse(glm_view4x4) * rayEye;
 
-    glm::vec3 ray_wor = glm::inverse(glm_view4x4) * rayEye;
     // don't forget to normalise the vector at some point
-    return ray_wor = glm::normalize(ray_wor);
+    ray_wor = glm::normalize(ray_wor);
 }
 
 // returns yes or no on intersection
-bool _Physics::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir , glm::vec3 rayOrigin)
+bool _Physics::hitSphere(glm::vec3& center, float radius , glm::vec3 rayOrigin)
 {
+    glm::vec3 rayDir = this->ray_wor;
     glm::vec3 oc = rayOrigin - center;
     float a = glm::dot(rayDir,rayDir);
     float b = 2.0 * glm::dot(oc, rayDir);
@@ -73,8 +74,6 @@ bool _Physics::hitSphere(const glm::vec3& center, float radius, glm::vec3 rayDir
 // or -1.0 if no intersection.
 float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 rayDir, glm::vec3 s0, float sr)
 {
-
-
     float a = dot(rayDir, rayDir);
     glm::vec3 s0_r0 = rayOrigin - s0;
     float b = 2.0 * glm::dot(rayDir, s0_r0);
@@ -83,4 +82,9 @@ float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 rayDir, glm::v
         return -1.0;
     }
     return (-b - sqrt((b*b) - 4.0*a*c))/(2.0*a);
+}
+
+glm::vec3 _Physics::getRayWorld()
+{
+    return this->ray_wor;
 }

@@ -357,7 +357,6 @@ void _Renderer::setscale(float scale)
                                                         this->sceneEntity.getScale(),
                                                         this->sceneEntity.getScale()));
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)

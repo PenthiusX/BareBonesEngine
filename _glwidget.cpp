@@ -74,6 +74,7 @@ void _GLWidget::initializeGL()
     //-----------------
     s.setId(1);
     s.setTag("object1");
+    s.setPhysicsObject(_Physics::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.5));
@@ -116,7 +117,6 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(s2);
     scene->addSceneObject(mpoint);
     //
-
     /*
     for(int i = 5 ; i < 1000 ; i ++)
     {
@@ -163,14 +163,10 @@ void _GLWidget::paintGL()//the renderloop
             scene->getSceneObjects()[1]->setRotation(scene->getSceneObjects()[i]->getSceneEntity().getRotation());
         }
     }
-    //-------------------------Physics---------------------------------------------
-//       glm::vec3 =  p.getMousePointerRay();
-    //-----------------------------------------------------------------------------
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
     _Tools::printFrameRate();//prints the frame rate in the application output
-
 }
 /*
 * Function: mousePressEvent(QMouseEvent *e)

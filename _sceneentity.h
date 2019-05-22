@@ -3,8 +3,9 @@
 
 #include <qquaternion.h>
 #include <vector>
-#include <_assetloader.h>
 #include <glm/glm.hpp>
+#include "_assetloader.h"
+#include "_physics.h"
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -21,6 +22,7 @@ public:
     _SceneEntity(QVector3D pos,QVector3D rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
+    //
     void setId(unsigned int id);//sets the iD either externaly or internally generated
     unsigned int getId() const;
     void setTag(const char* tag);//sets a name based identifier for the object
@@ -45,6 +47,11 @@ public:
     void setScaleingMatrix(glm::mat4x4 smat);
     glm::mat4x4 getScaleingMatrix()const;
     //
+    void setProjectionMatrix(glm::mat4x4 proj);
+    glm::mat4x4 getProjectionMatrix()const;
+    void setViewMatrix(glm::mat4x4 view);
+    glm::mat4x4 getViewMatrix()const;
+    //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
@@ -58,6 +65,8 @@ public:
     std::vector<unsigned int> getIndexData() const;// get the array of indices for refrence
     std::vector<int> getUvData() const;// get the array of UVs for refrence
     std::vector<float> getNormalData() const;// get the Array of normals for refrence
+    //
+    void setPhysicsObject(_Physics::PhysicsObjects penum);
     //
     bool getIsActive();
     //
@@ -95,8 +104,15 @@ private:
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
     glm::mat4x4 ScaleMatirx;
+    glm::mat4x4 ProjectionMatrix;
+    glm::mat4x4 ViewMatrix;
     //
-    _AssetLoader assetLoader;
+    _AssetLoader assetLoader;//Asset loading
+    //
+    _Physics phys;
+    bool isPhysicsObject;
+    _Physics::PhysicsObjects phyObjtype;
+    void loadRequiredPhysicsProperties();
 };
 
 #endif // _SCENEENTITY_H
