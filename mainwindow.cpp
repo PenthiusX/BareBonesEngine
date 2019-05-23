@@ -8,6 +8,7 @@
 #include <IO/_configcontrolentity.h>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <UI/_caliberationsection.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
