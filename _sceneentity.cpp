@@ -6,7 +6,7 @@
  * Author: Aditya
 */
 _SceneEntity::_SceneEntity()
-{	//sets the rotation value at init and uses the from axis angle 
+{	//sets the rotation value at init and uses the from axis angle
     this->rotation = QVector3D(0.0,0.0,0.0);
     this->postion = QVector3D(0.0, 0.0, 0.0);
     this->scale = 1.0;
@@ -15,7 +15,7 @@ _SceneEntity::_SceneEntity()
     this->isPivotSet = false;
     this->isPhysicsObject = false;
     this->tag = new char();
-    isHitRay = false;
+    isHitByRay = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -363,47 +363,26 @@ void _SceneEntity::setPhysicsObject(_Physics::PhysicsObjects penum)
     this->phyObjtype = penum;
 }
 /*
- *Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
- * update the physcs variables realtime and is callsed in the scene class
- * in the drawFunction
- * Created: 22_05_2019
- */
-void _SceneEntity::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes)
-{
-    if(this->isPhysicsObject == true)
-    {
-        this->phys.setMousePointerRay(mousePos,this->ProjectionMatrix,this->ViewMatrix,screenRes);
-        if(this->phyObjtype == 0)//run operation for Sphere Collider
-        {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
-            if(phys.hitSphere(glm::vec3(this->postion.x(),this->postion.y(),this->postion.z()),1.0f,camPos)){
-                this->isHitRay = true;
-                qDebug() << "Hit Ray!!";
-            }
-            else{
-                this->isHitRay = false;
-            }
-        }
-        else if(this->phyObjtype == 1)//run operations for HitBox
-        {
-
-        }
-        else if(this->phyObjtype == 2)//Run operation for Mesh collider
-        {
-
-        }
-    }
-}
-/*
  * Funtion: getisHitRay()
  * reutrn is this sceneEntity has been
  * hit by the mousPointRay or not
  * Created: 22_05_2019
 */
-bool _SceneEntity::getisHitRay(){
-    return this->isHitRay;
+bool _SceneEntity::getisHitByRay(){
+    return this->isHitByRay;
+}
+
+void _SceneEntity::setIsHitByRay(bool isHitByRay)
+{
+    this->isHitByRay = isHitByRay;
 }
 
 bool _SceneEntity::getIsPhysicsObject() const
 {
     return this->isPhysicsObject;
+}
+
+_Physics::PhysicsObjects _SceneEntity::getPhysicsObjectType()
+{
+    return this->phyObjtype;
 }
