@@ -7,6 +7,16 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+/*
+ * Class: _Physics
+ * Creates an individual instace for the setting and
+ * binding of the framebufferObjects
+ * Created: 30_04_2019
+ * Author: Aditya
+*/
+
+
+
 typedef struct Phy_Triangle{
     glm::vec3 pointA;
     glm::vec3 pointB;
@@ -49,7 +59,6 @@ private:
     //
     glm::vec4 rayEye;
     glm::vec3 ray_wor;
-    glm::vec3 camPos;
     //
     int resW,resH;
 };
