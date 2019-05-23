@@ -130,7 +130,6 @@ void _GLWidget::initializeGL()
         qInfo() << i <<"th object";
     }
     */
-
     std::vector<_Phy_Triangle> pv;
     pv = p.generatetrianglesfromVerticesIndices(s.getvertexData(),s.getIndexData());
 }

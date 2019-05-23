@@ -1,4 +1,5 @@
 #include "_physics.h"
+#include <QDebug>
 
 _Physics::_Physics(){}
 _Physics::~_Physics(){}
@@ -16,7 +17,6 @@ std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::v
         vpoint.z = vert[i+2];
         pv.push_back(vpoint);
     }
-
     for(int i = 0 ; i < index.size() ; i += 3)
     {
         _Phy_Triangle tri;
@@ -30,9 +30,10 @@ std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::v
 
 void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4, glm::vec2 res)
 {
-    this->resW = res.x;
-    this->resH = res.y;
+    this->resW = (int)res.x;
+    this->resH = (int)res.y;
 
+//    qDebug() <<"mpos-"<< mousePressPosition.x << "." << mousePressPosition.y;
     // viewport coordinate system
     // normalized device coordinates
     auto x = (2.0f * mousePressPosition.x) / resW - 1.0f;
@@ -42,20 +43,27 @@ void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_
 
     // 4D homogeneous clip coordinates
     auto rayClip = glm::vec4(rayNormalizedDeviceCoordinates.x, rayNormalizedDeviceCoordinates.y, -1.f, 1.f);
+//    qDebug() <<"rayClip-"<< rayClip.x<<"." <<rayClip.y << "." << rayClip.z;
 
     // 4D eye (camera) coordinates
     rayEye = glm::inverse(glm_projection4x4) * rayClip;
     rayEye = glm::vec4(rayEye.x,rayEye.y, -1.0, 0.0);
+//     qDebug() <<"rayEye-"<< rayEye.x<<"." <<rayEye.y << "." << rayEye.z;
+
     ray_wor = glm::inverse(glm_view4x4) * rayEye;
+//    qDebug() <<"rayW-"<< ray_wor.x<<"." <<ray_wor.y << "." << ray_wor.z;
 
     // don't forget to normalise the vector at some point
     ray_wor = glm::normalize(ray_wor);
+/*    qDebug() <<"rayWN-"<< ray_wor.x<<"." <<ray_wor.y << "." << ray_wor.z;
+     qDebug() <<"---------------------------------------------------------"*/;
 }
 
 // returns yes or no on intersection
 bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin)
 {
     glm::vec3 rayDir = this->ray_wor;
+
     glm::vec3 oc = rayOrigin - center;
     float a = glm::dot(rayDir,rayDir);
     float b = 2.0 * glm::dot(oc, rayDir);

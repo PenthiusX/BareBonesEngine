@@ -373,23 +373,24 @@ void _SceneEntity::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 s
     if(this->isPhysicsObject == true)
     {
         this->phys.setMousePointerRay(mousePos,this->ProjectionMatrix,this->ViewMatrix,screenRes);
-        if(this->phyObjtype == 0)
-        {
-            if(phys.hitSphere(glm::vec3(this->postion.x(),this->postion.y(),this->postion.z()),1.5f,camPos)){
-                this->isHitRay = true;}
+        if(this->phyObjtype == 0)//run operation for Sphere Collider
+        {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
+            if(phys.hitSphere(glm::vec3(this->postion.x(),this->postion.y(),this->postion.z()),1.0f,camPos)){
+                this->isHitRay = true;
+                qDebug() << "Hit Ray!!";
+            }
             else{
-                this->isHitRay = false;}
-
+                this->isHitRay = false;
+            }
         }
-        else if(this->phyObjtype == 1)
+        else if(this->phyObjtype == 1)//run operations for HitBox
         {
 
         }
-        else if(this->phyObjtype == 2)
+        else if(this->phyObjtype == 2)//Run operation for Mesh collider
         {
 
         }
-
     }
 }
 /*
@@ -400,4 +401,9 @@ void _SceneEntity::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 s
 */
 bool _SceneEntity::getisHitRay(){
     return this->isHitRay;
+}
+
+bool _SceneEntity::getIsPhysicsObject() const
+{
+    return this->isPhysicsObject;
 }

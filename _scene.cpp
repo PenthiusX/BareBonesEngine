@@ -116,17 +116,23 @@ void _Scene::render()
 {
     //sets the Frame for the framebufferObject , the frames are being bound underneath in the draw() function below
     fboObject->setFrame();
-    //
+    //Frame to render is below
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
+        //Raster update
         renderObjects[i]->draw();//calls the draw function unique to each renderObject
-        renderObjects[i]->getSceneEntity().updatePhysics(glm::vec2(this->mousePositionL.x(),
-                                                                   this->mousePositionL.y()),//Mouse position
-                                                         glm::vec3(cam.getEyePosition().x(),
-                                                                   cam.getEyePosition().y(),
-                                                                   cam.getEyePosition().z()),//Cam Position
-                                                         glm::vec2(this->resW,this->resH));
+        //Physics update
+        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
+        {   //Passing some essentials into the updateLoop
+            renderObjects[i]->getSceneEntity().updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
+                                                                       this->mousePositionL.y()),
+                                                             glm::vec3(cam.getEyePosition().x(),//Camera Position
+                                                                       cam.getEyePosition().y(),
+                                                                       cam.getEyePosition().z()),
+                                                             glm::vec2(this->resW,this->resH));//Current Resolution
+        }
     }
+    //Frame is Loader and rendered on Quad below
     fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues to the fbo object
     fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
