@@ -46,14 +46,14 @@ void _Scene::addSceneObject(_SceneEntity s)
         {
             r = new _Renderer();
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-            r->setSceneEntityInRenderer(s);
+            r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
         }
         else //use default values for camera if no camera set.
         {
             r = new _Renderer();
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
-            r->setSceneEntityInRenderer(s);
+            r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
         }
     }
@@ -80,6 +80,7 @@ void _Scene::addCamera(_Camera c)
 */
 void _Scene::updateCamera(_Camera c)
 {
+    cam = c;
     if(isCamera == true)
     {
         for (unsigned int i = 0; i < renderObjects.size(); i++)
@@ -124,12 +125,15 @@ void _Scene::render()
         //Physics update
         if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
         {   //Passing some essentials into the updateLoop
-            renderObjects[i]->getSceneEntity().updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
-                                                                       this->mousePositionL.y()),
-                                                             glm::vec3(cam.getEyePosition().x(),//Camera Position
-                                                                       cam.getEyePosition().y(),
-                                                                       cam.getEyePosition().z()),
-                                                             glm::vec2(this->resW,this->resH));//Current Resolution
+            updatePhysics(renderObjects[i]->getSceneEntity().getPhysicsObjectType(),
+                        glm::vec2(this->mousePositionL.x(),//Mouse position
+                                    this->mousePositionL.y()),
+                          glm::vec3(cam.getEyePosition().x(),//Camera Position
+                                    cam.getEyePosition().y(),
+                                    cam.getEyePosition().z()),
+                          glm::vec2(this->resW,this->resH),//Current Resolution
+                            renderObjects[i]->getSceneEntity(),//Selected sceneEntity
+                          i);//Selected Index
         }
     }
     //Frame is Loader and rendered on Quad below
@@ -144,3 +148,43 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,std::string type)
     else if(type == "Left")
         this->mousePositionL = mousePos;
 }
+
+/*
+ *Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
+ * update the physcs variables realtime and is callsed in the scene class
+ * in the drawFunction
+ * Created: 22_05_2019
+ */
+void _Scene::updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
+{
+        //calcualte ray vector
+        this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
+        //
+        if(type == _Physics::Sphere)
+        {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
+            if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f,camPos)){
+                //On event
+                s.setIsHitByRay(true);
+                s.setColor(QVector4D(s.getColor().x()*.9 ,s.getColor().x()*.9,s.getColor().x()*.9,s.getColor().w()*0.9));
+
+                renderObjects[index]->setSceneEntityInRenderer(s);
+            }
+            else{
+                //On event
+                s.setIsHitByRay(false);
+                s.setColor(QVector4D(0.6,0.0,0.0,0.8));
+
+                renderObjects[index]->setSceneEntityInRenderer(s);
+            }
+        }
+        else if(type == _Physics::Box)//run operations for HitBox
+        {
+
+        }
+        else if(type == _Physics::Mesh)//Run operation for Mesh collider
+        {
+
+        }
+}
+
+

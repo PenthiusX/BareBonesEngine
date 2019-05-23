@@ -27,6 +27,8 @@ public:
     void render();
 
     void setMousePositionInScene(QVector2D mousePos,std::string type);
+    void updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);
+
 private:
     std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> renderObjects;
@@ -36,6 +38,8 @@ private:
     bool isCamera;
     QVector2D mousePositionR,mousePositionL;
     int resW,resH;
+    //Physics
+    _Physics phys;
 };
 
 #endif // _SCENE_H

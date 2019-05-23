@@ -365,7 +365,7 @@ void _Renderer::setscale(float scale)
 * and initialises the modelMatrix.
 * Created: 1_03_2019
 */
-void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
+void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 {
     this->sceneEntity = s;
     this->isTranfomationLocal = s.getIsTransfomationLocal();
@@ -373,6 +373,11 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
     setupTexture(s.getTexturePath());
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
     setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
+}
+
+void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
+{
+   this->sceneEntity = s;
 }
 
 void _Renderer::keepSceneEntityUpdated()

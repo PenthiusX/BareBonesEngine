@@ -84,6 +84,7 @@ void _GLWidget::initializeGL()
     //
     s1.setId(2);
     s1.setTag("object2");
+    s1.setPhysicsObject(_Physics::Sphere);
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");

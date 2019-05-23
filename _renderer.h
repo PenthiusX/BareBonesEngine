@@ -45,7 +45,9 @@ public:
     void setRotationAroundPivot(QVector3D rot,QVector3D pivot);
     void setscale(float scale);
     //
+    void initSceneEntityInRenderer(_SceneEntity s_);
     void setSceneEntityInRenderer(_SceneEntity s);
+
     _SceneEntity getSceneEntity() const;
     //
     void draw();//Draws/paints everything bound in the scene
