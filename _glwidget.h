@@ -50,7 +50,7 @@ private:
     double scroolScale;
     QVector2D rotRads;
 	bool isCamFocus;
-    QVector2D mousePressPosition;
+    QVector2D mousePressPositionL,mousePressPositionR;
     QVector2D mousePositionL,mousePositionR;
     //Physics object
     _Physics p;

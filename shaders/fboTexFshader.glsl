@@ -22,7 +22,6 @@ uniform sampler2D screenTexture;
 void main()
 {
     //-----------------Storing some common usecases------------------------------
-
     // texture multiplied ot custom value
     //    FragColor = texture2D(screenTexture, TexCoords) * vec4(1.00,1.0,1.0,1.0);
     //---------------------------------------------------------------------------
@@ -56,22 +55,12 @@ void main()
 
     //shows a cursor on screen
     vec4 col = vec4(0.0,0.0,0.0,1.0);
-    if((gl_FragCoord.x + 5.) >= iMouseO.x && gl_FragCoord.y + 5. >= (iMouseO.y))
-    {
-        if((gl_FragCoord.x - 5.) <= iMouseO.x && gl_FragCoord.y - 5. <= iMouseO.y)
-        {
-            // col = vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1.0);
-            col = vec4(0.1,0.0,0.0,1.0);
-        }
-    }
 
     //Makes a screen change shaders based on mouse pos
-    if(gl_FragCoord.x >= iMouseO.x)
-    {
+    if(gl_FragCoord.x >= iMouseO.x){
         col = vec4(vec3(1.0 - texture2D(screenTexture, TexCoords)), 1.0);
     }
-    else
-    {
+    else{
         col =  texture2D(screenTexture, TexCoords);
     }
     FragColor = col;

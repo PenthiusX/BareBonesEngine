@@ -26,8 +26,9 @@ public:
     void onResize(int w,int h);
     void render();
 
-    void setMousePositionInScene(QVector2D mousePos,std::string type);
-    void updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);
+    void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo class
+    void updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
+    glm::vec3 pointerObject;//debug helper implentation
 
 private:
     std::vector<_SceneEntity> sceneEntityVector;
@@ -40,6 +41,7 @@ private:
     int resW,resH;
     //Physics
     _Physics phys;
+
 };
 
 #endif // _SCENE_H

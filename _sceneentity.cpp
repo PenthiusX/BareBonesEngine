@@ -354,7 +354,7 @@ QString _SceneEntity::getFragmentShaderPath() const
 /*
  * Function: setPhysicsObject(_Physics::PhysicsObjects penum)
  * sets the physics object type in the scenEntity. Defines what
- * kind of collision obbject is attached to the sceneEntity;=
+ * kind of collision obbject is attached to the sceneEntity
  * Created: 22_05_2019
 */
 void _SceneEntity::setPhysicsObject(_Physics::PhysicsObjects penum)
