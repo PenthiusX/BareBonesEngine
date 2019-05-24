@@ -120,32 +120,33 @@ void _Scene::render()
     //Frame to render is below
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
-        //Raster update
-        renderObjects[i]->draw();//calls the draw function unique to each renderObject
         //Physics update
         if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
         {   //Passing some essentials into the updateLoop
             updatePhysics(renderObjects[i]->getSceneEntity().getPhysicsObjectType(),
-                        glm::vec2(this->mousePositionL.x(),//Mouse position
+                          glm::vec2(this->mousePositionL.x(),//Mouse position
                                     this->mousePositionL.y()),
                           glm::vec3(cam.getEyePosition().x(),//Camera Position
                                     cam.getEyePosition().y(),
                                     cam.getEyePosition().z()),
                           glm::vec2(this->resW,this->resH),//Current Resolution
-                            renderObjects[i]->getSceneEntity(),//Selected sceneEntity
+                          renderObjects[i]->getSceneEntity(),//Selected sceneEntity
                           i);//Selected Index
         }
+
+        //Raster update
+        renderObjects[i]->draw();//calls the draw function unique to each renderObject
     }
     //Frame is Loader and rendered on Quad below
     fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues to the fbo object
     fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 
-void _Scene::setMousePositionInScene(QVector2D mousePos,std::string type)
+void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 {
-    if(type == "Right")
+    if(m == Qt::RightButton)
         this->mousePositionR = mousePos;
-    else if(type == "Left")
+    else if(m == Qt::LeftButton)
         this->mousePositionL = mousePos;
 }
 
@@ -157,34 +158,37 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,std::string type)
  */
 void _Scene::updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
-        //calcualte ray vector
-        this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
-        //
-        if(type == _Physics::Sphere)
-        {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
-            if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f,camPos)){
-                //On event
-                s.setIsHitByRay(true);
-                s.setColor(QVector4D(s.getColor().x()*.9 ,s.getColor().x()*.9,s.getColor().x()*.9,s.getColor().w()*0.9));
-
-                renderObjects[index]->setSceneEntityInRenderer(s);
-            }
-            else{
-                //On event
-                s.setIsHitByRay(false);
-                s.setColor(QVector4D(0.6,0.0,0.0,0.8));
-
-                renderObjects[index]->setSceneEntityInRenderer(s);
-            }
+    //calculate ray vector
+    this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
+    //debug helper  implentation
+    pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
+    pointerObject.y = this->phys.getrayEye().y;
+    //
+    if(type == _Physics::Sphere)
+    {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
+        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f,camPos)){
+            //On event
+            pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f);
+            //set values in the sceneEntity and ressetit it in the  relavant renderObject
+            s.setIsHitByRay(true);
+            s.setColor(QVector4D(s.getColor().x()*.9 ,s.getColor().x()*.9,s.getColor().x()*.9,s.getColor().w()*0.9));
+            renderObjects[index]->setSceneEntityInRenderer(s);
         }
-        else if(type == _Physics::Box)//run operations for HitBox
-        {
-
+        else{
+            //On event
+            s.setIsHitByRay(false);
+            s.setColor(QVector4D(0.6,0.0,0.0,0.8));
+            renderObjects[index]->setSceneEntityInRenderer(s);
         }
-        else if(type == _Physics::Mesh)//Run operation for Mesh collider
-        {
+    }
+    else if(type == _Physics::Box)//run operations for HitBox
+    {
 
-        }
+    }
+    else if(type == _Physics::Mesh)//Run operation for Mesh collider
+    {
+
+    }
 }
 
 
