@@ -741,6 +741,17 @@ void _GPU_Compute::computeMaskImageR32IR(_Texture& input_img,_Texture& mask_img,
 
 }
 
+_Texture *_GPU_Compute::textureFromPool(QString texture_name)
+{
+    if ( texture_pool_map.find(texture_name) == texture_pool_map.end() ) {
+      // not found
+        texture_pool_map[texture_name] = new _Texture;
+    } else {
+      // found
+        return texture_pool_map[texture_name];
+    }
+}
+
 void _GPU_Compute::create_region_image_mask(_Texture &output_img, glm::ivec4 region)
 {
     //8 bit image as 255-0 mask
@@ -1047,14 +1058,14 @@ glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output
     static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight());
+    static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight(),GL_RED,GL_UNSIGNED_BYTE);
     static _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_hough_space(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
 
     texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_edge.load();
     texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_mask.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_mask_inv.load(GL_RED,GL_UNSIGNED_BYTE);
@@ -1312,7 +1323,7 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
             }
         }
 
-        volume = volume /6.0;
+        //volume = volume /6.0;
         glUniform2f(5,volume,volume);
         qDebug() << "volume : " << volume;
     }

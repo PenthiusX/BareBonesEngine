@@ -87,6 +87,9 @@ public:
     void compute_retrive_lower_2_bytes(_Texture &input_img, _Texture &output_img);
     int *getTextureModelFramebuffer32I(_Texture &input_img, unsigned int format);
     void computeMaskImageR32IR(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
+
+protected:
+
 };
 
 #endif // _GPU_COMPUTE_H

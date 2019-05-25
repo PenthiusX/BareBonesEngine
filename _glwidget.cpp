@@ -182,8 +182,9 @@ void _GLWidget::initializeGL()
 
     initialised=true;
 
-    rotateGeneratedModel(PI/200);
+    rotateGeneratedModel(0);
 }
+
 /*
  * Function: resizeGL(int w, int h) overides the
  * function in OpopenglFunctions class.
@@ -197,6 +198,7 @@ void _GLWidget::resizeGL(int w, int h)
 	this->height = h;
 	scene->onResize(w, h);
 }
+
 /*
  * Function: paintGl() 7
  * ovveriding thes function in OpopenglFunctions
@@ -351,10 +353,13 @@ void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
 
             }
             else {
-                glm::mat4x4 rot_mat_local = glm::rotate(render_object->getModelMatrix(), (-angle), axis);
+
+                glm::mat4x4 rot_mat_local = render_object->getModelMatrix();
+                rot_mat_local = glm::translate(rot_mat_local, glm::vec3(0.0, 2.0, 0.0));
+                rot_mat_local = glm::rotate(rot_mat_local, (-angle), axis);
+                rot_mat_local = glm::translate(rot_mat_local, glm::vec3(0.0, -2.0, 0.0));
                 render_object->setModelMatrix(rot_mat_local);
             }
-
         }
     }
     }

@@ -23,7 +23,11 @@ _Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * Created: 21_02_2019
  * sets defualt parameters
 */
-_Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
+_Texture::_Texture(char *img,unsigned int w,unsigned int h, GLenum color_format,GLenum data_type) :
+    QOpenGLExtraFunctions(QOpenGLContext::currentContext()),
+    _color_format(color_format),
+    _internal_format(color_format),
+    _data_type(data_type)
 {
     image = img;
     width = w;
@@ -34,6 +38,22 @@ _Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorF
     addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+}
+
+_Texture::_Texture(char *img,unsigned int w,unsigned int h, GLenum color_format,GLenum data_type,GLenum internal_format) :
+    QOpenGLExtraFunctions(QOpenGLContext::currentContext()),
+    _color_format(color_format),
+    _internal_format(internal_format),
+    _data_type(data_type)
+{
+    image = img;
+    width = w;
+    height = h;
+
+    //addParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    //addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+    addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 _Texture::~_Texture()
@@ -53,6 +73,14 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
 
     width = img.width();
     height = img.height();
+
+//    switch (img.) {
+//    case value:
+
+//        break;
+//    default:
+//        break;
+//    }
 
 //    addParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
 //    addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -74,7 +102,7 @@ void _Texture::setImage(QString pathtoTexture)
     height = img.height();
     //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, _color_format, width, height, 0, _color_format, GL_UNSIGNED_BYTE, image);
 
 }
 
@@ -89,7 +117,7 @@ void _Texture::setImage(QImage& img)
     height = img.height();
     //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, _color_format, width, height, 0, _color_format, GL_UNSIGNED_BYTE, image);
 }
 
 /* Updates texture from char pointer array and resolution of last image
@@ -100,7 +128,7 @@ void _Texture::setImage(char* img)
     image = img;
     //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, _color_format, width, height, 0, _color_format, GL_UNSIGNED_BYTE, image);
 
 }
 
@@ -114,13 +142,16 @@ void _Texture::setImage(char* img,unsigned int iwidth,unsigned int iheight)
     setImage(img);
 }
 
-void _Texture::setImage(char *img, unsigned int iwidth, unsigned int iheight, GLenum internal_format, GLenum format)
+void _Texture::setImage(char *img, unsigned int iwidth, unsigned int iheight, GLenum internal_format, GLenum format,GLenum data_type)
 {
     image = img;
-    //qDebug() << "setting image" << GL_RED << color_format;
-    glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, GL_UNSIGNED_BYTE, image);
 
+    //qDebug() << "setting image" << GL_RED << color_format;
+    _color_format = format;
+    _internal_format = internal_format;
+    _data_type = data_type;
+    glBindTexture(GL_TEXTURE_2D,m_ID);
+    glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
 }
 
 /* bind texture to default slot(0)
@@ -180,15 +211,9 @@ void _Texture::addParameter(unsigned int pname, unsigned int param)
     parameters[pname] = param;
 }
 
-/* initializes texture
- * applys parameters
- * loads the image
- * Created: 21_02_2019
-*/
-void _Texture::load( GLenum format, GLenum datatype)
+void _Texture::load()
 {
     if(m_ID==0){
-        unsigned int t;
         glGenTextures(1,&m_ID);
     }
 
@@ -198,10 +223,34 @@ void _Texture::load( GLenum format, GLenum datatype)
     {
         glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
     }
-        color_format = format;
         //qDebug() << "setting image in load" << GL_RED << color_format;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
-        data_type = datatype;
+        glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
+
+        //glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+/* initializes texture
+ * applys parameters
+ * loads the image
+ * Created: 21_02_2019
+*/
+void _Texture::load(GLenum format, GLenum datatype)
+{
+    if(m_ID==0){
+        glGenTextures(1,&m_ID);
+    }
+
+    bind();
+
+    for (auto const& parameter : parameters)
+    {
+        glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
+    }
+        _color_format = format;
+        _internal_format = format;
+        _data_type = datatype;
+        //qDebug() << "setting image in load" << GL_RED << color_format;
+        glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
 
         //glGenerateMipmap(GL_TEXTURE_2D);
 }
@@ -216,10 +265,7 @@ void _Texture::load(GLenum internal_format, GLenum format, GLenum datatype)
     //qDebug() << "tex load";
 
     if(m_ID==0){
-        qDebug() << "tex gen b" << m_ID;
-        unsigned int t;
         glGenTextures(1,&m_ID);
-        qDebug() << "tex gen" << m_ID;
     }
 
     bind();
@@ -228,10 +274,12 @@ void _Texture::load(GLenum internal_format, GLenum format, GLenum datatype)
     {
         glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
     }
-    color_format = format;
-    glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, datatype, image);
+    _color_format = format;
+    _internal_format = internal_format;
+    _data_type = datatype;
+    glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
     //glGenerateMipmap(GL_TEXTURE_2D);
-    data_type = datatype;
+
 }
 
 //return width of loaded texture image
@@ -248,10 +296,24 @@ unsigned int _Texture::getHeight() const
 
 unsigned int _Texture::getColorformat() const
 {
-    return color_format;
+    return _color_format;
 }
 
 unsigned int _Texture::getDataType() const
 {
-    return data_type;
+    return _data_type;
+}
+
+bool _Texture::isUsed() const
+{
+    return is_used;
+}
+
+void _Texture::setForUse(bool value)
+{
+    is_used = value;
+}
+void _Texture::release()
+{
+    is_used = false;
 }
