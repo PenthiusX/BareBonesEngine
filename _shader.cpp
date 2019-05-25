@@ -259,79 +259,79 @@ unsigned int _Shader::compileShader(QString src, unsigned int typ)
 
 //Proptotype implemntation , only for testing
 //Not in use at the moment.
-void _Shader::setUpParticles()
-{
-#define NUM_PARTICLES 1024*1024 // total number of particles to move
-    //Setting up the Shader Storage Buffer Objects in Your C Program
-#define WORK_GROUP_SIZE 128 // # work-items per work-group
-    struct pos
-    {
-        float x, y, z, w; // positions // positions
-    };
-    struct vel
-    {
-        float vx, vy, vz, vw; // l iti // velocities
-    };
-    struct color
-    {
-        float r, g, b, a; // colors
-    };
-    // need to do the following for both position, velocity, and colors
+//void _Shader::setUpParticles()
+//{
+//#define NUM_PARTICLES 1024*1024 // total number of particles to move
+//    //Setting up the Shader Storage Buffer Objects in Your C Program
+//#define WORK_GROUP_SIZE 128 // # work-items per work-group
+//    struct pos
+//    {
+//        float x, y, z, w; // positions // positions
+//    };
+//    struct vel
+//    {
+//        float vx, vy, vz, vw; // l iti // velocities
+//    };
+//    struct color
+//    {
+//        float r, g, b, a; // colors
+//    };
+//    // need to do the following for both position, velocity, and colors
 
-    GLuint posSSbo;
-    GLuint velSSbo;
-    GLuint colSSbo;
-    float Xmin,Xmax;
-    Xmin = -10.0f;
-    Xmax = 10.0f;
-    float vXmin,vXmax;
-    vXmin = 0.0;
-    vXmax = 2.0;
+//    GLuint posSSbo;
+//    GLuint velSSbo;
+//    GLuint colSSbo;
+//    float Xmin,Xmax;
+//    Xmin = -10.0f;
+//    Xmax = 10.0f;
+//    float vXmin,vXmax;
+//    vXmin = 0.0;
+//    vXmax = 2.0;
 
-    glGenBuffers( 1, &posSSbo);
-    glBindBuffer( GL_SHADER_STORAGE_BUFFER, posSSbo );
-    glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct pos), nullptr, GL_STATIC_DRAW );
+//    glGenBuffers( 1, &posSSbo);
+//    glBindBuffer( GL_SHADER_STORAGE_BUFFER, posSSbo );
+//    glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct pos), nullptr, GL_STATIC_DRAW );
 
-    GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT ;
-    struct pos *points = (struct pos*)glMapBufferRange( GL_SHADER_STORAGE_BUFFER,0,NUM_PARTICLES * sizeof (struct pos),bufMask);
-    srand (time(nullptr));
-    for(int i = 0;i <NUM_PARTICLES;i++)
-    {
-        points[i].x = rand() % (int)(Xmax - Xmin);
-        points[i].y = rand() % (int)(Xmax - Xmin);
-        points[i].z = rand() % (int)(Xmax - Xmin);
-        points[i].w = 1.0f;
-    }
-    glUnmapBuffer( GL_SHADER_STORAGE_BUFFER );
+//    GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT ;
+//    struct pos *points = (struct pos*)glMapBufferRange( GL_SHADER_STORAGE_BUFFER,0,NUM_PARTICLES * sizeof (struct pos),bufMask);
+//    srand (time(nullptr));
+//    for(int i = 0;i <NUM_PARTICLES;i++)
+//    {
+//        points[i].x = rand() % (int)(Xmax - Xmin);
+//        points[i].y = rand() % (int)(Xmax - Xmin);
+//        points[i].z = rand() % (int)(Xmax - Xmin);
+//        points[i].w = 1.0f;
+//    }
+//    glUnmapBuffer( GL_SHADER_STORAGE_BUFFER );
 
-    glGenBuffers( 1, &velSSbo);
-    glBindBuffer( GL_SHADER_STORAGE_BUFFER, velSSbo );
-    glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct vel), nullptr, GL_STATIC_DRAW );
+//    glGenBuffers( 1, &velSSbo);
+//    glBindBuffer( GL_SHADER_STORAGE_BUFFER, velSSbo );
+//    glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct vel), nullptr, GL_STATIC_DRAW );
 
-    struct vel *vels = (struct vel *) glMapBufferRange( GL_SHADER_STORAGE_BUFFER, 0, NUM_PARTICLES * sizeof(struct vel), bufMask );
-    for( int i = 0; i < NUM_PARTICLES; i++ )
-    {
-        vels[ i ].vx = rand() % (int)(Xmax - Xmin);
-        vels[ i ].vy = rand() % (int)(Xmax - Xmin);
-        vels[ i ].vz = rand() % (int)(Xmax - Xmin);
-        vels[ i ].vw = 0.;
-    }
-    glUnmapBuffer( GL_SHADER_STORAGE_BUFFER );
+//    struct vel *vels = (struct vel *) glMapBufferRange( GL_SHADER_STORAGE_BUFFER, 0, NUM_PARTICLES * sizeof(struct vel), bufMask );
+//    for( int i = 0; i < NUM_PARTICLES; i++ )
+//    {
+//        vels[ i ].vx = rand() % (int)(Xmax - Xmin);
+//        vels[ i ].vy = rand() % (int)(Xmax - Xmin);
+//        vels[ i ].vz = rand() % (int)(Xmax - Xmin);
+//        vels[ i ].vw = 0.;
+//    }
+//    glUnmapBuffer( GL_SHADER_STORAGE_BUFFER );
 
-    glGenBuffers( 1, &colSSbo);
-    glBindBuffer( GL_SHADER_STORAGE_BUFFER, velSSbo );
-    glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct vel), nullptr, GL_STATIC_DRAW );
+//    glGenBuffers( 1, &colSSbo);
+//    glBindBuffer( GL_SHADER_STORAGE_BUFFER, velSSbo );
+//    glBufferData( GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct vel), nullptr, GL_STATIC_DRAW );
 
-    struct color *cols = (struct color *) glMapBufferRange( GL_SHADER_STORAGE_BUFFER, 0, NUM_PARTICLES * sizeof(struct color), bufMask );
-    for( int i = 0; i < NUM_PARTICLES; i++ )
-    {
-        vels[ i ].vx = rand() % (int)(Xmax - Xmin);
-        vels[ i ].vy = rand() % (int)(Xmax - Xmin);
-        vels[ i ].vz = rand() % (int)(Xmax - Xmin);
-        vels[ i ].vw = 0.;
-    }
+//    struct color *cols = (struct color *) glMapBufferRange( GL_SHADER_STORAGE_BUFFER, 0, NUM_PARTICLES * sizeof(struct color), bufMask );
+//    for( int i = 0; i < NUM_PARTICLES; i++ )
+//    {
+//        vels[ i ].vx = rand() % (int)(Xmax - Xmin);
+//        vels[ i ].vy = rand() % (int)(Xmax - Xmin);
+//        vels[ i ].vz = rand() % (int)(Xmax - Xmin);
+//        vels[ i ].vw = 0.;
+//    }
 
-    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 4, posSSbo );
-    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 5, velSSbo );
-    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 6, colSSbo );
-}
+//    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 4, posSSbo );
+//    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 5, velSSbo );
+//    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 6, colSSbo );
+//}

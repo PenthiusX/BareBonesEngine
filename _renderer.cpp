@@ -448,6 +448,7 @@ void _Renderer::_Renderer::draw()
         glBindBuffer(GL_ARRAY_BUFFER,VBO);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+        //
         //Sets the values for the MVP matrix in the vertex shader
         glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
         glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
@@ -455,7 +456,10 @@ void _Renderer::_Renderer::draw()
         //
         setColors();//Setting the uniform for color
         //
-        //The Final draw call for each frame
-        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
+        //
+        glBindBuffer(GL_ARRAY_BUFFER,0);//Clear the buffer
+        glBindVertexArray(0);//Clear the buffer
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);//Clear the buffer
     }
 }

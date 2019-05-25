@@ -351,9 +351,9 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 
 void _GLWidget::addRandomSceneEntitestoScene()
 {
-    for(int i = 5 ; i < 10 ; i++)
+    for(int i = 0 ; i < 2 ; i++)
     {
-        s.setId(i);
+        s.setId(scene->getSceneObjects().size() + i);
         s.setIsTransfomationLocal(false);
         s.setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
         s.setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
