@@ -33,13 +33,17 @@ protected:
     virtual void  keyPressEvent(QKeyEvent *event) override;
 
 private:
+    void addRandomSceneEntitestoScene();
+
+    //Variables
     unsigned int VBO;
     unsigned int VAO;
     unsigned int EBO;
     unsigned int shaderProgram;
     QOpenGLContext *context;
 
-    _Scene* scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
+    std::vector<_Scene*> sceneVector;//Vector of scene for drawing multiple scene Contexts//!!prototype implmentaition not implemented and checked!!!
+    _Scene *scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
     _SceneEntity s, s1,s2,mpoint;//custom Objects
     _SceneEntity background_quad,pivot;//default sceneobjects
     _AssetLoader assetLoader;
@@ -52,8 +56,6 @@ private:
 	bool isCamFocus;
     QVector2D mousePressPositionL,mousePressPositionR;
     QVector2D mousePositionL,mousePositionR;
-    //Physics object
-    _Physics p;
 };
 
 #endif // _GLWIDGET_H

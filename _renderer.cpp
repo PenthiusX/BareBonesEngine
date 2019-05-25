@@ -86,7 +86,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
-
+    qDebug() << "VBO-" << VBO << "VAO-" << VAO << "EBO-" << EBO;
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

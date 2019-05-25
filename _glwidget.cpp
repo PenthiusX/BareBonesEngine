@@ -85,6 +85,7 @@ void _GLWidget::initializeGL()
     s.setTag("object1");
     s.setPhysicsObject(_Physics::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
+    s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.5));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
@@ -114,27 +115,14 @@ void _GLWidget::initializeGL()
     //-----------------
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-    scene->addSceneObject(pivot);
-    scene->addSceneObject(mpoint);
+    scene->addSceneObject(pivot);//pivot helper essential
+    scene->addSceneObject(mpoint);//mousePoint helper
+    //
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     //-----------------
-    /*
-    for(int i = 5 ; i < 1000 ; i ++)
-    {
-        s.setId(i);
-        s.setIsTransfomationLocal(false);
-        s.setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
-        s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-        s.setScale(_Tools::getRandomNumberfromRange(1,5));
-        s.setModelData(s1.getvertexData(),s1.getIndexData());//dont need to reparse modelfile
-        scene->addSceneObject(s);
-        qInfo() << i <<"th object";
-    }
-    */
-    std::vector<_Phy_Triangle> pv;
-    pv = p.generatetrianglesfromVerticesIndices(s.getvertexData(),s.getIndexData());
+//    addRandomSceneEntitestoScene();
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -354,6 +342,26 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 
     if (event->text() == "c" || event->text() == "C"){
         this->isCamFocus = !isCamFocus;
+    }
+
+     if (event->text() == "p" || event->text() == "P"){
+        addRandomSceneEntitestoScene();
+     }
+}
+
+void _GLWidget::addRandomSceneEntitestoScene()
+{
+    for(int i = 5 ; i < 10 ; i++)
+    {
+        s.setId(i);
+        s.setIsTransfomationLocal(false);
+        s.setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
+        s.setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
+        s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        s.setScale(_Tools::getRandomNumberfromRange(0.5,5));
+        s.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
+        scene->addSceneObject(s);
+        qInfo() << i <<"th object";
     }
 }
 
