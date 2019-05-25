@@ -114,7 +114,7 @@ void _FrameBuffer::initialise()
 */
 void _FrameBuffer::setFrame()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -127,17 +127,18 @@ void _FrameBuffer::setFrame()
 */
 void _FrameBuffer::renderFrameOnQuad()
 {
-    // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    fboShader->useShaderProgram();
-    glBindVertexArray(quadVAO);
 
-    glUniform2f(mousePosUniform,mousePos.x(),mousePos.y());//passing mouse value to shader
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);// now bind the default(orignal) frame , draw a quad plane attaching the frambuffer texture on it.
+    glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
 
-    glBindTexture(GL_TEXTURE_2D,this->textureColorbuffer);
-    glDrawArrays(GL_TRIANGLES, 0, 6);	// use the color attachment texture as the texture of the quad plane
+    glBindTexture(GL_TEXTURE_2D,this->textureColorbuffer);//bind the texture created above
+    fboShader->useShaderProgram();//pass the texture to this fboShader
+
+    glBindVertexArray(quadVAO);//bind VAO for quad
+    glUniform2f(mousePosUniform,mousePos.x(),mousePos.y());//passing mouse value to fboshader
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);//Draw the Quad with the texture
 }
 /*
  * Function: renderFrameOn()
