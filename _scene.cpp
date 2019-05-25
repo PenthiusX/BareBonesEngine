@@ -2,7 +2,8 @@
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
- * set inside via a sceneentity object. essentially sets values in the scen entity object into the Renderer for drawing
+ * set inside via a sceneentity object. essentially sets values in the scene entity object into the Renderer for drawing
+ * Sets up Delegation to the class _Framebuffer,_Render and _Physics to work in one scene instance in cohision.
  * Autor: Aditya
  * Created:26_02_2019
 */
@@ -158,26 +159,38 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
  */
 void _Scene::updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
+    updateMouseRay(mousePos,screenRes,s);
+    upDateRayCollison(type,camPos,s,index);
+}
+
+void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
+{
     //calculate ray vector
     this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
     //debug helper  implentation
     pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
     pointerObject.y = this->phys.getrayEye().y;
     //
+}
+
+void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_SceneEntity s,unsigned int index)
+{
     if(type == _Physics::Sphere)
     {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
-        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f,camPos)){
-            //On event
+        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f,camPos))
+        {
+            //On event of collison with ray
             pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f);
             //set values in the sceneEntity and ressetit it in the  relavant renderObject
             s.setIsHitByRay(true);
-            s.setColor(QVector4D(s.getColor().x()*.9 ,s.getColor().x()*.9,s.getColor().x()*.9,s.getColor().w()*0.9));
+            s.setColor(QVector4D(0.6,0.0,0.0,0.8));
             renderObjects[index]->setSceneEntityInRenderer(s);
         }
-        else{
+        else
+        {
             //On event
             s.setIsHitByRay(false);
-            s.setColor(QVector4D(0.6,0.0,0.0,0.8));
+            s.setColor(QVector4D(s.getColor().x(),s.getColor().x(),s.getColor().x(),s.getColor().w()));
             renderObjects[index]->setSceneEntityInRenderer(s);
         }
     }
