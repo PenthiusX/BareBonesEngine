@@ -14,7 +14,9 @@
  * created: 20_03_2019
  * Author : Saurabh
 */
-_GPU_Compute::_GPU_Compute() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
+_GPU_Compute::_GPU_Compute() :
+    QOpenGLExtraFunctions(QOpenGLContext::currentContext()),
+    texture_pool_8_bit()
 {
 
 }
@@ -741,16 +743,6 @@ void _GPU_Compute::computeMaskImageR32IR(_Texture& input_img,_Texture& mask_img,
 
 }
 
-_Texture *_GPU_Compute::textureFromPool(QString texture_name)
-{
-    if ( texture_pool_map.find(texture_name) == texture_pool_map.end() ) {
-      // not found
-        texture_pool_map[texture_name] = new _Texture;
-    } else {
-      // found
-        return texture_pool_map[texture_name];
-    }
-}
 
 void _GPU_Compute::create_region_image_mask(_Texture &output_img, glm::ivec4 region)
 {

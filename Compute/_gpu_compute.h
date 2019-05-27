@@ -4,6 +4,7 @@
 #include <QOpenGLExtraFunctions>
 #include <_texture.h>
 #include <glm/glm.hpp>
+#include <_texturepool.h>
 
 class _GPU_Compute : private QOpenGLExtraFunctions
 {
@@ -89,6 +90,7 @@ public:
     void computeMaskImageR32IR(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
 
 protected:
+    _TexturePool texture_pool_8_bit;
 
 };
 
