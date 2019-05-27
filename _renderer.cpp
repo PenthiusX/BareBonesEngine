@@ -305,7 +305,6 @@ void _Renderer::setRotation(QVector3D rot)
     {
         setRotationAroundPivot(rot, this->sceneEntity.getPivot());
     }
-
     keepSceneEntityUpdated();
 }
 /*
