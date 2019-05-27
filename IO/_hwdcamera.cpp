@@ -65,7 +65,7 @@ int _HWDCamera::grab_frame(QString filename)
     imagefile=fopen(filename.toLocal8Bit(), "r");
 
     if( imagefile == NULL) {
-        qDebug() << "Can't open:" << filename;
+//        qDebug() << "Can't open:" << filename;
         //fclose(imagefile);
         return 0;
     }

@@ -24,7 +24,6 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
     this->isCamFocus = false;
     //keeps the event callbacks working for the GL widget
     setFocusPolicy(Qt::StrongFocus);
-    //  makeCurrent();
 }
 _GLWidget::~_GLWidget()
 {
@@ -110,7 +109,7 @@ void _GLWidget::initializeGL()
     s2.setColor(QVector4D(0.0,0.0,0.5,0.8));
     s2.setScale(1.0f);
     s2.setModelData(vertsV,indiceV);
-    //-----------------
+    //-----------------------------------
     //Initailise the scene in InitaliseGl
     //needs to be run after the openGl contxt is initialised
         scene = new _Scene();
@@ -122,20 +121,18 @@ void _GLWidget::initializeGL()
         scene->addSceneObject(s);
         scene->addSceneObject(s1);
         scene->addSceneObject(s2);
-    //-----------------
+    //------------------------------------
     //    addRandomSceneEntitestoScene();
-
-    //------------------------------------------------------------------------
+    //------------------------------------
     ///////// temporary Sau
     ///
-
     generated_model.setId(666);//keep the id it will be required while updating texture
     generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
     generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
     generated_model.setRotation(QVector3D(0.0, 0.0, 0.0));
-
+    generated_model.setIsTransfomationLocal(false);
     generated_model.setScale(0.524);
 
     std::vector<float> vertsG;
@@ -173,7 +170,6 @@ void _GLWidget::initializeGL()
             //            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
             //            {
 
-
             if((pixel_cord.y < resolution.y))
             {
                 //indexs of fisrt triangle in quad
@@ -193,13 +189,8 @@ void _GLWidget::initializeGL()
     //generated_model.setTexturePath(":textures/eye.png");
 
     generated_model.setModelData(vertsG,indiceG);
-
-    ///////// /temporary
-
     scene->addSceneObject(generated_model);
     initialised=true;
-    rotateGeneratedModel(PI/200);
-    //---------------------------------------------------------------------------------
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -254,7 +245,6 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     {//get mouse position only on left button click
         mousePressPositionR = QVector2D(e->localPos());
     }
-    m_lastPos = e->pos();
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
@@ -301,18 +291,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
         scene->setMousePositionInScene(this->mousePositionR,Qt::RightButton);//sets the mouse position in the scene for use
     }
 
-    //-----------Sau
-    int dx = e->x() - m_lastPos.x();
-    int dy = e->y() - m_lastPos.y();
-
-    if (e->buttons() & Qt::LeftButton) {
-        setXRotation(m_xRot + dy);
-        setYRotation(m_yRot + dx);
-    } else if (e->buttons() & Qt::RightButton) {
-        setXRotation(m_xRot +  dy);
-        setZRotation(m_zRot +  dx);
-    }
-    m_lastPos = e->pos();
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
@@ -563,45 +541,3 @@ bool _GLWidget::isInitialised()
 {
     return initialised;
 }
-
-static void qNormalizeAngle(int &angle)
-{
-    while (angle < 0)
-        angle += 360 * 16;
-    while (angle > 360 * 16)
-        angle -= 360 * 16;
-}
-
-void _GLWidget::setXRotation(int angle)
-{
-    qNormalizeAngle(angle);
-    if (angle != m_xRot) {
-        m_xRot = angle;
-        //emit xRotationChanged(angle);
-        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(1.0,0.0,0.0),false);
-        update();
-    }
-}
-
-void _GLWidget::setYRotation(int angle)
-{
-    qNormalizeAngle(angle);
-    if (angle != m_yRot) {
-        m_yRot = angle;
-        //emit yRotationChanged(angle);
-        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(0.0,1.0,0.0),false);
-        update();
-    }
-}
-
-void _GLWidget::setZRotation(int angle)
-{
-    qNormalizeAngle(angle);
-    if (angle != m_zRot) {
-        m_zRot = angle;
-        //emit zRotationChanged(angle);
-        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(0.0,0.0,1.0),false);
-        update();
-    }
-}
-//-------------------------------------------------------------------

@@ -30,8 +30,8 @@ public:
 
 protected:
     char *byteframe = nullptr;
-    int Width = MAX_FRAME_WIDTH;
-    int Height = MAX_FRAME_HEIGHT;
+    int Width = 1360;//MAX_FRAME_WIDTH;
+    int Height = 1024;//MAX_FRAME_HEIGHT;
     FILE* imagefile;
     QString images_dir;
 

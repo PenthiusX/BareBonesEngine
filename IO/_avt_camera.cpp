@@ -20,8 +20,8 @@
 */
 _AVT_Camera::_AVT_Camera() : _HWDCamera()
 {
-    Width = MAX_FRAME_WIDTH;
-    Height = MAX_FRAME_HEIGHT;
+    Width = 1360;//MAX_FRAME_WIDTH;
+    Height = 1024;//MAX_FRAME_HEIGHT;
 }
 
 /* find and return number of cameras connected

@@ -45,14 +45,8 @@ protected:
     virtual void wheelEvent(QWheelEvent *e) override;
     virtual void  keyPressEvent(QKeyEvent *event) override;
 
-    //sau----
-QPoint m_lastPos;
-int m_xRot;
-int m_yRot;
-int m_zRot;
 private:
     void addRandomSceneEntitestoScene();
-//------------------------
     //Variables
     unsigned int VBO;
     unsigned int VAO;

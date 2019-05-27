@@ -2,7 +2,7 @@
 #define _STAGECALIBERATIONSECTION_H
 
 #include <QWidget>
-#include "ui__lightcaliberationsection.h"
+//#include "ui__lightcaliberationsection.h"
 #include <UI/_caliberationsection.h>
 #include <IO/_machine.h>
 

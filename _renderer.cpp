@@ -132,7 +132,7 @@ void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GL
     _Texture texture(img,width,height);
     texture.load(format,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-    qDebug() << "setupTexture() on entity" << this->sceneEntity.getTag();
+//    qDebug() << "setupTexture() on entity" << this->sceneEntity.getTag();
 }
 void _Renderer::setupTexture(QString texfile)
 {
@@ -140,7 +140,7 @@ void _Renderer::setupTexture(QString texfile)
     _Texture texture(img);
     texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-    qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getTag();
+//    qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getTag();
 }
 /*
  * Function: setTexture()
@@ -154,13 +154,13 @@ void _Renderer::setTexture(char* texBitmap)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap);
-    qDebug() << "setTexture(char* texBitmap) on entity" << this->sceneEntity.getTag();
+//    qDebug() << "setTexture(char* texBitmap) on entity" << this->sceneEntity.getTag();
 }
 void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap,iwidth,iheight);
-    qDebug() << "setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight) on entity" << this->sceneEntity.getTag();
+//    qDebug() << "setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight) on entity" << this->sceneEntity.getTag();
 }
 
 bool _Renderer::isTexturePresent()
@@ -213,14 +213,12 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
-    //
     glm_view4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::lookAt(
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
                 glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
     keepSceneEntityUpdated();
-    //    qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getTag();
 }
 /*
 * Function: setProjectionMatrix(int w, int h)

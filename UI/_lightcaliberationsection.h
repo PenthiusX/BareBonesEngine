@@ -26,7 +26,6 @@ public slots:
     void updateHistogramImage(char *img, unsigned int w, unsigned int h);
     void save();
 
-
 private:
     Ui::LightCaliberationSection *ui;
 };
