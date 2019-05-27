@@ -113,15 +113,15 @@ void _GLWidget::initializeGL()
     //-----------------
     //Initailise the scene in InitaliseGl
     //needs to be run after the openGl contxt is initialised
-    //    scene = new _Scene();
-    //    scene->addCamera(cam);//camera essential
-    //    scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-    //    scene->addSceneObject(pivot);//pivot helper essential
-    //    scene->addSceneObject(mpoint);//mousePoint helper
-    //    //
-    //    scene->addSceneObject(s);
-    //    scene->addSceneObject(s1);
-    //    scene->addSceneObject(s2);
+        scene = new _Scene();
+        scene->addCamera(cam);//camera essential
+        scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
+        scene->addSceneObject(pivot);//pivot helper essential
+        scene->addSceneObject(mpoint);//mousePoint helper
+        //
+        scene->addSceneObject(s);
+        scene->addSceneObject(s1);
+        scene->addSceneObject(s2);
     //-----------------
     //    addRandomSceneEntitestoScene();
 
@@ -129,7 +129,7 @@ void _GLWidget::initializeGL()
     ///////// temporary Sau
     ///
 
-    generated_model.setId(4);//keep the id it will be required while updating texture
+    generated_model.setId(666);//keep the id it will be required while updating texture
     generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
@@ -148,14 +148,12 @@ void _GLWidget::initializeGL()
         for (unsigned int w = 0; w < resolution.x; w++) {
 
             glm::vec2 pixel_cord = glm::vec2(w,h);
-
             glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
 
             //texture_positions
             vertsG.push_back(texture_cord.x);//x = s
             vertsG.push_back(texture_cord.y);//y = t
             vertsG.push_back(0.0);//z = 0.0
-
         }
     }
 
@@ -197,13 +195,6 @@ void _GLWidget::initializeGL()
     generated_model.setModelData(vertsG,indiceG);
 
     ///////// /temporary
-
-    scene = new _Scene();
-    scene->addCamera(cam);
-    scene->addSceneObject(background_quad);
-    scene->addSceneObject(s);
-    scene->addSceneObject(s1);
-    scene->addSceneObject(s2);
 
     scene->addSceneObject(generated_model);
     initialised=true;
