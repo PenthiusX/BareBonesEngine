@@ -26,11 +26,14 @@ public:
     void attachShaders();
     void attachShaders(QString v , QString f);
     void useShaderProgram();
-    GLint getUniformLocation(const char *nameOfUniform);
-
+    uint getUniformLocation(const char *nameOfUniform);
     void setChildShader(QString s,unsigned int typ);
     void setChildShader(std::vector<QString>, unsigned int typ);
+    void setChildShader(QString s, unsigned int typ, glm::ivec3 workgroup_size);
 
+
+    //QString shader_parser(QString shader_file);
+    QString shader_parser(QString shader_file, glm::ivec3 workgroup_size = glm::ivec3(16,16,1));
 private:
     //Shader Program
     uint shaderProgram = 0;
@@ -39,8 +42,7 @@ private:
     //key : shader typ enum eg. GL_VERTEX_SHADER
     //value : shader ID returned by glCreateShader
     std::map<unsigned int,unsigned int> child_shaders;
-
-    unsigned int compileShader(QString src_path,unsigned int typ);
+    unsigned int compileShader(QString src,unsigned int typ);
 
 
     _Tools tools;

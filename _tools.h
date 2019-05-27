@@ -10,6 +10,7 @@
 #include <vector>
 #include <QElapsedTimer>
 #include <glm/glm.hpp>
+#include <QJsonObject>
 
 /*
  * Class: _Tools
@@ -23,6 +24,7 @@
  * This can be used as a test base to test out structs and datastructure which can then be later implemented
  * as a sperate class).
 */
+
 class _Tools
 {
 public:
@@ -32,13 +34,26 @@ public:
     static QVector3D translateToPoint(QVector3D pointLocation,float stepDistance);
     static void Debugmatrix4x4(glm::mat4x4 mat4);
     static float getRandomNumberfromRange(float min , float max);
+    static void SaveImageToPgm(char *img, unsigned int rttWidth, unsigned int rttHeight, QString filename);
+    static QJsonObject ReadJsonFromQrc(QString Filename);
+    static bool WriteJsonToFile(QString Filename,QJsonObject jsonObject);
     //Debug use
     static void printFrameRate();
 
+    static std::vector<int> GenerateFactors(int n);
+    static glm::vec3 NormalizeSum(glm::vec3 in);
+    static int argmax(glm::vec3 in);
+    static glm::ivec3 GetGroupSize(int n, glm::vec3 ratio = glm::vec3(3,3,1));
+
+    static QString getFolderFromDialog(QString aplicationRelativePath);
+    static QJsonObject ReadJsonFromSystem(QString Filename);
+    static bool WriteJsonToFileSystem(QString filename, QJsonObject config);
+    static int indexFromPixelCordinates(glm::vec2 pixel_cord, glm::ivec2 resolution);
+    static glm::ivec3 vertIndexesFromElementIndex(int i);
+    static glm::vec3 vertsFromIndex(glm::ivec3 indexes);
+
 private:
 
-//    static QElapsedTimer timer;
-//    static unsigned int frameCounter;
 
 };
 

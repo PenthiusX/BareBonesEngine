@@ -1,18 +1,15 @@
-# Compiled source #
-###################
 *.pro.user
 *.autosave
-<<<<<<< HEAD
-=======
+*.log
 /x64
 /debug
 /release
 /vs
+/build
 *.vs
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
 *.stash
 *ui_mainwindow.h
->>>>>>> c_render
 

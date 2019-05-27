@@ -24,12 +24,13 @@ int main(int argc, char *argv[])
 {
 
     QGLFormat glFormat;
-    glFormat.setVersion( 4, 0 );
-    glFormat.setProfile( QGLFormat::CoreProfile); // Requires >=Qt-4.8.0
+    glFormat.setVersion( 4, 3);
+    glFormat.setProfile( QGLFormat::CoreProfile ); // Requires >=Qt-4.8.0
     glFormat.setSampleBuffers( true );
 
     QApplication a(argc, argv);
     MainWindow w;
+    //gui is shown when machine is initialised
     w.show();
 
     return a.exec();

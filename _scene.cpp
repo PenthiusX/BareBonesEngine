@@ -203,5 +203,3 @@ void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_S
 
     }
 }
-
-

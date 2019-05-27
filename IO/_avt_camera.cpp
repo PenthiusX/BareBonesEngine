@@ -2,6 +2,7 @@
 #include <QDebug>
 #define filename2 "image.pgm"
 #include <FGCamera.h>
+#include <_tools.h>
 
 // **All qDebug Logging functionality should be removed afterwards**
 
@@ -19,7 +20,8 @@
 */
 _AVT_Camera::_AVT_Camera() : _HWDCamera()
 {
-
+    Width = MAX_FRAME_WIDTH;
+    Height = MAX_FRAME_HEIGHT;
 }
 
 /* find and return number of cameras connected
@@ -66,9 +68,6 @@ int _AVT_Camera::select_camera(int v){
  */
 int _AVT_Camera::init(int v){
 
-    byteframe = new char[1392640];
-    qDebug() << "camera frame ptr" << (long int)byteframe;
-
     if(list_cameras()==0) return 0;
 
     select_camera(v);
@@ -88,6 +87,7 @@ int _AVT_Camera::init(int v){
         qDebug() <<"failed: open capture";
         return 0;
     }
+    byteframe = new char[1392640]; //Frame.Length
     return 1;
 }
 
@@ -133,8 +133,27 @@ char* _AVT_Camera::get_frame(){
 
 //currently saving frame in image.pgm
 int _AVT_Camera::grab_frame(){
+    Result = Camera.GetFrame(&Frame, 5000);
 
-    return grab_frame(filename2);
+    // ... Here you can processs image data in Frame.pData
+    if (Result == FCE_NOERROR){
+        //printf("Frame received (%02X %02X %02X %02X ...)\n",Frame.pData[0], Frame.pData[1], Frame.pData[2], Frame.pData[3]);
+        memcpy(byteframe,&Frame.pData[0],Width*Height);
+    }
+    else {
+        qDebug() <<"failed: grab frame";
+        return 0;
+    }
+
+    //return byteframe;
+    // Return frame to module
+    if (Result == FCE_NOERROR)
+        Result = Camera.PutFrame(&Frame);
+    else {
+        qDebug() <<"failed: return frame";
+        return 0;
+    }
+    return 1;
 }
 
 /* Capture frame from camera and store inside given file name
@@ -144,29 +163,20 @@ int _AVT_Camera::grab_frame(QString filename){
 
     Result = Camera.GetFrame(&Frame, 5000);
 
+    filename = images_dir + filename;
+
     // ... Here you can processs image data in Frame.pData
     if (Result == FCE_NOERROR){
         //printf("Frame received (%02X %02X %02X %02X ...)\n",Frame.pData[0], Frame.pData[1], Frame.pData[2], Frame.pData[3]);
+        memcpy(byteframe,&Frame.pData[0],Width*Height);
 
-        //save image as 'Image.pgm'
-        imagefile=fopen(filename.toLocal8Bit(), "wb");
-
-        if( imagefile == NULL) {
-            qDebug() << "Can't create:" << filename;
-        }
-
-        qDebug() << Frame.Length <<"\n";
-        fprintf(imagefile,"P5\n%u %u 255\n", 1360, 1024);
-        fwrite(&Frame.pData[0], 1, Frame.Length, imagefile);
-        fclose(imagefile);
-
-        qDebug() << "wrote avt: " << filename;
+        _Tools::SaveImageToPgm(byteframe,Width,Height,filename);
     }
     else {
         qDebug() <<"failed: grab frame";
         return 0;
     }
-    memcpy(byteframe,&Frame.pData[0],1392640);
+
     //return byteframe;
     // Return frame to module
     if (Result == FCE_NOERROR)

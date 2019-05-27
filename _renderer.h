@@ -32,8 +32,9 @@ public:
     void setTexture(char* texBitmap);//takes am image and binds it to object
     void setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight);//takes am image and binds it to object
     //
-    void setupTexture();//takes a hardcoded imagedata and binds it to object
+    void setupTexture(char* img,unsigned int width,unsigned int height,GLenum format);//takes a hardcoded imagedata and binds it to object
     void setupTexture(QString texfile); //initializes texture from file
+    bool isTexturePresent();
     //
     void setModelMatrix(QVector3D position, float scale, QVector3D rotation);//set the model matrix
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
@@ -51,6 +52,7 @@ public:
     _SceneEntity getSceneEntity() const;
     //
     void draw();//Draws/paints everything bound in the scene
+
 
 private:
     unsigned int VBO;//vertex buffer object

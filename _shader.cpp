@@ -1,13 +1,14 @@
 #include "_shader.h"
-#include "_tools.h"
+#include <_tools.h>
 #include <iostream>
 #include <stdlib.h> 
 #include <time.h> 
+#include <QDebug>
+#include <QMessageBox>
 /*
  * The _Shader class
  * Created: 14_02_2019
  * Author: Aditya , Suarabh
-*/
 /*
 * Constructor
 * Object initialised in _renderer class
@@ -27,7 +28,7 @@ _Shader::~_Shader(){}
 */
 uint _Shader::getShaderProgram()
 {
-    return this->shaderProgram;
+   return this->shaderProgram;
 }
 /*
  * Function: setFragmentShader(QString f) copiles and,
@@ -78,7 +79,8 @@ void _Shader::attachShaders()
         if(!success)
         {
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;
+            qDebug() << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog ;
+            //QMessageBox::information(0, "program error", infoLog);
         }
 
         //delete shader
@@ -122,80 +124,94 @@ void _Shader::setGeometryShader(QString geoS)
     glLinkProgram(this->shaderProgram);
 }
 
-void _Shader::setComputeShader(QString compShader)
+
+/*
+ * Function: shader_parser(QString shader_file)
+ * this function solves all #include dependancies
+ * eg. if shader source:
+ *
+ *   vshader_uniforms.glsl:
+ *                      uniform mat4 model;
+ *                      uniform mat4 view;
+ *                      uniform mat4 projection;
+ *                      uniform mat4 mvp;
+ *
+ *   vshader_main.glsl :
+ *                      #version 330 core
+ *                      layout (location = 0) in vec3 aPos;
+ *                      out vec2 TexCoord;
+ *
+ *                      #include vshader_uniforms.glsl// <<<<< shader source of vshader_uniforms.glsl will be inserted here
+ *
+ *                      void main()
+ *                      {
+ *                          gl_Position = vec4(aPos, 1.0);
+ *                          TexCoord = vec2(aPos.x/2.0+0.5, 0.5-aPos.y/2.0);
+ *                      }
+ *   use fnction as :
+ *   setChildshader(std::vector<QString> parts{"path_to/vshader_head.glsl","path_to/vshader_uniforms.glsl","path_to/vshader_main.glsl"})
+*/
+
+QString _Shader::shader_parser(QString shader_file,glm::ivec3 workgroup_size)
 {
-    QByteArray source_utf = compShader.toLocal8Bit(); // get shader source from qrc file
-    const char *shader_src = source_utf.data(); //convert to const char*
+    //for dealing with #include statements and dynamic workgroup sizes
+    QStringList included_files;
 
-    auto computeShader = glCreateShader(GL_COMPUTE_SHADER);
-    glShaderSource(computeShader, 1, &shader_src, nullptr);
-    glCompileShader(computeShader);
+    QString shader_src = tools.ReadStringFromQrc(shader_file);
 
-    // Check if there were any issues compiling the shader.
-    int rvalue;
-    glGetShaderiv(computeShader, GL_COMPILE_STATUS, &rvalue);
+    int pos = shader_file.lastIndexOf(QChar('/'));
+    QString shader_folder = shader_file.left(pos) + "/";
 
-    if (!rvalue)
-    {
-            glGetShaderInfoLog(computeShader, 512, nullptr, infoLog);
-           qDebug() << "Error: Compiler log:\n%s\n" << infoLog ;
+    while (true) {
+        pos = shader_src.indexOf("#include");
+        if(pos != -1){
+            QString src = shader_src.left(pos);
+            //file_name_should be less than 30 characters
+            QString include_line = shader_src.mid(pos+9,40);
+
+            int f_pos = include_line.indexOf(".glsl");
+            if(f_pos == -1) f_pos = include_line.indexOf(' ');
+            else f_pos+=5;
+            if(f_pos == -1) f_pos = include_line.indexOf('\n');
+            QString include_file = shader_folder + include_line.left(f_pos);
+            src = src + tools.ReadStringFromQrc(include_file);
+            src = src + shader_src.right(shader_src.length()-(pos+9+f_pos));
+            shader_src = src;
+        }
+        else break;
     }
 
-    // Bind the compute program so it can read the radius uniform location.
-    glUseProgram(computeShader);
+    shader_src.replace("#local_size_define",QString("layout (local_size_x =%1, local_size_y = %2, local_size_z = %3) in;").arg(workgroup_size.x).arg(workgroup_size.y).arg(workgroup_size.z));
 
-    // Retrieve the radius uniform location
-   GLuint iLocRadius = glGetUniformLocation(computeShader, "radius");
-    // See the compute shader: “layout(std140, binding = 0) buffer destBuffer”
-    GLuint gIndexBufferBinding = 0;
-
-   // Bind the compute program.
-   glUseProgram(computeShader);
-
-   // Set the radius uniform.
-   glUniform1f(iLocRadius, (float)2.0);
-
-   // Bind the VBO to the SSBO, that is filled in the compute shader.
-   // gIndexBufferBinding is equal to 0. This is the same as the compute shader binding.
-   GLuint gVBO;
-   glGenBuffers( 1, &gVBO);
-   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, gIndexBufferBinding,gVBO);
-
-   // Submit a job for the compute shader execution.
-   // GROUP_SIZE = 64
-   // NUM_VERTS = 256
-   // As the result the function is called with the following parameters:
-   // glDispatchCompute(4, 1, 1)
-   glDispatchCompute(4, 1, 1);
-
-   // Unbind the SSBO buffer.
-   // gIndexBufferBinding is equal to 0. This is the same as the compute shader binding.
-   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, gIndexBufferBinding, 0);
-
-   // Call this function before you submit a draw call,
-   // that uses a dependency buffer, to the GPU
-   glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
-
-   // Bind the VBO
-   glBindBuffer( GL_ARRAY_BUFFER, gVBO );
-
-//   // Bind the vertex and fragment rendering shaders
-//   glUseProgram(gProgram);
-//   glEnableVertexAttribArray(iLocPosition);
-//   glEnableVertexAttribArray(iLocFillColor);
-
-//    setUpParticles();
+    return shader_src;
 }
 /*
-* Function: getUniformLocation(char* nameOfUniform)
-* returns a uint representing the loaction index of
-* the uniform in the shader takes the name of the uniform
-* as the parameter
-* Created: 18_02_2019
-*/
-GLint _Shader::getUniformLocation(const char* nameOfUniform)
+ * Function: compile_shader(QString src, unsigned int typ)
+ * compiles given shader source src and type eg. GL_VERTEX_SHADER
+ * returns ID of shader
+ * Created: 26_02_2019
+ */
+unsigned int _Shader::compileShader(QString src, unsigned int typ)
 {
-    return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
+    unsigned int shader;
+    QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
+    const char *shader_src = source_utf.data(); //convert to const char*
+
+    //shader
+    shader = glCreateShader(typ);
+    glShaderSource(shader, 1, &shader_src, nullptr);
+    glCompileShader(shader);
+
+    //check for compile success
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(shader, 512, NULL, infoLog);
+        qDebug() << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << src ;
+
+        //QMetaObject::invokeMethod(MainWindow, "msgBox", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int)) ));
+    }
+    return shader;
 }
 /*
  *
@@ -205,9 +221,20 @@ void _Shader::setChildShader(QString s, unsigned int typ)
     unsigned int shader = compileShader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-/*
- *
+
+/* Function : setChildShader(QString s, unsigned int typ)
+ * vertex , fragment , geometry etc are child shaders of shader program object
+ * this function addds these shaders to the shader program objects
+ * takes path to shader file and typ of shader ie. GL_VERTEX_SHADER
 */
+void _Shader::setChildShader(QString s, unsigned int typ, glm::ivec3 workgroup_size)
+{
+    //solve shader dependancies and create final shader source
+    QString shader_src = shader_parser(s,workgroup_size);
+    unsigned int shader = compileShader(shader_src,typ);
+    child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
+}
+
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;
@@ -231,34 +258,88 @@ void _Shader::useShaderProgram()
 {
     glUseProgram(this->shaderProgram);
 }
+
 /*
- * Function: compileShader()
- * everyloop for multiple
- * Created: 26_02_2019
- */
-unsigned int _Shader::compileShader(QString src, unsigned int typ)
+* Function: getUniformLocation(char* nameOfUniform)
+* returns a uint representing the loaction index of
+* the uniform in the shader takes the name of the uniform
+* as the parameter
+* Created: 18_02_2019
+*/
+uint _Shader::getUniformLocation(const char* nameOfUniform)
 {
-    unsigned int shader;
-    QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
-    const char *shader_src = source_utf.data(); //convert to const char*
-
-    //shader
-    shader = glCreateShader(typ);
-    glShaderSource(shader, 1, &shader_src, nullptr);
-    glCompileShader(shader);
-
-    //check for compile success
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
-    }
-    return shader;
+    return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
 }
 
 //Proptotype implemntation , only for testing
 //Not in use at the moment.
+
+//void _Shader::setComputeShader(QString compShader)
+//{
+//    QByteArray source_utf = compShader.toLocal8Bit(); // get shader source from qrc file
+//    const char *shader_src = source_utf.data(); //convert to const char*
+
+//    auto computeShader = glCreateShader(GL_COMPUTE_SHADER);
+//    glShaderSource(computeShader, 1, &shader_src, nullptr);
+//    glCompileShader(computeShader);
+
+//    // Check if there were any issues compiling the shader.
+//    int rvalue;
+//    glGetShaderiv(computeShader, GL_COMPILE_STATUS, &rvalue);
+
+//    if (!rvalue)
+//    {
+//            glGetShaderInfoLog(computeShader, 512, nullptr, infoLog);
+//           qDebug() << "Error: Compiler log:\n%s\n" << infoLog ;
+//    }
+
+//    // Bind the compute program so it can read the radius uniform location.
+//    glUseProgram(computeShader);
+
+//    // Retrieve the radius uniform location
+//   GLuint iLocRadius = glGetUniformLocation(computeShader, "radius");
+//    // See the compute shader: “layout(std140, binding = 0) buffer destBuffer”
+//   GLuint gIndexBufferBinding = 0;
+
+//   // Bind the compute program.
+//   glUseProgram(computeShader);
+
+//   // Set the radius uniform.
+//   glUniform1f(iLocRadius, (float)2.0);
+
+//   // Bind the VBO to the SSBO, that is filled in the compute shader.
+//   // gIndexBufferBinding is equal to 0. This is the same as the compute shader binding.
+//   GLuint gVBO;
+//   glGenBuffers( 1, &gVBO);
+//   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, gIndexBufferBinding,gVBO);
+
+//   // Submit a job for the compute shader execution.
+//   // GROUP_SIZE = 64
+//   // NUM_VERTS = 256
+//   // As the result the function is called with the following parameters:
+//   // glDispatchCompute(4, 1, 1)
+//   glDispatchCompute(4, 1, 1);
+
+//   // Unbind the SSBO buffer.
+//   // gIndexBufferBinding is equal to 0. This is the same as the compute shader binding.
+//   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, gIndexBufferBinding, 0);
+
+//   // Call this function before you submit a draw call,
+//   // that uses a dependency buffer, to the GPU
+//   glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
+
+//   // Bind the VBO
+//   glBindBuffer( GL_ARRAY_BUFFER, gVBO );
+
+////   // Bind the vertex and fragment rendering shaders
+////   glUseProgram(gProgram);
+////   glEnableVertexAttribArray(iLocPosition);
+////   glEnableVertexAttribArray(iLocFillColor);
+
+////    setUpParticles();
+//}
+////-----------------------
+
 //void _Shader::setUpParticles()
 //{
 //#define NUM_PARTICLES 1024*1024 // total number of particles to move
@@ -335,3 +416,4 @@ unsigned int _Shader::compileShader(QString src, unsigned int typ)
 //    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 5, velSSbo );
 //    glBindBufferBase( GL_SHADER_STORAGE_BUFFER, 6, colSSbo );
 //}
+

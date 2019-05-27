@@ -54,6 +54,7 @@ public:
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
     void setModelData(QString path);//takes the relative path via a qrc file path
+    //
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
     QString getTexturePath() const;

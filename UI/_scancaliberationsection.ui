@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>_ScanCaliberationSection</class>
+ <widget class="QWidget" name="_ScanCaliberationSection">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>234</width>
+    <height>626</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="_SliderBox" name="line_laser_slider_box">
+     <property name="title">
+      <string>Line Laser</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="_SliderBox" name="gain_slider_box">
+     <property name="title">
+      <string>Gain:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="_SliderBox" name="offset_slider_box">
+     <property name="title">
+      <string>Offset:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextBrowser" name="instruction_display_text_browser">
+     <property name="source">
+      <url>
+       <string>qrc:/Config/Docs/instructions_light_caliberation.htm</string>
+      </url>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>567</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QPushButton" name="scan_button">
+     <property name="text">
+      <string>scan</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="scan_laser_button">
+     <property name="text">
+      <string>scan laser</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="scan_edge_buttons">
+     <property name="text">
+      <string>scan edge</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>_SliderBox</class>
+   <extends>QGroupBox</extends>
+   <header>UI/_sliderbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

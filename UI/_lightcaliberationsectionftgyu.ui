@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LightCaliberationSection</class>
+ <widget class="QWidget" name="LightCaliberationSection">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>246</width>
+    <height>630</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Lens Selection</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_21">
+      <item>
+       <widget class="QLabel" name="lens_number_label">
+        <property name="text">
+         <string>Lens Number : </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="lens_number_dropdown">
+        <item>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="_SliderBox" name="backlight_slider_box">
+     <property name="title">
+      <string>Back Light Control</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_6">
+     <property name="title">
+      <string>Camera Controls:</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="_SliderBox" name="gain_slider_box">
+        <property name="title">
+         <string>Gain:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="_SliderBox" name="offset_slider_box">
+        <property name="title">
+         <string>Offset:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="_SliderBox" name="exposure_slider_box">
+        <property name="title">
+         <string>Exposure:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="histogram_image_label">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextBrowser" name="instruction_display_text_browser">
+     <property name="source">
+      <url>
+       <string>qrc:/Config/Docs/instructions_light_caliberation.htm</string>
+      </url>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QPushButton" name="save_button">
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="auto_calibration_button">
+     <property name="text">
+      <string>Auto Calibration</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>_SliderBox</class>
+   <extends>QGroupBox</extends>
+   <header>UI/_sliderbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -7,6 +7,8 @@
 #include <QOffscreenSurface>
 #include <QOpenGLContext>
 #include <QWidget>
+#include <Compute/_gpu_compute.h>
+#include <Modules/_processing.h>
 
 
 class _Scanner : public QObject , protected QOpenGLExtraFunctions
@@ -14,12 +16,14 @@ class _Scanner : public QObject , protected QOpenGLExtraFunctions
     Q_OBJECT
 public:
     explicit _Scanner(QObject *parent = nullptr);
-    explicit _Scanner(_Machine* global_machine,QObject *parent = nullptr);
+    explicit _Scanner(_Machine* global_machine,_Processing* proc,QObject *parent = nullptr);
 
 public slots:
     void init();
-    void scan_save_images();
-    void scan_generate_model();
+    void scanImages();
+    void scanGenerateModel();
+    void scanGenerateModelEdge();
+
 signals:
     void set_image(char* img,unsigned int w,unsigned int h);
 
@@ -27,13 +31,10 @@ signals:
 public:
     _Machine *machine;
     QOpenGLContext *context = nullptr;
-    QOpenGLExtraFunctions *gl = nullptr;
     QOffscreenSurface *surface = nullptr;
+    _GPU_Compute *gpu_compute = nullptr;
+    _Processing *processing=nullptr;
 
-    unsigned int framebuffer;
-    unsigned int renderbuffer;
-    unsigned int framebuffer_texture;
-    unsigned int framebuffer_Width=1360,framebuffer_Height=1024;
 };
 
 #endif // _SCANNER_H

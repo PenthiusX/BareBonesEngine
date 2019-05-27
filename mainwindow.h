@@ -5,6 +5,8 @@
 #include <IO/_machine.h>
 #include <Modules/_marker.h>
 #include <Modules/_scanner.h>
+#include <Modules/_processing.h>
+#include <QFile>
 
 namespace Ui {
 class MainWindow;
@@ -17,18 +19,29 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+
 public slots:
     void update_camera_image(char* img,unsigned int w,unsigned int h);
+    
+    void openSettingsDialog();
+    void setConfigSettings();
 
+    void msgBox(QString windowname, QString info);
+    void showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight);
+    void rotateGeneratedModel();
 private:
     Ui::MainWindow *ui;
 
     QThread *hardwareInteractionThread;//all hardware IO operations done inside this thread
 
     //all the following objects should be moved and work in the hardwareInteractionThread
-    _Machine *machine;
-    _Marker *marker;
-    _Scanner *scanner;
-};
+    _Machine *machine=nullptr;
+    _Marker *marker=nullptr;
+    _Scanner *scanner=nullptr;
+    _Processing *processing=nullptr;
 
+
+    _ConfigControlEntity *application_settings=nullptr;
+};
 #endif // MAINWINDOW_H

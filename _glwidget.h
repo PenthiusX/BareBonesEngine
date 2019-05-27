@@ -21,6 +21,19 @@ public:
     _GLWidget();
     explicit _GLWidget(QWidget *parent = 0);
     ~_GLWidget();
+
+bool isInitialised();
+void setXRotation(int angle);
+void setYRotation(int angle);
+void setZRotation(int angle);
+void rotateGeneratedmodel(float angle, glm::vec3 axis, bool with_stage);
+
+public slots:
+void update_background_image(char *img, unsigned int w, unsigned int h);
+void showGeneratedModel(char *img, unsigned int w, unsigned int h);
+void rotateGeneratedModel(float angle);
+
+
 protected:
     void initializeGL() Q_DECL_OVERRIDE;
     void resizeGL(int w, int h)Q_DECL_OVERRIDE;
@@ -32,9 +45,14 @@ protected:
     virtual void wheelEvent(QWheelEvent *e) override;
     virtual void  keyPressEvent(QKeyEvent *event) override;
 
+    //sau----
+QPoint m_lastPos;
+int m_xRot;
+int m_yRot;
+int m_zRot;
 private:
     void addRandomSceneEntitestoScene();
-
+//------------------------
     //Variables
     unsigned int VBO;
     unsigned int VAO;
@@ -46,6 +64,7 @@ private:
     _Scene *scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
     _SceneEntity s, s1,s2,mpoint;//custom Objects
     _SceneEntity background_quad,pivot;//default sceneobjects
+    _SceneEntity generated_model;//sau
     _AssetLoader assetLoader;
     _Camera cam;
 
@@ -56,6 +75,11 @@ private:
 	bool isCamFocus;
     QVector2D mousePressPositionL,mousePressPositionR;
     QVector2D mousePositionL,mousePositionR;
+
+//Resolution variables
+int width;
+int height;
+bool initialised=false;
 };
 
 #endif // _GLWIDGET_H

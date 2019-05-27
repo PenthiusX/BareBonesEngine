@@ -10,5 +10,45 @@
         <file>shaders/vshader_background.glsl</file>
         <file>shaders/compute.glsl</file>
 		<file>shaders/geometry.glsl</file>
+        <file>shaders/compute_basic_functions.glsl</file>
+        <file>shaders/compute_canny.glsl</file>
+        <file>shaders/compute_guassian_blur_3_3.glsl</file>
+        <file>shaders/compute_guassian_blur_5_5.glsl</file>
+        <file>shaders/compute_sobel_edge_mag.glsl</file>
+        <file>shaders/compute_sobel_edge_mag_theta.glsl</file>
+        <file>shaders/compute_threshold.glsl</file>
+        <file>shaders/compute_copy_8_to_32.glsl</file>
+        <file>shaders/compute_copy_32_to_8.glsl</file>
+        <file>shaders/compute_row_operations.glsl</file>
+        <file>shaders/compute_row_wise_max.glsl</file>
+        <file>shaders/compute_row_wise_sum.glsl</file>
+        <file>shaders/compute_row_wise_arg_max.glsl</file>
+        <file>shaders/compute_mark_column_index.glsl</file>
+        <file>shaders/compute_clear_8_ui_texture.glsl</file>
+        <file>shaders/compute_row_wise_mean.glsl</file>
+        <file>shaders/compute_divide_mark_column_index.glsl</file>
+        <file>shaders/compute_copy_red_to_rgba.glsl</file>
+        <file>shaders/compute_gradient_to_descrete_rgba_color.glsl</file>
+        <file>shaders/compute_mask_image_rgba_r.glsl</file>
+        <file>shaders/compute_create_region_image_mask.glsl</file>
+        <file>shaders/compute_mix_with_mask_rgba_r_rgba.glsl</file>
+        <file>shaders/compute_saturate_color.glsl</file>
+        <file>shaders/compute_gradient_to_descrete_rgba_color_value.glsl</file>
+        <file>shaders/compute_mask_image_r_r.glsl</file>
+        <file>shaders/compute_mark_hough_wave.glsl</file>
+        <file>shaders/compute_clear_32_ui_texture.glsl</file>
+        <file>shaders/compute_devide_32_to_8.glsl</file>
+        <file>shaders/compute_uint_invert.glsl</file>
+        <file>shaders/compute_threshold_inv.glsl</file>
+        <file>shaders/compute_row_wise_left_edge.glsl</file>
+        <file>shaders/compute_row_wise_right_edge.glsl</file>
+        <file>shaders/compute_copy_column_from_to.glsl</file>
+        <file>shaders/compute_register_wrap_mesh.glsl</file>
+        <file>shaders/generated_model_fragment.glsl</file>
+        <file>shaders/generated_model_vertex.glsl</file>
+        <file>shaders/compute_subtract_value_from_column.glsl</file>
+        <file>shaders/compute_retrive_lower_2_bytes.glsl</file>
+        <file>shaders/generated_model_vertex_edge.glsl</file>
+        <file>shaders/compute_mask_image_r32i_r.glsl</file>
     </qresource>
 </RCC>

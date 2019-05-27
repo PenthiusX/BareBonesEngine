@@ -1,7 +1,8 @@
 #include <iostream>
 #include "_glwidget.h"
 #include "_tools.h"
-
+#include <QDebug>
+#define PI 3.1415926535897932384626433832795
 
 /*
  * The _GLWidget Class:
@@ -37,9 +38,6 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-    //Initailise the scene in InitaliseGl
-    //needs to be run after the openGl contxt is initialised
-    scene = new _Scene();
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
@@ -113,16 +111,104 @@ void _GLWidget::initializeGL()
     s2.setScale(1.0f);
     s2.setModelData(vertsV,indiceV);
     //-----------------
-    scene->addCamera(cam);//camera essential
-    scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-    scene->addSceneObject(pivot);//pivot helper essential
-    scene->addSceneObject(mpoint);//mousePoint helper
-    //
+    //Initailise the scene in InitaliseGl
+    //needs to be run after the openGl contxt is initialised
+    //    scene = new _Scene();
+    //    scene->addCamera(cam);//camera essential
+    //    scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
+    //    scene->addSceneObject(pivot);//pivot helper essential
+    //    scene->addSceneObject(mpoint);//mousePoint helper
+    //    //
+    //    scene->addSceneObject(s);
+    //    scene->addSceneObject(s1);
+    //    scene->addSceneObject(s2);
+    //-----------------
+    //    addRandomSceneEntitestoScene();
+
+    //------------------------------------------------------------------------
+    ///////// temporary Sau
+    ///
+
+    generated_model.setId(4);//keep the id it will be required while updating texture
+    generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+
+    //background quad is not affected by mvp hence this functions will not work :-
+    generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
+    generated_model.setRotation(QVector3D(0.0, 0.0, 0.0));
+
+    generated_model.setScale(0.524);
+
+    std::vector<float> vertsG;
+    std::vector<unsigned int> indiceG;
+
+    glm::ivec2 resolution = glm::ivec2(200,576);//wrap texture size
+    unsigned int index[4] = {0,0,0,0};
+
+    for (unsigned int h = 0; h < resolution.y; h++) {
+        for (unsigned int w = 0; w < resolution.x; w++) {
+
+            glm::vec2 pixel_cord = glm::vec2(w,h);
+
+            glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
+
+            //texture_positions
+            vertsG.push_back(texture_cord.x);//x = s
+            vertsG.push_back(texture_cord.y);//y = t
+            vertsG.push_back(0.0);//z = 0.0
+
+        }
+    }
+
+    glm::ivec2 step_size = glm::ivec2(2,8);
+
+    for (unsigned int h = 0; h < resolution.y; h+=step_size.y) {
+        for (unsigned int w = 0; w < resolution.x; w+=step_size.x) {
+
+            glm::vec2 pixel_cord = glm::vec2(w,h);
+
+            //indexes of neibhouring vertexes
+            index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,0),resolution);
+            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
+            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
+
+            //            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
+            //            {
+
+
+            if((pixel_cord.y < resolution.y))
+            {
+                //indexs of fisrt triangle in quad
+                indiceG.push_back(index[0]);
+                indiceG.push_back(index[1]);
+                indiceG.push_back(index[2]);
+
+                //indexs of second triangle in quad
+                indiceG.push_back(index[0]);
+                indiceG.push_back(index[2]);
+                indiceG.push_back(index[3]);
+            }
+        }
+    }
+
+    //generated_model.setTexturePath(":/textures/cylinder_wrap.png");
+    //generated_model.setTexturePath(":textures/eye.png");
+
+    generated_model.setModelData(vertsG,indiceG);
+
+    ///////// /temporary
+
+    scene = new _Scene();
+    scene->addCamera(cam);
+    scene->addSceneObject(background_quad);
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
     scene->addSceneObject(s2);
-    //-----------------
-//    addRandomSceneEntitestoScene();
+
+    scene->addSceneObject(generated_model);
+    initialised=true;
+    rotateGeneratedModel(PI/200);
+    //---------------------------------------------------------------------------------
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -177,6 +263,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     {//get mouse position only on left button click
         mousePressPositionR = QVector2D(e->localPos());
     }
+    m_lastPos = e->pos();
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
@@ -222,6 +309,19 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
         mousePositionR = QVector2D(e->localPos());
         scene->setMousePositionInScene(this->mousePositionR,Qt::RightButton);//sets the mouse position in the scene for use
     }
+
+    //-----------Sau
+    int dx = e->x() - m_lastPos.x();
+    int dy = e->y() - m_lastPos.y();
+
+    if (e->buttons() & Qt::LeftButton) {
+        setXRotation(m_xRot + dy);
+        setYRotation(m_yRot + dx);
+    } else if (e->buttons() & Qt::RightButton) {
+        setXRotation(m_xRot +  dy);
+        setZRotation(m_zRot +  dx);
+    }
+    m_lastPos = e->pos();
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
@@ -344,11 +444,15 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         this->isCamFocus = !isCamFocus;
     }
 
-     if (event->text() == "p" || event->text() == "P"){
+    if (event->text() == "p" || event->text() == "P"){
         addRandomSceneEntitestoScene();
-     }
+    }
 }
-
+/*
+ * Randomly generate scene objects and add to scene
+ * currenty is buggy and not proper
+ * still in development
+ */
 void _GLWidget::addRandomSceneEntitestoScene()
 {
     for(int i = 0 ; i < 2 ; i++)
@@ -365,3 +469,148 @@ void _GLWidget::addRandomSceneEntitestoScene()
     }
 }
 
+//-----------------------------------------Sau
+/* Function : update_background_image(char *img, unsigned int w, unsigned int h)
+ * upadtes the texture when new camera image is grabbed or saved image is to be displayed
+ * to upadte the texture image 8 bit grayscale image is required hence do not set the texure
+ * while creating scenentity else color format mismatch will occur between GL_RGBA and GL_RED
+ * since default texture format is GL_RGBA
+ *
+ * created: 11_04_2019
+ * Contributor : Saurabh
+*/
+void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h)
+{
+    static _Renderer *render_object = nullptr;
+    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+    {
+        render_object = scene->getSceneObjects()[i];
+
+        if (render_object->getSceneEntity().getId() == background_quad.getId())
+        {
+            //make context active
+            makeCurrent();
+
+            if(render_object->isTexturePresent()){
+                //updating predefined texture
+                render_object->setTexture(img,w,h);
+            }
+            else {
+                //setting up new 8 bit grayscale GL_RGBA texture for first time
+                render_object->setupTexture(img,w,h,GL_RGBA);
+            }
+
+            doneCurrent();
+        }
+    }
+}
+
+void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
+{
+    static _Renderer *render_object = nullptr;
+    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+    {
+        render_object = scene->getSceneObjects()[i];
+
+        if (render_object->getSceneEntity().getId() == generated_model.getId())
+        {
+            //make context active
+            makeCurrent();
+
+            if(render_object->isTexturePresent()){
+                //updating predefined texture
+                render_object->setTexture(img,w,h);
+            }
+            else {
+                //setting up new 8 bit grayscale GL_RGBA texture for first time
+                render_object->setupTexture(img,w,h,GL_RGBA);
+            }
+
+            doneCurrent();
+        }
+    }
+}
+
+
+void _GLWidget::rotateGeneratedModel(float angle)
+{
+    rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
+}
+void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
+{
+    static _Renderer *render_object = nullptr;
+
+    if(initialised)
+    {
+        for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+        {
+            render_object = scene->getSceneObjects()[i];
+
+            if (render_object->getSceneEntity().getId() == generated_model.getId())
+            {
+                if(with_stage)
+                {
+
+//                    static glm::mat4x4 rot_mat = render_object->getModelMatrix();
+//                    glm::mat4x4 rot_mat_local = glm::rotate(rot_mat, (-angle), axis);
+//                    render_object->setModelMatrix(rot_mat_local);
+//                    rot_mat = rot_mat_local;
+
+                }
+                else
+                {
+//                    glm::mat4x4 rot_mat_local = glm::rotate(render_object->getModelMatrix(), (-angle), axis);
+//                    render_object->setModelMatrix(rot_mat_local);
+                }
+
+            }
+        }
+    }
+}
+
+bool _GLWidget::isInitialised()
+{
+    return initialised;
+}
+
+static void qNormalizeAngle(int &angle)
+{
+    while (angle < 0)
+        angle += 360 * 16;
+    while (angle > 360 * 16)
+        angle -= 360 * 16;
+}
+
+void _GLWidget::setXRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != m_xRot) {
+        m_xRot = angle;
+        //emit xRotationChanged(angle);
+        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(1.0,0.0,0.0),false);
+        update();
+    }
+}
+
+void _GLWidget::setYRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != m_yRot) {
+        m_yRot = angle;
+        //emit yRotationChanged(angle);
+        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(0.0,1.0,0.0),false);
+        update();
+    }
+}
+
+void _GLWidget::setZRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != m_zRot) {
+        m_zRot = angle;
+        //emit zRotationChanged(angle);
+        rotateGeneratedmodel(float(angle)/18000.0,glm::vec3(0.0,0.0,1.0),false);
+        update();
+    }
+}
+//-------------------------------------------------------------------

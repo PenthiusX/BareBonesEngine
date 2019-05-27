@@ -13,11 +13,13 @@ public:
     _Texture(QImage& img); //texture from QImage
     _Texture(QString qrcPathtoFile); //texture from image file path
     _Texture(char *img,unsigned int w, unsigned int h,unsigned int colorFormat = GL_RGBA); //texture from char pointer array
+    ~_Texture();
 
     //update texture image
     void setImage(QString qrcPathtoFile); //from image file path
     void setImage(char* img); //from char pointer array and resolution of last image
-    void setImage(char* img,unsigned int iwidth,unsigned int iheight);//from char pointer array with updated given resolution
+    void setImage(char* img,unsigned int iwidth,unsigned int iheight);
+    void setImage(char* img,unsigned int iwidth,unsigned int iheight,GLenum internal_format,GLenum format);//from char pointer array with updated given resolution
     void setImage(QImage &img);//from QImage
 
     //setShader used if multiple texture bindings require differant slots
@@ -36,9 +38,14 @@ public:
 
     //initialized texture loads texture image
     void load(GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
+    void load(GLenum internal_format, GLenum format, GLenum datatype); //if internal and image format is differant
 
     unsigned int getWidth() const;
     unsigned int getHeight() const;
+
+    unsigned int getColorformat() const;
+
+    unsigned int getDataType() const;
 
 protected:
     std::map<unsigned int,unsigned int> parameters;
@@ -47,6 +54,7 @@ protected:
     unsigned int m_ID = 0;
     unsigned int shaderProgram;
     unsigned int color_format = GL_RGBA;
+    unsigned int data_type = GL_UNSIGNED_BYTE;
     unsigned int slot;
     unsigned int slot_uniform;
     unsigned int width;

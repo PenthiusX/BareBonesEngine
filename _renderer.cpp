@@ -126,12 +126,11 @@ void _Renderer::setuniformLocations()
  * creates new texture and adds into list(vector) of textures
  * set a default 8bit single color texture of size 1360 x 1024
  * Created: 2_3_2019
- */
-void _Renderer::setupTexture()
+*/
+void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GLenum format)
 {
-    char* img = new char[1360*1024];
-    _Texture texture(img,1360,1024);
-    texture.load(GL_RED,GL_UNSIGNED_BYTE);
+    _Texture texture(img,width,height);
+    texture.load(format,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
     qDebug() << "setupTexture() on entity" << this->sceneEntity.getTag();
 }
@@ -163,6 +162,19 @@ void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int ihei
         textures[0].setImage(texBitmap,iwidth,iheight);
     qDebug() << "setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight) on entity" << this->sceneEntity.getTag();
 }
+
+bool _Renderer::isTexturePresent()
+{
+    return !textures.empty();
+}
+
+/*
+ * Function: setTexture(QString pathtoTexture)
+ * Created: 28_3_2019
+ * Contributor : saurabh
+ * updates the first texture image from a texfile
+ * current context should be active while calling this function
+ */
 void _Renderer::setTexture(QString pathtoTexture)
 {
     if(!textures.empty())
@@ -188,7 +200,6 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
     glm::quat quat = glm::quat(EulerAngles);
     rotationMatrix = glm::mat4_cast(quat);
     translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
-
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     qDebug() << "setModelMatrix() on entity" << this->sceneEntity.getTag();
 }

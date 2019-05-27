@@ -7,8 +7,6 @@
  * The HardwareSerial class
  * To create an serial port interface for computer-machine communication
  *
- *    ** Yet to create non blocking preemptive object for threaded operation **
- *
  * Extends the QObject class for slots connections to work
  * Created: 21_02_2019
  * Author:Saurabh
@@ -42,6 +40,19 @@ _HardwareSerial::_HardwareSerial(QString port_name)
     settings.timeout = 1000;
 }
 
+_HardwareSerial::_HardwareSerial(QString port_name,_ConfigControlEntity& serial_config)
+{
+    settings.name = port_name;
+    settings.baudRate = (int)serial_config.getFloatEntity("BAUDRATE");
+    settings.dataBits = (QSerialPort::DataBits)(int)serial_config.getFloatEntity("DATABITS");
+    settings.parity = (QSerialPort::Parity)(int)serial_config.getFloatEntity("PARITY");
+    settings.stopBits = (QSerialPort::StopBits)(int)serial_config.getFloatEntity("STOP_BITS");
+    settings.flowControl = QSerialPort::NoFlowControl;
+    settings.readBufferSize = (qint64)serial_config.getFloatEntity("INPUT_BUFFER_SIZE");
+     settings.timeout = (int)serial_config.getFloatEntity("TIMEOUT");
+
+}
+
 /* Destructor
  * closes serial port when object is deleted
  * Created: 21_02_2019
@@ -67,6 +78,7 @@ void _HardwareSerial::openSerialPort()
     m_serial->setParity(settings.parity);
     m_serial->setStopBits(settings.stopBits);
     m_serial->setFlowControl(settings.flowControl);
+    m_serial->setReadBufferSize(settings.readBufferSize);
 
     //check if serial opened successfully
     if (m_serial->open(QIODevice::ReadWrite)) {
@@ -115,7 +127,7 @@ void _HardwareSerial::writeData(const QString data)
         qDebug() << "written" << d << QThread::currentThread();
     }
     else {
-         qDebug() << "written virtually" << d << QThread::currentThread();
+         //qDebug() << "written virtually" << d << QThread::currentThread();
     }
 
 
@@ -131,14 +143,14 @@ QString _HardwareSerial::writeDataAndWait(const QString data)
     QByteArray d = data.toLocal8Bit();
     d.append(QByteArray::fromHex("0A"));
     m_serial->write(d);
-    qDebug() << "written" << d << QThread::currentThread();
+    //qDebug() << "written" << d << QThread::currentThread();
     if(m_serial->waitForReadyRead(settings.timeout)){
         QByteArray responseData = m_serial->readAll();
         while (m_serial->waitForReadyRead(10))
             responseData += m_serial->readAll();
 
         const QString response = QString::fromUtf8(responseData);
-        qDebug() << response;
+        //qDebug() << response;
         return response;
     }
     else {
@@ -148,7 +160,7 @@ QString _HardwareSerial::writeDataAndWait(const QString data)
     }
     }
     else {
-        qDebug() << "written virtually" << data << QThread::currentThread();
+        //qDebug() << "written virtually" << data << QThread::currentThread();
         return "=\n";
     }
 }
