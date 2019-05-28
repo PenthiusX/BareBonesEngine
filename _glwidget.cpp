@@ -29,6 +29,17 @@ _GLWidget::~_GLWidget()
 {
     delete scene;
 }
+
+/*
+.___       .__  __  .__       .__  .__                _________                __                   __
+|   | ____ |__|/  |_|__|____  |  | |__| ______ ____   \_   ___ \  ____   _____/  |_  ____ ___  ____/  |_
+|   |/    \|  \   __\  \__  \ |  | |  |/  ___// __ \  /    \  \/ /  _ \ /    \   __\/ __ \\  \/  /\   __\
+|   |   |  \  ||  | |  |/ __ \|  |_|  |\___ \\  ___/  \     \___(  <_> )   |  \  | \  ___/ >    <  |  |
+|___|___|  /__||__| |__(____  /____/__/____  >\___  >  \______  /\____/|___|  /__|  \___  >__/\_ \ |__|
+         \/                 \/             \/     \/          \/            \/          \/      \/
+*/
+
+
 /*
 * Function: initializeGL() overrides the
 * same function in the OpopenglFunctions class
@@ -124,12 +135,9 @@ void _GLWidget::initializeGL()
     //------------------------------------
     //    addRandomSceneEntitestoScene();
     //------------------------------------
-    ///////// temporary Sau
-    ///
-    generated_model.setId(666);//keep the id it will be required while updating texture
-    generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
-    //background quad is not affected by mvp hence this functions will not work :-
+    generated_model.setId(666);//keep the id it will be required while updating texture
+    generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");
     generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
     generated_model.setRotation(QVector3D(0.0, 0.0, 0.0));
     generated_model.setIsTransfomationLocal(false);
@@ -167,9 +175,6 @@ void _GLWidget::initializeGL()
             index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
             index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
 
-            //            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
-            //            {
-
             if((pixel_cord.y < resolution.y))
             {
                 //indexs of fisrt triangle in quad
@@ -185,11 +190,9 @@ void _GLWidget::initializeGL()
         }
     }
 
-    //generated_model.setTexturePath(":/textures/cylinder_wrap.png");
-    //generated_model.setTexturePath(":textures/eye.png");
-
     generated_model.setModelData(vertsG,indiceG);
     scene->addSceneObject(generated_model);
+
     initialised=true;
 }
 /*
@@ -203,6 +206,15 @@ void _GLWidget::resizeGL(int w, int h)
 {
     scene->onResize(w, h);
 }
+
+/*
+    ________
+    \______ \____________ __  _  __
+     |    |  \_  __ \__  \\ \/ \/ /
+     |    `   \  | \// __ \\     /
+    /_______  /__|  (____  /\/\_/
+            \/           \/
+ */
 /*
  * Function: paintGl()
  * ovveriding thes function in OpopenglFunctions
@@ -225,9 +237,18 @@ void _GLWidget::paintGL()//the renderloop
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     this->update();//is to send QtOpenglGl a flag to update openglFrames
-    _Tools::printFrameRate();//prints the frame rate in the application output
+    _Tools::printFrameRate(1);//prints the frame rate in the application output
 }
 
+/*
+ *_________              __                .__  .__
+\_   ___ \  ____   _____/  |________  ____ |  | |  |   ______
+/    \  \/ /  _ \ /    \   __\_  __ \/  _ \|  | |  |  /  ___/
+\     \___(  <_> )   |  \  |  |  | \(  <_> )  |_|  |__\___ \
+ \______  /\____/|___|  /__|  |__|   \____/|____/____/____  >
+        \/            \/                                  \/
+ *
+*/
 /*
 * Function: mousePressEvent(QMouseEvent *e)
 * this is a overriden function from the QWidget parent
@@ -239,7 +260,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-        scene->getSceneObjects()[2]->setPosition(QVector3D( scene->pointerObject.x,scene->pointerObject.y,scene->pointerObject.z));
+        scene->getSceneObjects()[2]->setPosition(QVector3D(scene->pointerObject.x,scene->pointerObject.y,scene->pointerObject.z));
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
@@ -417,6 +438,17 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         addRandomSceneEntitestoScene();
     }
 }
+
+
+/*
+__________                __          __                          .___               .__                                __          __  .__
+\______   \_______  _____/  |_  _____/  |_ ___.__.______   ____   |   | _____ ______ |  |   ____   _____   ____   _____/  |______ _/  |_|__| ____   ____   ______
+ |     ___/\_  __ \/  _ \   __\/  _ \   __<   |  |\____ \_/ __ \  |   |/     \\____ \|  | _/ __ \ /     \_/ __ \ /    \   __\__  \\   __\  |/  _ \ /    \ /  ___/
+ |    |     |  | \(  <_> )  | (  <_> )  |  \___  ||  |_> >  ___/  |   |  Y Y  \  |_> >  |_\  ___/|  Y Y  \  ___/|   |  \  |  / __ \|  | |  (  <_> )   |  \\___ \
+ |____|     |__|   \____/|__|  \____/|__|  / ____||   __/ \___  > |___|__|_|  /   __/|____/\___  >__|_|  /\___  >___|  /__| (____  /__| |__|\____/|___|  /____  >
+                                           \/     |__|        \/            \/|__|             \/      \/     \/     \/          \/                    \/     \/
+*/
+
 /*
  * Randomly generate scene objects and add to scene
  * currenty is buggy and not proper
@@ -438,7 +470,6 @@ void _GLWidget::addRandomSceneEntitestoScene()
     }
 }
 
-//-----------------------------------------Sau
 /* Function : update_background_image(char *img, unsigned int w, unsigned int h)
  * upadtes the texture when new camera image is grabbed or saved image is to be displayed
  * to upadte the texture image 8 bit grayscale image is required hence do not set the texure
@@ -457,23 +488,19 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
 
         if (render_object->getSceneEntity().getId() == background_quad.getId())
         {
-            //make context active
-            makeCurrent();
-
             if(render_object->isTexturePresent()){
                 //updating predefined texture
                 render_object->setTexture(img,w,h);
             }
-            else {
+            else
+            {
                 //setting up new 8 bit grayscale GL_RGBA texture for first time
                 render_object->setupTexture(img,w,h,GL_RGBA);
             }
-
             doneCurrent();
         }
     }
 }
-
 void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
 {
     static _Renderer *render_object = nullptr;
@@ -499,8 +526,6 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
         }
     }
 }
-
-
 void _GLWidget::rotateGeneratedModel(float angle)
 {
     rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
@@ -519,25 +544,13 @@ void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
             {
                 if(with_stage)
                 {
-
-//                    static glm::mat4x4 rot_mat = render_object->getModelMatrix();
-//                    glm::mat4x4 rot_mat_local = glm::rotate(rot_mat, (-angle), axis);
-//                    render_object->setModelMatrix(rot_mat_local);
-//                    rot_mat = rot_mat_local;
-
+                    //rotate generatedModel with stage
                 }
                 else
                 {
-//                    glm::mat4x4 rot_mat_local = glm::rotate(render_object->getModelMatrix(), (-angle), axis);
-//                    render_object->setModelMatrix(rot_mat_local);
+                   //rotate generatedModel
                 }
-
             }
         }
     }
-}
-
-bool _GLWidget::isInitialised()
-{
-    return initialised;
 }

@@ -91,7 +91,6 @@ float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 center, float 
     return (-b - sqrt((b*b) - 4.0*a*c))/(2.0*a);
 }
 
-
 /*
  * Returns the ray essentials
  *

@@ -19,10 +19,6 @@
  * throughout the project.
  * Created: 26_02_2019
  * Author: Saurabh , Aditya
- *
- * (Note!: Phsyis and math implementations could be move out to a seperate class depending how this scales.
- * This can be used as a test base to test out structs and datastructure which can then be later implemented
- * as a sperate class).
 */
 
 class _Tools
@@ -38,7 +34,8 @@ public:
     static QJsonObject ReadJsonFromQrc(QString Filename);
     static bool WriteJsonToFile(QString Filename,QJsonObject jsonObject);
     //Debug use
-    static void printFrameRate();
+    static void printFrameRate(int intervalValue);
+    static void printAtFixedIntevals(int secs,QString s);
 
     static std::vector<int> GenerateFactors(int n);
     static glm::vec3 NormalizeSum(glm::vec3 in);
@@ -51,9 +48,6 @@ public:
     static int indexFromPixelCordinates(glm::vec2 pixel_cord, glm::ivec2 resolution);
     static glm::ivec3 vertIndexesFromElementIndex(int i);
     static glm::vec3 vertsFromIndex(glm::ivec3 indexes);
-
-private:
-
 
 };
 

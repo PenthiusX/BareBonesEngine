@@ -10,6 +10,14 @@
 #include <iostream>
 #include <fstream>
 
+/*
+ * Class: _Tools
+ * This class holds funtions that have no specific
+ * class utility but are standalone tools in maths and physics for use
+ * throughout the project.
+ * Created: 26_02_2019
+ * Author: Saurabh , Aditya
+*/
 
 using namespace std;
 //Commonly used Functions
@@ -73,16 +81,28 @@ void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
 }
 
 
-void _Tools::printFrameRate()
+void _Tools::printFrameRate(int intervalValue)
 {
     frameCounter++;
     int t = timer.elapsed()/1000;
-    int interval = 1;
+    int interval = intervalValue;
 //    qDebug() << t;
     if(t > interval)
     {
         qInfo() <<"Framerate:"<< frameCounter / interval;
         frameCounter = 0;
+        timer.restart();
+    }
+}
+
+void _Tools::printAtFixedIntevals(int secs, QString s)
+{
+    int t = timer.elapsed()/1000;
+    int interval = secs;
+//    qDebug() << t;
+    if(t > interval)
+    {
+        qInfo() << s ;
         timer.restart();
     }
 }

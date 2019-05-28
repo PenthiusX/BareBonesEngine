@@ -28,19 +28,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //setup hardware interacting obejcts
     //machine to be intialised first
-
     machine = new _Machine(application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE"));
     machine->moveToThread(hardwareInteractionThread);
-
+    //
     processing = new _Processing();
     processing->moveToThread(hardwareInteractionThread);
-
+    //
     marker = new _Marker(machine);
     marker->moveToThread(hardwareInteractionThread);
-
+    //
     scanner = new _Scanner(machine,processing);
     scanner->moveToThread(hardwareInteractionThread);
-
     //
     qDebug() << "created hardware objects in thread :" << QThread::currentThread();
 
@@ -53,17 +51,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(hardwareInteractionThread,SIGNAL(started()),machine,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),processing,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),scanner,SLOT(init()));
-
-    /* button connections
+    /*
+     * button connections
      *  slot function implemented in child object of MainWindow and used by lambda functions
      *  https://medium.com/genymobile/how-c-lambda-expressions-can-improve-your-qt-code-8cd524f4ed9f#8138
-     * */
-
-    //buttons to machine slots connections
-    //since the machine object is working in differant thread we have to use invokeMethod function
-
-    //clickable buttons
-
+    */
     //set the global static objects which will be required for operations
     _CaliberationSection::setMachine(machine);
     _CaliberationSection::setScanner(scanner);
@@ -71,18 +63,11 @@ MainWindow::MainWindow(QWidget *parent) :
     _CaliberationSection::setMarker(marker);
 
     connect(machine,SIGNAL(initMachine()),ui->machine_type_section,SLOT(init()));
-
     //
     connect(ui->light_calibration_button, SIGNAL(clicked()),ui->light_caliberation_section,SLOT(init()));
     connect(ui->machine_selection_button, SIGNAL(clicked()),ui->machine_type_section,SLOT(init()));
     connect(ui->scan_calibration_button, SIGNAL(clicked()),ui->scan_caliberation_section,SLOT(init()));
     connect(ui->stage_calibration_button, SIGNAL(clicked()),ui->stage_caliberation_section,SLOT(init()));
-
-    //connect(machine,SIGNAL(stageAngleChanged()),ui->widget,SLOT(rotateGeneratedModel()));
-
-//    connect(machine, &_Machine::stageAngleChanged,[this]() {
-//        ui->widget->rotateGeneratedModel()
-//    });
 
     connect(machine, &_Machine::stageAngleChanged,ui->widget,&_GLWidget::rotateGeneratedModel);
 
@@ -134,7 +119,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
 
-    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));    
+    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
     connect(processing,SIGNAL(generatedModelTextureOut(char*,unsigned int,unsigned int)),this,SLOT(showGeneratedModel(char*,unsigned int ,unsigned int)));
 
@@ -165,7 +150,7 @@ MainWindow::~MainWindow()
 void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
 {
 
-  ui->widget->update_background_image(img,w,h);//------------------------Needs work!!!!!
+    ui->widget->update_background_image(img,w,h);//------------------------Needs work!!!!!
 }
 
 /*
@@ -220,18 +205,4 @@ void MainWindow::msgBox(QString windowname,QString info)
 void MainWindow::showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight)
 {
     ui->widget->showGeneratedModel(img,iwidth,iheight);
-}
-
-void MainWindow::rotateGeneratedModel()
-{
-//    static _Renderer *render_object = nullptr;
-//    for (unsigned int i = 0; i < ui->widget->scene->getSceneObjectsArray().size(); i++)
-//    {
-//        render_object = scene->getSceneObjectsArray()[i];
-
-//        if (render_object->getSceneEntity().getId() == generated_model.getId())
-//        {
-//            render_object->setModelMatrix(glm::rotate(render_object->getModelMatrix(), (angle), glm::vec3(0.0f, 1.0f, 0.0f)));
-//        }
-//    }
 }

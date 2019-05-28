@@ -132,7 +132,7 @@ void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GL
     _Texture texture(img,width,height);
     texture.load(format,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-//    qDebug() << "setupTexture() on entity" << this->sceneEntity.getTag();
+    qDebug() << "setupTexture() on entity" << this->sceneEntity.getTag();
 }
 void _Renderer::setupTexture(QString texfile)
 {
@@ -140,7 +140,7 @@ void _Renderer::setupTexture(QString texfile)
     _Texture texture(img);
     texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-//    qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getTag();
+    qDebug() << "setupTexture(QString texfile) on entity" << this->sceneEntity.getTag();
 }
 /*
  * Function: setTexture()

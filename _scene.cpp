@@ -124,8 +124,7 @@ void _Scene::render()
         //Physics update
         if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
         {   //Passing some essentials into the updateLoop
-            updatePhysics(renderObjects[i]->getSceneEntity().getPhysicsObjectType(),
-                          glm::vec2(this->mousePositionL.x(),//Mouse position
+            updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
                                     this->mousePositionL.y()),
                           glm::vec3(cam.getEyePosition().x(),//Camera Position
                                     cam.getEyePosition().y(),
@@ -157,10 +156,10 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
  * in the drawFunction
  * Created: 22_05_2019
  */
-void _Scene::updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
+void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
     updateMouseRay(mousePos,screenRes,s);
-    upDateRayCollison(type,camPos,s,index);
+    upDateRayCollison(camPos,s,index);
 }
 
 void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
@@ -173,9 +172,9 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
     //
 }
 
-void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_SceneEntity s,unsigned int index)
+void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
-    if(type == _Physics::Sphere)
+    if(s.getPhysicsObjectType() == _Physics::Sphere)
     {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
         if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f,camPos))
         {
@@ -194,11 +193,11 @@ void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_S
             renderObjects[index]->setSceneEntityInRenderer(s);
         }
     }
-    else if(type == _Physics::Box)//run operations for HitBox
+    else if(s.getPhysicsObjectType() == _Physics::Box)//run operations for HitBox
     {
 
     }
-    else if(type == _Physics::Mesh)//Run operation for Mesh collider
+    else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
     {
 
     }

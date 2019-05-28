@@ -181,7 +181,6 @@ void _Texture::addParameter(unsigned int pname, unsigned int param)
 */
 void _Texture::load( GLenum format, GLenum datatype)
 {
-
     if(m_ID==0)
     {
         unsigned int t;

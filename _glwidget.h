@@ -22,7 +22,6 @@ public:
     explicit _GLWidget(QWidget *parent = 0);
     ~_GLWidget();
 
-bool isInitialised();
 void setXRotation(int angle);
 void setYRotation(int angle);
 void setZRotation(int angle);

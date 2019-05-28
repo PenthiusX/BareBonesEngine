@@ -15,7 +15,7 @@ TEMPLATE = app
 
 
 HEADERS  += mainwindow.h \
-    UI/_caliberationsection.h \
+            UI/_caliberationsection.h \
             _glwidget.h \
             _renderer.h \
             _shader.h \
@@ -24,84 +24,81 @@ HEADERS  += mainwindow.h \
             _camera.h \
             _assetloader.h \
             _texture.h\
-           IO/_hwdcamera.h \
-           IO/_hardwareserial.h \
-           IO/_machine.h \
-           IO/_dc_1394_camera.h \
-           IO/_avt_camera.h \
-           Modules/_marker.h \
-           Modules/_scanner.h \
-    _framebuffer.h \
-    _compute.h \
-    _physics.h \
-    _tools.h \
-    Compute/_gpu_compute.h \
-    IO/_configcontrolentity.h \
-    IO/_picolo_camera.h \
-    UI/_tabwidget.h \
-    UI/_tabbar.h \
-    Modules/_processing.h \
-    Compute/_cpu_compute.h \
-    UI/_lightcaliberationsection.h \
-    UI/_sliderbox.h \
-    UI/_machineselectionsection.h \
-    UI/_scancaliberationsection.h \
-    UI/_appplicationsettingsdialog.h \
-    UI/_pathsettingform.h \
-    UI/_stagecaliberationsection.h
+            _framebuffer.h \
+            _physics.h \
+            _tools.h \
+            IO/_hwdcamera.h \
+            IO/_hardwareserial.h \
+            IO/_machine.h \
+            IO/_dc_1394_camera.h \
+            IO/_avt_camera.h \
+            IO/_configcontrolentity.h \
+            IO/_picolo_camera.h \
+            Modules/_marker.h \
+            Modules/_scanner.h \
+            Modules/_processing.h \
+            Compute/_gpu_compute.h \
+            Compute/_cpu_compute.h \
+            UI/_tabwidget.h \
+            UI/_tabbar.h \
+            UI/_lightcaliberationsection.h \
+            UI/_sliderbox.h \
+            UI/_machineselectionsection.h \
+            UI/_scancaliberationsection.h \
+            UI/_appplicationsettingsdialog.h \
+            UI/_pathsettingform.h \
+            UI/_stagecaliberationsection.h
 
 
 SOURCES += main.cpp\
-    UI/_caliberationsection.cpp \
-            mainwindow.cpp \
-            _glwidget.cpp \
-            _renderer.cpp \
-            _shader.cpp \
-            _sceneentity.cpp \
-            _scene.cpp \
-            _camera.cpp \
-            _assetloader.cpp \
-            _texture.cpp\
+           UI/_caliberationsection.cpp \
+           mainwindow.cpp \
+           _glwidget.cpp \
+           _renderer.cpp \
+           _shader.cpp \
+           _sceneentity.cpp \
+           _scene.cpp \
+           _camera.cpp \
+           _assetloader.cpp \
+           _texture.cpp\
+           _framebuffer.cpp \
+           _physics.cpp \
+           _tools.cpp \
            IO/_hwdcamera.cpp \
            IO/_hardwareserial.cpp \
            IO/_machine.cpp \
            IO/_dc_1394_camera.cpp \
            IO/_avt_camera.cpp \
+           IO/_configcontrolentity.cpp \
+           IO/_picolo_camera.cpp \
            Modules/_marker.cpp \
            Modules/_scanner.cpp \
-    _framebuffer.cpp \
-    _compute.cpp \
-    _physics.cpp \
-    _tools.cpp \
-    Compute/_gpu_compute.cpp \
-    IO/_configcontrolentity.cpp \
-    IO/_picolo_camera.cpp \
-    UI/_tabwidget.cpp \
-    UI/_tabbar.cpp \
-    Modules/_processing.cpp \
-    Compute/_cpu_compute.cpp \
-    UI/_lightcaliberationsection.cpp \
-    UI/_sliderbox.cpp \
-    UI/_machineselectionsection.cpp \
-    UI/_scancaliberationsection.cpp \
-    UI/_appplicationsettingsdialog.cpp \
-    UI/_pathsettingform.cpp \
-    UI/_stagecaliberationsection.cpp
+           Modules/_processing.cpp \
+           Compute/_gpu_compute.cpp \
+           Compute/_cpu_compute.cpp \
+           UI/_tabwidget.cpp \
+           UI/_tabbar.cpp \
+           UI/_lightcaliberationsection.cpp \
+           UI/_sliderbox.cpp \
+           UI/_machineselectionsection.cpp \
+           UI/_scancaliberationsection.cpp \
+           UI/_appplicationsettingsdialog.cpp \
+           UI/_pathsettingform.cpp \
+           UI/_stagecaliberationsection.cpp
 
 FORMS    += mainwindow.ui \
-    UI/_sliderbox.ui \
-    UI/_lightcaliberationsection.ui \
-    UI/_machineselectionsection.ui \
-    UI/_scancaliberationsection.ui \
-    UI/_appplicationsettingsdialog.ui \
-    UI/_pathsettingform.ui \
-    UI/_stagecaliberationsection.ui
+            UI/_sliderbox.ui \
+            UI/_lightcaliberationsection.ui \
+            UI/_machineselectionsection.ui \
+            UI/_scancaliberationsection.ui \
+            UI/_appplicationsettingsdialog.ui \
+            UI/_pathsettingform.ui \
+            UI/_stagecaliberationsection.ui
 
-RESOURCES += \
-    shaders.qrc \
-    textures.qrc \
-    models.qrc \
-    data.qrc
+RESOURCES += shaders.qrc \
+             textures.qrc \
+             models.qrc \
+             data.qrc
 
 INCLUDEPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
