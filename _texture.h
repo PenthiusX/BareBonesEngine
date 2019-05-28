@@ -52,7 +52,6 @@ public:
     void setForUse(bool value=true);
     void release();
 
-protected:
     std::map<unsigned int,unsigned int> parameters;
     char* image;
 

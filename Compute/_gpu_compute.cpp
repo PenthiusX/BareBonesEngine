@@ -16,7 +16,7 @@
 */
 _GPU_Compute::_GPU_Compute() :
     QOpenGLExtraFunctions(QOpenGLContext::currentContext()),
-    texture_pool_8_bit()
+    texture_pool_8_bit(_TexturePool(GL_RED,GL_UNSIGNED_BYTE))
 {
 
 }
@@ -797,6 +797,32 @@ void _GPU_Compute::compute_threshold(_Texture& input_img,_Texture& output_img,un
 
 }
 
+void _GPU_Compute::compute_threshold(_Texture* input_img,_Texture* output_img,unsigned int threshold_value)
+{
+    static _Shader shader;
+    static GroupSize groupsize = getWorkGroupSize(input_img->getWidth(), input_img->getHeight());
+
+    //if shader not initialized
+    if(shader.getShaderProgram() == 0)
+    {
+        shader.setChildShader(":/shaders/compute_threshold.glsl",GL_COMPUTE_SHADER,groupsize.WorkGroupSize);
+        shader.attachShaders();
+        qDebug() << "shader initialized";
+    }
+
+    input_img->bindForCompute(0,GL_R8UI,GL_READ_ONLY);
+    output_img->bindForCompute(1,GL_R8UI,GL_WRITE_ONLY);
+
+    shader.useShaderProgram();
+
+    glUniform1ui(0,threshold_value);
+
+    glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+}
+
 void _GPU_Compute::compute_threshold_inv(_Texture& input_img,_Texture& output_img,unsigned int threshold_value)
 {
     static _Shader shader;
@@ -1050,15 +1076,20 @@ glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output
     static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight(),GL_RED,GL_UNSIGNED_BYTE);
+    //static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight(),GL_RED,GL_UNSIGNED_BYTE);
+    texture_pool_8_bit.textureFromPool("edge",input_img.getWidth(),input_img.getHeight());
     static _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
     static _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_hough_space(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
+
+    _Texture& texture_edge = *texture_pool_8_bit["edge"];
+
+    static _Texture texture_hough_space(nullptr,720,glm::sqrt(pow(input_img.getWidth(),2)+pow(input_img.getHeight(),2)));
 
     texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
-    texture_edge.load();
+
     texture_sobel_theta_.load(GL_RED,GL_UNSIGNED_BYTE);
+    //texture_edge.load();
     texture_mask.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_mask_inv.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_descrete_gradient_value.load(GL_RED,GL_UNSIGNED_BYTE);
@@ -1082,7 +1113,7 @@ glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output
     //sobel edge
     compute_sobel_edge(input_img,texture_sobel_mag_,texture_sobel_theta_);
 
-    compute_canny_edge_from_sobel(texture_sobel_mag_,texture_sobel_theta_,texture_edge);
+    compute_canny_edge_from_sobel(texture_sobel_mag_,texture_sobel_theta_,*texture_pool_8_bit["edge"]);
 
     //compute_copy_red_to_rgba(input_img,texture_out_rgba);
 
@@ -1094,7 +1125,7 @@ glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output
 
     compute_mask_image_rgba_r(output_img,texture_mask,texture_out_rgba);
 
-    compute_threshold(texture_edge,texture_mask,60);
+    compute_threshold(*texture_pool_8_bit["edge"],texture_mask,60);
 
     compute_mask_image_rgba_r(texture_out_rgba,texture_mask,texture_rgba);
 

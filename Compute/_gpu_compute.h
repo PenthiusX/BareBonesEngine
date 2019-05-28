@@ -77,7 +77,7 @@ public:
 
     LineEquationMC convertLineEquationPolarToMc(_GPU_Compute::LineEquation eqn);
     //void computeEdgeModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap,int rotation_step,glm::vec2 stage_center=glm::vec2(400,480));
-    void compute_threshold_inv(_Texture &input_img, _Texture &output_img, unsigned int threshold_value);
+    void compute_threshold_inv(_Texture &input_img, _Texture &output_img, unsigned int threshold_value=127);
     void compute_row_wise_left_edge(_Texture &input_img, _Texture &output_img);
     void compute_row_wise_right_edge(_Texture &input_img, _Texture &output_img);
     void compute_copy_column_from_to(_Texture &input_img, _Texture &output_img, int from_ = 0, int to_ = 0);
@@ -89,6 +89,7 @@ public:
     int *getTextureModelFramebuffer32I(_Texture &input_img, unsigned int format);
     void computeMaskImageR32IR(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
 
+    void compute_threshold(_Texture *input_img, _Texture *output_img, unsigned int threshold_value=127);
 protected:
     _TexturePool texture_pool_8_bit;
 

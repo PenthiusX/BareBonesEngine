@@ -213,20 +213,11 @@ void _Texture::addParameter(unsigned int pname, unsigned int param)
 
 void _Texture::load()
 {
-    if(m_ID==0){
-        glGenTextures(1,&m_ID);
-    }
-
-    bind();
-
-    for (auto const& parameter : parameters)
-    {
-        glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
-    }
-        //qDebug() << "setting image in load" << GL_RED << color_format;
-        glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
-
-        //glGenerateMipmap(GL_TEXTURE_2D);
+    GLenum UNSIGNED_INT = GL_UNSIGNED_INT;
+    GLenum RED = GL_RED;
+    GLenum RED_INTEGER = GL_RED_INTEGER;
+    GLenum R8UI = GL_R8UI;
+    this->load(_internal_format,_color_format,_data_type);
 }
 
 /* initializes texture
@@ -250,6 +241,12 @@ void _Texture::load(GLenum format, GLenum datatype)
         _internal_format = format;
         _data_type = datatype;
         //qDebug() << "setting image in load" << GL_RED << color_format;
+
+        GLenum UNSIGNED_INT = GL_UNSIGNED_INT;
+        GLenum RED = GL_RED;
+        GLenum RED_INTEGER = GL_RED_INTEGER;
+        GLenum R8UI = GL_R8UI;
+
         glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
 
         //glGenerateMipmap(GL_TEXTURE_2D);
@@ -269,6 +266,11 @@ void _Texture::load(GLenum internal_format, GLenum format, GLenum datatype)
     }
 
     bind();
+
+    GLenum UNSIGNED_INT = GL_UNSIGNED_INT;
+    GLenum RED = GL_RED;
+    GLenum RED_INTEGER = GL_RED_INTEGER;
+    GLenum R8UI = GL_R8UI;
 
     for (auto const& parameter : parameters)
     {

@@ -18,8 +18,13 @@ public:
     unsigned int getHeight() const;
     void setWidthHeight(unsigned int w,unsigned int h);
 
+    bool doesExists(QString texture_name);
+
     _Texture* textureFromPool(QString texture_name);
-    _Texture *textureFromPool(QString texture_name, unsigned int w, unsigned int h);
+    _Texture* textureFromPool(QString texture_name, unsigned int w, unsigned int h);
+
+    _Texture *operator[](QString key);
+
 protected:
     int texture_numbers = 5;
     unsigned int width=MAX_FRAME_WIDTH,height=MAX_FRAME_HEIGHT;
