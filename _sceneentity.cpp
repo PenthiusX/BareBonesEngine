@@ -9,6 +9,7 @@ _SceneEntity::_SceneEntity()
 {	//sets the rotation value at init and uses the from axis angle
     this->rotation = QVector3D(0.0,0.0,0.0);
     this->postion = QVector3D(0.0, 0.0, 0.0);
+    this->color = QVector4D(1.0, 1.0, 1.0,1.0);
     this->scale = 1.0;
     this->isActive = true;
     this->isTransfomationLocal = false;
@@ -385,4 +386,27 @@ bool _SceneEntity::getIsPhysicsObject() const
 _Physics::PhysicsObjects _SceneEntity::getPhysicsObjectType()
 {
     return this->phyObjtype;
+}
+
+void _SceneEntity::reset()
+{
+    this->rotation = QVector3D(0.0,0.0,0.0);
+    this->id = 0;
+    this->postion = QVector3D(0.0, 0.0, 0.0);
+    this->scale = 1.0;
+    this->color = QVector4D(1.0, 1.0, 1.0,1.0);
+    this->isActive = true;
+    this->isTransfomationLocal = false;
+    this->isPivotSet = false;
+    this->isPhysicsObject = false;
+    isHitByRay = false;
+    vertexData.clear();
+    indexData.clear();
+    TranslationMatrix = glm::mat4x4(1.0f);
+    ProjectionMatrix = glm::mat4x4(1.0f);
+    ScaleMatirx = glm::mat4x4(1.0f);
+    TranslationMatrix = glm::mat4x4(1.0f);
+    RotationMatrix = glm::mat4x4(1.0f);
+    vShaderPath = "";
+    fShaderPath = "";
 }

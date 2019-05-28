@@ -41,12 +41,13 @@ std::vector<_Renderer*> _Scene::getSceneObjects()
 void _Scene::addSceneObject(_SceneEntity s)
 {
     // Only sets the scene object if the camera has been set already and scene object is active
-    if (s.getIsActive() == true)
+    if(s.getIsActive() == true)
     {
-        if (isCamera == true)
+        if(isCamera == true)
         {
             r = new _Renderer();
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+            r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),0.1f,50.0f);
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
         }
@@ -54,6 +55,7 @@ void _Scene::addSceneObject(_SceneEntity s)
         {
             r = new _Renderer();
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
+            r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),0.1f,50.0f);
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
         }

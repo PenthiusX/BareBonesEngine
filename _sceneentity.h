@@ -78,6 +78,7 @@ public:
     void setIsHitByRay(bool isHitByRay);// sets if this object is hitby ray
     bool getIsPhysicsObject()const;// returns if this is a physics object or not
     _Physics::PhysicsObjects getPhysicsObjectType();//return the type of physics object attached
+    void reset();
 
 
 private:

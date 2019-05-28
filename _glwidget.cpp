@@ -121,19 +121,18 @@ void _GLWidget::initializeGL()
     //-----------------------------------
     //Initailise the scene in InitaliseGl
     //needs to be run after the openGl contxt is initialised
-        scene = new _Scene();
-        scene->addCamera(cam);//camera essential
-        scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
-        scene->addSceneObject(pivot);//pivot helper essential
-        scene->addSceneObject(mpoint);//mousePoint helper
-        //
-        scene->addSceneObject(s);
-        scene->addSceneObject(s1);
-        scene->addSceneObject(s2);
+    scene = new _Scene();
+    scene->addCamera(cam);//camera essential
+    scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
+    scene->addSceneObject(pivot);//pivot helper essential
+    scene->addSceneObject(mpoint);//mousePoint helper
+    //
+    scene->addSceneObject(s);
+    scene->addSceneObject(s1);
+    scene->addSceneObject(s2);
     //------------------------------------
     //    addRandomSceneEntitestoScene();
     //------------------------------------
-
     generated_model.setId(666);//keep the id it will be required while updating texture
     generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");
     generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
@@ -462,14 +461,14 @@ void _GLWidget::addRandomSceneEntitestoScene()
 {
     for(int i = 0 ; i < 2 ; i++)
     {
-        s.setId(scene->getSceneObjects().size() + i);
-        s.setIsTransfomationLocal(false);
-        s.setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
-        s.setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
-        s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-        s.setScale(_Tools::getRandomNumberfromRange(0.5,5));
-        s.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
-        scene->addSceneObject(s);
+        runtime.reset();
+        runtime.setId(scene->getSceneObjects().size() + i);
+        runtime.setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
+        runtime.setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
+        runtime.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        runtime.setScale(_Tools::getRandomNumberfromRange(0.5,5));
+        runtime.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
+        scene->addSceneObject(runtime);
         qInfo() << i <<"th object";
     }
 }
@@ -492,7 +491,8 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
 
         if (render_object->getSceneEntity().getId() == background_quad.getId())
         {
-            if(render_object->isTexturePresent()){
+            if(render_object->isTexturePresent())
+            {
                 //updating predefined texture
 //                render_object->setTexture(img,w,h);
             }
