@@ -67,18 +67,18 @@ public:
     std::vector<int> getUvData() const;// get the array of UVs for refrence
     std::vector<float> getNormalData() const;// get the Array of normals for refrence
     //
-    void setPhysicsObject(_Physics::PhysicsObjects penum);
+    bool getIsActive();//returns if this entiy is active and rendering or not
     //
-    bool getIsActive();
-    //
-    void setIsTransfomationLocal(bool isLoc);
-    bool getIsTransfomationLocal();
+    void setIsTransfomationLocal(bool isLoc);//sets if the transformations applied will be on local or world axis
+    bool getIsTransfomationLocal();//returns the same
 
-    //Physics property variables
-    bool getisHitByRay();
-    void setIsHitByRay(bool isHitByRay);
-    bool getIsPhysicsObject()const;
-    _Physics::PhysicsObjects getPhysicsObjectType();
+    //Physics
+    void setPhysicsObject(_Physics::PhysicsObjects penum);//sets the physics object type attached to this sceneEntity
+    bool getisHitByRay();// returns if this object is hit by a ray
+    void setIsHitByRay(bool isHitByRay);// sets if this object is hitby ray
+    bool getIsPhysicsObject()const;// returns if this is a physics object or not
+    _Physics::PhysicsObjects getPhysicsObjectType();//return the type of physics object attached
+
 
 private:
     unsigned int id;

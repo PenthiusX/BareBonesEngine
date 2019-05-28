@@ -39,7 +39,6 @@ _GLWidget::~_GLWidget()
          \/                 \/             \/     \/          \/            \/          \/      \/
 */
 
-
 /*
 * Function: initializeGL() overrides the
 * same function in the OpopenglFunctions class
@@ -93,7 +92,6 @@ void _GLWidget::initializeGL()
     s.setTag("object1");
     s.setPhysicsObject(_Physics::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.5));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
@@ -149,8 +147,8 @@ void _GLWidget::initializeGL()
     glm::ivec2 resolution = glm::ivec2(200,576);//wrap texture size
     unsigned int index[4] = {0,0,0,0};
 
-    for (unsigned int h = 0; h < resolution.y; h++) {
-        for (unsigned int w = 0; w < resolution.x; w++) {
+    for (unsigned int h = 0; h < resolution.y; h++){
+        for (unsigned int w = 0; w < resolution.x; w++){
 
             glm::vec2 pixel_cord = glm::vec2(w,h);
             glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
@@ -164,8 +162,8 @@ void _GLWidget::initializeGL()
 
     glm::ivec2 step_size = glm::ivec2(2,8);
 
-    for (unsigned int h = 0; h < resolution.y; h+=step_size.y) {
-        for (unsigned int w = 0; w < resolution.x; w+=step_size.x) {
+    for (unsigned int h = 0; h < resolution.y; h+=step_size.y){
+        for (unsigned int w = 0; w < resolution.x; w+=step_size.x){
 
             glm::vec2 pixel_cord = glm::vec2(w,h);
 
@@ -192,9 +190,16 @@ void _GLWidget::initializeGL()
 
     generated_model.setModelData(vertsG,indiceG);
     scene->addSceneObject(generated_model);
-
-    initialised=true;
 }
+
+/*
+   ________           __________              .__
+   \_____  \   ____   \______   \ ____   _____|__|_______ ____
+    /   |   \ /    \   |       _// __ \ /  ___/  \___   // __ \
+   /    |    \   |  \  |    |   \  ___/ \___ \|  |/    /\  ___/
+   \_______  /___|  /  |____|_  /\___  >____  >__/_____ \\___  >
+            \/     \/          \/     \/     \/         \/    \/
+*/
 /*
  * Function: resizeGL(int w, int h) overides the
  * function in OpopenglFunctions class.
@@ -311,7 +316,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
         mousePositionR = QVector2D(e->localPos());
         scene->setMousePositionInScene(this->mousePositionR,Qt::RightButton);//sets the mouse position in the scene for use
     }
-
 }
 /*
 * Function: wheelEvent(QWheelEvent *e)
@@ -490,17 +494,18 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
         {
             if(render_object->isTexturePresent()){
                 //updating predefined texture
-                render_object->setTexture(img,w,h);
+//                render_object->setTexture(img,w,h);
             }
             else
             {
                 //setting up new 8 bit grayscale GL_RGBA texture for first time
-                render_object->setupTexture(img,w,h,GL_RGBA);
+//                render_object->setupTexture(img,w,h,GL_RGBA);
             }
             doneCurrent();
         }
     }
 }
+
 void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
 {
     static _Renderer *render_object = nullptr;
@@ -510,26 +515,24 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
 
         if (render_object->getSceneEntity().getId() == generated_model.getId())
         {
-            //make context active
-            makeCurrent();
-
             if(render_object->isTexturePresent()){
                 //updating predefined texture
-                render_object->setTexture(img,w,h);
+//                render_object->setTexture(img,w,h);
             }
             else {
                 //setting up new 8 bit grayscale GL_RGBA texture for first time
-                render_object->setupTexture(img,w,h,GL_RGBA);
+//                render_object->setupTexture(img,w,h,GL_RGBA);
             }
 
-            doneCurrent();
         }
     }
 }
+
 void _GLWidget::rotateGeneratedModel(float angle)
 {
     rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
 }
+
 void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
 {
     static _Renderer *render_object = nullptr;
