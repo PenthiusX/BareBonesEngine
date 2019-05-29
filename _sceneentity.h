@@ -71,11 +71,10 @@ public:
     bool getIsActive();
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
-    //
+    //type of transformations
     void setIsTransfomationLocal(bool isLoc);
     bool getIsTransfomationLocal();
-
-    //Physics property variables
+    //Physics
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
     bool getIsPhysicsObject()const;
@@ -97,7 +96,6 @@ private:
     //
     QString vShaderPath;
     QString fShaderPath;
-    //
     QString texturePath;
     //
     void setVertexData(std::vector<float> vertices);//sets the Vertex data.
@@ -109,6 +107,8 @@ private:
     bool isPivotSet;
     bool isActive;
     bool isMeshEditable;
+    bool isHitByRay;
+    bool isPhysicsObject;
     //
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
@@ -117,11 +117,7 @@ private:
     glm::mat4x4 ViewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
-    //
-    _Physics::PhysicsObjects phyObjtype;
-    bool isHitByRay;
-    bool isPhysicsObject;
-
+    _Physics::PhysicsObjects phyObjtype;//Physics Type identifier
 };
 
 #endif // _SCENEENTITY_H
