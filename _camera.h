@@ -26,11 +26,18 @@ public:
     void setFOV(unsigned fov);
     unsigned int getFOV()const;
 
+    void setFarClipDistance(float fclp);
+    void setNearClipDistance(float nclp);
+    float getNearClipDistance()const;
+    float getFarClipDistance()const;
+
 private:
     QVector3D eyePosition;
     QVector3D focalPoint;
     QVector3D upVector;
     unsigned int fov;
+    float nearClipDistance;
+    float farClipDistance;
 };
 
 #endif // _CAMERA_H

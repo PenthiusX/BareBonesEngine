@@ -67,20 +67,19 @@ public:
     std::vector<int> getUvData() const;// get the array of UVs for refrence
     std::vector<float> getNormalData() const;// get the Array of normals for refrence
     //
-    bool getIsActive();//returns if this entiy is active and rendering or not
+    void setPhysicsObject(_Physics::PhysicsObjects penum);
     //
-    void setIsTransfomationLocal(bool isLoc);//sets if the transformations applied will be on local or world axis
-    bool getIsTransfomationLocal();//returns the same
-
+    bool getIsActive();
+    void setIsMeshEditable(bool isit);
+    bool getIsMeshEditable();
+    //type of transformations
+    void setIsTransfomationLocal(bool isLoc);
+    bool getIsTransfomationLocal();
     //Physics
-    void setPhysicsObject(_Physics::PhysicsObjects penum);//sets the physics object type attached to this sceneEntity
-    bool getisHitByRay();// returns if this object is hit by a ray
-    void setIsHitByRay(bool isHitByRay);// sets if this object is hitby ray
-    bool getIsPhysicsObject()const;// returns if this is a physics object or not
-    _Physics::PhysicsObjects getPhysicsObjectType();//return the type of physics object attached
-    void reset();
-
-
+    bool getisHitByRay();
+    void setIsHitByRay(bool isHitByRay);
+    bool getIsPhysicsObject()const;
+    _Physics::PhysicsObjects getPhysicsObjectType();
 private:
     unsigned int id;
     const char* tag;
@@ -97,7 +96,6 @@ private:
     //
     QString vShaderPath;
     QString fShaderPath;
-    //
     QString texturePath;
     //
     void setVertexData(std::vector<float> vertices);//sets the Vertex data.
@@ -108,6 +106,9 @@ private:
     bool isTransfomationLocal;
     bool isPivotSet;
     bool isActive;
+    bool isMeshEditable;
+    bool isHitByRay;
+    bool isPhysicsObject;
     //
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
@@ -116,11 +117,7 @@ private:
     glm::mat4x4 ViewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
-    //
-    _Physics::PhysicsObjects phyObjtype;
-    bool isHitByRay;
-    bool isPhysicsObject;
-
+    _Physics::PhysicsObjects phyObjtype;//Physics Type identifier
 };
 
 #endif // _SCENEENTITY_H

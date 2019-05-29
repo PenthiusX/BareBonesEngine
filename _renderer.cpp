@@ -385,7 +385,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 
 void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
 {
-   this->sceneEntity = s;
+    this->sceneEntity = s;
 }
 
 void _Renderer::keepSceneEntityUpdated()
@@ -402,27 +402,28 @@ void _Renderer::keepSceneEntityUpdated()
     this->sceneEntity.setPosition(QVector3D(tmat4[3][0],
             tmat4[3][1],
             tmat4[3][2]));
-//    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
+    //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 
 void _Renderer::setColors()
 {
     glUniform4f(colorUniform, this->sceneEntity.getColor().x(),this->sceneEntity.getColor().y(), this->sceneEntity.getColor().z(), this->sceneEntity.getColor().w());
+    //set sfidex color attributes for defined objects
     if(this->sceneEntity.getId() == 999)//pivot
     {
-      QVector4D col = this->sceneEntity.getColor();
-      col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
-      col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
-      col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
-      glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+        QVector4D col = this->sceneEntity.getColor();
+        col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
+        col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
+        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
+        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
     if(this->sceneEntity.getId() == 888)//pivot
     {
-      QVector4D col = this->sceneEntity.getColor();
-      col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
-      col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
-      col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
-      glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+        QVector4D col = this->sceneEntity.getColor();
+        col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
+        col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
+        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
+        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
 }
 
@@ -452,10 +453,12 @@ void _Renderer::_Renderer::draw()
         for(unsigned int t=0;t<textures.size();t++){
             textures[t].bind();
         }
-        //Bind the Buffers data of the respective buffer object
-        glBindBuffer(GL_ARRAY_BUFFER,VBO);
+        //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
+        if(this->sceneEntity.getIsMeshEditable()){
+                glBindBuffer(GL_ARRAY_BUFFER,VBO);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);}
+        //Bind the VAO of the respective buffer object (needs to be bound everytime)
         glBindVertexArray(VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
         //
         //Sets the values for the MVP matrix in the vertex shader
         glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
@@ -466,8 +469,6 @@ void _Renderer::_Renderer::draw()
         //
         glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         //
-        glBindBuffer(GL_ARRAY_BUFFER,0);//Clear the buffer
         glBindVertexArray(0);//Clear the buffer
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);//Clear the buffer
     }
 }
