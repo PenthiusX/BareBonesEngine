@@ -167,12 +167,12 @@ void _Scanner::scanGenerateModelEdge()
     stage_center.x = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_X");
     stage_center.y = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_Y");
 
-    for(int t = 0;t<200;t++)
+    for(int t = 0;t<1;t++)
     {
         QString filename = QString("scan_image_stage_%1").arg(t);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
-        //QThread::msleep(10);
+        //QThread::msleep(50);
 
         //grab new frame from camera
         machine->GrabFrame(filename);

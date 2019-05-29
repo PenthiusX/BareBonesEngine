@@ -91,9 +91,7 @@ void _GPU_Compute::compute_copy_32_to_8(_Texture &input_img, _Texture &output_im
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
 }
-
 void _GPU_Compute::computeFrom32iTo8uiDevide(_Texture &input_img, _Texture &output_img,unsigned int devide_value)
 {
     static _Shader shader;
@@ -117,7 +115,6 @@ void _GPU_Compute::computeFrom32iTo8uiDevide(_Texture &input_img, _Texture &outp
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
 }
 
 /* Function: getWorkGroupSize(int w,int h, COMPUTE_OPERTION operation)
@@ -1274,6 +1271,7 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
     computeMaskImageRR(texture_out_8_bit,texture_out_mask,texture_out_8_bit);
 
     //compute_guassian_blur_5_5(texture_out_8_bit,texture_out_8_bit);
+
 
     if(rotation_step == 199)
     {

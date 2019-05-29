@@ -343,6 +343,8 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
 
     }
+    if(rotation_step == 0)
+        gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
     //Do the Processing
 
     //send the image to gpu texture

@@ -103,10 +103,10 @@ void _GLWidget::initializeGL()
     generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
-    generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
+    generated_model.setPosition(QVector3D(0.125,-1.045, -1.0));//1.045
     generated_model.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 
-    generated_model.setScale(0.524);
+    generated_model.setScale(0.524);//0.524
 
     std::vector<float> vertsG;
     std::vector<unsigned int> indiceG;
@@ -129,7 +129,7 @@ void _GLWidget::initializeGL()
         }
     }
 
-    glm::ivec2 step_size = glm::ivec2(2,8);
+    glm::ivec2 step_size = glm::ivec2(2,2);
 
     for (unsigned int h = 0; h < resolution.y; h+=step_size.y) {
         for (unsigned int w = 0; w < resolution.x; w+=step_size.x) {

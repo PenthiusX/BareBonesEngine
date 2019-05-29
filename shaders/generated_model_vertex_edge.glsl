@@ -19,7 +19,7 @@ void main()
     vec3 aPos = vec3(r*cos(theta),r*sin(theta),tPos.y);
     //gl_Position = vec4(-aPos.x,1.0-aPos.z,aPos.y, 1.0);
     FragPos = vec3(-aPos.x,4*(1.0-aPos.z),aPos.y);
-    gl_Position = projection * view * model * vec4(-aPos.x,4*(1.0-aPos.z),aPos.y, 1.0);
+    gl_Position = projection * view * model * vec4(-aPos.x,4*(1.0-aPos.z),aPos.y,1.0);
 
     FragPos = gl_Position.xyz;
     //gl_Position = projection * view * model * vec4(aPos, 1.0);
