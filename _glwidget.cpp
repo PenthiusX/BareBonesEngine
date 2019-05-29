@@ -362,7 +362,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRange(0.5,5));
         onPress->setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
-        onPress->setPhysicsObject(_Physics::Sphere);
+//        onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         delete onPress;
         qInfo() << i <<"th object";
