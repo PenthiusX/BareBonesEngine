@@ -47,6 +47,7 @@ void _Scene::addSceneObject(_SceneEntity s)
         {
             r = new _Renderer();
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+            r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
         }
@@ -54,6 +55,7 @@ void _Scene::addSceneObject(_SceneEntity s)
         {
             r = new _Renderer();
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
+            r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
         }
@@ -102,7 +104,7 @@ void _Scene::onResize(int w,int h)
     this->resH = h;
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
-        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),0.1f,50.0f);
+        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     }
     fboObject->initialise();
     fboObject->setupFramebuffer(w,h);
@@ -175,12 +177,15 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
 
 void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
+
     if(type == _Physics::Sphere)
-    {//the radius will come from calulation of maxextent in assetLoader for current purposes its '1.0f'
-        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f,camPos))
+    {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
+        float colliderSize = s.getScale();
+
+        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize,camPos))
         {
             //On event of collison with ray
-            pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),1.0f);
+            pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize);
             //set values in the sceneEntity and ressetit it in the  relavant renderObject
             s.setIsHitByRay(true);
             s.setColor(QVector4D(0.6,0.0,0.0,0.8));
@@ -190,7 +195,7 @@ void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_S
         {
             //On event
             s.setIsHitByRay(false);
-            s.setColor(QVector4D(s.getColor().x(),s.getColor().x(),s.getColor().x(),s.getColor().w()));
+            s.setColor(QVector4D(1.0,0.6,0.0,0.5));
             renderObjects[index]->setSceneEntityInRenderer(s);
         }
     }

@@ -15,9 +15,12 @@
 * Destructor: ~_Camera();
 */
 _Camera::_Camera(){
+    //default values
     this->upVector = QVector3D(0.0, 1.0, 0.0);
     this->eyePosition = QVector3D(0.0, 0.0, -10.0);
     this->focalPoint = QVector3D(0.0, 0.0, 0.0);
+    this->nearClipDistance = 0.1;
+    this->farClipDistance = 50.0;
 }
 _Camera::~_Camera(){
 
@@ -75,8 +78,25 @@ void _Camera::setFOV(unsigned int fove)
 {
     this->fov = fove;
 }
-
 unsigned int _Camera::getFOV() const
 {
     return this->fov;
+}
+
+void _Camera::setFarClipDistance(float fclp)
+{
+    this->farClipDistance = fclp;
+}
+void _Camera::setNearClipDistance(float nclp)
+{
+    this->nearClipDistance = nclp;
+}
+
+float _Camera::getNearClipDistance() const
+{
+    return this->nearClipDistance;
+}
+float _Camera::getFarClipDistance() const
+{
+    return this->farClipDistance;
 }

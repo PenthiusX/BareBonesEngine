@@ -75,9 +75,6 @@ private:
 
     void keepSceneEntityUpdated();
 
-    //The local renderer object that carries all the prelaoded and updated values for the scene being rendered.
-    std::vector<_Renderer> sceneObject;
-
     //Holds the vertex and index data
     std::vector<float> vertices;//not allocated yet
     std::vector<unsigned int> indices;//not allocated yet

@@ -69,6 +69,8 @@ public:
     void setPhysicsObject(_Physics::PhysicsObjects penum);
     //
     bool getIsActive();
+    void setIsMeshEditable(bool isit);
+    bool getIsMeshEditable();
     //
     void setIsTransfomationLocal(bool isLoc);
     bool getIsTransfomationLocal();
@@ -106,6 +108,7 @@ private:
     bool isTransfomationLocal;
     bool isPivotSet;
     bool isActive;
+    bool isMeshEditable;
     //
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;

@@ -14,8 +14,9 @@ _SceneEntity::_SceneEntity()
     this->isTransfomationLocal = false;
     this->isPivotSet = false;
     this->isPhysicsObject = false;
+    this->isHitByRay = false;
+    this->isMeshEditable = false;
     this->tag = new char();
-    isHitByRay = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -257,15 +258,25 @@ void _SceneEntity::setnormalData(std::vector<float> normalData)
 {
     this->normalData = normalData;
 }
-
 std::vector<float> _SceneEntity::getNormalData()const
 {
     return this->normalData;
 }
-
+/*
+ */
 bool _SceneEntity::getIsActive()
 {
     return this->isActive;
+}
+/*
+ */
+void _SceneEntity::setIsMeshEditable(bool isit)
+{
+    this->isMeshEditable = isit;
+}
+bool _SceneEntity::getIsMeshEditable()
+{
+    return this->isMeshEditable;
 }
 
 /*
