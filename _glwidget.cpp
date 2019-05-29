@@ -43,6 +43,7 @@ void _GLWidget::initializeGL()
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
+    cam.setFarClipDistance(30.0f);
     cam.setFOV(50);
     //
     //Hard coded vertices and indices
@@ -85,7 +86,7 @@ void _GLWidget::initializeGL()
     s.setTag("object1");
     s.setPhysicsObject(_Physics::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
+    //    s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.5));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
@@ -122,7 +123,7 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(s1);
     scene->addSceneObject(s2);
     //-----------------
-//    addRandomSceneEntitestoScene();
+    //    addRandomSceneEntitestoScene();
 }
 /*
  * Function: resizeGL(int w, int h) overides the
@@ -343,25 +344,29 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     if (event->text() == "c" || event->text() == "C"){
         this->isCamFocus = !isCamFocus;
     }
-
-     if (event->text() == "p" || event->text() == "P"){
+    if (event->text() == "p" || event->text() == "P"){
         addRandomSceneEntitestoScene();
-     }
+    }
 }
 
 void _GLWidget::addRandomSceneEntitestoScene()
 {
-    for(int i = 0 ; i < 2 ; i++)
+    for(int i = 0 ; i < 1 ; i++)
     {
-        s.setId(scene->getSceneObjects().size() + i);
-        s.setIsTransfomationLocal(false);
-        s.setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
-        s.setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
-        s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-        s.setScale(_Tools::getRandomNumberfromRange(0.5,5));
-        s.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
-        scene->addSceneObject(s);
+        makeCurrent();//this is needed if you need the openglFunctions to pickup the currentcontext when doing stuff
+        onPress = new _SceneEntity();
+        onPress->setId(scene->getSceneObjects().size() + i);
+        onPress->setIsTransfomationLocal(false);
+        onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
+        onPress->setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
+        onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        onPress->setScale(_Tools::getRandomNumberfromRange(0.5,5));
+        onPress->setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
+        onPress->setPhysicsObject(_Physics::Sphere);
+        scene->addSceneObject(*onPress);
+        delete onPress;
         qInfo() << i <<"th object";
+        doneCurrent();
     }
 }
 
