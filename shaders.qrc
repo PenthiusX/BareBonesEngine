@@ -48,5 +48,8 @@
         <file>shaders/compute_retrive_lower_2_bytes.glsl</file>
         <file>shaders/generated_model_vertex_edge.glsl</file>
         <file>shaders/compute_mask_image_r32i_r.glsl</file>
+        <file>shaders/compute_register_voxel_mesh.glsl</file>
+        <file>shaders/compute_subtract_edge_bounds_from_center.glsl</file>
+        <file>shaders/compute_subtract_column_from_value.glsl</file>
     </qresource>
 </RCC>

@@ -39,6 +39,7 @@ public slots:
 
     void init();
     void setActiveProcess(const char *slot);
+    void generateVoxelsModel(char *img, unsigned int iwidth, unsigned int iheight, int rotation_step, glm::vec2 stage_center);
 
 protected:
 

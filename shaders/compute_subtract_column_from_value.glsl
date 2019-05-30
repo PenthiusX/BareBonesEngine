@@ -25,5 +25,5 @@ void main()
 
        int a = getImagePixel(inputImage,image_pixel_cord);
 
-       setImagePixel(resultImage,image_pixel_cord,a-value);
+       setImagePixel(resultImage,image_pixel_cord,value-a);
 }

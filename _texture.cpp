@@ -59,6 +59,7 @@ _Texture::_Texture(char *img,unsigned int w,unsigned int h, GLenum color_format,
 _Texture::~_Texture()
 {
     //delete image;
+    glDeleteTextures(1,&m_ID);
 }
 
 

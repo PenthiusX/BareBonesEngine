@@ -13,7 +13,7 @@ public:
     _Texture(QImage& img); //texture from QImage
     _Texture(QString qrcPathtoFile); //texture from image file path
     _Texture(char *img,unsigned int w,unsigned int h, GLenum color_format,GLenum data_type,GLenum internal_format); //texture from char pointer array
-    _Texture(char *img,unsigned int w,unsigned int h, GLenum color_format=GL_RGBA,GLenum data_type=GL_UNSIGNED_INT);
+    _Texture(char *img,unsigned int w,unsigned int h, GLenum color_format=GL_RGBA,GLenum data_type=GL_UNSIGNED_BYTE);
     ~_Texture();
 
     //update texture image

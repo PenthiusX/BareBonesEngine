@@ -84,14 +84,21 @@ public:
     void compute_register_wrap_mesh(_Texture &texture_edge_bounds, _Texture &output_img, int rotation_step,glm::vec2 stage_center);
     char *getTextureModelFramebuffer(_Texture &input_img, unsigned int format);
     void computeEdgeModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap, _Texture &texture_out_8_bit, int rotation_step, glm::vec2 stage_center);
-    void compute_subtract_value_from_column(_Texture &input_img, _Texture &output_img,int value = 400);
+    void compute_subtract_value_from_column(_Texture &input_img, _Texture &output_img, int value = 400);
+    void compute_subtract_column_from_value(_Texture &input_img, _Texture &output_img, int value = 400);
     void compute_retrive_lower_2_bytes(_Texture &input_img, _Texture &output_img);
     int *getTextureModelFramebuffer32I(_Texture &input_img, unsigned int format);
     void computeMaskImageR32IR(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
 
     void compute_threshold(_Texture *input_img, _Texture *output_img, unsigned int threshold_value=127);
+    void computeVoxelsModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap, _Texture &texture_out_8_bit, int rotation_step, glm::vec2 stage_center);
+    void computeRegisterVoxelMesh(_Texture &texture_edge_bounds, _Texture &output_img, float cosine , int rotation_step,glm::vec2 stage_center);
+
+    _Texture* textureFromPool(QString texture_name,GLenum typ=GL_R8UI);
+    _Texture* textureFromPool(QString texture_name, unsigned int w, unsigned int h,GLenum typ=GL_R8UI);
+
 protected:
-    _TexturePool texture_pool_8_bit;
+    _TexturePool texture_pool_8_ui,texture_pool_32_i,texture_pool_8_ui_rgba;
 
 };
 

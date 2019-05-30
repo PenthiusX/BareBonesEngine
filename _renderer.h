@@ -39,7 +39,8 @@ public:
     bool isTexturePresent();
 
     //generating new texture from texfile path or img data pointer, context should be active to call tese function
-    void setupTexture(char *img, unsigned int width, unsigned int height, GLenum format = GL_RED);//takes am image and binds it to object
+    void setupTexture(char *img, unsigned int width, unsigned int height, GLenum format = GL_RGBA,GLenum data_type=GL_UNSIGNED_BYTE,GLenum internal_format=GL_RGBA);//takes am image and binds it to object
+
     void setupTexture(QString texfile); //initializes texture from file
 
     void setModelMatrix(QVector3D position, float scale, QQuaternion rotation);//set the model matrix

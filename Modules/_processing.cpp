@@ -237,7 +237,7 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
 
     gpu_compute->compute_retrive_lower_2_bytes(texture_outt,texture_outt);
 
-    gpu_compute->compute_subtract_value_from_column(texture_outt,texture_outt,stage_center.x);
+    gpu_compute->compute_subtract_column_from_value(texture_outt,texture_outt,stage_center.x);
 
     gpu_compute->compute_copy_column_from_to(texture_outt,texture_model_wrap,0,rotation_step);
 
@@ -258,7 +258,7 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     gpu_compute->compute_guassian_blur_5_5(texture_model_wrap_8_bit,texture_model_wrap_8_bit);
 
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out),iwidth,iheight);
-    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
+    emit generatedModelTextureOut((char*)gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,0),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
 
 }
 
@@ -376,6 +376,50 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
 
 
     //histogram(gpu_compute->get_texture_image_framebuffer(texture_edge),iwidth,iheight);
+    emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
+    //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
+    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+
+    //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
+
+}
+
+void _Processing::generateVoxelsModel(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step,glm::vec2 stage_center)
+{
+    static bool init = true;
+
+    //initialise empty textures for processing
+    static _Texture texture_model_wrap(nullptr,200,iheight);
+    static _Texture texture_model_wrap_8_bit(nullptr,200,iheight);
+    static _Texture texture_in(nullptr,iwidth,iheight);
+    static _Texture texture_edge(nullptr,iwidth,iheight);
+    static _Texture texture_out(nullptr,iwidth,iheight);
+
+    if(init)
+    {
+    //load texture
+    texture_model_wrap.load(GL_R32I,GL_RED_INTEGER, GL_INT);
+    texture_model_wrap_8_bit.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_in.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
+    texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
+
+
+    //texture.unbind();
+    init = false;
+
+    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+
+    }
+    if(rotation_step == 0)
+        gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+    //Do the Processing
+
+    //send the image to gpu texture
+    texture_in.setImage(img,iwidth,iheight);
+
+    gpu_compute->computeVoxelsModel(texture_in,texture_out,texture_model_wrap,texture_model_wrap_8_bit,rotation_step,stage_center);
+
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
     //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
     emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());

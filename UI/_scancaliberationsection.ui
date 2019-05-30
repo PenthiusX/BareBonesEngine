@@ -78,6 +78,13 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="scan_voxels_button">
+     <property name="text">
+      <string>scan voxels</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
