@@ -34,7 +34,7 @@ public:
     _Physics();
     ~_Physics();
 
-    std::vector<_Phy_Triangle> generatetrianglesfromVerticesIndices(std::vector<float>vert,std::vector<unsigned int> index);
+    std::vector<_Phy_Triangle> genTriesforCollision(std::vector<float>vert,std::vector<unsigned int> index);
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);

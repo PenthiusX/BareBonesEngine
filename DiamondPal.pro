@@ -29,9 +29,9 @@ HEADERS  += mainwindow.h \
            Modules/_marker.h \
            Modules/_scanner.h \
            _tools.h \
-    _framebuffer.h \
-    _compute.h \
-    _physics.h
+           _framebuffer.h \
+           _compute.h \
+           _physics.h
 
 SOURCES += main.cpp\
             mainwindow.cpp \
@@ -51,9 +51,9 @@ SOURCES += main.cpp\
            Modules/_marker.cpp \
            Modules/_scanner.cpp \
            _tools.cpp \
-    _framebuffer.cpp \
-    _compute.cpp \
-    _physics.cpp
+           _framebuffer.cpp \
+           _compute.cpp \
+           _physics.cpp
 
 FORMS    += mainwindow.ui
 
@@ -78,7 +78,7 @@ win32 { #check if platform is windows
 DEFINES += PLATFORM_WIN=true
 INCLUDEPATH += $$PWD/Dependancies/win/FireGrab/Lib
 DEPENDPATH += $$PWD/Dependancies/win/FireGrab/Lib
-LIBS +=
+LIBS += -lOpengl32
 }
 
 DISTFILES +=

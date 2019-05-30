@@ -18,6 +18,9 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glEnable(GL_FRONT_AND_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_MULTISAMPLE);
+
+
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -30,7 +33,6 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glm_view4x4 = glm::mat4(1.0f);
     isTranfomationLocal = false;
     isFramebufferActive = false;
-
     qDebug() << "render initialised ";
 }
 /*
@@ -202,14 +204,12 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
-    //
     glm_view4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::lookAt(
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
                 glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
     keepSceneEntityUpdated();
-    //    qDebug() << "setCamViewMatrix() on entity" << this->sceneEntity.getTag();
 }
 /*
 * Function: setProjectionMatrix(int w, int h)
@@ -252,6 +252,7 @@ void _Renderer::setPosition(QVector3D pos)
     }
     keepSceneEntityUpdated();
 }
+
 void _Renderer::translate(QVector3D pos)
 {
     //update the traformation matrix with the current values
@@ -370,6 +371,10 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     this->isTranfomationLocal = s.getIsTransfomationLocal();
     setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
+    //setModelDataInBuffers() happens for every object,and is sufficent for the usecases
+    //can be converted to using the same VAO for the same set of vertex+index data.
+    //will need to move the whole model loading and id geenration to assetLoader class
+    //and only pass the relavant ids to VAO at runtime to reduce ovehead.
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
     setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
@@ -436,6 +441,10 @@ _SceneEntity _Renderer::getSceneEntity() const
 */
 void _Renderer::_Renderer::draw()
 {
+    if(this->sceneEntity.getIsLineMode())
+      glPolygonMode(GL_FRONT,GL_LINE);
+    else if(this->sceneEntity.getIsLineMode() == false)
+        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     if(this->sceneEntity.getIsActive())
     {
         //Using the shader program in the current context

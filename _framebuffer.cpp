@@ -112,11 +112,10 @@ void _FrameBuffer::initialise()
  * which comes after.
  * Created: 30_04_2019
 */
-void _FrameBuffer::setFrame()
+void _FrameBuffer::setFrameInUpdate()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 /*
@@ -127,7 +126,7 @@ void _FrameBuffer::setFrame()
 */
 void _FrameBuffer::renderFrameOnQuad()
 {
-
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);//always force the FBO quad to have a GL_FILL hint.
     glBindFramebuffer(GL_FRAMEBUFFER, 0);// now bind the default(orignal) frame , draw a quad plane attaching the frambuffer texture on it.
     glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure

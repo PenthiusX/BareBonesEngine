@@ -119,13 +119,13 @@ void _Scene::onResize(int w,int h)
 void _Scene::render()
 {
     //sets the Frame for the framebufferObject , the frames are being bound underneath in the draw() function below
-    fboObject->setFrame();
+    fboObject->setFrameInUpdate();
     //Frame to render is below
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
         //Physics update
         if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
-        {   //Passing some essentials into the updateLoop
+        {   //Passing some essentials into the updateLoop for physics
             updatePhysics(renderObjects[i]->getSceneEntity().getPhysicsObjectType(),
                           glm::vec2(this->mousePositionL.x(),//Mouse position
                                     this->mousePositionL.y()),
@@ -136,7 +136,6 @@ void _Scene::render()
                           renderObjects[i]->getSceneEntity(),//Selected sceneEntity
                           i);//Selected Index
         }
-
         //Raster update
         renderObjects[i]->draw();//calls the draw function unique to each renderObject
     }
@@ -177,7 +176,6 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
 
 void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
-
     if(type == _Physics::Sphere)
     {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
         float colliderSize = s.getScale();

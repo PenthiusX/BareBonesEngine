@@ -37,6 +37,7 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
+
     //Initailise the scene in InitaliseGl
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
@@ -84,6 +85,7 @@ void _GLWidget::initializeGL()
     //-----------------
     s.setId(1);
     s.setTag("object1");
+    s.setIsLineMode(true);
     s.setPhysicsObject(_Physics::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     //    s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
@@ -352,8 +354,9 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 void _GLWidget::addRandomSceneEntitestoScene()
 {
     for(int i = 0 ; i < 1 ; i++)
-    {
-        makeCurrent();//this is needed if you need the openglFunctions to pickup the currentcontext when doing stuff
+    {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
+     //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
+        makeCurrent();
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransfomationLocal(false);
@@ -362,7 +365,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRange(0.5,5));
         onPress->setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
-//        onPress->setPhysicsObject(_Physics::Sphere);
+        //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         delete onPress;
         qInfo() << i <<"th object";

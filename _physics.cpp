@@ -4,7 +4,7 @@
 _Physics::_Physics(){}
 _Physics::~_Physics(){}
 
-std::vector<_Phy_Triangle> _Physics::generatetrianglesfromVerticesIndices(std::vector<float> vert, std::vector<unsigned int> index)
+std::vector<_Phy_Triangle> _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigned int> index)
 {
     // this point will not change on translation
     glm::vec3 vpoint;
