@@ -17,6 +17,7 @@ _SceneEntity::_SceneEntity()
     this->isHitByRay = false;
     this->isMeshEditable = false;
     this->tag = new char();
+    isLineMode = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -263,13 +264,15 @@ std::vector<float> _SceneEntity::getNormalData()const
     return this->normalData;
 }
 /*
- */
+ *
+*/
 bool _SceneEntity::getIsActive()
 {
     return this->isActive;
 }
 /*
- */
+ *
+*/
 void _SceneEntity::setIsMeshEditable(bool isit)
 {
     this->isMeshEditable = isit;
@@ -277,6 +280,17 @@ void _SceneEntity::setIsMeshEditable(bool isit)
 bool _SceneEntity::getIsMeshEditable()
 {
     return this->isMeshEditable;
+}
+/*
+ *
+*/
+void _SceneEntity::setIsLineMode(bool isit)
+{
+    this->isLineMode = isit;
+}
+bool _SceneEntity::getIsLineMode()
+{
+    return this->isLineMode;
 }
 
 /*

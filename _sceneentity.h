@@ -71,6 +71,8 @@ public:
     bool getIsActive();
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
+    void setIsLineMode(bool isit);
+    bool getIsLineMode();
     //type of transformations
     void setIsTransfomationLocal(bool isLoc);
     bool getIsTransfomationLocal();
@@ -109,6 +111,7 @@ private:
     bool isMeshEditable;
     bool isHitByRay;
     bool isPhysicsObject;
+    bool isLineMode;
     //
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
