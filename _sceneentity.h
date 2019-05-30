@@ -22,6 +22,9 @@ public:
     _SceneEntity(QVector3D pos,QVector3D rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
+
+    void setIsActive(bool isIt);
+    bool getIsActive();
     //
     void setId(unsigned int id);//sets the iD either externaly or internally generated
     unsigned int getId() const;
@@ -68,7 +71,6 @@ public:
     //
     void setPhysicsObject(_Physics::PhysicsObjects penum);
     //
-    bool getIsActive();
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
     void setIsLineMode(bool isit);

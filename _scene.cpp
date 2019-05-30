@@ -106,8 +106,8 @@ void _Scene::onResize(int w,int h)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     }
-    fboObject->initialise();
-    fboObject->setupFramebuffer(w,h);
+    fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
+    fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
 /*
  * Function: render()
@@ -161,7 +161,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 void _Scene::updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
     updateMouseRay(mousePos,screenRes,s);
-    upDateRayCollison(type,camPos,s,index);
+    upDateRayCollison(camPos,s,index);
 }
 
 void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
@@ -174,9 +174,9 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
     //
 }
 
-void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_SceneEntity s,unsigned int index)
+void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
-    if(type == _Physics::Sphere)
+    if(s.getPhysicsObjectType() == _Physics::Sphere)
     {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
         float colliderSize = s.getScale();
 
@@ -197,11 +197,11 @@ void _Scene::upDateRayCollison(_Physics::PhysicsObjects type,glm::vec3 camPos,_S
             renderObjects[index]->setSceneEntityInRenderer(s);
         }
     }
-    else if(type == _Physics::Box)//run operations for HitBox
+    else if(s.getPhysicsObjectType() == _Physics::Box)//run operations for HitBox
     {
 
     }
-    else if(type == _Physics::Mesh)//Run operation for Mesh collider
+    else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
     {
 
     }

@@ -259,6 +259,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
         }
     }
 }
+    bool ist = false;
 /*
 * Function: keyPressEvent(QKeyEvent * event)
 * runns anytime a key is presses and returns which key through the
@@ -349,11 +350,16 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     if (event->text() == "p" || event->text() == "P"){
         addRandomSceneEntitestoScene();
     }
+
+    if (event->text() == "l" || event->text() == "L"){
+        ist = !ist;
+        applyStuffToallEntites(ist);
+    }
 }
 
 void _GLWidget::addRandomSceneEntitestoScene()
 {
-    for(int i = 0 ; i < 1 ; i++)
+    for(int i = 0 ; i < 1000 ; i++)
     {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
      //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
         makeCurrent();
@@ -372,4 +378,17 @@ void _GLWidget::addRandomSceneEntitestoScene()
         doneCurrent();
     }
 }
+
+void _GLWidget::applyStuffToallEntites(bool isit)
+{
+    for(int i = 1 ; i < scene->getSceneObjects().size() ; i++)
+    {
+        _SceneEntity s;
+        s = scene->getSceneObjects()[i]->getSceneEntity();
+        s.setIsActive(isit);
+        scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);
+        qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
+    }
+}
+
 
