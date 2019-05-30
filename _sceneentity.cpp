@@ -266,6 +266,10 @@ std::vector<float> _SceneEntity::getNormalData()const
 /*
  *
 */
+void _SceneEntity::setIsActive(bool isIt)
+{
+    this->isActive = isIt;
+}
 bool _SceneEntity::getIsActive()
 {
     return this->isActive;
