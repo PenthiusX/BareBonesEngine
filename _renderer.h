@@ -71,7 +71,7 @@ private:
     _Shader* fboShader;
 
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
-    glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix;
+    glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix,pivotTmat;
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
 

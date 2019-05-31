@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <sstream>
 
+#include <qdiriterator.h>
+#include <QXmlStreamReader>
+
 /*
 * Constructor/Distructor:
 * Created:15_03_2019
@@ -14,9 +17,12 @@ _AssetLoader::_AssetLoader()
     vertMax.setX(0.0);
     vertMax.setY(0.0);
 }
-_AssetLoader::~_AssetLoader()
+_AssetLoader::~_AssetLoader(){}
+/*
+ */
+std::vector<_AssetLoader::_Model_Info> _AssetLoader::getModelInfoArray()
 {
-
+    return this->modelInfoArray;
 }
 /*
 * Function:getAssetVertices()
@@ -96,5 +102,26 @@ void _AssetLoader::objLoader(QString pathToFile)
             indices.push_back(foundi - 1);
         }
         temp2 = "";
+    }
+}
+
+/*
+ * Preprocess all models into memory
+ * will reduce ovehead on runtime.
+ * Created: 31_05_2019
+*/
+void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
+{
+
+    foreach(const QString &imageName, QDir(":/"+folderName).entryList())
+    {
+        minfo.name = imageName;
+        minfo.path = ":/"+ folderName +"/" + imageName;
+        objLoader(":/"+ folderName +"/" + imageName);
+        minfo.vertexArray = this->vertices;
+        minfo.indexAarray = this->indices;
+        modelInfoArray.push_back(minfo);
+        this->vertices.clear();
+        this->indices.clear();
     }
 }
