@@ -37,7 +37,6 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-
     //Initailise the scene in InitaliseGl
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
@@ -88,7 +87,7 @@ void _GLWidget::initializeGL()
     s.setIsLineMode(true);
     s.setPhysicsObject(_Physics::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    //    s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
+    //s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.5));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
@@ -259,7 +258,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
         }
     }
 }
-    bool ist = false;
+bool ist = false;
 /*
 * Function: keyPressEvent(QKeyEvent * event)
 * runns anytime a key is presses and returns which key through the
@@ -357,11 +356,13 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     }
 }
 
+
+
 void _GLWidget::addRandomSceneEntitestoScene()
 {
     for(int i = 0 ; i < 1000 ; i++)
     {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
-     //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
+        //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
         makeCurrent();
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
@@ -383,10 +384,10 @@ void _GLWidget::applyStuffToallEntites(bool isit)
 {
     for(int i = 1 ; i < scene->getSceneObjects().size() ; i++)
     {
-        _SceneEntity s;
-        s = scene->getSceneObjects()[i]->getSceneEntity();
-        s.setIsActive(isit);
-        scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);
+        _SceneEntity s;//Alternate implementation to Making changes to the SceneEntity.
+        s = scene->getSceneObjects()[i]->getSceneEntity();//copy the existing scene entity,
+        s.setIsActive(isit);// makes specific changes then,
+        scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);//reSet it inside the SceneRenderer.
         qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
     }
 }

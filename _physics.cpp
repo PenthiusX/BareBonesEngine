@@ -4,7 +4,7 @@
 _Physics::_Physics(){}
 _Physics::~_Physics(){}
 
-std::vector<_Phy_Triangle> _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigned int> index)
+void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigned int> index)
 {
     // this point will not change on translation
     glm::vec3 vpoint;
@@ -25,7 +25,11 @@ std::vector<_Phy_Triangle> _Physics::genTriesforCollision(std::vector<float> ver
         tri.pointC = pv[index[i+2]];
         triVector.push_back(tri);
     }
-    return triVector;
+}
+
+void _Physics::genNormalsForTries(std::vector<_Phy_Triangle> triV)
+{
+    //implementation pending
 }
 
 void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4, glm::vec2 res)

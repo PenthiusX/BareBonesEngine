@@ -112,7 +112,7 @@ void _FrameBuffer::initialise()
  * which comes after.
  * Created: 30_04_2019
 */
-void _FrameBuffer::setFrameInUpdate()
+void _FrameBuffer::setUpdatedFrame()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)

@@ -137,8 +137,8 @@ void _Shader::setComputeShader(QString compShader)
 
     if (!rvalue)
     {
-            glGetShaderInfoLog(computeShader, 512, nullptr, infoLog);
-           qDebug() << "Error: Compiler log:\n%s\n" << infoLog ;
+        glGetShaderInfoLog(computeShader, 512, nullptr, infoLog);
+        qDebug() << "Error: Compiler log:\n%s\n" << infoLog ;
     }
 
     // Bind the compute program so it can read the radius uniform location.

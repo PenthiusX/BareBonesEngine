@@ -56,6 +56,7 @@ public:
     glm::mat4x4 getViewMatrix()const;
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
+    void setModelData(_AssetLoader::Model_Info m);
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
@@ -122,6 +123,7 @@ private:
     glm::mat4x4 ViewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
+    _AssetLoader::Model_Info modelInfo;
     _Physics::PhysicsObjects phyObjtype;//Physics Type identifier
 };
 

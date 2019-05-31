@@ -31,6 +31,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glm_projection4x4 = glm::mat4(1.0f);
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
+    pivotTmat = glm::mat4(1.0f);
     isTranfomationLocal = false;
     isFramebufferActive = false;
     qDebug() << "render initialised ";
@@ -329,7 +330,7 @@ void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
     }
     if(!isTranfomationLocal)
     {
-        glm::mat4x4 pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
+        pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
         pivotTmat[3][0] = pivot.x();
         pivotTmat[3][1] = pivot.y();
         pivotTmat[3][2] = pivot.z();
@@ -461,9 +462,12 @@ void _Renderer::_Renderer::draw()
         glBindVertexArray(VAO);
         //
         //Sets the values for the MVP matrix in the vertex shader
-        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
-        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
-        glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
+        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(this->sceneEntity.getViewMatrix()));
+        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(this->sceneEntity.getProjectionMatrix()));
+        glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(this->sceneEntity.getTranslationMatrix()*
+                                                                     this->sceneEntity.getRotationmatrix()*
+                                                                     this->pivotTmat *
+                                                                     this->sceneEntity.getScaleingMatrix()));
         //
         setColors();//Setting the uniform for color
         //

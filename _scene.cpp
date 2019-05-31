@@ -15,6 +15,8 @@ _Scene::_Scene()
 {
     isCamera = false;
     fboObject = new _FrameBuffer();
+    //preLoad all models in the Qrc File into memory for this scene
+
 }
 _Scene::~_Scene()
 {
@@ -80,6 +82,7 @@ void _Scene::addCamera(_Camera c)
 /*
  * Function: updateCamera(_Camera c)
  * sets the camera updated values to every render entity matrix
+ * Created:26_02_2019
 */
 void _Scene::updateCamera(_Camera c)
 {
@@ -94,7 +97,7 @@ void _Scene::updateCamera(_Camera c)
 }
 /*
  * Function: onResize(int w,int h)
- * This function gets called on resize and all operations will run when the windows is resized
+ * gets called on resize and all operations will run when the windows is resized
  * this is being called by the _GlWidget class.
  * Created:26_02_2019
 */
@@ -118,16 +121,17 @@ void _Scene::onResize(int w,int h)
 */
 void _Scene::render()
 {
-    //sets the Frame for the framebufferObject , the frames are being bound underneath in the draw() function below
-    fboObject->setFrameInUpdate();
+    //sets the Frame for the framebufferObject.
+    fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
+    //--------------------------------------
     //Frame to render is below
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
-        //Physics update
+        //Physics update--
+        //update Physics for all the sceneObject with property enabled
         if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
         {   //Passing some essentials into the updateLoop for physics
-            updatePhysics(renderObjects[i]->getSceneEntity().getPhysicsObjectType(),
-                          glm::vec2(this->mousePositionL.x(),//Mouse position
+            updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
                                     this->mousePositionL.y()),
                           glm::vec3(cam.getEyePosition().x(),//Camera Position
                                     cam.getEyePosition().y(),
@@ -136,11 +140,14 @@ void _Scene::render()
                           renderObjects[i]->getSceneEntity(),//Selected sceneEntity
                           i);//Selected Index
         }
-        //Raster update
+
+        //Frame update----
+        //Render all objects that are active.
         renderObjects[i]->draw();//calls the draw function unique to each renderObject
     }
-    //Frame is Loader and rendered on Quad below
-    fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues to the fbo object
+    //-----------------------------------------
+    //Frame above is loaded in buffers and rendered on FBOquad below
+    fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
     fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 
@@ -158,12 +165,14 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
  * in the drawFunction
  * Created: 22_05_2019
  */
-void _Scene::updatePhysics(_Physics::PhysicsObjects type, glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
+void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
     updateMouseRay(mousePos,screenRes,s);
     upDateRayCollison(camPos,s,index);
 }
-
+/* Function: updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
+ *
+*/
 void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
 {
     //calculate ray vector
@@ -173,7 +182,9 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
     pointerObject.y = this->phys.getrayEye().y;
     //
 }
-
+/*
+ *
+ */
 void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
     if(s.getPhysicsObjectType() == _Physics::Sphere)
@@ -203,7 +214,11 @@ void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int inde
     }
     else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
     {
-
+//        if(runOnce)
+//        {
+//            this->phys.genTriesforCollision(s.vertexData,s.indexData);
+//            runOnce = false;
+//        }
     }
 }
 
