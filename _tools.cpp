@@ -19,7 +19,7 @@
  * Author: Saurabh , Aditya
 */
 
-using namespace std;
+
 //Commonly used Functions
 QElapsedTimer timer;
 unsigned int frameCounter;
@@ -109,7 +109,7 @@ void _Tools::printAtFixedIntevals(int secs, QString s)
 
 float _Tools::getRandomNumberfromRange(float min, float max)
 {
-//    std::srand(timer.elapsed());
+//    std::srand(2);
     return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
 }
 
@@ -145,11 +145,11 @@ QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
 
 QJsonObject _Tools::ReadJsonFromSystem(QString Filename)
 {
-    string line;
+    std::string line;
 
     QByteArray saveData;
 
-    ifstream myfile (Filename.toStdString());
+    std::ifstream myfile (Filename.toStdString());
     if (myfile.is_open())
     {
       while ( getline (myfile,line) )
@@ -160,7 +160,7 @@ QJsonObject _Tools::ReadJsonFromSystem(QString Filename)
       myfile.close();
     }
 
-    else cout << "Unable to open file";
+    else std::cout << "Unable to open file";
 
     QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
 
@@ -198,7 +198,7 @@ bool _Tools::WriteJsonToFile(QString filename ,QJsonObject config)
 
 bool _Tools::WriteJsonToFileSystem(QString filename ,QJsonObject config)
 {
-    ofstream myfile (filename.toStdString());
+    std::ofstream myfile (filename.toStdString());
 
     if (myfile.is_open())
     {

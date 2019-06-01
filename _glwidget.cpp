@@ -30,15 +30,12 @@ _GLWidget::~_GLWidget()
     delete scene;
 }
 
-/*
-.___       .__  __  .__       .__  .__                _________                __                   __
-|   | ____ |__|/  |_|__|____  |  | |__| ______ ____   \_   ___ \  ____   _____/  |_  ____ ___  ____/  |_
-|   |/    \|  \   __\  \__  \ |  | |  |/  ___// __ \  /    \  \/ /  _ \ /    \   __\/ __ \\  \/  /\   __\
-|   |   |  \  ||  | |  |/ __ \|  |_|  |\___ \\  ___/  \     \___(  <_> )   |  \  | \  ___/ >    <  |  |
-|___|___|  /__||__| |__(____  /____/__/____  >\___  >  \______  /\____/|___|  /__|  \___  >__/\_ \ |__|
-         \/                 \/             \/     \/          \/            \/          \/      \/
-*/
 
+//  ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  .▄▄ · ▄▄▄ .
+//  ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▐█ ▀. ▀▄.▀·
+//  ▐█·▐█▐▐▌▐█· ▐█.▪▐█·▄█▀▀█ ██▪  ▐█·▄▀▀▀█▄▐▀▀▪▄
+//  ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌▐█▄▪▐█▐█▄▄▌
+//  ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀  ▀▀▀
 /*
 * Function: initializeGL() overrides the
 * same function in the OpopenglFunctions class
@@ -91,9 +88,10 @@ void _GLWidget::initializeGL()
     //-----------------
     s.setId(1);
     s.setTag("object1");
+    s.setIsLineMode(true);
     s.setPhysicsObject(_Physics::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    //    s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
+    //s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.5));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
@@ -192,15 +190,12 @@ void _GLWidget::initializeGL()
     generated_model.setModelData(vertsG,indiceG);
     scene->addSceneObject(generated_model);
 }
+//         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
+//  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
+//   ▄█▀▄ ▐█▐▐▌    ▐▀▀▄ ▐▀▀▪▄▄▀▀▀█▄▐█·▄█▀▀▀•▐▀▀▪▄
+//  ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
+//   ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 
-/*
-   ________           __________              .__
-   \_____  \   ____   \______   \ ____   _____|__|_______ ____
-    /   |   \ /    \   |       _// __ \ /  ___/  \___   // __ \
-   /    |    \   |  \  |    |   \  ___/ \___ \|  |/    /\  ___/
-   \_______  /___|  /  |____|_  /\___  >____  >__/_____ \\___  >
-            \/     \/          \/     \/     \/         \/    \/
-*/
 /*
  * Function: resizeGL(int w, int h) overides the
  * function in OpopenglFunctions class.
@@ -212,15 +207,12 @@ void _GLWidget::resizeGL(int w, int h)
 {
     scene->onResize(w, h);
 }
+//  ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
+//  █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
+//  █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
+//  ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
+//   ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
 
-/*
-    ________
-    \______ \____________ __  _  __
-     |    |  \_  __ \__  \\ \/ \/ /
-     |    `   \  | \// __ \\     /
-    /_______  /__|  (____  /\/\_/
-            \/           \/
- */
 /*
  * Function: paintGl()
  * ovveriding thes function in OpopenglFunctions
@@ -246,15 +238,12 @@ void _GLWidget::paintGL()//the renderloop
     _Tools::printFrameRate(1);//prints the frame rate in the application output
 }
 
-/*
- *_________              __                .__  .__
-\_   ___ \  ____   _____/  |________  ____ |  | |  |   ______
-/    \  \/ /  _ \ /    \   __\_  __ \/  _ \|  | |  |  /  ___/
-\     \___(  <_> )   |  \  |  |  | \(  <_> )  |_|  |__\___ \
- \______  /\____/|___|  /__|  |__|   \____/|____/____/____  >
-        \/            \/                                  \/
- *
-*/
+
+//   ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·
+//  ▐█ ▌▪▪     •█▌▐█•██  ▀▄ █·▪     ██•  ██•  ▐█ ▀.
+//  ██ ▄▄ ▄█▀▄ ▐█▐▐▌ ▐█.▪▐▀▀▄  ▄█▀▄ ██▪  ██▪  ▄▀▀▀█▄
+//  ▐███▌▐█▌.▐▌██▐█▌ ▐█▌·▐█•█▌▐█▌.▐▌▐█▌▐▌▐█▌▐▌▐█▄▪▐█
+//  ·▀▀▀  ▀█▄▀▪▀▀ █▪ ▀▀▀ .▀  ▀ ▀█▄▀▪.▀▀▀ .▀▀▀  ▀▀▀▀
 /*
 * Function: mousePressEvent(QMouseEvent *e)
 * this is a overriden function from the QWidget parent
@@ -351,6 +340,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
         }
     }
 }
+bool ist = false;
 /*
 * Function: keyPressEvent(QKeyEvent * event)
 * runns anytime a key is presses and returns which key through the
@@ -441,28 +431,31 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     if (event->text() == "p" || event->text() == "P"){
         addRandomSceneEntitestoScene();
     }
+
+    if (event->text() == "l" || event->text() == "L"){
+        ist = !ist;
+        applyStuffToallEntites(ist);
+    }
 }
-
-
-/*
-__________                __          __                          .___               .__                                __          __  .__
-\______   \_______  _____/  |_  _____/  |_ ___.__.______   ____   |   | _____ ______ |  |   ____   _____   ____   _____/  |______ _/  |_|__| ____   ____   ______
- |     ___/\_  __ \/  _ \   __\/  _ \   __<   |  |\____ \_/ __ \  |   |/     \\____ \|  | _/ __ \ /     \_/ __ \ /    \   __\__  \\   __\  |/  _ \ /    \ /  ___/
- |    |     |  | \(  <_> )  | (  <_> )  |  \___  ||  |_> >  ___/  |   |  Y Y  \  |_> >  |_\  ___/|  Y Y  \  ___/|   |  \  |  / __ \|  | |  (  <_> )   |  \\___ \
- |____|     |__|   \____/|__|  \____/|__|  / ____||   __/ \___  > |___|__|_|  /   __/|____/\___  >__|_|  /\___  >___|  /__| (____  /__| |__|\____/|___|  /____  >
-                                           \/     |__|        \/            \/|__|             \/      \/     \/     \/          \/                    \/     \/
-*/
 
 /*
  * Randomly generate scene objects and add to scene
  * currenty is buggy and not proper
  * still in development
  */
+
+//  • ▌ ▄ ·. ▪  .▄▄ ·  ▄▄·            ▄▄▄·▄▄▄ .▄▄▄   ▄▄▄· ▄▄▄▄▄▪         ▐ ▄ .▄▄ ·
+//  ·██ ▐███▪██ ▐█ ▀. ▐█ ▌▪    ▪     ▐█ ▄█▀▄.▀·▀▄ █·▐█ ▀█ •██  ██ ▪     •█▌▐█▐█ ▀.
+//  ▐█ ▌▐▌▐█·▐█·▄▀▀▀█▄██ ▄▄     ▄█▀▄  ██▀·▐▀▀▪▄▐▀▀▄ ▄█▀▀█  ▐█.▪▐█· ▄█▀▄ ▐█▐▐▌▄▀▀▀█▄
+//  ██ ██▌▐█▌▐█▌▐█▄▪▐█▐███▌    ▐█▌.▐▌▐█▪·•▐█▄▄▌▐█•█▌▐█ ▪▐▌ ▐█▌·▐█▌▐█▌.▐▌██▐█▌▐█▄▪▐█
+//  ▀▀  █▪▀▀▀▀▀▀ ▀▀▀▀ ·▀▀▀      ▀█▄▀▪.▀    ▀▀▀ .▀  ▀ ▀  ▀  ▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪ ▀▀▀▀
+
 void _GLWidget::addRandomSceneEntitestoScene()
 {
-    for(int i = 0 ; i < 1 ; i++)
-    {
-        makeCurrent();//this is needed if you need the openglFunctions to pickup the currentcontext when doing stuff
+    for(int i = 0 ; i < 1000 ; i++)
+    {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
+        //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
+        makeCurrent();
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransfomationLocal(false);
@@ -471,7 +464,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRange(0.5,5));
         onPress->setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
-//        onPress->setPhysicsObject(_Physics::Sphere);
+        //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         delete onPress;
         qInfo() << i <<"th object";
@@ -561,5 +554,18 @@ void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
                 }
             }
         }
+    }
+}
+
+
+void _GLWidget::applyStuffToallEntites(bool isit)
+{
+    for(int i = 1 ; i < scene->getSceneObjects().size() ; i++)
+    {
+        _SceneEntity s;//Alternate implementation to Making changes to the SceneEntity.
+        s = scene->getSceneObjects()[i]->getSceneEntity();//copy the existing scene entity,
+        s.setIsActive(isit);// makes specific changes then,
+        scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);//reSet it inside the SceneRenderer.
+        qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
     }
 }

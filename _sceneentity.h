@@ -22,6 +22,9 @@ public:
     _SceneEntity(QVector3D pos,QVector3D rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
+
+    void setIsActive(bool isIt);
+    bool getIsActive();
     //
     void setId(unsigned int id);//sets the iD either externaly or internally generated
     unsigned int getId() const;
@@ -53,6 +56,7 @@ public:
     glm::mat4x4 getViewMatrix()const;
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
+    void setModelData(_AssetLoader::Model_Info m);
     void setModelData(QString path);//takes the relative path via a qrc file path
     //
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
@@ -69,9 +73,10 @@ public:
     //
     void setPhysicsObject(_Physics::PhysicsObjects penum);
     //
-    bool getIsActive();
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
+    void setIsLineMode(bool isit);
+    bool getIsLineMode();
     //type of transformations
     void setIsTransfomationLocal(bool isLoc);
     bool getIsTransfomationLocal();
@@ -109,6 +114,7 @@ private:
     bool isMeshEditable;
     bool isHitByRay;
     bool isPhysicsObject;
+    bool isLineMode;
     //
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
@@ -117,6 +123,7 @@ private:
     glm::mat4x4 ViewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
+    _AssetLoader::Model_Info modelInfo;
     _Physics::PhysicsObjects phyObjtype;//Physics Type identifier
 };
 

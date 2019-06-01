@@ -18,6 +18,7 @@ _SceneEntity::_SceneEntity()
     this->isHitByRay = false;
     this->isMeshEditable = false;
     this->tag = new char();
+    isLineMode = false;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -208,7 +209,6 @@ glm::mat4x4 _SceneEntity::getViewMatrix() const
 {
     return this->ViewMatrix;
 }
-
 /*
  * Function: setVertexData(std::vector<float> vertices) & getvertexData()
  * sets/gets the vertexData for the current object.
@@ -264,13 +264,19 @@ std::vector<float> _SceneEntity::getNormalData()const
     return this->normalData;
 }
 /*
- */
+ *
+*/
+void _SceneEntity::setIsActive(bool isIt)
+{
+    this->isActive = isIt;
+}
 bool _SceneEntity::getIsActive()
 {
     return this->isActive;
 }
 /*
- */
+ *
+*/
 void _SceneEntity::setIsMeshEditable(bool isit)
 {
     this->isMeshEditable = isit;
@@ -278,6 +284,17 @@ void _SceneEntity::setIsMeshEditable(bool isit)
 bool _SceneEntity::getIsMeshEditable()
 {
     return this->isMeshEditable;
+}
+/*
+ *
+*/
+void _SceneEntity::setIsLineMode(bool isit)
+{
+    this->isLineMode = isit;
+}
+bool _SceneEntity::getIsLineMode()
+{
+    return this->isLineMode;
 }
 
 /*
@@ -300,12 +317,11 @@ bool _SceneEntity::getIsTransfomationLocal()
  * sets the vertex and index data in one function, for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
+void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned int> indices)
 {
     this->vertexData = vertices;
     this->indexData = indices;
 }
-
 /*
  * Function: setModelData(Qstring path)
  * sets the vertex and index data in one function, for the current object.
@@ -319,7 +335,13 @@ void _SceneEntity::setModelData(QString path)
     this->vertexData = assetLoader.getAssetVertices();
     this->indexData = assetLoader.getAssetIndices();
 }
-
+/*
+ *
+*/
+void _SceneEntity::setModelData(_AssetLoader::Model_Info m)
+{
+    this->modelInfo = m;
+}
 /*
  * Function: setShaderPath(QString vSh, QString fSh)
  * sets the path  for the shadert to be loaded ,for the current object.

@@ -15,12 +15,11 @@
  * Author: Aditya
 */
 
-
-
 typedef struct Phy_Triangle{
     glm::vec3 pointA;
     glm::vec3 pointB;
     glm::vec3 pointC;
+    glm::vec3 normal;
 }_Phy_Triangle;
 
 typedef struct Phy_Sphere{
@@ -34,20 +33,27 @@ public:
     _Physics();
     ~_Physics();
 
-    std::vector<_Phy_Triangle> generatetrianglesfromVerticesIndices(std::vector<float>vert,std::vector<unsigned int> index);
+    void genTriesforCollision(std::vector<float>vert,std::vector<unsigned int> index);
+    void genNormalsForTries( std::vector<_Phy_Triangle> triV);
+    //
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
+
+    glm::vec3 BarycentricPointA(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p);
+    inline float TriArea2D(float x1, float y1, float x2, float y2, float x3, float y3);
+    glm::vec3 BarycentricPointB(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p, float &u, float &v, float &w);
+
     //
     glm::vec3 getRayWorld();
     glm::vec4 getrayEye();
     glm::vec3 getrayNormalizedDeviceCoordinates();
     glm::vec4 getrayClip();
-
+    //
     void hitTriangle();
     void hitBox();
-
-    enum PhysicsObjects {
+    //
+    enum PhysicsObjects{
         Sphere = 0,
         Box = 1,
         Mesh = 2,

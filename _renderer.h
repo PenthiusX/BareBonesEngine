@@ -11,6 +11,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+//#include <qopengl.h>
 /*
  * Class: _Renderer
  * To create an abstraction for randering data
@@ -71,7 +73,7 @@ private:
     _Shader* fboShader;
 
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
-    glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix;
+    glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix,pivotTmat;
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
 

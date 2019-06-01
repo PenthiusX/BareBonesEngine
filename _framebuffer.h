@@ -36,7 +36,7 @@ public:
     void initialise();//initialises the framebuffer objects
     void setupFramebuffer(int w , int h);//can be called once but needs to update if the window is resized
     //
-    void setFrame();
+    void setUpdatedFrame();
     void renderFrameOnQuad();
     void renderFrameOn();
     //

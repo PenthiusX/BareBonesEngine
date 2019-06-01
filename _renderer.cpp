@@ -18,6 +18,9 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glEnable(GL_FRONT_AND_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_MULTISAMPLE);
+
+
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -28,9 +31,9 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glm_projection4x4 = glm::mat4(1.0f);
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
+    pivotTmat = glm::mat4(1.0f);
     isTranfomationLocal = false;
     isFramebufferActive = false;
-
     qDebug() << "render initialised ";
 }
 /*
@@ -43,7 +46,20 @@ _Renderer::~_Renderer()
     delete fboShader;
     delete shdr;
 }
-
+/*
+* Function: getSceneEntity()
+* returns the current scene entity object.
+* Created:11_02_2019
+*/
+_SceneEntity _Renderer::getSceneEntity() const
+{
+    return this->sceneEntity;
+}
+//  ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
+//  ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▪▀·.█▌▀▄.▀·
+//  ▐█·▐█▐▐▌▐█· ▐█.▪▐█·▄█▀▀█ ██▪  ▐█·▄█▀▀▀•▐▀▀▪▄
+//  ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
+//  ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 /*
  * Function: setShader(no params)
  * Sets a dafault hard-fed shader
@@ -181,6 +197,7 @@ void _Renderer::setTexture(QString pathtoTexture)
         textures[0].setImage(pathtoTexture);
     qDebug() << "setTexture(QString pathtoTexture) on entity" << this->sceneEntity.getTag();
 }
+
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 * Sets the values matrices for the model matrix
@@ -236,6 +253,12 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 
     qDebug() << "setProjectionMatrix() on entity" << this->sceneEntity.getTag();
 }
+
+//  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
+//  •██  ▀▄ █·▐█ ▀█ •█▌▐█▐█ ▀. ▐▄▄·▪     ▀▄ █··██ ▐███▪
+//   ▐█.▪▐▀▀▄ ▄█▀▀█ ▐█▐▐▌▄▀▀▀█▄██▪  ▄█▀▄ ▐▀▀▄ ▐█ ▌▐▌▐█·
+//   ▐█▌·▐█•█▌▐█ ▪▐▌██▐█▌▐█▄▪▐███▌.▐█▌.▐▌▐█•█▌██ ██▌▐█▌
+//   ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
 /*
  * Function: setPosition(QVector3D pos)\translate(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
@@ -261,6 +284,7 @@ void _Renderer::setPosition(QVector3D pos)
     }
     keepSceneEntityUpdated();
 }
+
 void _Renderer::translate(QVector3D pos)
 {
     //update the traformation matrix with the current values
@@ -337,7 +361,7 @@ void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
     }
     if(!isTranfomationLocal)
     {
-        glm::mat4x4 pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
+        pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
         pivotTmat[3][0] = pivot.x();
         pivotTmat[3][1] = pivot.y();
         pivotTmat[3][2] = pivot.z();
@@ -379,6 +403,10 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     this->isTranfomationLocal = s.getIsTransfomationLocal();
     setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
+    //setModelDataInBuffers() happens for every object,and is sufficent for the usecases
+    //can be converted to using the same VAO for the same set of vertex+index data.
+    //will need to move the whole model loading and id geenration to assetLoader class
+    //and only pass the relavant ids to VAO at runtime to reduce ovehead.
     setModelDataInBuffers(s.getvertexData(), s.getIndexData());
     setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
@@ -405,6 +433,58 @@ void _Renderer::keepSceneEntityUpdated()
     //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 
+//  ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌    ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
+//  ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█    █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
+//  ▐█· ▐█▌▐▀▀▄ ▄█▀▀█ ██▪▐█▐▐▌    █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
+//  ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌    ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
+//  ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪     ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
+/*
+ * Function: draw()
+ * This is your proprietory draw function
+ * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
+ * Used by: the _glWidget class paintGl().
+ * Created:11_02_2019
+*/
+void _Renderer::_Renderer::draw()
+{
+    if(this->sceneEntity.getIsLineMode())
+      glPolygonMode(GL_FRONT,GL_LINE);
+    else if(this->sceneEntity.getIsLineMode() == false)
+        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    if(this->sceneEntity.getIsActive())
+    {
+        //Using the shader program in the current context
+        shdr->useShaderProgram();
+        //Bind Textures
+        for(unsigned int t=0;t<textures.size();t++){
+            textures[t].bind();
+        }
+        //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
+        if(this->sceneEntity.getIsMeshEditable()){
+                glBindBuffer(GL_ARRAY_BUFFER,VBO);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);}
+        //Bind the VAO of the respective buffer object (needs to be bound everytime)
+        glBindVertexArray(VAO);
+        //
+        //Sets the values for the MVP matrix in the vertex shader
+        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(this->sceneEntity.getViewMatrix()));
+        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(this->sceneEntity.getProjectionMatrix()));
+        glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(this->sceneEntity.getTranslationMatrix()*
+                                                                     this->sceneEntity.getRotationmatrix()*
+                                                                     this->pivotTmat *
+                                                                     this->sceneEntity.getScaleingMatrix()));
+        //
+        setColors();//Setting the uniform for color
+        //
+        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
+        //
+        glBindVertexArray(0);//Clear the buffer
+    }
+}
+/*
+ *  Used in the Draw functon
+ * Updates the color to the newly defined one;
+ */
 void _Renderer::setColors()
 {
     glUniform4f(colorUniform, this->sceneEntity.getColor().x(),this->sceneEntity.getColor().y(), this->sceneEntity.getColor().z(), this->sceneEntity.getColor().w());
@@ -424,51 +504,5 @@ void _Renderer::setColors()
         col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
-    }
-}
-
-/*
-* Function: getSceneEntity()
-* returns the current scene entity object.
-* Created:11_02_2019
-*/
-_SceneEntity _Renderer::getSceneEntity() const
-{
-    return this->sceneEntity;
-}
-/*
- * Function: draw()
- * This is your proprietory draw function
- * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
- * Used by: the _glWidget class paintGl().
- * Created:11_02_2019
-*/
-void _Renderer::_Renderer::draw()
-{
-    if(this->sceneEntity.getIsActive())
-    {
-        //Using the shader program in the current context
-        shdr->useShaderProgram();
-        //Bind Textures
-        for(unsigned int t=0;t<textures.size();t++){
-            textures[t].bind();
-        }
-        //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
-        if(this->sceneEntity.getIsMeshEditable()){
-                glBindBuffer(GL_ARRAY_BUFFER,VBO);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);}
-        //Bind the VAO of the respective buffer object (needs to be bound everytime)
-        glBindVertexArray(VAO);
-        //
-        //Sets the values for the MVP matrix in the vertex shader
-        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(glm_view4x4));
-        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(glm_projection4x4));
-        glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(glm_model4x4));
-        //
-        setColors();//Setting the uniform for color
-        //
-        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
-        //
-        glBindVertexArray(0);//Clear the buffer
     }
 }

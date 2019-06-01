@@ -32,7 +32,6 @@ void update_background_image(char *img, unsigned int w, unsigned int h);
 void showGeneratedModel(char *img, unsigned int w, unsigned int h);
 void rotateGeneratedModel(float angle);
 
-
 protected:
     void initializeGL() Q_DECL_OVERRIDE;
     void resizeGL(int w, int h)Q_DECL_OVERRIDE;
@@ -46,6 +45,8 @@ protected:
 
 private:
     void addRandomSceneEntitestoScene();
+    void applyStuffToallEntites(bool isit);
+
     //Variables
     unsigned int VBO;
     unsigned int VAO;

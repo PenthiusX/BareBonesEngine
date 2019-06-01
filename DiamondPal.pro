@@ -49,7 +49,6 @@ HEADERS  += mainwindow.h \
             UI/_pathsettingform.h \
             UI/_stagecaliberationsection.h
 
-
 SOURCES += main.cpp\
            UI/_caliberationsection.cpp \
            mainwindow.cpp \
@@ -123,7 +122,8 @@ win32 { #check if platform is windows
 DEFINES += PLATFORM_WIN=true
 INCLUDEPATH += $$PWD/Dependancies/win/FireGrab/Lib
 DEPENDPATH += $$PWD/Dependancies/win/FireGrab/Lib
-LIBS +=
+LIBS += -lOpengl32
+LIBS += -lMultiCam
 }
 
 DISTFILES +=

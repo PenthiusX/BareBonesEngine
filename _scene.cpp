@@ -4,7 +4,7 @@
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
  * set inside via a sceneentity object. essentially sets values in the scene entity object into the Renderer for drawing
  * Sets up Delegation to the class _Framebuffer,_Render and _Physics to work in one scene instance in cohision.
- * Autor: Aditya
+ * Autor: Aditya Mattoo
  * Created:26_02_2019
 */
 
@@ -15,6 +15,8 @@ _Scene::_Scene()
 {
     isCamera = false;
     fboObject = new _FrameBuffer();
+    //preLoad all models in the Qrc File into memory for this scene
+
 }
 _Scene::~_Scene()
 {
@@ -31,6 +33,11 @@ std::vector<_Renderer*> _Scene::getSceneObjects()
 {
     return this->renderObjects;
 }
+//  ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
+//  ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▪▀·.█▌▀▄.▀·
+//  ▐█·▐█▐▐▌▐█· ▐█.▪▐█·▄█▀▀█ ██▪  ▐█·▄█▀▀▀•▐▀▀▪▄
+//  ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
+//  ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 /*
 * Function: addSceneObject(_SceneEntity s)
 * binds the propertes set by the scene objectes into the 
@@ -77,9 +84,79 @@ void _Scene::addCamera(_Camera c)
     isCamera = true;
     cam = c;
 }
+
+//         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
+//  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
+//   ▄█▀▄ ▐█▐▐▌    ▐▀▀▄ ▐▀▀▪▄▄▀▀▀█▄▐█·▄█▀▀▀•▐▀▀▪▄
+//  ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
+//   ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
+/*
+ * Function: onResize(int w,int h)
+ * gets called on resize and all operations will run when the windows is resized
+ * this is being called by the _GlWidget class.
+ * Created:26_02_2019
+*/
+void _Scene::onResize(int w,int h)
+{
+    this->resW = w;
+    this->resH = h;
+    for (unsigned int i = 0; i < renderObjects.size(); i++)
+    {
+        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+    }
+    fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
+    fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
+}
+
+//  ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
+//  █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
+//  █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
+//  ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
+//   ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
+
+/*
+ * Function: render()
+ * This function is render function that will call the glDraw fuinction in
+ * the render final draw of all sceneEntity objects attached to scene.
+ * this is being called by the _GlWidget class.
+ * Created:26_02_2019
+*/
+void _Scene::render()
+{
+    //sets the Frame for the framebufferObject.
+    fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
+    //--------------------------------------
+    //Frame to render is below
+    for (unsigned int i = 0; i < renderObjects.size(); i++)
+    {
+        //Physics update--
+        //update Physics for all the sceneObject with property enabled
+        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
+        {   //Passing some essentials into the updateLoop for physics
+            updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
+                                    this->mousePositionL.y()),
+                          glm::vec3(cam.getEyePosition().x(),//Camera Position
+                                    cam.getEyePosition().y(),
+                                    cam.getEyePosition().z()),
+                          glm::vec2(this->resW,this->resH),//Current Resolution
+                          renderObjects[i]->getSceneEntity(),//Selected sceneEntity
+                          i);//Selected Index
+        }
+
+        //Frame update----
+        //Render all objects that are active.
+        renderObjects[i]->draw();//calls the draw function unique to each renderObject
+    }
+    //-----------------------------------------
+    //Frame above is loaded in buffers and rendered on FBOquad below
+    fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
+    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
+}
+
 /*
  * Function: updateCamera(_Camera c)
  * sets the camera updated values to every render entity matrix
+ * Created:26_02_2019
 */
 void _Scene::updateCamera(_Camera c)
 {
@@ -92,57 +169,6 @@ void _Scene::updateCamera(_Camera c)
         }
     }
 }
-/*
- * Function: onResize(int w,int h)
- * This function gets called on resize and all operations will run when the windows is resized
- * this is being called by the _GlWidget class.
- * Created:26_02_2019
-*/
-void _Scene::onResize(int w,int h)
-{
-    this->resW = w;
-    this->resH = h;
-    for (unsigned int i = 0; i < renderObjects.size(); i++)
-    {
-        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
-    }
-    fboObject->initialise();
-    fboObject->setupFramebuffer(w,h);
-}
-/*
- * Function: render()
- * This function is render function that will call the glDraw fuinction in
- * the render final draw of all sceneEntity objects attached to scene.
- * this is being called by the _GlWidget class.
- * Created:26_02_2019
-*/
-void _Scene::render()
-{
-    //sets the Frame for the framebufferObject , the frames are being bound underneath in the draw() function below
-    fboObject->setFrame();
-    //Frame to render is below
-    for (unsigned int i = 0; i < renderObjects.size(); i++)
-    {
-        //Physics update
-        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
-        {   //Passing some essentials into the updateLoop
-            updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
-                                    this->mousePositionL.y()),
-                          glm::vec3(cam.getEyePosition().x(),//Camera Position
-                                    cam.getEyePosition().y(),
-                                    cam.getEyePosition().z()),
-                          glm::vec2(this->resW,this->resH),//Current Resolution
-                          renderObjects[i]->getSceneEntity(),//Selected sceneEntity
-                          i);//Selected Index
-        }
-
-        //Raster update
-        renderObjects[i]->draw();//calls the draw function unique to each renderObject
-    }
-    //Frame is Loader and rendered on Quad below
-    fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues to the fbo object
-    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
-}
 
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 {
@@ -153,6 +179,13 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 }
 
 /*
+     ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·
+    ▐█ ▄███▪▐█▐█▪██▌▐█ ▀. ██ ▐█ ▌▪▐█ ▀.
+     ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄
+    ▐█▪·•██ ▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
+    .▀   ▀▀  ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
+ */
+/*
  *Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
  * update the physcs variables realtime and is callsed in the scene class
  * in the drawFunction
@@ -161,9 +194,11 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
     updateMouseRay(mousePos,screenRes,s);
-    upDateRayCollison(camPos,s,index);
+    upDateRayCollisonTest(camPos,s,index);
 }
-
+/* Function: updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
+ *
+*/
 void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
 {
     //calculate ray vector
@@ -171,15 +206,16 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
     //debug helper  implentation
     pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
     pointerObject.y = this->phys.getrayEye().y;
-    //
 }
 
-void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int index)
+/*
+ *
+ */
+void _Scene::upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
     if(s.getPhysicsObjectType() == _Physics::Sphere)
     {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
         float colliderSize = s.getScale();
-
         if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize,camPos))
         {
             //On event of collison with ray

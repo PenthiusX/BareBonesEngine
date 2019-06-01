@@ -4,14 +4,14 @@
 #include "_renderer.h"
 #include "_camera.h"
 #include "_framebuffer.h"
-
+#include "_assetloader.h"
 #include <vector>
 
 /*
  * Class: _Scene
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
  * set inside via a sceneentity object. essentially sets values in the scen entity object into the Renderer for drawing
- * Autor: Aditya
+ * Autor: Aditya Mattoo
  * Created:26_02_2019
 */
 class _Scene
@@ -28,7 +28,7 @@ public:
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo class
     void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
     void updateMouseRay(glm::vec2 mousePos,glm::vec2 screenRes,_SceneEntity s);
-    void upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int index);
+    void upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index);
     glm::vec3 pointerObject;//debug helper implentation
 
 private:
@@ -42,6 +42,7 @@ private:
     int resW,resH;
     //Physics
     _Physics phys;
+
 
 };
 

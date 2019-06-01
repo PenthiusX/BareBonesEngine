@@ -157,34 +157,19 @@ QString _Shader::shader_parser(QString shader_file,glm::ivec3 workgroup_size)
 
     return shader_src;
 }
+
 /*
- * Function: compile_shader(QString src, unsigned int typ)
- * compiles given shader source src and type eg. GL_VERTEX_SHADER
- * returns ID of shader
- * Created: 26_02_2019
- */
-unsigned int _Shader::compileShader(QString src, unsigned int typ)
+* Function: getUniformLocation(char* nameOfUniform)
+* returns a uint representing the loaction index of
+* the uniform in the shader takes the name of the uniform
+* as the parameter
+* Created: 18_02_2019
+*/
+uint _Shader::getUniformLocation(const char* nameOfUniform)
 {
-    unsigned int shader;
-    QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
-    const char *shader_src = source_utf.data(); //convert to const char*
-
-    //shader
-    shader = glCreateShader(typ);
-    glShaderSource(shader, 1, &shader_src, nullptr);
-    glCompileShader(shader);
-
-    //check for compile success
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        qDebug() << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << src ;
-
-        //QMetaObject::invokeMethod(MainWindow, "msgBox", Qt::QueuedConnection,Q_ARG(const char*,SLOT(passThroughFrame(char* ,unsigned int,unsigned int)) ));
-    }
-    return shader;
+    return (uint)glGetUniformLocation(this->shaderProgram, nameOfUniform);
 }
+
 /*
  *
 */
@@ -232,21 +217,33 @@ void _Shader::useShaderProgram()
 }
 
 /*
-* Function: getUniformLocation(char* nameOfUniform)
-* returns a uint representing the loaction index of
-* the uniform in the shader takes the name of the uniform
-* as the parameter
-* Created: 18_02_2019
-*/
-uint _Shader::getUniformLocation(const char* nameOfUniform)
+ * Function: compileShader()
+ * everyloop for multiple
+ * Created: 26_02_2019
+ */
+unsigned int _Shader::compileShader(QString src, unsigned int typ)
 {
-    return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
+    unsigned int shader;
+    QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
+    const char *shader_src = source_utf.data(); //convert to const char*
+
+    //shader
+    shader = glCreateShader(typ);
+    glShaderSource(shader, 1, &shader_src, nullptr);
+    glCompileShader(shader);
+
+    //check for compile success
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+        std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
+    }
+    return shader;
 }
 
 /*
-//Proptotype implemntation , only for testing
-//Not For use m keep commented until working on computeoperations
-
+>>>>>>> development-mousepicking
 void _Shader::setComputeShader(QString compShader)
 {
     QByteArray source_utf = compShader.toLocal8Bit(); // get shader source from qrc file
@@ -262,8 +259,8 @@ void _Shader::setComputeShader(QString compShader)
 
     if (!rvalue)
     {
-            glGetShaderInfoLog(computeShader, 512, nullptr, infoLog);
-           qDebug() << "Error: Compiler log:\n%s\n" << infoLog ;
+        glGetShaderInfoLog(computeShader, 512, nullptr, infoLog);
+        qDebug() << "Error: Compiler log:\n%s\n" << infoLog ;
     }
 
     // Bind the compute program so it can read the radius uniform location.
@@ -303,7 +300,6 @@ void _Shader::setComputeShader(QString compShader)
 
    // Bind the VBO
    glBindBuffer( GL_ARRAY_BUFFER, gVBO );
-
 //   // Bind the vertex and fragment rendering shaders
 //   glUseProgram(gProgram);
 //   glEnableVertexAttribArray(iLocPosition);
@@ -313,6 +309,11 @@ void _Shader::setComputeShader(QString compShader)
 }
 
 
+<<<<<<< HEAD
+=======
+Proptotype implemntation , only for testing
+Not in use at the moment.
+>>>>>>> development-mousepicking
 void _Shader::setUpParticles()
 {
 #define NUM_PARTICLES 1024*1024 // total number of particles to move
