@@ -4,6 +4,9 @@
 #include <QMetaMethod>
 #include <array>
 #include <Compute/_cpu_compute.h>
+#include <_tools.h>
+
+#define PI 3.1415926535897932384626433832795
 
 /* Processing class
  * used for image prcessing operations
@@ -224,9 +227,9 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     //compute operation(edge detecton currently)
     //gpu_compute->compute_row_wise_mean(texture,texture_out);
     //gpu_compute->compute_threshold(texture,texture_outt);
-//        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
-//        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
-//        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+//  gpu_compute->compute_sobel_edge(texture_outt,texture_out);
+//  gpu_compute->compute_copy_8_to_32(texture,texture_outt);
+//  gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
     //gpu_compute->compute_canny_edge(texture_outt,texture_out);
 
     gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
@@ -340,11 +343,11 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     //texture.unbind();
     init = false;
 
-    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,400);
 
     }
-    if(rotation_step == 0)
-        gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+    //if(rotation_step == 0)
+        //gpu_compute->compute_clear_32_i_texture(texture_model_wrap,400);
     //Do the Processing
 
     //send the image to gpu texture
@@ -378,7 +381,8 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     //histogram(gpu_compute->get_texture_image_framebuffer(texture_edge),iwidth,iheight);
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
     //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
-    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+    emit generatedModelTextureOut((char*)gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+
 
     //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
 
@@ -422,7 +426,10 @@ void _Processing::generateVoxelsModel(char *img, unsigned int iwidth, unsigned i
 
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
     //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
-    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+
+    int* frame = gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER);
+
+    emit generatedModelTextureOut((char*)frame,texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
 
     //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
 

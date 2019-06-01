@@ -97,6 +97,7 @@ public:
     _Texture* textureFromPool(QString texture_name,GLenum typ=GL_R8UI);
     _Texture* textureFromPool(QString texture_name, unsigned int w, unsigned int h,GLenum typ=GL_R8UI);
 
+    void computeFilterModelMesh(_Texture &input_img, _Texture &output_img, int value);
 protected:
     _TexturePool texture_pool_8_ui,texture_pool_32_i,texture_pool_8_ui_rgba;
 

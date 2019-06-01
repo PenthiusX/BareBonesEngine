@@ -29,42 +29,23 @@ void main()
        float cosine=cos(theta);
        int side = (cosine>0.0) ? 0 : 1;
 
-       int value = getImagePixel(inputImage,ivec2(0,image_pixel_cord.y));
-       int value2 = getImagePixel(inputImage,ivec2(1,image_pixel_cord.y));
+       int value = getImagePixel(inputImage,ivec2(side,image_pixel_cord.y));
 
-       float r_max = (float(stage_center.x - value)/cosine);
-       float r_max2 = (float(stage_center.x - value2)/cosine);
+
 
        if(side == 0)
        {
-       if(r_max > 0)
-       {
-           if(value < (image_resolution.x-10))
+       if(value < (image_resolution.x-10))
            {
+               float r_max = (float(stage_center.x - value)/cosine);
                int r = int(ceil(r_max));
 
                imageAtomicMin(resultImage,image_pixel_cord,r);
-               //setImagePixel(resultImage,image_pixel_cord,r);
+               //setImagePixel(resultImage,image_pixel_cord,100);
            }
            else
            {
                //imageAtomicMin(resultImage,image_pixel_cord,0);
            }
        }
-
-       else
-       {
-           if(value < (image_resolution.x-10))
-           {
-               int r = int(ceil(r_max));
-
-               imageAtomicMin(resultImage,image_pixel_cord,r);
-               //setImagePixel(resultImage,image_pixel_cord,r);
-           }
-           else
-           {
-               //imageAtomicMin(resultImage,image_pixel_cord,0);
-           }
-       }
-}
 }

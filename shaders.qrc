@@ -51,5 +51,6 @@
         <file>shaders/compute_register_voxel_mesh.glsl</file>
         <file>shaders/compute_subtract_edge_bounds_from_center.glsl</file>
         <file>shaders/compute_subtract_column_from_value.glsl</file>
+        <file>shaders/compute_filter_model_mesh.glsl</file>
     </qresource>
 </RCC>

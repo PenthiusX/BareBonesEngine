@@ -16,7 +16,7 @@
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
 	glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_FRONT_AND_BACK);
+    glEnable(GL_FRONT_AND_BACK);
     glEnable(GL_BLEND);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
@@ -103,7 +103,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
  * current context should be active while calling these functions
  * use makeCurrent() to make context current
  * set a 8bit single color texture of size width x height
- */
+*/
 void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GLenum format,GLenum data_type,GLenum internal_format)
 {
     textures.push_back(_Texture(img,width,height,format,data_type,internal_format));
@@ -167,7 +167,6 @@ bool _Renderer::isTexturePresent()
  */
 void _Renderer::setTexture(QString pathtoTexture)
 {
-
      if(!textures.empty())
      textures[0].setImage(pathtoTexture);
 }

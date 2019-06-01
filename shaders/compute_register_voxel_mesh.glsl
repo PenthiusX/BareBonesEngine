@@ -24,8 +24,15 @@ void main()
 {
        ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.xy);
 
-       uint value = getImagePixel(inputImage,image_pixel_cord);
+       ivec2 image_pixel_cord_2 = image_pixel_cord;
 
+       int r = (image_resolution.x/2) - image_pixel_cord.x;
+
+       image_pixel_cord_2.x = stage_center.x-r;//int((float(r)*cosine));
+
+       uint value = getImagePixel(inputImage,image_pixel_cord_2);
+
+       //setImagePixel(resultImage,image_pixel_cord,min(getImagePixel(resultImage,image_pixel_cord),value));
        setImagePixel(resultImage,image_pixel_cord,value);
-       //imageAtomicMin(resultImage,image_pixel_cord,0);
+       //imageAtomicMin(resultImage,image_pixel_cord,value);
 }

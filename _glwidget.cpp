@@ -103,10 +103,10 @@ void _GLWidget::initializeGL()
     generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
-    generated_model.setPosition(QVector3D(0.125,-1.045, -1.0));//1.045
+    generated_model.setPosition(QVector3D(0.125,0, 0.0));//1.045
     generated_model.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 
-    generated_model.setScale(0.524);//0.524
+    generated_model.setScale(0.124);//0.524
 
     std::vector<float> vertsG;
     std::vector<unsigned int> indiceG;
@@ -346,7 +346,7 @@ void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
             if(with_stage){
                 static glm::mat4x4 rot_mat = render_object->getModelMatrix();
                 glm::mat4x4 rot_mat_local = glm::rotate(rot_mat, (-angle), axis);
-                render_object->setModelMatrix(rot_mat_local);
+                //render_object->setModelMatrix(rot_mat_local);
                 rot_mat = rot_mat_local;
 
             }

@@ -208,7 +208,7 @@ void _Scanner::scanGenerateModelVoxels()
 
     for(int t = 0;t<100;t++)
     {
-        QString filename = QString("scan_image_stage_%1").arg(t);
+        QString filename = QString("scan_image_stage_%1").arg(t+20);
         //move the stage by 80 steps
         machine->TurnTableMotorDiff(80);
         //QThread::msleep(50);
