@@ -46,7 +46,20 @@ _Renderer::~_Renderer()
     delete fboShader;
     delete shdr;
 }
-
+/*
+* Function: getSceneEntity()
+* returns the current scene entity object.
+* Created:11_02_2019
+*/
+_SceneEntity _Renderer::getSceneEntity() const
+{
+    return this->sceneEntity;
+}
+//  ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
+//  ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▪▀·.█▌▀▄.▀·
+//  ▐█·▐█▐▐▌▐█· ▐█.▪▐█·▄█▀▀█ ██▪  ▐█·▄█▀▀▀•▐▀▀▪▄
+//  ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
+//  ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 /*
  * Function: setShader(no params)
  * Sets a dafault hard-fed shader
@@ -172,6 +185,7 @@ void _Renderer::setTexture(QString pathtoTexture)
         textures[0].setImage(pathtoTexture);
     qDebug() << "setTexture(QString pathtoTexture) on entity" << this->sceneEntity.getTag();
 }
+
 /*
 * Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 * Sets the values matrices for the model matrix
@@ -228,6 +242,12 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 
     qDebug() << "setProjectionMatrix() on entity" << this->sceneEntity.getTag();
 }
+
+//  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
+//  •██  ▀▄ █·▐█ ▀█ •█▌▐█▐█ ▀. ▐▄▄·▪     ▀▄ █··██ ▐███▪
+//   ▐█.▪▐▀▀▄ ▄█▀▀█ ▐█▐▐▌▄▀▀▀█▄██▪  ▄█▀▄ ▐▀▀▄ ▐█ ▌▐▌▐█·
+//   ▐█▌·▐█•█▌▐█ ▪▐▌██▐█▌▐█▄▪▐███▌.▐█▌.▐▌▐█•█▌██ ██▌▐█▌
+//   ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
 /*
  * Function: setPosition(QVector3D pos)\translate(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
@@ -423,16 +443,11 @@ void _Renderer::setColors()
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
 }
-
-/*
-* Function: getSceneEntity()
-* returns the current scene entity object.
-* Created:11_02_2019
-*/
-_SceneEntity _Renderer::getSceneEntity() const
-{
-    return this->sceneEntity;
-}
+//  ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌    ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
+//  ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█    █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
+//  ▐█· ▐█▌▐▀▀▄ ▄█▀▀█ ██▪▐█▐▐▌    █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
+//  ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌    ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
+//  ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪     ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
 /*
  * Function: draw()
  * This is your proprietory draw function
