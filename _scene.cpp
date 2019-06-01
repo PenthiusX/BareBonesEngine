@@ -194,7 +194,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
     updateMouseRay(mousePos,screenRes,s);
-    upDateRayCollison(camPos,s,index);
+    upDateRayCollisonTest(camPos,s,index);
 }
 /* Function: updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
  *
@@ -210,7 +210,7 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
 /*
  *
  */
-void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int index)
+void _Scene::upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
     if(s.getPhysicsObjectType() == _Physics::Sphere)
     {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
