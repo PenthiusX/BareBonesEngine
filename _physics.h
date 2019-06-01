@@ -39,6 +39,11 @@ public:
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
+
+    glm::vec3 BarycentricPointA(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p);
+    inline float TriArea2D(float x1, float y1, float x2, float y2, float x3, float y3);
+    glm::vec3 BarycentricPointB(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p, float &u, float &v, float &w);
+
     //
     glm::vec3 getRayWorld();
     glm::vec4 getrayEye();

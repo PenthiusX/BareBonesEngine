@@ -422,27 +422,6 @@ void _Renderer::keepSceneEntityUpdated()
     //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 
-void _Renderer::setColors()
-{
-    glUniform4f(colorUniform, this->sceneEntity.getColor().x(),this->sceneEntity.getColor().y(), this->sceneEntity.getColor().z(), this->sceneEntity.getColor().w());
-    //set sfidex color attributes for defined objects
-    if(this->sceneEntity.getId() == 999)//pivot
-    {
-        QVector4D col = this->sceneEntity.getColor();
-        col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
-        col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
-        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
-        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
-    }
-    if(this->sceneEntity.getId() == 888)//pivot
-    {
-        QVector4D col = this->sceneEntity.getColor();
-        col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
-        col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
-        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
-        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
-    }
-}
 //  ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌    ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
 //  ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█    █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
 //  ▐█· ▐█▌▐▀▀▄ ▄█▀▀█ ██▪▐█▐▐▌    █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
@@ -489,5 +468,30 @@ void _Renderer::_Renderer::draw()
         glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         //
         glBindVertexArray(0);//Clear the buffer
+    }
+}
+/*
+ *  Used in the Draw functon
+ * Updates the color to the newly defined one;
+ */
+void _Renderer::setColors()
+{
+    glUniform4f(colorUniform, this->sceneEntity.getColor().x(),this->sceneEntity.getColor().y(), this->sceneEntity.getColor().z(), this->sceneEntity.getColor().w());
+    //set sfidex color attributes for defined objects
+    if(this->sceneEntity.getId() == 999)//pivot
+    {
+        QVector4D col = this->sceneEntity.getColor();
+        col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
+        col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
+        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
+        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+    }
+    if(this->sceneEntity.getId() == 888)//pivot
+    {
+        QVector4D col = this->sceneEntity.getColor();
+        col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
+        col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
+        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
+        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
 }

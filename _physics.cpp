@@ -95,6 +95,67 @@ float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 center, float 
     return (-b - sqrt((b*b) - 4.0*a*c))/(2.0*a);
 }
 
+// Compute barycentric coordinates (u, v, w) for
+// point p with respect to triangle (a, b, c)
+glm::vec3 _Physics::BarycentricPointA(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p)
+{
+    glm::vec3 v0(b.x - a.x, b.y - a.y, b.z - a.z);	// Vector v0 = b - a
+    glm::vec3 v1(c.x - a.x, c.y - a.y, c.z - a.z);  // Vector v1 = c - a
+    glm::vec3 v2(p.x - a.x, p.y - a.y, p.z - a.z);	// Vector v2 = p - a;
+    float d00 = glm::dot( v0, v0 );	// Dot(v0, v0);
+    float d01 = glm::dot( v0, v1 );	// Dot(v0, v1);
+    float d11 = glm::dot( v1, v1 );	// Dot(v1, v1);
+    float d20 = glm::dot( v2, v0 );	// Dot(v2, v0);
+    float d21 = glm::dot( v2, v1 );	// Dot(v2, v1);
+    float denom = d00 * d11 - d01 * d01;
+    float u = (d11 * d20 - d01 * d21) / denom;
+    float v = (d00 * d21 - d01 * d20) / denom;
+    float w = 1.0f - v - w;
+
+    return glm::vec3(u,v,w);
+}
+
+//calculate the area of a 2D triangle
+inline float _Physics::TriArea2D(float x1, float y1, float x2, float y2, float x3, float y3)
+{
+    return (x1-x2)*(y2-y3) - (x2-x3)*(y1-y2);
+}
+
+// Compute barycentric coordinates (u, v, w) for
+// point p with respect to triangle (a, b, c)
+glm::vec3 _Physics::BarycentricPointB(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p, float &u, float &v, float &w)
+{
+    // Unnormalized triangle normal
+    glm::vec3 m;
+    m = glm::cross(glm::vec3(b.x, b.y, b.z) - glm::vec3(a.x, a.y, a.z), glm::vec3(c.x, c.y, c.z) - glm::vec3(a.x, a.y, a.z));	// Vector m = Cross(b - a, c - a);
+    // Nominators and one-over-denominator for u and v ratios
+    float nu, nv, ood;
+    // Absolute components for determining projection plane
+    float x = abs(m.x), y = abs(m.y), z = abs(m.z);
+
+    // Compute areas in plane of largest projection
+    if (x >= y && x >= z) {
+        // x is largest, project to the yz plane
+        nu = TriArea2D(p.y, p.z, b.y, b.z, c.y, c.z); // Area of PBC in yz plane
+        nv = TriArea2D(p.y, p.z, c.y, c.z, a.y, a.z); // Area of PCA in yz plane
+        ood = 1.0f / m.x;                             // 1/(2*area of ABC in yz plane)
+    } else if (y >= x && y >= z) {
+        // y is largest, project to the xz plane
+        nu = TriArea2D(p.x, p.z, b.x, b.z, c.x, c.z);
+        nv = TriArea2D(p.x, p.z, c.x, c.z, a.x, a.z);
+        ood = 1.0f / -m.y;
+    } else {
+        // z is largest, project to the xy plane
+        nu = TriArea2D(p.x, p.y, b.x, b.y, c.x, c.y);
+        nv = TriArea2D(p.x, p.y, c.x, c.y, a.x, a.y);
+        ood = 1.0f / m.z;
+    }
+    u = nu * ood;
+    v = nv * ood;
+    w = 1.0f - u - v;
+    return glm::vec3(u,v,w);
+}
+
 /*
  * Returns the ray essentials
  *
