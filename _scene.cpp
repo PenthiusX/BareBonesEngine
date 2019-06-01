@@ -4,7 +4,7 @@
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
  * set inside via a sceneentity object. essentially sets values in the scene entity object into the Renderer for drawing
  * Sets up Delegation to the class _Framebuffer,_Render and _Physics to work in one scene instance in cohision.
- * Autor: Aditya
+ * Autor: Aditya Mattoo
  * Created:26_02_2019
 */
 
@@ -33,6 +33,11 @@ std::vector<_Renderer*> _Scene::getSceneObjects()
 {
     return this->renderObjects;
 }
+//  ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
+//  ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▪▀·.█▌▀▄.▀·
+//  ▐█·▐█▐▐▌▐█· ▐█.▪▐█·▄█▀▀█ ██▪  ▐█·▄█▀▀▀•▐▀▀▪▄
+//  ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
+//  ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 /*
 * Function: addSceneObject(_SceneEntity s)
 * binds the propertes set by the scene objectes into the 
@@ -79,22 +84,12 @@ void _Scene::addCamera(_Camera c)
     isCamera = true;
     cam = c;
 }
-/*
- * Function: updateCamera(_Camera c)
- * sets the camera updated values to every render entity matrix
- * Created:26_02_2019
-*/
-void _Scene::updateCamera(_Camera c)
-{
-    cam = c;
-    if(isCamera == true)
-    {
-        for (unsigned int i = 0; i < renderObjects.size(); i++)
-        {
-            renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
-        }
-    }
-}
+
+//         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
+//  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
+//   ▄█▀▄ ▐█▐▐▌    ▐▀▀▄ ▐▀▀▪▄▄▀▀▀█▄▐█·▄█▀▀▀•▐▀▀▪▄
+//  ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
+//   ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 /*
  * Function: onResize(int w,int h)
  * gets called on resize and all operations will run when the windows is resized
@@ -112,6 +107,13 @@ void _Scene::onResize(int w,int h)
     fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
     fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
+
+//  ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
+//  █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
+//  █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
+//  ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
+//   ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
+
 /*
  * Function: render()
  * This function is render function that will call the glDraw fuinction in
@@ -151,6 +153,23 @@ void _Scene::render()
     fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 
+/*
+ * Function: updateCamera(_Camera c)
+ * sets the camera updated values to every render entity matrix
+ * Created:26_02_2019
+*/
+void _Scene::updateCamera(_Camera c)
+{
+    cam = c;
+    if(isCamera == true)
+    {
+        for (unsigned int i = 0; i < renderObjects.size(); i++)
+        {
+            renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
+        }
+    }
+}
+
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 {
     if(m == Qt::RightButton)
@@ -159,6 +178,13 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
         this->mousePositionL = mousePos;
 }
 
+/*
+     ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·
+    ▐█ ▄███▪▐█▐█▪██▌▐█ ▀. ██ ▐█ ▌▪▐█ ▀.
+     ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄
+    ▐█▪·•██ ▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
+    .▀   ▀▀  ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
+ */
 /*
  *Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
  * update the physcs variables realtime and is callsed in the scene class
@@ -180,7 +206,6 @@ void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntit
     //debug helper  implentation
     pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
     pointerObject.y = this->phys.getrayEye().y;
-    //
 }
 /*
  *
@@ -190,7 +215,6 @@ void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int inde
     if(s.getPhysicsObjectType() == _Physics::Sphere)
     {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
         float colliderSize = s.getScale();
-
         if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize,camPos))
         {
             //On event of collison with ray
@@ -214,11 +238,7 @@ void _Scene::upDateRayCollison(glm::vec3 camPos,_SceneEntity s,unsigned int inde
     }
     else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
     {
-//        if(runOnce)
-//        {
-//            this->phys.genTriesforCollision(s.vertexData,s.indexData);
-//            runOnce = false;
-//        }
+
     }
 }
 
