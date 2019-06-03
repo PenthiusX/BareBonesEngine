@@ -396,7 +396,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     //can be converted to using the same VAO for the same set of vertex+index data.
     //will need to move the whole model loading and id geenration to assetLoader class
     //and only pass the relavant ids to VAO at runtime to reduce ovehead.
-    setModelDataInBuffers(s.getvertexData(), s.getIndexData());
+    setModelDataInBuffers(s.getVertexData(), s.getIndexData());
     setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
 

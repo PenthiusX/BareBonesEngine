@@ -217,7 +217,7 @@ void _SceneEntity::setVertexData(std::vector<float> vertices)
 {
     this->vertexData = vertices;
 }
-std::vector<float> _SceneEntity::getvertexData() const
+std::vector<float> _SceneEntity::getVertexData() const
 {
     return this->vertexData;
 }

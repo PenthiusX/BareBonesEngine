@@ -108,7 +108,7 @@ void _GLWidget::initializeGL()
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s1.setColor(QVector4D(0.0,0.0,0.5,0.5));
     s1.setScale(1.0f);
-    s1.setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
+    s1.setModelData(s.getVertexData(),s.getIndexData());//dont need to reparse modelfile
     //
     s2.setId(3);
     s2.setTag("clickSurface");
@@ -400,7 +400,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRange(0.5,5));
-        onPress->setModelData(s.getvertexData(),s.getIndexData());//dont need to reparse modelfile
+        onPress->setModelData(s.getVertexData(),s.getIndexData());//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         delete onPress;
