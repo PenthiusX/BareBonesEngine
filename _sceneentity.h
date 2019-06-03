@@ -65,7 +65,7 @@ public:
     QString getVertexShaderPath() const;//returns the vertexshader path
     QString getFragmentShaderPath() const;//returns the fragment shader path
     //
-    std::vector<float> getvertexData() const;// get  the array of verterticess for refrence
+    std::vector<float> getVertexData() const;// get  the array of verterticess for refrence
     std::vector<unsigned int> getIndexData() const;// get the array of indices for refrence
     std::vector<int> getUvData() const;// get the array of UVs for refrence
     std::vector<float> getNormalData() const;// get the Array of normals for refrence

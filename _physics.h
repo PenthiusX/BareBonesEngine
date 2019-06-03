@@ -27,6 +27,11 @@ typedef struct Phy_Sphere{
     float radius;
 }_Phy_Sphere;
 
+typedef struct Phy_Plane{
+    glm::vec3 normal;  // Plane normal. Points x on the plane satisfy Dot(n,x) = d
+    float a,b,c,d; //the (a, b, c, d) in a*x + b*y + c*z + d = 0.
+}_Phy_Plane;
+
 class _Physics
 {
 public:
@@ -40,10 +45,15 @@ public:
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
 
-    glm::vec3 BarycentricPointA(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p);
-    inline float TriArea2D(float x1, float y1, float x2, float y2, float x3, float y3);
-    glm::vec3 BarycentricPointB(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p, float &u, float &v, float &w);
-
+    glm::vec3 barycentricPointA(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p);
+    inline float triArea2D(float x1, float y1, float x2, float y2, float x3, float y3);
+    glm::vec3 barycentricPointB(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p, float &u, float &v, float &w);
+    //
+    Phy_Plane constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1,glm::vec3 V2);
+    Phy_Plane constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2);
+    Phy_Plane constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 Normal);
+    //
+    bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle* inTriangle,glm::vec3& outIntersectionPoint);
     //
     glm::vec3 getRayWorld();
     glm::vec4 getrayEye();
@@ -65,6 +75,7 @@ private:
     //
     Phy_Sphere sp;
     Phy_Triangle tri;
+    Phy_Plane pl;
     //
     glm::vec4 rayEye;
     glm::vec3 ray_wor;

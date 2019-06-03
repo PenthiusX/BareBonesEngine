@@ -52,11 +52,16 @@ void _Scene::addSceneObject(_SceneEntity s)
     {
         if (isCamera == true)
         {
+            if(s.getIsPhysicsObject() == true && s.getPhysicsObjectType() == _Physics::Mesh)
+            {
+                phys.genTriesforCollision(s.getVertexData(),s.getIndexData());
+            }
             r = new _Renderer();
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
+
         }
         else //use default values for camera if no camera set.
         {
