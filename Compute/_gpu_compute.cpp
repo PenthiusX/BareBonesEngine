@@ -472,8 +472,8 @@ void _GPU_Compute::compute_row_wise_mean(_Texture& input_img,_Texture& output_im
     static _Shader shader;
     static GroupSize groupsize = getWorkGroupSize(input_img.getWidth()/2, input_img.getHeight(),_ROW_WISE_LOCAL_GROUP);
 
-    static _Texture sigma_x_dot_y = _Texture(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture sigma_y = _Texture(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture sigma_x_dot_y = _Texture(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture sigma_y = _Texture(nullptr,input_img.getWidth(),input_img.getHeight());
 
     //if shader not initialized
     if(shader.getShaderProgram() == 0)
@@ -899,11 +899,11 @@ std::vector<_GPU_Compute::LineEquation> _GPU_Compute::computeHoughLines(_Texture
     static _Shader shader;
     static GroupSize groupsize = getWorkGroupSize(texture_edge.getWidth(), texture_edge.getHeight());
 
-    static _Texture texture_hough_space_8_bit(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
+    _Texture texture_hough_space_8_bit(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
 
     texture_hough_space_8_bit.load(GL_RED,GL_UNSIGNED_BYTE);
 
-    //static _Texture texture_hough_space(nullptr,720,glm::sqrt((texture_edge.getWidth()^2)+(texture_edge.getHeight()^2)));
+    //_Texture texture_hough_space(nullptr,720,glm::sqrt((texture_edge.getWidth()^2)+(texture_edge.getHeight()^2)));
 
     //texture_hough_space.load(GL_R32I,GL_RED_INTEGER, GL_INT);
 
@@ -1043,15 +1043,15 @@ void _GPU_Compute::computeMarkHoughWave(_Texture& output_img,glm::ivec2 cordinat
 
 glm::vec3 _GPU_Compute::compute_stage_angle(_Texture& input_img,_Texture& output_img)
 {
-    static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_hough_space(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
+    _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_hough_space(nullptr,720,glm::sqrt(pow(texture_edge.getWidth(),2)+pow(texture_edge.getHeight(),2)));
 
     texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
@@ -1176,17 +1176,17 @@ void _GPU_Compute::compute_register_wrap_mesh(_Texture& texture_edge_bounds,_Tex
 
 void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Texture& texture_model_wrap,_Texture& texture_out_8_bit,int rotation_step,glm::vec2 stage_center)
 {
-    static _Texture texture_edge_bounds(nullptr,2,input_img.getHeight());
-    static _Texture texture_out_mask(nullptr,texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
-    //static _Texture texture_out_8_bit(nullptr,texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
-    static _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_thres(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_max_extent(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_edge_bounds(nullptr,2,input_img.getHeight());
+    _Texture texture_out_mask(nullptr,texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
+    //_Texture texture_out_8_bit(nullptr,texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
+    _Texture texture_mask(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_mask_inv(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_thres(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_edge(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_out_rgba(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_descrete_gradient_value(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_max_extent(nullptr,input_img.getWidth(),input_img.getHeight());
 
     static char* colorFrame = nullptr;
     texture_edge_bounds.load(GL_R32I,GL_RED_INTEGER, GL_INT);
@@ -1398,9 +1398,9 @@ _GPU_Compute::LineEquationMC _GPU_Compute::convertLineEquationPolarToMc(_GPU_Com
 
 void _GPU_Compute::compute_gradient_to_descrete_color(_Texture& input_img,_Texture& output_img)
 {
-    static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_blur(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_blur(nullptr,input_img.getWidth(),input_img.getHeight());
 
     texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_blur.load(GL_RED,GL_UNSIGNED_BYTE);
@@ -1434,9 +1434,9 @@ void _GPU_Compute::compute_gradient_to_descrete_color(_Texture& input_img,_Textu
 
 void _GPU_Compute::compute_canny_edge(_Texture& input_img,_Texture& output_img)
 {
-    static _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
-    static _Texture texture_blur(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_sobel_mag_(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_sobel_theta_(nullptr,input_img.getWidth(),input_img.getHeight());
+    _Texture texture_blur(nullptr,input_img.getWidth(),input_img.getHeight());
 
     texture_sobel_mag_.load(GL_RED,GL_UNSIGNED_BYTE);
     texture_blur.load(GL_RED,GL_UNSIGNED_BYTE);
