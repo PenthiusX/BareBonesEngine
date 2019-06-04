@@ -1,10 +1,11 @@
 #ifndef _SCENE_H
 #define _SCENE_H
-#include "_sceneentity.h"
+
 #include "_renderer.h"
 #include "_camera.h"
 #include "_framebuffer.h"
-#include "_assetloader.h"
+#include "_physics.h"
+#include "_sceneentity.h"
 #include <vector>
 
 /*
@@ -42,7 +43,7 @@ private:
     QVector2D mousePositionR,mousePositionL;
     int resW,resH;
     //Physics
-    _Physics phys;
+    std::vector<_Physics> physVector;
 
 
 };

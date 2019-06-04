@@ -4,6 +4,30 @@
 _Physics::_Physics(){}
 _Physics::~_Physics(){}
 
+void _Physics::setSceneEntity(_SceneEntity s)
+{
+    this->sceneEntity = s;
+    //Initialise based on SceneEntity;
+    if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere)
+    {
+        sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
+        sp.radius = sceneEntity.getScale();//temporary//will be replaced by max extents
+    }
+    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
+    {
+        //pending
+    }
+    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
+    {
+        genTriesforCollision(this->sceneEntity.getVertexData(),this->sceneEntity.getIndexData());
+    }
+}
+
+_SceneEntity _Physics::getSceneEntity()
+{
+    return this->sceneEntity;
+}
+
 void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigned int> index)
 {
     // this point will not change on translation
@@ -238,10 +262,40 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
     // At this stage we can compute t to find out where the intersection point is on the line.
     float t = f * glm::dot(edge2,q);
     if (t > EPSILON) // ray intersection
+    {outIntersectionPoint = rayOrigin + rayVector * t;
+        return true;}
+    else {// This means that there is a line intersection but not a ray intersection.
+        return false;}
+}
+
+/*
+ * Update everything Internally goes in the scene update loop
+*/
+void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, _SceneEntity s)
+{
+    sceneEntity = s;
+    setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
+
+    if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere)
     {
-        outIntersectionPoint = rayOrigin + rayVector * t;
-        return true;
+         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
+         sp.radius = sceneEntity.getScale();//temporary//will be replaced by max extents or by user input
+        if(hitSphere(sp.center,sp.radius,camPos))
+        {
+              qDebug() << "Hit sphere";
+        }
+        else
+        {
+            qDebug() << "no Hit";
+        }
+
     }
-    else // This means that there is a line intersection but not a ray intersection.
-        return false;
+    //     else if(this->se.getIsPhysicsObject() && this->se.getPhysicsObjectType() == _Physics::Box)
+    //     {
+
+    //     }
+    //     else if(this->se.getIsPhysicsObject() && this->se.getPhysicsObjectType() == _Physics::Mesh)
+    //     {
+
+    //     }
 }

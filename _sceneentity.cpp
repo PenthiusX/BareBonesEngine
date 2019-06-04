@@ -390,7 +390,7 @@ QString _SceneEntity::getFragmentShaderPath() const
  * kind of collision obbject is attached to the sceneEntity
  * Created: 22_05_2019
 */
-void _SceneEntity::setPhysicsObject(_Physics::PhysicsObjects penum)
+void _SceneEntity::setPhysicsObject( _SceneEntity::scenePhysicsObjects penum)
 {
     this->isPhysicsObject = true;
     this->phyObjtype = penum;
@@ -415,7 +415,7 @@ bool _SceneEntity::getIsPhysicsObject() const
     return this->isPhysicsObject;
 }
 
-_Physics::PhysicsObjects _SceneEntity::getPhysicsObjectType()
+_SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType()
 {
     return this->phyObjtype;
 }
