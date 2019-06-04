@@ -5,7 +5,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "_assetloader.h"
-#include "_physics.h"
+//#include "_physics.h"
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -70,8 +70,6 @@ public:
     std::vector<int> getUvData() const;// get the array of UVs for refrence
     std::vector<float> getNormalData() const;// get the Array of normals for refrence
     //
-    void setPhysicsObject(_Physics::PhysicsObjects penum);
-    //
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
     void setIsLineMode(bool isit);
@@ -83,7 +81,13 @@ public:
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
     bool getIsPhysicsObject()const;
-    _Physics::PhysicsObjects getPhysicsObjectType();
+    enum scenePhysicsObjects{
+        Sphere = 0,
+        Box = 1,
+        Mesh = 2,
+    };
+    _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
+    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
 
 private:
     unsigned int id;
@@ -124,7 +128,9 @@ private:
     //
     _AssetLoader assetLoader;//Asset loading
     _AssetLoader::Model_Info modelInfo;
-    _Physics::PhysicsObjects phyObjtype;//Physics Type identifier
+    _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
+
+
 };
 
 #endif // _SCENEENTITY_H

@@ -91,7 +91,7 @@ void _GLWidget::initializeGL()
     s.setId(1);
     s.setTag("object1");
     s.setIsLineMode(true);
-    s.setPhysicsObject(_Physics::Sphere);
+    s.setPhysicsObject(_SceneEntity::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     //s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
@@ -102,7 +102,7 @@ void _GLWidget::initializeGL()
     //
     s1.setId(2);
     s1.setTag("object2");
-    s1.setPhysicsObject(_Physics::Sphere);
+//    s1.setPhysicsObject(_SceneEntity::Sphere);
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
@@ -112,7 +112,7 @@ void _GLWidget::initializeGL()
     //
     s2.setId(3);
     s2.setTag("clickSurface");
-    s2.setPhysicsObject(_Physics::Mesh);
+//    s2.setPhysicsObject(_Physics::Mesh);
     s2.setIsTransfomationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center

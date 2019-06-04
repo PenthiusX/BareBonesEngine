@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "_sceneentity.h"
 
 
 /*
@@ -38,6 +39,9 @@ public:
     _Physics();
     ~_Physics();
 
+    void setSceneEntity(_SceneEntity s);
+    _SceneEntity getSceneEntity();
+    //
     void genTriesforCollision(std::vector<float>vert,std::vector<unsigned int> index);
     void genNormalsForTries( std::vector<_Phy_Triangle> triV);
     //
@@ -63,6 +67,8 @@ public:
     void hitTriangle();
     void hitBox();
     //
+    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s);
+
     enum PhysicsObjects{
         Sphere = 0,
         Box = 1,
@@ -71,7 +77,6 @@ public:
 
 private:
     std::vector<_Phy_Triangle> triVector;
-    std::vector<_Phy_Sphere> sphVector;
     //
     Phy_Sphere sp;
     Phy_Triangle tri;
@@ -83,6 +88,8 @@ private:
     glm::vec4 rayClip;
     //
     int resW,resH;
+    //
+    _SceneEntity sceneEntity;
 };
 
 #endif // _PHYSICS_H

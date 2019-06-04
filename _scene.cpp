@@ -50,27 +50,35 @@ void _Scene::addSceneObject(_SceneEntity s)
     // Only sets the scene object if the camera has been set already and scene object is active
     if (s.getIsActive() == true)
     {
-        if (isCamera == true)
+        if (isCamera)
         {
-            if(s.getIsPhysicsObject() == true && s.getPhysicsObjectType() == _Physics::Mesh)
-            {
-                phys.genTriesforCollision(s.getVertexData(),s.getIndexData());
-            }
             r = new _Renderer();
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
-
+           if(s.getIsPhysicsObject())
+            {
+                _Physics phys;
+                phys.setSceneEntity(s);
+                physVector.push_back(phys);
+            }
         }
-        else //use default values for camera if no camera set.
+        else if(!isCamera) //use default values for camera if no camera set.
         {
             r = new _Renderer();
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
+            if(s.getIsPhysicsObject())
+             {
+                 _Physics phys;
+                 phys.setSceneEntity(s);
+                 physVector.push_back(phys);
+             }
         }
+
     }
     else
     {
@@ -109,6 +117,7 @@ void _Scene::onResize(int w,int h)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     }
+    //FBO init and updateTexture on Resize
     fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
     fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
@@ -198,53 +207,59 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
  */
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
-    updateMouseRay(mousePos,screenRes,s);
-    upDateRayCollisonTest(camPos,s,index);
+//    updateMouseRay(mousePos,screenRes,s);
+//    upDateRayCollisonTest(camPos,s,index);
+    for(int p = 0; p < physVector.size(); p++)
+    {
+        physVector[p].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
+        renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());//updates the status of scneEntity in renderer as well.
+    }
 }
-/* Function: updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
- *
-*/
-void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
-{
-    //calculate ray vector
-    this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
-    //debug helper  implentation
-    pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
-    pointerObject.y = this->phys.getrayEye().y;
-}
+
+///* Function: updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
+// *
+//*/
+//void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
+//{
+//    //calculate ray vector
+//    this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
+//    //debug helper  implentation
+//    pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
+//    pointerObject.y = this->phys.getrayEye().y;
+//}
 /*
  *
  */
 void _Scene::upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index)
 {
-    if(s.getPhysicsObjectType() == _Physics::Sphere)
-    {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
-        float colliderSize = s.getScale();
-        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize,camPos))
-        {
-            //On event of collison with ray
-            pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize);
-            //set values in the sceneEntity and ressetit it in the  relavant renderObject
-            s.setIsHitByRay(true);
-            s.setColor(QVector4D(0.6,0.0,0.0,0.8));
-            renderObjects[index]->setSceneEntityInRenderer(s);
-        }
-        else
-        {
-            //On event
-            s.setIsHitByRay(false);
-            s.setColor(QVector4D(1.0,0.6,0.0,0.5));
-            renderObjects[index]->setSceneEntityInRenderer(s);
-        }
-    }
-    else if(s.getPhysicsObjectType() == _Physics::Box)//run operations for HitBox
-    {
+//    if(s.getPhysicsObjectType() == _Physics::Sphere)
+//    {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
+//        float colliderSize = s.getScale();
+//        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize,camPos))
+//        {
+//            //On event of collison with ray
+//            pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize);
+//            //set values in the sceneEntity and ressetit it in the  relavant renderObject
+//            s.setIsHitByRay(true);
+//            s.setColor(QVector4D(0.6,0.0,0.0,0.8));
+//            renderObjects[index]->setSceneEntityInRenderer(s);
+//        }
+//        else
+//        {
+//            //On event
+//            s.setIsHitByRay(false);
+//            s.setColor(QVector4D(1.0,0.6,0.0,0.5));
+//            renderObjects[index]->setSceneEntityInRenderer(s);
+//        }
+//    }
+//    else if(s.getPhysicsObjectType() == _Physics::Box)//run operations for HitBox
+//    {
 
-    }
-    else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
-    {
+//    }
+//    else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
+//    {
 
-    }
+//    }
 }
 
 
