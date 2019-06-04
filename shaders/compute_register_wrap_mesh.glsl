@@ -32,23 +32,20 @@ void main()
        int value = getImagePixel(inputImage,ivec2(side,image_pixel_cord.y));
 
 
+
        if(side == 0)
        {
-           if(value != (image_resolution.x-1))
+       if(value < (image_resolution.x-10))
            {
                float r_max = (float(stage_center.x - value)/cosine);
                int r = int(ceil(r_max));
 
-               imageAtomicMin(resultImage,image_pixel_cord,r);
-               //setImagePixel(resultImage,image_pixel_cord,r);
+               imageAtomicMin(resultImage,image_pixel_cord,200-rotation_step);
+               //setImagePixel(resultImage,image_pixel_cord,100);
            }
            else
            {
-               imageAtomicMin(resultImage,image_pixel_cord,0);
-
+               //imageAtomicMin(resultImage,image_pixel_cord,0);
            }
-
        }
-
-
 }

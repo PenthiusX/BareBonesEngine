@@ -376,8 +376,8 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     //histogram(gpu_compute->get_texture_image_framebuffer(texture_edge),iwidth,iheight);
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
     //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
-    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
-
+    //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+    emit generatedModelTextureOut((char*)gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
     //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
 
 }

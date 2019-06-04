@@ -318,8 +318,8 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
             }
             else {
                 //setting up new 8 bit grayscale GL_RGBA texture for first time
-                //render_object->setupTexture(img,w,h,GL_RED_INTEGER,GL_INT,GL_R32I);
-                render_object->setupTexture(img,w,h,GL_RGBA);
+                render_object->setupTexture(img,w,h,GL_RED_INTEGER,GL_INT,GL_R32I);
+                //render_object->setupTexture(img,w,h,GL_RGBA);
             }
 
             doneCurrent();
