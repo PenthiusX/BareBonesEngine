@@ -104,11 +104,10 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
  * use makeCurrent() to make context current
  * set a 8bit single color texture of size width x height
  */
-void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GLenum format)
+void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GLenum format,GLenum data_type,GLenum internal_format)
 {
-    _Texture texture(img,width,height);
-    texture.load(format,GL_UNSIGNED_BYTE);
-    textures.push_back(texture);
+    textures.push_back(_Texture(img,width,height,format,data_type,internal_format));
+    textures[textures.size()-1].load();
 }
 
 /*
