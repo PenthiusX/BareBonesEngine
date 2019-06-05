@@ -2,17 +2,16 @@
 ###################
 *.pro.user
 *.autosave
-<<<<<<< HEAD
-=======
 /x64
 /debug
 /release
 /vs
+/.vscode
 *.vs
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
 *.stash
 *ui_mainwindow.h
->>>>>>> c_render
+
 
