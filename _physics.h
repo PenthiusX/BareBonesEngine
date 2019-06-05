@@ -17,10 +17,10 @@
 */
 
 typedef struct Phy_Triangle{
-    glm::vec3 pointA;
-    glm::vec3 pointB;
-    glm::vec3 pointC;
-    glm::vec3 normal;
+    glm::vec4 pointA;
+    glm::vec4 pointB;
+    glm::vec4 pointC;
+    glm::vec4 normal;
 }_Phy_Triangle;
 
 typedef struct Phy_Sphere{
@@ -58,6 +58,7 @@ public:
     Phy_Plane constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 Normal);
     //
     bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
+    void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
     //
     glm::vec3 getRayWorld();
     glm::vec4 getrayEye();
@@ -76,7 +77,7 @@ public:
     };
 
 private:
-    std::vector<_Phy_Triangle> triVector;
+    std::vector<_Phy_Triangle> triVector,triVectorCopy;
     //
     Phy_Sphere sp;
     Phy_Triangle tri;

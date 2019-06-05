@@ -413,6 +413,7 @@ void _Renderer::keepSceneEntityUpdated()
     this->sceneEntity.setScaleingMatrix(this->scalingMatrix);
     this->sceneEntity.setProjectionMatrix(this->glm_projection4x4);
     this->sceneEntity.setViewMatrix(this->glm_view4x4);
+    this->sceneEntity.setModelMatrix(this->glm_model4x4);
 
     //get the real position values from the modelMatrix
     glm::mat4x4 tmat4 = glm_model4x4 * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);

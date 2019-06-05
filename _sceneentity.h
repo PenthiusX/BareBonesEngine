@@ -49,6 +49,8 @@ public:
     glm::mat4x4 getRotationmatrix()const;
     void setScaleingMatrix(glm::mat4x4 smat);
     glm::mat4x4 getScaleingMatrix()const;
+    void setModelMatrix(glm::mat4x4 mmat);
+    glm::mat4x4 getModelMatrix()const;
     //
     void setProjectionMatrix(glm::mat4x4 proj);
     glm::mat4x4 getProjectionMatrix()const;
@@ -123,6 +125,7 @@ private:
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
     glm::mat4x4 ScaleMatirx;
+    glm::mat4x4 ModelMatrix;
     glm::mat4x4 ProjectionMatrix;
     glm::mat4x4 ViewMatrix;
     //
