@@ -54,10 +54,10 @@ void _GLWidget::initializeGL()
     //
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
-        1.0,  1.0, 0.0f,	// top right
+        1.0,   1.0,  0.0f,	// top right
         1.0f, -1.0f, 0.0f,  // bottom right
-        -1.0f, -1.0f, 0.0f, // bottom left
-        -1.0f,  1.0f, 0.0f  // top left
+       -1.0f, -1.0f, 0.0f, // bottom left
+       -1.0f,  1.0f, 0.0f  // top left
     };
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
@@ -93,7 +93,6 @@ void _GLWidget::initializeGL()
     s.setIsLineMode(true);
     s.setPhysicsObject(_SceneEntity::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    //s.setPivot(QVector3D(.4,0.0,0.0));//sets the pivot offset from center
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.5));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
@@ -102,6 +101,7 @@ void _GLWidget::initializeGL()
     //
     s1.setId(2);
     s1.setTag("object2");
+    s1.setIsLineMode(true);
     s1.setPhysicsObject(_SceneEntity::Sphere);
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));

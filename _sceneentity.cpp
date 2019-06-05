@@ -186,6 +186,15 @@ glm::mat4x4 _SceneEntity::getScaleingMatrix() const
 {
     return this->ScaleMatirx;
 }
+
+void _SceneEntity::setModelMatrix(glm::mat4x4 mmat)
+{
+    this->ModelMatrix = mmat;
+}
+glm::mat4x4 _SceneEntity::getModelMatrix() const
+{
+    return this->ModelMatrix;
+}
 /*
  *
 */

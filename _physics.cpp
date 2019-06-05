@@ -20,6 +20,7 @@ void _Physics::setSceneEntity(_SceneEntity s)
     else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
     {
         genTriesforCollision(this->sceneEntity.getVertexData(),this->sceneEntity.getIndexData());
+        triVectorCopy = triVector;
     }
     triItert = 0;
 }
@@ -32,13 +33,14 @@ _SceneEntity _Physics::getSceneEntity()
 void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigned int> index)
 {
     // this point will not change on translation
-    glm::vec3 vpoint;
-    std::vector< glm::vec3> pv;
+    glm::vec4 vpoint;
+    std::vector< glm::vec4> pv;
     for(int i = 0 ; i < vert.size() ; i += 3)
     {
         vpoint.x = vert[i];
         vpoint.y = vert[i+1];
         vpoint.z = vert[i+2];
+        vpoint.w = 1.0f;
         pv.push_back(vpoint);
     }
     for(int i = 0 ; i < index.size() ; i += 3)
@@ -49,11 +51,6 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
         tri.pointC = pv[index[i+2]];
         triVector.push_back(tri);
     }
-}
-
-void _Physics::genNormalsForTries(std::vector<_Phy_Triangle> triV)
-{
-    //implementation pending
 }
 
 /* Function: setMousePointerRay()
@@ -97,10 +94,6 @@ bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin)
 
 /*
  * Function: raySphereIntersect()
- * rayOrigin: cam position
- * rayDir: normalized ray direction
- * s0: sphere center
- * sr: sphere radius
  * Returns distance from r0 to first intersecion with sphere,
  * or -1.0 if no intersection.
  * Created:30_05_2019
@@ -116,70 +109,6 @@ float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 center, float 
         return -1.0;}
     return (-b - sqrt((b*b) - 4.0*a*c))/(2.0*a);
 }
-/*
- Compute barycentric coordinates (u, v, w) for
- point p with respect to triangle (a, b, c)
-*/
-glm::vec3 _Physics::barycentricPointA(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p)
-{
-    glm::vec3 v0(b.x - a.x, b.y - a.y, b.z - a.z);	// Vector v0 = b - a
-    glm::vec3 v1(c.x - a.x, c.y - a.y, c.z - a.z);  // Vector v1 = c - a
-    glm::vec3 v2(p.x - a.x, p.y - a.y, p.z - a.z);	// Vector v2 = p - a;
-    float d00 = glm::dot( v0, v0 );	// Dot(v0, v0);
-    float d01 = glm::dot( v0, v1 );	// Dot(v0, v1);
-    float d11 = glm::dot( v1, v1 );	// Dot(v1, v1);
-    float d20 = glm::dot( v2, v0 );	// Dot(v2, v0);
-    float d21 = glm::dot( v2, v1 );	// Dot(v2, v1);
-    float denom = d00 * d11 - d01 * d01;
-    float u = (d11 * d20 - d01 * d21) / denom;
-    float v = (d00 * d21 - d01 * d20) / denom;
-    float w = 1.0f - v - w;
-
-    return glm::vec3(u,v,w);
-}
-
-//calculate the area of a 2D triangle
-inline float _Physics::triArea2D(float x1, float y1, float x2, float y2, float x3, float y3)
-{
-    return (x1-x2)*(y2-y3) - (x2-x3)*(y1-y2);
-}
-
-/*
-* Compute barycentric coordinates (u, v, w) for
-* point p with respect to triangle (a, b, c)
-*/
-glm::vec3 _Physics::barycentricPointB(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p, float &u, float &v, float &w)
-{
-    // Unnormalized triangle normal
-    glm::vec3 m = glm::cross(glm::vec3(b.x, b.y, b.z) - glm::vec3(a.x, a.y, a.z), glm::vec3(c.x, c.y, c.z) - glm::vec3(a.x, a.y, a.z));	// Vector m = Cross(b - a, c - a);
-    // Nominators and one-over-denominator for u and v ratios
-    float nu, nv, ood;
-    // Absolute components for determining projection plane
-    float x = abs(m.x), y = abs(m.y), z = abs(m.z);
-
-    // Compute areas in plane of largest projection
-    if (x >= y && x >= z) {
-        // x is largest, project to the yz plane
-        nu = triArea2D(p.y, p.z, b.y, b.z, c.y, c.z); // Area of PBC in yz plane
-        nv = triArea2D(p.y, p.z, c.y, c.z, a.y, a.z); // Area of PCA in yz plane
-        ood = 1.0f / m.x;                             // 1/(2*area of ABC in yz plane)
-    } else if (y >= x && y >= z) {
-        // y is largest, project to the xz plane
-        nu = triArea2D(p.x, p.z, b.x, b.z, c.x, c.z);
-        nv = triArea2D(p.x, p.z, c.x, c.z, a.x, a.z);
-        ood = 1.0f / -m.y;
-    } else {
-        // z is largest, project to the xy plane
-        nu = triArea2D(p.x, p.y, b.x, b.y, c.x, c.y);
-        nv = triArea2D(p.x, p.y, c.x, c.y, a.x, a.y);
-        ood = 1.0f / m.z;
-    }
-    u = nu * ood;
-    v = nv * ood;
-    w = 1.0f - u - v;
-    return glm::vec3(u,v,w);
-}
-
 /*
  * Returns the ray essentials
  */
@@ -229,9 +158,11 @@ Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal
     return Result;
 }
 
-//Möller–Trumbore intersection algorithm
-//https://en.wikipedia.org/wiki/Möller–Trumbore_intersection_algorithm
+//
+
 /*
+ * Function: 'Möller–Trumbore' ray triange intersection algorithm
+ * checks for instrsection with the ray and traingle and returns a point
  * Created:03.06.2019
 */
 bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
@@ -269,6 +200,16 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
         return false;}
 }
 
+void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
+{
+    for(unsigned int tr = 0 ; tr < triVector.size() ; tr++)
+    {
+        triVector[tr].pointA =  modelMatrix * triVectorCopy[tr].pointA;
+        triVector[tr].pointB =  modelMatrix * triVectorCopy[tr].pointB;
+        triVector[tr].pointC =  modelMatrix * triVectorCopy[tr].pointC;
+    }
+}
+
 /*
  * Update everything Internally goes in the _scene update loop
 */
@@ -277,40 +218,35 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     sceneEntity = s;
     setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
 
-    if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere)
-    {
+    if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere){
         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
-        sp.radius = sceneEntity.getScale();//temporary//will be replaced by max extents or by user input
-        if(hitSphere(sp.center,sp.radius,camPos))
-        {
+        sp.radius = sceneEntity.getScale();//should be replaced by max extents or user input
+        if(hitSphere(sp.center,sp.radius,camPos)){
             sceneEntity.setIsHitByRay(true);
-            sceneEntity.setColor(QVector4D(0.6,0.0,0.0,0.8));
-        }
-        else
-        {
+            sceneEntity.setColor(QVector4D(0.6,0.0,0.0,0.8));}
+        else{
             sceneEntity.setIsHitByRay(false);
-            sceneEntity.setColor(QVector4D(1.0,0.6,0.0,0.5));
-        }
-    }
+            sceneEntity.setColor(QVector4D(1.0,0.6,0.0,0.5));}}
+
     else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
     {
 
     }
-    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
-    {
-        if(triItert > triVector.size()-1)//optimisation : iterates every frame instead of iterating noOfElements*Everyframe.
-            triItert = 0;
-
+    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh){
+        //sets the updated modelMatrix from the sceneEntity.
+        transFormPhysicsTriangles(sceneEntity.getModelMatrix());
+        //temporary optimisation : iterates every frame instead of iterating noOfElements*Everyframe.
+        //need to do An AABB optimisation
+        if(triItert > triVector.size()-1){
+            triItert = 0;}
         if(triVector.size() > 0)
-        {
-            glm::vec3 outIntersectionPoint;
-            if(rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint))
-            {
-                qDebug() <<"outIntersectionPoint -"<< outIntersectionPoint.x << outIntersectionPoint.y;
+        { glm::vec3 outIntersectionPoint;
+            if(rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint)) {
+                qDebug() <<"outIntersectionPoint -"<< outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;
                 sceneEntity.setIsHitByRay(true);
                 sceneEntity.setColor(QVector4D(0.0,1.0,0.0,0.8));
             }
-            else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint)) {
+            else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint)){
                 sceneEntity.setIsHitByRay(false);
                 sceneEntity.setColor(QVector4D(1.0,0.0,1.0,0.5));
             }
