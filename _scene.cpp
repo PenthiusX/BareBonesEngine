@@ -149,7 +149,7 @@ void _Scene::render()
                                     cam.getEyePosition().z()),
                           glm::vec2(this->resW,this->resH),//Current Resolution
                           renderObjects[i]->getSceneEntity(),//Selected sceneEntity
-                          i);//Selected Index
+                          i);//Selected Index for current sceneEntity
         }
 
         //Frame update----
@@ -206,7 +206,7 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
     {
         //updates the physics object instance and runs the main physics updateOperations.
         physVector[p].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
-        //updates the status of scneEntity,for vars like 'isHitByRay' and on collision eventChanges to the object.
+        //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
         //this is needed if we need to see changes to the sceneEntity in the main render as well.
         renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
     }

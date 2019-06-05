@@ -8,19 +8,20 @@ void _Physics::setSceneEntity(_SceneEntity s)
 {
     this->sceneEntity = s;
     //Initialise based on SceneEntity;
-    if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere)
+    if(this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere)
     {
         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
         sp.radius = sceneEntity.getScale();//temporary//will be replaced by max extents
     }
-    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
+    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
     {
         //pending
     }
-    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
+    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
     {
         genTriesforCollision(this->sceneEntity.getVertexData(),this->sceneEntity.getIndexData());
     }
+    triItert = 0;
 }
 
 _SceneEntity _Physics::getSceneEntity()
@@ -235,13 +236,13 @@ Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal
 */
 bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
                                      glm::vec3 rayVector,
-                                     _Phy_Triangle* inTriangle,
+                                     _Phy_Triangle inTriangle,
                                      glm::vec3& outIntersectionPoint)
 {
     const float EPSILON = 0.0000001;
-    glm::vec3 vertex0 = inTriangle->pointA;
-    glm::vec3 vertex1 = inTriangle->pointB;
-    glm::vec3 vertex2 = inTriangle->pointC;
+    glm::vec3 vertex0 = inTriangle.pointA;
+    glm::vec3 vertex1 = inTriangle.pointB;
+    glm::vec3 vertex2 = inTriangle.pointC;
     glm::vec3 edge1, edge2, h, s, q;
     float a,f,u,v;
     edge1 = vertex1 - vertex0;
@@ -297,6 +298,23 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     }
     else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
     {
+        if(triItert > triVector.size()-1)//optimisation : iterates every frame instead of iterating noOfElements*Everyframe.
+            triItert = 0;
 
+        if(triVector.size() > 0)
+        {
+            glm::vec3 outIntersectionPoint;
+            if(rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint))
+            {
+                qDebug() <<"outIntersectionPoint -"<< outIntersectionPoint.x << outIntersectionPoint.y;
+                sceneEntity.setIsHitByRay(true);
+                sceneEntity.setColor(QVector4D(0.0,1.0,0.0,0.8));
+            }
+            else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint)) {
+                sceneEntity.setIsHitByRay(false);
+                sceneEntity.setColor(QVector4D(1.0,0.0,1.0,0.5));
+            }
+            triItert++;
+        }
     }
 }

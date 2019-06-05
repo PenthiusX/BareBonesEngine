@@ -112,7 +112,7 @@ void _GLWidget::initializeGL()
     //
     s2.setId(3);
     s2.setTag("clickSurface");
-//    s2.setPhysicsObject(_Physics::Mesh);
+    s2.setPhysicsObject(_SceneEntity::Mesh);
     s2.setIsTransfomationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
