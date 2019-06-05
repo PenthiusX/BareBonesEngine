@@ -57,12 +57,10 @@ void _Scene::addSceneObject(_SceneEntity s)
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
-           if(s.getIsPhysicsObject())
-            {
-                _Physics phys;
+            if(s.getIsPhysicsObject())
+            {   _Physics phys;
                 phys.setSceneEntity(s);
-                physVector.push_back(phys);
-            }
+                physVector.push_back(phys);}
         }
         else if(!isCamera) //use default values for camera if no camera set.
         {
@@ -72,13 +70,10 @@ void _Scene::addSceneObject(_SceneEntity s)
             r->initSceneEntityInRenderer(s);
             renderObjects.push_back(r);
             if(s.getIsPhysicsObject())
-             {
-                 _Physics phys;
-                 phys.setSceneEntity(s);
-                 physVector.push_back(phys);
-             }
+            {   _Physics phys;
+                phys.setSceneEntity(s);
+                physVector.push_back(phys);}
         }
-
     }
     else
     {
@@ -216,4 +211,3 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
         renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
     }
 }
-
