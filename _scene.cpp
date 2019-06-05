@@ -198,68 +198,22 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
      ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄
     ▐█▪·•██ ▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
     .▀   ▀▀  ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
- */
+*/
 /*
- *Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
- * update the physcs variables realtime and is callsed in the scene class
- * in the drawFunction
+ * Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
+ * update the physcs variables realtime and
+ * is called in the _scene class's render() function.
  * Created: 22_05_2019
  */
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
-//    updateMouseRay(mousePos,screenRes,s);
-//    upDateRayCollisonTest(camPos,s,index);
     for(int p = 0; p < physVector.size(); p++)
     {
+        //updates the physics object instance and runs the main physics updateOperations.
         physVector[p].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
-        renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());//updates the status of scneEntity in renderer as well.
+        //updates the status of scneEntity,for vars like 'isHitByRay' and on collision eventChanges to the object.
+        //this is needed if we need to see changes to the sceneEntity in the main render as well.
+        renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
     }
 }
-
-///* Function: updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
-// *
-//*/
-//void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
-//{
-//    //calculate ray vector
-//    this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
-//    //debug helper  implentation
-//    pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
-//    pointerObject.y = this->phys.getrayEye().y;
-//}
-/*
- *
- */
-void _Scene::upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index)
-{
-//    if(s.getPhysicsObjectType() == _Physics::Sphere)
-//    {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
-//        float colliderSize = s.getScale();
-//        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize,camPos))
-//        {
-//            //On event of collison with ray
-//            pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize);
-//            //set values in the sceneEntity and ressetit it in the  relavant renderObject
-//            s.setIsHitByRay(true);
-//            s.setColor(QVector4D(0.6,0.0,0.0,0.8));
-//            renderObjects[index]->setSceneEntityInRenderer(s);
-//        }
-//        else
-//        {
-//            //On event
-//            s.setIsHitByRay(false);
-//            s.setColor(QVector4D(1.0,0.6,0.0,0.5));
-//            renderObjects[index]->setSceneEntityInRenderer(s);
-//        }
-//    }
-//    else if(s.getPhysicsObjectType() == _Physics::Box)//run operations for HitBox
-//    {
-
-//    }
-//    else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
-//    {
-
-//    }
-}
-
 
