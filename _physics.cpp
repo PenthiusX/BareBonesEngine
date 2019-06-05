@@ -269,7 +269,7 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
 }
 
 /*
- * Update everything Internally goes in the scene update loop
+ * Update everything Internally goes in the _scene update loop
 */
 void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, _SceneEntity s)
 {
@@ -278,24 +278,25 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
 
     if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere)
     {
-         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
-         sp.radius = sceneEntity.getScale();//temporary//will be replaced by max extents or by user input
+        sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
+        sp.radius = sceneEntity.getScale();//temporary//will be replaced by max extents or by user input
         if(hitSphere(sp.center,sp.radius,camPos))
         {
-              qDebug() << "Hit sphere";
+            sceneEntity.setIsHitByRay(true);
+            sceneEntity.setColor(QVector4D(0.6,0.0,0.0,0.8));
         }
         else
         {
-            qDebug() << "no Hit";
+            sceneEntity.setIsHitByRay(false);
+            sceneEntity.setColor(QVector4D(1.0,0.6,0.0,0.5));
         }
+    }
+    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
+    {
 
     }
-    //     else if(this->se.getIsPhysicsObject() && this->se.getPhysicsObjectType() == _Physics::Box)
-    //     {
+    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
+    {
 
-    //     }
-    //     else if(this->se.getIsPhysicsObject() && this->se.getPhysicsObjectType() == _Physics::Mesh)
-    //     {
-
-    //     }
+    }
 }

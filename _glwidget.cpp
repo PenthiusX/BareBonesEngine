@@ -102,7 +102,7 @@ void _GLWidget::initializeGL()
     //
     s1.setId(2);
     s1.setTag("object2");
-//    s1.setPhysicsObject(_SceneEntity::Sphere);
+    s1.setPhysicsObject(_SceneEntity::Sphere);
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
@@ -387,9 +387,10 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 //  ██ ██▌▐█▌▐█▌▐█▄▪▐█▐███▌    ▐█▌.▐▌▐█▪·•▐█▄▄▌▐█•█▌▐█ ▪▐▌ ▐█▌·▐█▌▐█▌.▐▌██▐█▌▐█▄▪▐█
 //  ▀▀  █▪▀▀▀▀▀▀ ▀▀▀▀ ·▀▀▀      ▀█▄▀▪.▀    ▀▀▀ .▀  ▀ ▀  ▀  ▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪ ▀▀▀▀
 
+//Press P to activate.
 void _GLWidget::addRandomSceneEntitestoScene()
 {
-    for(int i = 0 ; i < 1000 ; i++)
+    for(int i = 0 ; i < 1 ; i++)
     {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
         //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
         makeCurrent();
@@ -409,6 +410,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
     }
 }
 
+//Press L to activate.
 void _GLWidget::applyStuffToallEntites(bool isit)
 {
     for(int i = 1 ; i < scene->getSceneObjects().size() ; i++)
