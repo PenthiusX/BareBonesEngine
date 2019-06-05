@@ -1,6 +1,7 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#include <iostream>
 #include <QString>
 #include <QDebug>
 #include <QVector3D>
@@ -11,6 +12,8 @@
 #include <QElapsedTimer>
 #include <glm/glm.hpp>
 
+
+#include "_sceneentity.h"
 /*
  * Class: _Tools
  * This class holds funtions that have no specific

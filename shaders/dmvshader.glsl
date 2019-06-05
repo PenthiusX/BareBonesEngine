@@ -19,5 +19,5 @@ void main()
     gl_Position =  mvpx * vec4(aPos, 1.0);
     ourColor = aColor;
     iMouseO = iMouse;
-    DEPTH = gl_Position.z / 50.0 ;
+    DEPTH = gl_Position.z / 50.0;
 }

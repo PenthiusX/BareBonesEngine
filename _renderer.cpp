@@ -389,6 +389,7 @@ void _Renderer::setscale(float scale)
 void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 {
     this->sceneEntity = s;
+    actualColor = this->sceneEntity.getColor();
     this->isTranfomationLocal = s.getIsTransfomationLocal();
     setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
@@ -495,4 +496,5 @@ void _Renderer::setColors()
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
+    this->sceneEntity.getisHitByRay() == true ? this->sceneEntity.setColor(actualColor * 0.5) : this->sceneEntity.setColor(actualColor);
 }

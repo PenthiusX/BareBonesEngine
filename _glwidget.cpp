@@ -56,8 +56,8 @@ void _GLWidget::initializeGL()
     std::vector<float> vertsV = {
         1.0,   1.0,  0.0f,	// top right
         1.0f, -1.0f, 0.0f,  // bottom right
-       -1.0f, -1.0f, 0.0f, // bottom left
-       -1.0f,  1.0f, 0.0f  // top left
+        -1.0f, -1.0f, 0.0f, // bottom left
+        -1.0f,  1.0f, 0.0f  // top left
     };
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
@@ -102,7 +102,7 @@ void _GLWidget::initializeGL()
     s1.setId(2);
     s1.setTag("object2");
     s1.setIsLineMode(true);
-    s1.setPhysicsObject(_SceneEntity::Sphere);
+    s1.setPhysicsObject(_SceneEntity::Mesh);
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
@@ -128,9 +128,8 @@ void _GLWidget::initializeGL()
     //
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-    scene->addSceneObject(s2);
+    //    scene->addSceneObject(s2);
     //-----------------
-    //    addRandomSceneEntitestoScene();
 }
 //         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
 //  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
@@ -198,7 +197,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-        scene->getSceneObjects()[2]->setPosition(QVector3D( scene->pointerObject.x,scene->pointerObject.y,scene->pointerObject.z));
+        //        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
@@ -214,6 +213,16 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QVector2D diff = QVector2D(e->localPos()) - mousePressPositionL;
+
+    if(e->buttons() == Qt::LeftButton)
+    {//get mouse position only on left button click
+        mousePressPositionL = QVector2D(e->localPos());
+        //        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
+    }
+    if(e->buttons() == Qt::RightButton)
+    {//get mouse position only on left button click
+        mousePressPositionR = QVector2D(e->localPos());
+    }
 }
 /*
 * Function: mouseMoveEvent(QMouseEvent *e)
@@ -377,7 +386,8 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 
     if (event->text() == "l" || event->text() == "L"){
         ist = !ist;
-        applyStuffToallEntites(ist);
+        //        applyStuffToallEntites(ist);
+        removeSceneEntityFromScene();
     }
 }
 
@@ -397,17 +407,26 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransfomationLocal(false);
-        onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-10,10)));
+        onPress->setPhysicsObject(_SceneEntity::Mesh);
+        onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-        onPress->setScale(_Tools::getRandomNumberfromRange(0.5,5));
-        onPress->setModelData(s.getVertexData(),s.getIndexData());//dont need to reparse modelfile
+        onPress->setScale(_Tools::getRandomNumberfromRange(0.2,2));
+        onPress->setModelData(s2.getVertexData(),s2.getIndexData());//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         delete onPress;
         qInfo() << i <<"th object";
         doneCurrent();
     }
+}
+/*
+ *
+*/
+void _GLWidget::removeSceneEntityFromScene()
+{
+    scene->removeSceneObject(s1);
+    //scene->removeSceneObject(2);
 }
 
 //Press L to activate.

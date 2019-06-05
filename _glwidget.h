@@ -35,6 +35,7 @@ protected:
 
 private:
     void addRandomSceneEntitestoScene();
+    void removeSceneEntityFromScene();
     void applyStuffToallEntites(bool isit);
 
     //Variables
