@@ -22,6 +22,8 @@ public:
     ~_Scene();
     std::vector<_Renderer*> getSceneObjects();
     void addSceneObject(_SceneEntity s);
+    void removeSceneObject(unsigned int index);
+    void removeSceneObject(_SceneEntity s);
     void addCamera(_Camera c);
     void updateCamera(_Camera c);
     void onResize(int w,int h);
@@ -31,7 +33,6 @@ public:
     void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
     void updateMouseRay(glm::vec2 mousePos,glm::vec2 screenRes,_SceneEntity s);
     void upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index);
-    glm::vec3 pointerObject;//debug helper implentation
 
 private:
     std::vector<_SceneEntity> sceneEntityVector;

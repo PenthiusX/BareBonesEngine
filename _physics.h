@@ -91,8 +91,6 @@ private:
     int resW,resH;
     //
     _SceneEntity sceneEntity;
-    //
-    unsigned int triItert;
 };
 
 #endif // _PHYSICS_H

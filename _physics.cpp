@@ -22,7 +22,6 @@ void _Physics::setSceneEntity(_SceneEntity s)
         genTriesforCollision(this->sceneEntity.getVertexData(),this->sceneEntity.getIndexData());
         triVectorCopy = triVector;
     }
-    triItert = 0;
 }
 
 _SceneEntity _Physics::getSceneEntity()
@@ -157,9 +156,6 @@ Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal
     Result.d = - glm::dot(Pt, normalizedNormal);
     return Result;
 }
-
-//
-
 /*
  * Function: 'Möller–Trumbore' ray triange intersection algorithm
  * checks for instrsection with the ray and traingle and returns a point
@@ -218,39 +214,25 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     sceneEntity = s;
     setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
 
-    if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere){
+    //Sphere Intersection Test
+    if(this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere){
         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
         sp.radius = sceneEntity.getScale();//should be replaced by max extents or user input
-        if(hitSphere(sp.center,sp.radius,camPos)){
-            sceneEntity.setIsHitByRay(true);
-            sceneEntity.setColor(QVector4D(0.6,0.0,0.0,0.8));}
-        else{
-            sceneEntity.setIsHitByRay(false);
-            sceneEntity.setColor(QVector4D(1.0,0.6,0.0,0.5));}}
-
-    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
+        hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);}
+    //Box Intersection Test
+    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
     {
-
+        //pending
     }
-    else if(this->sceneEntity.getIsPhysicsObject() && this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh){
+    //Mesh Intersection Test
+    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh){
         //sets the updated modelMatrix from the sceneEntity.
         transFormPhysicsTriangles(sceneEntity.getModelMatrix());
-        //temporary optimisation : iterates every frame instead of iterating noOfElements*Everyframe.
-        //need to do An AABB optimisation
-        if(triItert > triVector.size()-1){
-            triItert = 0;}
-        if(triVector.size() > 0)
-        { glm::vec3 outIntersectionPoint;
-            if(rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint)) {
-                qDebug() <<"outIntersectionPoint -"<< outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;
-                sceneEntity.setIsHitByRay(true);
-                sceneEntity.setColor(QVector4D(0.0,1.0,0.0,0.8));
+        unsigned int ts = triVector.size();
+        for(int it= 0 ; it < triVector.size() ; it++)
+            if(triVector.size() > 0){
+                glm::vec3 outIntersectionPoint;
+                rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
             }
-            else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[triItert],outIntersectionPoint)){
-                sceneEntity.setIsHitByRay(false);
-                sceneEntity.setColor(QVector4D(1.0,0.0,1.0,0.5));
-            }
-            triItert++;
-        }
     }
 }

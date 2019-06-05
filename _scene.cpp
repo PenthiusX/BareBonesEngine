@@ -1,4 +1,5 @@
 #include "_scene.h"
+#include "_tools.h"
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -78,6 +79,20 @@ void _Scene::addSceneObject(_SceneEntity s)
     else
     {
         qDebug() << "scene object has not been set Properly";
+    }
+}
+
+void _Scene::removeSceneObject(unsigned int index)
+{
+     renderObjects.erase(renderObjects.begin()+index);
+}
+void _Scene::removeSceneObject(_SceneEntity s)
+{
+    for(int r = 0 ; r < renderObjects.size() ; r++){
+        if(renderObjects[r]->getSceneEntity().getId() == s.getId())
+        {
+            renderObjects.erase(renderObjects.begin()+r);
+        }
     }
 }
 /*
@@ -202,6 +217,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
  */
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
+//    qDebug() << mousePos.x << mousePos.y;
     for(int p = 0; p < physVector.size(); p++)
     {
         //updates the physics object instance and runs the main physics updateOperations.
