@@ -48,10 +48,6 @@ public:
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
-
-    glm::vec3 barycentricPointA(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p);
-    inline float triArea2D(float x1, float y1, float x2, float y2, float x3, float y3);
-    glm::vec3 barycentricPointB(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 p, float &u, float &v, float &w);
     //
     Phy_Plane constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1,glm::vec3 V2);
     Phy_Plane constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2);
@@ -60,10 +56,11 @@ public:
     bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
     void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
     //
-    glm::vec3 getRayWorld();
-    glm::vec4 getrayEye();
-    glm::vec3 getrayNormalizedDeviceCoordinates();
-    glm::vec4 getrayClip();
+    glm::vec3 getRayWorld()const;
+    glm::vec4 getrayEye()const;
+    glm::vec3 getrayNormalizedDeviceCoordinates()const;
+    glm::vec4 getrayClip()const;
+    glm::vec3 getRayTriIntersectionPoint() const;
     //
     void hitTriangle();
     void hitBox();
@@ -91,6 +88,7 @@ private:
     int resW,resH;
     //
     _SceneEntity sceneEntity;
+    glm::vec3 outIntersectionPoint;
 };
 
 #endif // _PHYSICS_H

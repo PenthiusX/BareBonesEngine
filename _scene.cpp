@@ -41,7 +41,7 @@ std::vector<_Renderer*> _Scene::getSceneObjects()
 //  ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 /*
 * Function: addSceneObject(_SceneEntity s)
-* binds the propertes set by the scene objectes into the 
+* binds the propertes set by the scene objectes into the
 * renderer instace for rendering in the scene
 * this is being called by the _GlWidget class.
 * Created:26_02_2019
@@ -222,6 +222,8 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
     {
         //updates the physics object instance and runs the main physics updateOperations.
         physVector[p].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
+        //sets the position of the pointer object fixed at index no 2 to be at the point of intersection.
+        renderObjects[2]->setPosition(QVector3D(physVector[p].getRayTriIntersectionPoint().x,physVector[p].getRayTriIntersectionPoint().y,physVector[p].getRayTriIntersectionPoint().z));
         //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
         //this is needed if we need to see changes to the sceneEntity in the main render as well.
         renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
