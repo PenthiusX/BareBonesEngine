@@ -49,8 +49,8 @@ void _GLWidget::initializeGL()
     //needs this to make the GL widgit have the strongest focus when switching widgets.
     cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
-    cam.setFarClipDistance(30.0f);
-    cam.setFOV(50);
+    cam.setFarClipDistance(100.0f);
+    cam.setFOV(65);
     //
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
@@ -76,7 +76,7 @@ void _GLWidget::initializeGL()
     pivot.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     pivot.setColor(QVector4D(1.0,1.0,1.0,1.0));
     pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
-    pivot.setScale(0.8f);
+    pivot.setScale(1.0f);
     pivot.setModelData(":/models/pivot.obj");
     //Debug helper use mpoint.
     mpoint.setId(999);
@@ -85,7 +85,7 @@ void _GLWidget::initializeGL()
     mpoint.setPosition(QVector3D(0.0,0.0,0.0));
     mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     mpoint.setColor(QVector4D(0.5,0.5,0.5,1.0));
-    mpoint.setScale(0.05f);
+    mpoint.setScale(0.1f);
     mpoint.setModelData(":/models/sphere.obj");
     //-----------------
     s.setId(1);
@@ -94,7 +94,7 @@ void _GLWidget::initializeGL()
     s.setPhysicsObject(_SceneEntity::Sphere);
     s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s.setColor(QVector4D(0.3,0.5,0.0,0.5));
+    s.setColor(QVector4D(0.3,0.5,0.0,0.9));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
     s.setScale(1.0f);
     s.setModelData(":/models/sphere.obj");
@@ -102,13 +102,13 @@ void _GLWidget::initializeGL()
     s1.setId(2);
     s1.setTag("object2");
     s1.setIsLineMode(true);
-    s1.setPhysicsObject(_SceneEntity::Mesh);
+//    s1.setPhysicsObject(_SceneEntity::Mesh);
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s1.setColor(QVector4D(0.0,0.0,0.5,0.5));
-    s1.setScale(1.0f);
-    s1.setModelData(s.getVertexData(),s.getIndexData());//dont need to reparse modelfile
+    s1.setColor(QVector4D(0.5,1.0,1.0,0.9));
+    s1.setScale(0.4f);
+    s1.setModelData(":/models/box.obj");//dont need to reparse modelfile
     //
     s2.setId(3);
     s2.setTag("clickSurface");
@@ -117,7 +117,7 @@ void _GLWidget::initializeGL()
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s2.setColor(QVector4D(0.0,0.0,0.5,0.8));
+    s2.setColor(QVector4D(0.0,0.0,0.5,0.9));
     s2.setScale(1.0f);
     s2.setModelData(vertsV,indiceV);
     //-----------------
@@ -128,7 +128,7 @@ void _GLWidget::initializeGL()
     //
     scene->addSceneObject(s);
     scene->addSceneObject(s1);
-    //    scene->addSceneObject(s2);
+    scene->addSceneObject(s2);
     //-----------------
 }
 //         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -370,7 +370,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
                 if (scene->getSceneObjects()[i]->getSceneEntity().getId() == idmatch){
                     scene->getSceneObjects()[i]->setPosition(QVector3D(0.0f, 0.0, 0.0));
                     scene->getSceneObjects()[i]->setRotation(QVector3D(0.0f, 0.0, 0.0));
-                    scene->getSceneObjects()[i]->setscale(scene->getSceneObjects()[i]->getSceneEntity().getScale());
+                    scene->getSceneObjects()[i]->setscale(1.0f);
                     rotRads = QVector2D(.0f, .0f);
                 }
             }
@@ -423,10 +423,12 @@ void _GLWidget::addRandomSceneEntitestoScene()
 /*
  *
 */
+
 void _GLWidget::removeSceneEntityFromScene()
 {
-    scene->removeSceneObject(s1);
-    //scene->removeSceneObject(2);
+    //    scene->removeSceneObject(s1);
+    if(scene->getSceneObjects().size() > 3)
+        scene->removeSceneObject(scene->getSceneObjects().size()-1);
 }
 
 //Press L to activate.

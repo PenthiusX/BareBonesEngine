@@ -34,22 +34,28 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
     // this point will not change on translation
     glm::vec4 vpoint;
     std::vector< glm::vec4> pv;
-    for(int i = 0 ; i < vert.size() ; i += 3)
-    {
-        vpoint.x = vert[i];
-        vpoint.y = vert[i+1];
-        vpoint.z = vert[i+2];
-        vpoint.w = 1.0f;
-        pv.push_back(vpoint);
+    if(vert.size() > 0){
+        for(int i = 0 ; i < vert.size() ; i += 3)
+        {
+            vpoint.x = vert[i];
+            vpoint.y = vert[i+1];
+            vpoint.z = vert[i+2];
+            vpoint.w = 1.0f;
+            pv.push_back(vpoint);
+        }
+        for(int i = 0 ; i < index.size() ; i += 3)
+        {
+            _Phy_Triangle tri;
+            tri.pointA = pv[index[i]];
+            tri.pointB = pv[index[i+1]];
+            tri.pointC = pv[index[i+2]];
+            triVector.push_back(tri);
+        }
     }
-    for(int i = 0 ; i < index.size() ; i += 3)
-    {
-        _Phy_Triangle tri;
-        tri.pointA = pv[index[i]];
-        tri.pointB = pv[index[i+1]];
-        tri.pointC = pv[index[i+2]];
-        triVector.push_back(tri);
+    else {
+        qInfo() << "cant generate triangles for collision ModelData incomplete";
     }
+
 }
 
 /* Function: setMousePointerRay()
@@ -77,8 +83,11 @@ void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_
     // don't forget to normalise the vector at some point
     ray_wor = glm::normalize(ray_wor);
 }
-
-// returns yes or no on intersection
+/*
+ * Function: raySphereIntersect()
+ * returns yes or no on intersection
+ * Created:30_05_2019
+ */
 bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin)
 {
     glm::vec3 rayDir = this->ray_wor;
@@ -111,24 +120,31 @@ float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 center, float 
 /*
  * Returns the ray essentials
  */
-glm::vec3 _Physics::getRayWorld()
+glm::vec3 _Physics::getRayWorld() const
 {
     return this->ray_wor;
 }
-glm::vec4 _Physics::getrayEye()
+glm::vec4 _Physics::getrayEye() const
 {
     return this->rayEye;
 }
-glm::vec3 _Physics::getrayNormalizedDeviceCoordinates()
+glm::vec3 _Physics::getrayNormalizedDeviceCoordinates() const
 {
     return this->rayNormalizedDeviceCoordinates;
 }
-glm::vec4 _Physics::getrayClip()
+glm::vec4 _Physics::getrayClip() const
 {
     return this->rayClip;
 }
 /*
- * Created:03.06.2019
+ * returns the point of intersection varible value
+ */
+glm::vec3 _Physics::getRayTriIntersectionPoint() const
+{
+    return this->outIntersectionPoint;
+}
+/*
+ * Created:03.06.2019 Not in use
 */
 Phy_Plane _Physics::constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1, glm::vec3 V2)
 {
@@ -136,7 +152,7 @@ Phy_Plane _Physics::constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1, glm::ve
     return constructPlaneFromPointNormal(V0, normal);
 }
 /*
- * Created:03.06.2019
+ * Created:03.06.2019 Not in use
 */
 Phy_Plane _Physics::constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2)
 {
@@ -144,7 +160,7 @@ Phy_Plane _Physics::constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, c
     return constructPlaneFromPointNormal(Pt, normal);
 }
 /*
- * Created:03.06.2019
+ * Created:03.06.2019 Not in use
 */
 Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal)
 {
@@ -159,6 +175,7 @@ Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal
 /*
  * Function: 'Möller–Trumbore' ray triange intersection algorithm
  * checks for instrsection with the ray and traingle and returns a point
+ * called in the Physics update for mesh
  * Created:03.06.2019
 */
 bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
@@ -166,12 +183,12 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
                                      _Phy_Triangle inTriangle,
                                      glm::vec3& outIntersectionPoint)
 {
-    const float EPSILON = 0.0000001;
+    const double EPSILON = 0.0000001;
     glm::vec3 vertex0 = inTriangle.pointA;
     glm::vec3 vertex1 = inTriangle.pointB;
     glm::vec3 vertex2 = inTriangle.pointC;
     glm::vec3 edge1, edge2, h, s, q;
-    float a,f,u,v;
+    double a,f,u,v;
     edge1 = vertex1 - vertex0;
     edge2 = vertex2 - vertex0;
     h = glm::cross(rayVector,edge2);
@@ -188,9 +205,9 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
     if (v < 0.0 || u + v > 1.0)
         return false;
     // At this stage we can compute t to find out where the intersection point is on the line.
-    float t = f * glm::dot(edge2,q);
+    double t = f * glm::dot(edge2,q);
     if (t > EPSILON) // ray intersection
-    {outIntersectionPoint = rayOrigin + rayVector * t;
+    {outIntersectionPoint = rayOrigin + rayVector * (float)t;
         return true;}
     else {// This means that there is a line intersection but not a ray intersection.
         return false;}
@@ -228,11 +245,18 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh){
         //sets the updated modelMatrix from the sceneEntity.
         transFormPhysicsTriangles(sceneEntity.getModelMatrix());
-        unsigned int ts = triVector.size();
         for(int it= 0 ; it < triVector.size() ; it++)
-            if(triVector.size() > 0){
-                glm::vec3 outIntersectionPoint;
-                rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+            if(triVector.size() > 0)
+            {
+//              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+                if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],this->outIntersectionPoint)){
+                    sceneEntity.setIsHitByRay(true);
+                    qDebug() << outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;
+                    qDebug() << sceneEntity.getisHitByRay();
+                }
+                else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)){
+                    sceneEntity.setIsHitByRay(false);
+                }
             }
     }
 }

@@ -327,8 +327,16 @@ bool _SceneEntity::getIsTransfomationLocal()
 */
 void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned int> indices)
 {
-    this->vertexData = vertices;
-    this->indexData = indices;
+    if(vertices.size() > 0 && indices.size() > 0)
+    {
+        this->vertexData = vertices;
+        this->indexData = indices;
+        this->isActive = true;
+    }
+    else {
+        qInfo() << "model data not sufficent,please check input";
+        this->isActive = false;
+    }
 }
 /*
  * Function: setModelData(Qstring path)
@@ -340,8 +348,15 @@ void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned
 void _SceneEntity::setModelData(QString path)
 {
     assetLoader.objLoader(path);
-    this->vertexData = assetLoader.getAssetVertices();
-    this->indexData = assetLoader.getAssetIndices();
+    if(assetLoader.getAssetVertices().size() > 0 && assetLoader.getAssetIndices().size() > 0){
+        this->vertexData = assetLoader.getAssetVertices();
+        this->indexData = assetLoader.getAssetIndices();
+        this->isActive = true;
+    }
+    else {
+        qInfo() << "no model data in file, please check the path to file";
+        this->isActive = false;
+    }
 }
 /*
  *
