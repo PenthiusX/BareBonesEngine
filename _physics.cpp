@@ -252,7 +252,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
                 if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],this->outIntersectionPoint)){
                     sceneEntity.setIsHitByRay(true);
                     qDebug() << outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;
-                    qDebug() << sceneEntity.getisHitByRay();
+//                    qDebug() << sceneEntity.getisHitByRay();
                 }
                 else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)){
                     sceneEntity.setIsHitByRay(false);

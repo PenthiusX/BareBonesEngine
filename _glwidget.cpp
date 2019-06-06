@@ -102,13 +102,13 @@ void _GLWidget::initializeGL()
     s1.setId(2);
     s1.setTag("object2");
     s1.setIsLineMode(true);
-//    s1.setPhysicsObject(_SceneEntity::Mesh);
+    s1.setPhysicsObject(_SceneEntity::Mesh);
     s1.setIsTransfomationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s1.setColor(QVector4D(0.5,1.0,1.0,0.9));
     s1.setScale(0.4f);
-    s1.setModelData(":/models/box.obj");//dont need to reparse modelfile
+    s1.setModelData(":/models/cube.obj");//dont need to reparse modelfile
     //
     s2.setId(3);
     s2.setTag("clickSurface");
