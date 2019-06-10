@@ -43,7 +43,8 @@ HEADERS  += mainwindow.h \
     UI/_scancaliberationsection.h \
     UI/_appplicationsettingsdialog.h \
     UI/_pathsettingform.h \
-    UI/_stagecaliberationsection.h
+    UI/_stagecaliberationsection.h \
+    _texturepool.h
 
 SOURCES += main.cpp\
     UI/_caliberationsection.cpp \
@@ -77,7 +78,8 @@ SOURCES += main.cpp\
     UI/_scancaliberationsection.cpp \
     UI/_appplicationsettingsdialog.cpp \
     UI/_pathsettingform.cpp \
-    UI/_stagecaliberationsection.cpp
+    UI/_stagecaliberationsection.cpp \
+    _texturepool.cpp
 
 FORMS    += mainwindow.ui \
     UI/_sliderbox.ui \

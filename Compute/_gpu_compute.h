@@ -4,6 +4,7 @@
 #include <QOpenGLExtraFunctions>
 #include <_texture.h>
 #include <glm/glm.hpp>
+#include <_texturepool.h>
 
 class _GPU_Compute : private QOpenGLExtraFunctions
 {
@@ -76,17 +77,28 @@ public:
 
     LineEquationMC convertLineEquationPolarToMc(_GPU_Compute::LineEquation eqn);
     //void computeEdgeModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap,int rotation_step,glm::vec2 stage_center=glm::vec2(400,480));
-    void compute_threshold_inv(_Texture &input_img, _Texture &output_img, unsigned int threshold_value);
+    void compute_threshold_inv(_Texture &input_img, _Texture &output_img, unsigned int threshold_value=127);
     void compute_row_wise_left_edge(_Texture &input_img, _Texture &output_img);
     void compute_row_wise_right_edge(_Texture &input_img, _Texture &output_img);
     void compute_copy_column_from_to(_Texture &input_img, _Texture &output_img, int from_ = 0, int to_ = 0);
     void compute_register_wrap_mesh(_Texture &texture_edge_bounds, _Texture &output_img, int rotation_step,glm::vec2 stage_center);
     char *getTextureModelFramebuffer(_Texture &input_img, unsigned int format);
     void computeEdgeModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap, _Texture &texture_out_8_bit, int rotation_step, glm::vec2 stage_center);
-    void compute_subtract_value_from_column(_Texture &input_img, _Texture &output_img,int value = 400);
+    void compute_subtract_value_from_column(_Texture &input_img, _Texture &output_img, int value = 400);
+    void compute_subtract_column_from_value(_Texture &input_img, _Texture &output_img, int value = 400);
     void compute_retrive_lower_2_bytes(_Texture &input_img, _Texture &output_img);
     int *getTextureModelFramebuffer32I(_Texture &input_img, unsigned int format);
     void computeMaskImageR32IR(_Texture &input_img, _Texture &mask_img, _Texture &output_img);
+
+    void compute_threshold(_Texture *input_img, _Texture *output_img, unsigned int threshold_value=127);
+    void computeVoxelsModel(_Texture &input_img, _Texture &output_img, _Texture &texture_model_wrap, _Texture &texture_out_8_bit, int rotation_step, glm::vec2 stage_center);
+    void computeRegisterVoxelMesh(_Texture &texture_edge_bounds, _Texture &output_img, float cosine , int rotation_step,glm::vec2 stage_center);
+
+//    _Texture* textureFromPool(QString texture_name,GLenum typ=GL_R8UI);
+//    _Texture* textureFromPool(QString texture_name, unsigned int w, unsigned int h,GLenum typ=GL_R8UI);
+
+    void computeFilterModelMesh(_Texture &input_img, _Texture &output_img, int value);
+
 };
 
 #endif // _GPU_COMPUTE_H

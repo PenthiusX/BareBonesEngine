@@ -23,6 +23,7 @@ public slots:
     void scanImages();
     void scanGenerateModel();
     void scanGenerateModelEdge();
+    void scanGenerateModelVoxels();
 
 signals:
     void set_image(char* img,unsigned int w,unsigned int h);
@@ -34,6 +35,7 @@ public:
     QOffscreenSurface *surface = nullptr;
     _GPU_Compute *gpu_compute = nullptr;
     _Processing *processing=nullptr;
+
 
 };
 

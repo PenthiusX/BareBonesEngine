@@ -88,6 +88,13 @@ bool _ScanCaliberationSection::setupConnections()
             QMetaObject::invokeMethod(scanner, "scanGenerateModelEdge", Qt::QueuedConnection);
         });
 
+        connect(ui->scan_voxels_button, &QPushButton::clicked,[this]() {
+            qDebug() << application_settings->toJson();
+            QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
+            QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
+            QMetaObject::invokeMethod(scanner, "scanGenerateModelVoxels", Qt::QueuedConnection);
+        });
+
         connect(ui->line_laser_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));
         connect(ui->offset_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setOffset(int)));
         connect(ui->gain_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(setGain(int)));

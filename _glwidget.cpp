@@ -103,10 +103,10 @@ void _GLWidget::initializeGL()
     generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");//texture Compliable shader not complete//need to pass UVs externally//
 
     //background quad is not affected by mvp hence this functions will not work :-
-    generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
+    generated_model.setPosition(QVector3D(0.125,0, 0.0));//1.045
     generated_model.setRotation(QQuaternion(QVector3D(0.0, 0.0, 0.0)));
 
-    generated_model.setScale(0.524);
+    generated_model.setScale(0.124);//0.524
 
     std::vector<float> vertsG;
     std::vector<unsigned int> indiceG;
@@ -129,7 +129,7 @@ void _GLWidget::initializeGL()
         }
     }
 
-    glm::ivec2 step_size = glm::ivec2(2,8);
+    glm::ivec2 step_size = glm::ivec2(2,2);
 
     for (unsigned int h = 0; h < resolution.y; h+=step_size.y) {
         for (unsigned int w = 0; w < resolution.x; w+=step_size.x) {
@@ -182,8 +182,9 @@ void _GLWidget::initializeGL()
 
     initialised=true;
 
-    rotateGeneratedModel(PI/200);
+    rotateGeneratedModel(0);
 }
+
 /*
  * Function: resizeGL(int w, int h) overides the
  * function in OpopenglFunctions class.
@@ -197,6 +198,7 @@ void _GLWidget::resizeGL(int w, int h)
 	this->height = h;
 	scene->onResize(w, h);
 }
+
 /*
  * Function: paintGl() 7
  * ovveriding thes function in OpopenglFunctions
@@ -222,7 +224,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 }
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
-* This is a overriden function from the QWidget parent
+* This is a overriden function from the QWidg       et parent
 * runs each time the mouse is released.
 * Created: 5_02_2019
 */
@@ -321,17 +323,16 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
                 render_object->setupTexture(img,w,h,GL_RED_INTEGER,GL_INT,GL_R32I);
                 //render_object->setupTexture(img,w,h,GL_RGBA);
             }
-
             doneCurrent();
         }
     }
 }
 
-
 void _GLWidget::rotateGeneratedModel(float angle)
 {
-    rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
+    //rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
 }
+
 void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
 {
     static _Renderer *render_object = nullptr;
@@ -347,15 +348,18 @@ void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
             if(with_stage){
                 static glm::mat4x4 rot_mat = render_object->getModelMatrix();
                 glm::mat4x4 rot_mat_local = glm::rotate(rot_mat, (-angle), axis);
-                render_object->setModelMatrix(rot_mat_local);
+                //render_object->setModelMatrix(rot_mat_local);
                 rot_mat = rot_mat_local;
 
             }
             else {
-                glm::mat4x4 rot_mat_local = glm::rotate(render_object->getModelMatrix(), (-angle), axis);
+
+                glm::mat4x4 rot_mat_local = render_object->getModelMatrix();
+                rot_mat_local = glm::translate(rot_mat_local, glm::vec3(0.0, 2.0, 0.0));
+                rot_mat_local = glm::rotate(rot_mat_local, (-angle), axis);
+                rot_mat_local = glm::translate(rot_mat_local, glm::vec3(0.0, -2.0, 0.0));
                 render_object->setModelMatrix(rot_mat_local);
             }
-
         }
     }
     }

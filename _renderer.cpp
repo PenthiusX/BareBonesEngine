@@ -167,7 +167,6 @@ bool _Renderer::isTexturePresent()
  */
 void _Renderer::setTexture(QString pathtoTexture)
 {
-
      if(!textures.empty())
      textures[0].setImage(pathtoTexture);
 }

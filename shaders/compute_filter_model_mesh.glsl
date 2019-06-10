@@ -15,15 +15,14 @@ void setImagePixel(uimage2D4x8_bindless img,ivec2 cord,uint value){
 
 #include compute_basic_functions.glsl
 
-ivec2 getPixelCord(){
-    return ivec2(0,gl_LocalInvocationIndex);
-}
 
 void main()
 {
-       ivec2 image_pixel_cord = getPixelCord();
+       ivec2 image_pixel_cord = ivec2(gl_GlobalInvocationID.xy);
 
        int a = getImagePixel(inputImage,image_pixel_cord);
 
-       setImagePixel(resultImage,image_pixel_cord,a-value);
+       if(abs(a) > value)
+           a = 0;
+       setImagePixel(resultImage,image_pixel_cord,a);
 }

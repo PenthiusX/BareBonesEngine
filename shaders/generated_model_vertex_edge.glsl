@@ -14,7 +14,7 @@ uniform mat4 mvp;
 
 void main()
 {
-    float r = texture(wrapTexture,tPos.xy).r/400.0;//2.94 *
+    float r = texture(wrapTexture,tPos.xy).r/200.0;//2.94 *
     float theta = 2 * PI * tPos.x;
     vec3 aPos = vec3(r*cos(theta),r*sin(theta),tPos.y);
     //gl_Position = vec4(-aPos.x,1.0-aPos.z,aPos.y, 1.0);
