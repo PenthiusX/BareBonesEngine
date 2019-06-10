@@ -55,7 +55,6 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
     else {
         qInfo() << "cant generate triangles for collision ModelData incomplete";
     }
-
 }
 
 /* Function: setMousePointerRay()
@@ -223,6 +222,94 @@ void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
     }
 }
 
+
+
+
+char HitBoundingBox()
+{
+#define NUMDIM	3
+#define RIGHT	0
+#define LEFT	1
+#define MIDDLE	2
+
+    double minB[NUMDIM], maxB[NUMDIM];		//box
+    double origin[NUMDIM], dir[NUMDIM];		//ray
+    double coord[NUMDIM];				    //hit point
+
+    char inside = true;
+    char quadrant[NUMDIM];
+    register int i;
+    int whichPlane;
+    double maxT[NUMDIM];
+    double candidatePlane[NUMDIM];
+
+//  Find candidate planes; this loop can be avoided if
+//  rays cast all from the eye(assume perpsective view)
+    for (i=0; i<NUMDIM; i++)
+        if(origin[i] < minB[i]){
+            quadrant[i] = LEFT;
+            candidatePlane[i] = minB[i];
+            inside = false;
+        }else if (origin[i] > maxB[i]){
+            quadrant[i] = RIGHT;
+            candidatePlane[i] = maxB[i];
+            inside = false;
+        }else{
+            quadrant[i] = MIDDLE;
+        }
+
+//  Ray origin inside bounding box
+    if(inside){
+        coord[0] = origin[0];
+        coord[1] = origin[1];
+        coord[2] = origin[2];
+        return (true);
+    }
+
+//  Calculate T distances to candidate planes
+    for (i = 0; i < NUMDIM; i++)
+        if (quadrant[i] != MIDDLE && dir[i] !=0.)
+            maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
+        else
+            maxT[i] = -1.;
+
+//  Get largest of the maxT's for final choice of intersection
+    whichPlane = 0;
+    for (i = 1; i < NUMDIM; i++)
+        if (maxT[whichPlane] < maxT[i])
+            whichPlane = i;
+
+//  Check final candidate actually inside box
+    if (maxT[whichPlane] < 0.) return (false);
+    for (i = 0; i < NUMDIM; i++)
+        if (whichPlane != i){
+            coord[i] = origin[i] + maxT[whichPlane] *dir[i];
+            if (coord[i] < minB[i] || coord[i] > maxB[i])
+                return (false);
+        } else {
+            coord[i] = candidatePlane[i];
+        }
+    return (true);				//ray hits box
+}
+
+
+bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin) {
+    double tmin = -INFINITY, tmax = INFINITY;
+
+//    for (int i = 0; i < 3; ++i) {
+//        if (ray.dir[i] != 0.0) {
+//            double t1 = (box.min[i] - r.origin[i])/r.dir[i];
+//            double t2 = (box.max[i] - r.origin[i])/r.dir[i];
+
+//            tmin = max(tmin, min(t1, t2));
+//            tmax = min(tmax, max(t1, t2));
+//        } else if (ray.origin[i] <= b.min[i] || ray.origin[i] >= b.max[i]) {
+//            return false;
+//        }
+//    }
+    return tmax > tmin && tmax > 0.0;
+}
+
 /*
  * Update everything Internally goes in the _scene update loop
 */
@@ -240,6 +327,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
     {
         //pending
+        HitBoundingBox();
     }
     //Mesh Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh){
@@ -248,11 +336,10 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         for(int it= 0 ; it < triVector.size() ; it++)
             if(triVector.size() > 0)
             {
-//              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+                //              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
                 if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],this->outIntersectionPoint)){
                     sceneEntity.setIsHitByRay(true);
                     qDebug() << outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;
-//                    qDebug() << sceneEntity.getisHitByRay();
                 }
                 else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)){
                     sceneEntity.setIsHitByRay(false);

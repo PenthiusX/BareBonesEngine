@@ -33,6 +33,10 @@ typedef struct Phy_Plane{
     float a,b,c,d; //the (a, b, c, d) in a*x + b*y + c*z + d = 0.
 }_Phy_Plane;
 
+typedef struct Phy_Box{
+
+}_Phy_Box;
+
 class _Physics
 {
 public:
