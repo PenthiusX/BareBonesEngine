@@ -7,7 +7,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "_sceneentity.h"
 
-
 /*
  * Class: _Physics
  * Creates an individual instace for the setting and
@@ -70,7 +69,6 @@ public:
     void hitBox();
     //
     void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s);
-
     enum PhysicsObjects{
         Sphere = 0,
         Box = 1,

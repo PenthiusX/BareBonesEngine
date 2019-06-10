@@ -211,7 +211,11 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
     else {// This means that there is a line intersection but not a ray intersection.
         return false;}
 }
-
+/* Function: transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
+ * tranforms the physics bodies in sync with the actual object it
+ * is bound on.
+ * Created: 5_06_2019
+*/
 void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
 {
     for(unsigned int tr = 0 ; tr < triVector.size() ; tr++)
@@ -222,9 +226,9 @@ void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
     }
 }
 
-
-
-
+/*
+ * Not in use
+*/
 char HitBoundingBox()
 {
 #define NUMDIM	3
@@ -292,7 +296,7 @@ char HitBoundingBox()
     return (true);				//ray hits box
 }
 
-
+//faster but does not return a point
 bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin)
 {
     double tmin = -INFINITY, tmax = INFINITY;
