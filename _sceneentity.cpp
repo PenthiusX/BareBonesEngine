@@ -10,6 +10,7 @@ _SceneEntity::_SceneEntity()
     this->rotation = QVector3D(0.0,0.0,0.0);
     this->postion = QVector3D(0.0, 0.0, 0.0);
     this->scale = 1.0;
+    this->orderInIndex = 0;
     this->isActive = true;
     this->isTransfomationLocal = false;
     this->isPivotSet = false;
@@ -64,6 +65,18 @@ void _SceneEntity::setTag(const char *tag)
 const char *_SceneEntity::getTag() const
 {
     return this->tag;
+}
+/*
+ *
+ * Created: 10_06_2019
+*/
+void _SceneEntity::setOrderInIndex(unsigned int i)
+{
+    this->orderInIndex = i;
+}
+unsigned int _SceneEntity::getIndexPosInScene()const
+{
+    return this->orderInIndex;
 }
 
 /*
@@ -347,7 +360,7 @@ void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned
  */
 void _SceneEntity::setModelData(QString path)
 {
-    assetLoader.objLoader(path);
+    this->assetLoader.objLoader(path);
     if(assetLoader.getAssetVertices().size() > 0 && assetLoader.getAssetIndices().size() > 0){
         this->vertexData = assetLoader.getAssetVertices();
         this->indexData = assetLoader.getAssetIndices();
@@ -357,13 +370,8 @@ void _SceneEntity::setModelData(QString path)
         qInfo() << "no model data in file, please check the path to file";
         this->isActive = false;
     }
-}
-/*
- *
-*/
-void _SceneEntity::setModelData(_AssetLoader::Model_Info m)
-{
-    this->modelInfo = m;
+
+    this->modelInfo = assetLoader.getModelInfo();
 }
 /*
  * Function: setShaderPath(QString vSh, QString fSh)

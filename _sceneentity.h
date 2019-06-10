@@ -5,7 +5,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "_assetloader.h"
-//#include "_physics.h"
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -30,6 +29,8 @@ public:
     unsigned int getId() const;
     void setTag(const char* tag);//sets a name based identifier for the object
     const char* getTag() const;
+    void setOrderInIndex(unsigned int i);
+    unsigned int getIndexPosInScene() const;
     //
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
     QVector3D getPostion() const;//get the current position of the relvant object instace
@@ -58,7 +59,6 @@ public:
     glm::mat4x4 getViewMatrix()const;
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
-    void setModelData(_AssetLoader::Model_Info m);
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
@@ -92,6 +92,7 @@ public:
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
 
 private:
+
     unsigned int id;
     const char* tag;
     QVector3D postion;
@@ -99,6 +100,7 @@ private:
     QVector3D pivot;
     float scale;
     QVector4D color;
+    unsigned int orderInIndex;
     //
     std::vector<float> vertexData;
     std::vector<unsigned int> indexData;
@@ -132,8 +134,6 @@ private:
     _AssetLoader assetLoader;//Asset loading
     _AssetLoader::Model_Info modelInfo;
     _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
-
-
 };
 
 #endif // _SCENEENTITY_H

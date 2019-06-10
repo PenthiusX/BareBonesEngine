@@ -16,8 +16,6 @@ _Scene::_Scene()
 {
     isCamera = false;
     fboObject = new _FrameBuffer();
-    //preLoad all models in the Qrc File into memory for this scene
-
 }
 _Scene::~_Scene()
 {
@@ -57,7 +55,11 @@ void _Scene::addSceneObject(_SceneEntity s)
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
+            _SceneEntity s =  r->getSceneEntity();
+            s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
+            r->setSceneEntityInRenderer(s);
             renderObjects.push_back(r);
+            //
             if(s.getIsPhysicsObject())
             {   _Physics phys;
                 phys.setSceneEntity(s);
@@ -69,7 +71,11 @@ void _Scene::addSceneObject(_SceneEntity s)
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
+            _SceneEntity s =  r->getSceneEntity();
+            s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
+            r->setSceneEntityInRenderer(s);
             renderObjects.push_back(r);
+            //
             if(s.getIsPhysicsObject())
             {   _Physics phys;
                 phys.setSceneEntity(s);
@@ -84,7 +90,7 @@ void _Scene::addSceneObject(_SceneEntity s)
 
 void _Scene::removeSceneObject(unsigned int index)
 {
-     renderObjects.erase(renderObjects.begin()+index);
+    renderObjects.erase(renderObjects.begin()+index);
 }
 void _Scene::removeSceneObject(_SceneEntity s)
 {
@@ -193,7 +199,10 @@ void _Scene::updateCamera(_Camera c)
         }
     }
 }
-
+/*
+ *
+ * Created: 3_05_2019
+ */
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 {
     if(m == Qt::RightButton)
@@ -217,7 +226,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
  */
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
-//    qDebug() << mousePos.x << mousePos.y;
+    //    qDebug() << mousePos.x << mousePos.y;
     for(int p = 0; p < physVector.size(); p++)
     {
         //updates the physics object instance and runs the main physics updateOperations.
@@ -228,4 +237,35 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
         //this is needed if we need to see changes to the sceneEntity in the main render as well.
         renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
     }
+}
+/*
+ *
+ * Created: 10_06_2019
+ */
+_SceneEntity _Scene::findSceneEntity(unsigned int iD)
+{
+    for(int f = 0 ; f < this->renderObjects.size() ; f++)
+    {
+        if(renderObjects[f]->getSceneEntity().getId() == iD)
+        {
+            return renderObjects[f]->getSceneEntity();
+        }
+    }
+    _SceneEntity empty;
+    return empty;
+}
+/*
+ * Created: 10_06_2019
+ */
+_SceneEntity _Scene::findSceneEntity(std::string tag)
+{
+    for(int f = 0 ; f < this->renderObjects.size() ; f++)
+    {
+        if(renderObjects[f]->getSceneEntity().getTag() == tag.c_str())
+        {
+            return renderObjects[f]->getSceneEntity();
+        }
+    }
+    _SceneEntity empty;
+    return empty;
 }

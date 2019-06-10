@@ -293,7 +293,8 @@ char HitBoundingBox()
 }
 
 
-bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin) {
+bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin)
+{
     double tmin = -INFINITY, tmax = INFINITY;
 
 //    for (int i = 0; i < 3; ++i) {
