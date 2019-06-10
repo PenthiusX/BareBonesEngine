@@ -296,38 +296,34 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         idmatch = 0;
 
     if (event->text() == "d" || event->text() == "D"){
-        if (isCamFocus){
+        if (isCamFocus)
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() - 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
-        }else{
+        else
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(-0.1f, -0.f, 0.0));
-        }
     }
 
     if (event->text() == "a" || event->text() == "A"){
         if (isCamFocus){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() + 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
             scene->updateCamera(cam);
-        }else{
+        }else
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(0.1f, 0.f, 0.0));
-        }
     }
 
     if (event->text() == "w" || event->text() == "W"){
         if (isCamFocus){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y(), cam.getEyePosition().z() + 0.2));
             scene->updateCamera(cam);
-        }else{
+        }else
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(0.f, 0.1, 0.0));
-        }
     }
 
     if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus == true){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y(), cam.getEyePosition().z() - 0.2));
             scene->updateCamera(cam);
-        }else{
+        }else
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(-0.f, -0.1, 0.0));
-        }
     }
 
     if (event->text() == "r" || event->text() == "R"){
@@ -341,18 +337,14 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
             rotRads = QVector2D(0.0f,0.0f);
         }
     }
-    if (event->text() == "c" || event->text() == "C"){
+    if (event->text() == "c" || event->text() == "C")
         this->isCamFocus = !isCamFocus;
-    }
-    if (event->text() == "p" || event->text() == "P"){
+    if (event->text() == "p" || event->text() == "P")
         addRandomSceneEntitestoScene();
-    }
-
-    if (event->text() == "l" || event->text() == "L"){
-//        ist = !ist;
-//        applyStuffToallEntites(ist);
+    if (event->text() == "l" || event->text() == "L")
         removeSceneEntityFromScene();
-    }
+    //        ist = !ist;
+    //        applyStuffToallEntites(ist);
 }
 
 //  • ▌ ▄ ·. ▪  .▄▄ ·  ▄▄·            ▄▄▄·▄▄▄ .▄▄▄   ▄▄▄· ▄▄▄▄▄▪         ▐ ▄ .▄▄ ·
