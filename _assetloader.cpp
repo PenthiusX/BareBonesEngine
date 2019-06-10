@@ -16,6 +16,11 @@ _AssetLoader::_AssetLoader()
 {
     vertMax.setX(0.0);
     vertMax.setY(0.0);
+    vertMax.setZ(0.0);
+
+    vertMin.setX(999.0f);
+    vertMin.setY(999.0f);
+    vertMin.setZ(999.0f);
 }
 _AssetLoader::~_AssetLoader(){}
 /*
@@ -85,6 +90,13 @@ void _AssetLoader::objLoader(QString pathToFile)
                 vertMax.setY(vertices[arrayCounter + 1]);
             if(vertices[arrayCounter + 2] >= vertMax.z())
                 vertMax.setZ(vertices[arrayCounter + 2]);
+
+            if(vertices[arrayCounter] <= vertMin.x())
+                vertMin.setX(vertices[arrayCounter]);
+            if(vertices[arrayCounter + 1] <= vertMin.y())
+                vertMin.setY(vertices[arrayCounter + 1]);
+            if(vertices[arrayCounter + 2] <= vertMin.z())
+                vertMin.setZ(vertices[arrayCounter + 2]);
             arrayCounter += 3;
         }
     }
@@ -112,7 +124,6 @@ void _AssetLoader::objLoader(QString pathToFile)
 */
 void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 {
-
     foreach(const QString &imageName, QDir(":/"+folderName).entryList())
     {
         minfo.name = imageName;
