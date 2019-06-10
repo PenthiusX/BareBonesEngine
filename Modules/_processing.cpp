@@ -340,7 +340,7 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     //texture.unbind();
     init = false;
 
-    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,400);
 
     }
     //Do the Processing
