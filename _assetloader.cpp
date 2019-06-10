@@ -24,10 +24,11 @@ _AssetLoader::_AssetLoader()
 }
 _AssetLoader::~_AssetLoader(){}
 /*
- */
-std::vector<_AssetLoader::_Model_Info> _AssetLoader::getModelInfoArray()
+ *
+*/
+_AssetLoader::_Model_Info _AssetLoader::getModelInfo()
 {
-    return this->modelInfoArray;
+    return this->minfo;
 }
 /*
 * Function:getAssetVertices()
@@ -115,9 +116,15 @@ void _AssetLoader::objLoader(QString pathToFile)
         }
         temp2 = "";
     }
+
+    minfo.path = pathToFile;
+    minfo.vertexArray = this->vertices;
+    minfo.indexAarray = this->indices;
+    minfo.max = this->vertMax;
+    minfo.min = this->vertMin;
 }
 
-/*
+/* //Not in use---future implementation via VAO.
  * Preprocess all models into memory
  * will reduce ovehead on runtime.
  * Created: 31_05_2019
@@ -131,7 +138,7 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
         objLoader(":/"+ folderName +"/" + imageName);
         minfo.vertexArray = this->vertices;
         minfo.indexAarray = this->indices;
-        modelInfoArray.push_back(minfo);
+//        modelInfoArray.push_back(minfo);
         this->vertices.clear();
         this->indices.clear();
     }
