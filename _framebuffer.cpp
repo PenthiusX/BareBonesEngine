@@ -12,7 +12,6 @@ _FrameBuffer::_FrameBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentCont
 {
     fboShader = new _Shader();
 }
-
 _FrameBuffer::~_FrameBuffer()
 {
     fboShader = nullptr;

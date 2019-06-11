@@ -66,11 +66,11 @@ public:
     void hitBox();
     //
     void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s);
-    enum PhysicsObjects{
-        Sphere = 0,
-        Box = 1,
-        Mesh = 2,
-    };
+//    enum PhysicsObjects{
+//        Sphere = 0,
+//        Box = 1,
+//        Mesh = 2,
+//    };
 
 private:
     std::vector<_Phy_Triangle> triVector,triVectorCopy;

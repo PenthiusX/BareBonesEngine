@@ -8,16 +8,16 @@ void _Physics::setSceneEntity(_SceneEntity s)
 {
     this->sceneEntity = s;
     //Initialise based on SceneEntity;
-    if(this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere)
+    if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere)
     {
         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
         sp.radius = sceneEntity.getScale();//temporary//will be replaced by max extents
     }
-    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
+    else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box)
     {
         //pending
     }
-    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh)
+    else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh)
     {
         genTriesforCollision(this->sceneEntity.getVertexData(),this->sceneEntity.getIndexData());
         triVectorCopy = triVector;
@@ -300,7 +300,6 @@ char HitBoundingBox()
 bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin)
 {
     double tmin = -INFINITY, tmax = INFINITY;
-
 //    for (int i = 0; i < 3; ++i) {
 //        if (ray.dir[i] != 0.0) {
 //            double t1 = (box.min[i] - r.origin[i])/r.dir[i];
@@ -324,18 +323,18 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
 
     //Sphere Intersection Test
-    if(this->sceneEntity.getPhysicsObjectType() == _Physics::Sphere){
+    if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
         sp.radius = sceneEntity.getScale();//should be replaced by max extents or user input
         hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);}
     //Box Intersection Test
-    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Box)
+    else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box)
     {
         //pending
         HitBoundingBox();
     }
     //Mesh Intersection Test
-    else if(this->sceneEntity.getPhysicsObjectType() == _Physics::Mesh){
+    else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
         //sets the updated modelMatrix from the sceneEntity.
         transFormPhysicsTriangles(sceneEntity.getModelMatrix());
         for(int it= 0 ; it < triVector.size() ; it++)
