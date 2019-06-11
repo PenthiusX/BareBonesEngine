@@ -11,6 +11,7 @@ _SceneEntity::_SceneEntity()
     this->postion = QVector3D(0.0, 0.0, 0.0);
     this->color = QVector4D(1.0, 1.0, 1.0,1.0);
     this->scale = 1.0;
+    this->orderInIndex = 0;
     this->isActive = true;
     this->isTransfomationLocal = false;
     this->isPivotSet = false;
@@ -65,6 +66,18 @@ void _SceneEntity::setTag(const char *tag)
 const char *_SceneEntity::getTag() const
 {
     return this->tag;
+}
+/*
+ *
+ * Created: 10_06_2019
+*/
+void _SceneEntity::setOrderInIndex(unsigned int i)
+{
+    this->orderInIndex = i;
+}
+unsigned int _SceneEntity::getIndexPosInScene()const
+{
+    return this->orderInIndex;
 }
 
 /*
@@ -187,6 +200,15 @@ glm::mat4x4 _SceneEntity::getScaleingMatrix() const
 {
     return this->ScaleMatirx;
 }
+
+void _SceneEntity::setModelMatrix(glm::mat4x4 mmat)
+{
+    this->ModelMatrix = mmat;
+}
+glm::mat4x4 _SceneEntity::getModelMatrix() const
+{
+    return this->ModelMatrix;
+}
 /*
  *
 */
@@ -218,7 +240,7 @@ void _SceneEntity::setVertexData(std::vector<float> vertices)
 {
     this->vertexData = vertices;
 }
-std::vector<float> _SceneEntity::getvertexData() const
+std::vector<float> _SceneEntity::getVertexData() const
 {
     return this->vertexData;
 }
@@ -319,8 +341,16 @@ bool _SceneEntity::getIsTransfomationLocal()
 */
 void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned int> indices)
 {
-    this->vertexData = vertices;
-    this->indexData = indices;
+    if(vertices.size() > 0 && indices.size() > 0)
+    {
+        this->vertexData = vertices;
+        this->indexData = indices;
+        this->isActive = true;
+    }
+    else {
+        qInfo() << "model data not sufficent,please check input";
+        this->isActive = false;
+    }
 }
 /*
  * Function: setModelData(Qstring path)
@@ -331,16 +361,18 @@ void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned
  */
 void _SceneEntity::setModelData(QString path)
 {
-    assetLoader.objLoader(path);
-    this->vertexData = assetLoader.getAssetVertices();
-    this->indexData = assetLoader.getAssetIndices();
-}
-/*
- *
-*/
-void _SceneEntity::setModelData(_AssetLoader::Model_Info m)
-{
-    this->modelInfo = m;
+    this->assetLoader.objLoader(path);
+    if(assetLoader.getAssetVertices().size() > 0 && assetLoader.getAssetIndices().size() > 0){
+        this->vertexData = assetLoader.getAssetVertices();
+        this->indexData = assetLoader.getAssetIndices();
+        this->isActive = true;
+    }
+    else {
+        qInfo() << "no model data in file, please check the path to file";
+        this->isActive = false;
+    }
+
+    this->modelInfo = assetLoader.getModelInfo();
 }
 /*
  * Function: setShaderPath(QString vSh, QString fSh)
@@ -391,7 +423,7 @@ QString _SceneEntity::getFragmentShaderPath() const
  * kind of collision obbject is attached to the sceneEntity
  * Created: 22_05_2019
 */
-void _SceneEntity::setPhysicsObject(_Physics::PhysicsObjects penum)
+void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum)
 {
     this->isPhysicsObject = true;
     this->phyObjtype = penum;
@@ -416,7 +448,7 @@ bool _SceneEntity::getIsPhysicsObject() const
     return this->isPhysicsObject;
 }
 
-_Physics::PhysicsObjects _SceneEntity::getPhysicsObjectType()
+_SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType()
 {
     return this->phyObjtype;
 }

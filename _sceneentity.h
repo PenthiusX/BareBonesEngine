@@ -5,7 +5,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "_assetloader.h"
-#include "_physics.h"
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -30,6 +29,8 @@ public:
     unsigned int getId() const;
     void setTag(const char* tag);//sets a name based identifier for the object
     const char* getTag() const;
+    void setOrderInIndex(unsigned int i);
+    unsigned int getIndexPosInScene() const;
     //
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
     QVector3D getPostion() const;//get the current position of the relvant object instace
@@ -49,6 +50,8 @@ public:
     glm::mat4x4 getRotationmatrix()const;
     void setScaleingMatrix(glm::mat4x4 smat);
     glm::mat4x4 getScaleingMatrix()const;
+    void setModelMatrix(glm::mat4x4 mmat);
+    glm::mat4x4 getModelMatrix()const;
     //
     void setProjectionMatrix(glm::mat4x4 proj);
     glm::mat4x4 getProjectionMatrix()const;
@@ -56,7 +59,6 @@ public:
     glm::mat4x4 getViewMatrix()const;
     //
     void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
-    void setModelData(_AssetLoader::Model_Info m);
     void setModelData(QString path);//takes the relative path via a qrc file path
     //
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
@@ -66,12 +68,10 @@ public:
     QString getVertexShaderPath() const;//returns the vertexshader path
     QString getFragmentShaderPath() const;//returns the fragment shader path
     //
-    std::vector<float> getvertexData() const;// get  the array of verterticess for refrence
+    std::vector<float> getVertexData() const;// get  the array of verterticess for refrence
     std::vector<unsigned int> getIndexData() const;// get the array of indices for refrence
     std::vector<int> getUvData() const;// get the array of UVs for refrence
     std::vector<float> getNormalData() const;// get the Array of normals for refrence
-    //
-    void setPhysicsObject(_Physics::PhysicsObjects penum);
     //
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
@@ -84,8 +84,17 @@ public:
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
     bool getIsPhysicsObject()const;
-    _Physics::PhysicsObjects getPhysicsObjectType();
+
+    enum scenePhysicsObjects{
+        Sphere = 0,
+        Box = 1,
+        Mesh = 2,
+    };
+    _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
+    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
+
 private:
+
     unsigned int id;
     const char* tag;
     QVector3D postion;
@@ -93,6 +102,7 @@ private:
     QVector3D pivot;
     float scale;
     QVector4D color;
+    unsigned int orderInIndex;
     //
     std::vector<float> vertexData;
     std::vector<unsigned int> indexData;
@@ -119,12 +129,14 @@ private:
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;
     glm::mat4x4 ScaleMatirx;
+    glm::mat4x4 ModelMatrix;
     glm::mat4x4 ProjectionMatrix;
     glm::mat4x4 ViewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
     _AssetLoader::Model_Info modelInfo;
-    _Physics::PhysicsObjects phyObjtype;//Physics Type identifier
+    //
+    _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
 };
 
 #endif // _SCENEENTITY_H

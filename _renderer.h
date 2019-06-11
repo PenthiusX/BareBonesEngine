@@ -50,46 +50,50 @@ public:
     //
     void initSceneEntityInRenderer(_SceneEntity s_);
     void setSceneEntityInRenderer(_SceneEntity s);
-
-    _SceneEntity getSceneEntity() const;
     //
+    _SceneEntity getSceneEntity() const;
     void draw();//Draws/paints everything bound in the scene
 
 
 private:
+    QVector4D actualColor;
     unsigned int VBO;//vertex buffer object
     unsigned int VAO;//attribute buffer object
     unsigned int EBO;//index buffer object
-
     //Shader class object sets the shaders and passes the program to the current context
     _Shader* shdr;
-    GLint colorUniform,mvpUniform,modelUnifrom,viewUniform,projectionUniform,mousePosUniform;
-    //Stores the uniform location allocated in the shader
-    void setuniformLocations();
+    GLint colorUniform;
+    GLint mvpUniform;
+    GLint modelUnifrom;
+    GLint viewUniform;
+    GLint projectionUniform;
+    GLint mousePosUniform;
     //Frambuffer variables
-    GLuint frameBuffer1;bool isFramebufferActive;
+    GLuint frameBuffer1;
     unsigned int fbtexture,textureColorbuffer,rbo;
-    unsigned int quadVAO, quadVBO;
-    _Shader* fboShader;
-
+    unsigned int quadVAO,quadVBO;
+    _Shader *fboShader;
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
-    glm::mat4 glm_model4x4,rotationMatrix,translationMatrix,scalingMatrix,pivotTmat;
+    glm::mat4 glm_model4x4;
+    glm::mat4 rotationMatrix,translationMatrix,scalingMatrix;
+    glm::mat4 pivotTmat;
     glm::mat4 glm_projection4x4;
     glm::mat4 glm_view4x4;
-
-    void keepSceneEntityUpdated();
-
     //Holds the vertex and index data
     std::vector<float> vertices;//not allocated yet
     std::vector<unsigned int> indices;//not allocated yet
-
+    //
     std::vector<_Texture> textures;//Texture array for tetures in use for the respective renderer object
-
+    //
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
-
+    //
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
+    //
     bool isTranfomationLocal;//Sets the flag to determine if tranformations need to be set on a local or world pivot
-
+    bool isFramebufferActive;
+    //Stores the uniform location allocated in the shader
+    void setuniformLocations();
+    void keepSceneEntityUpdated();
     void setColors();
 };
 #endif // _RENDERER_H

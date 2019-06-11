@@ -115,7 +115,6 @@ float _Tools::getRandomNumberfromRange(float min, float max)
 
 QJsonObject _Tools::ReadJsonFromQrc(QString Filename)
 {
-
     QFile loadFile(Filename);
     if(loadFile.isOpen())
     {
