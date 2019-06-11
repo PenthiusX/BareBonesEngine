@@ -37,7 +37,6 @@ void _FrameBuffer::setupQuad()
                              1.00f, -1.0f,  1.0f, 0.0f,
                              1.00f,  1.0f,  1.0f, 1.0f
                            };
-
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);
     glBindVertexArray(quadVAO);
@@ -149,7 +148,9 @@ void _FrameBuffer::renderFrameOn()
 {
     //implentation pending
 }
-
+/*
+ *
+*/
 void _FrameBuffer::setMousePos(QVector2D mPos)
 {
     //mouse y coordinate values are inverse of the the screen coordinate values

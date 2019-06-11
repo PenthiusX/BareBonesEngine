@@ -1,4 +1,5 @@
 #include "_scene.h"
+#include "_tools.h"
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -15,8 +16,6 @@ _Scene::_Scene()
 {
     isCamera = false;
     fboObject = new _FrameBuffer();
-    //preLoad all models in the Qrc File into memory for this scene
-
 }
 _Scene::~_Scene()
 {
@@ -40,7 +39,7 @@ std::vector<_Renderer*> _Scene::getSceneObjects()
 //  ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 /*
 * Function: addSceneObject(_SceneEntity s)
-* binds the propertes set by the scene objectes into the 
+* binds the propertes set by the scene objectes into the
 * renderer instace for rendering in the scene
 * this is being called by the _GlWidget class.
 * Created:26_02_2019
@@ -50,26 +49,56 @@ void _Scene::addSceneObject(_SceneEntity s)
     // Only sets the scene object if the camera has been set already and scene object is active
     if(s.getIsActive() == true)
     {
-        if(isCamera == true)
+        if (isCamera)
         {
             r = new _Renderer();
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
+            _SceneEntity s =  r->getSceneEntity();
+            s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
+            r->setSceneEntityInRenderer(s);
             renderObjects.push_back(r);
+            //
+            if(s.getIsPhysicsObject())
+            {   _Physics phys;
+                phys.setSceneEntity(s);
+                physVector.push_back(phys);}
         }
-        else //use default values for camera if no camera set.
+        else if(!isCamera) //use default values for camera if no camera set.
         {
             r = new _Renderer();
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
             r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
+            _SceneEntity s =  r->getSceneEntity();
+            s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
+            r->setSceneEntityInRenderer(s);
             renderObjects.push_back(r);
+            //
+            if(s.getIsPhysicsObject())
+            {   _Physics phys;
+                phys.setSceneEntity(s);
+                physVector.push_back(phys);}
         }
     }
     else
     {
         qDebug() << "scene object has not been set Properly";
+    }
+}
+
+void _Scene::removeSceneObject(unsigned int index)
+{
+    renderObjects.erase(renderObjects.begin()+index);
+}
+void _Scene::removeSceneObject(_SceneEntity s)
+{
+    for(int r = 0 ; r < renderObjects.size() ; r++){
+        if(renderObjects[r]->getSceneEntity().getId() == s.getId())
+        {
+            renderObjects.erase(renderObjects.begin()+r);
+        }
     }
 }
 /*
@@ -104,6 +133,7 @@ void _Scene::onResize(int w,int h)
     {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     }
+    //FBO init and updateTexture on Resize
     fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
     fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
@@ -140,7 +170,7 @@ void _Scene::render()
                                     cam.getEyePosition().z()),
                           glm::vec2(this->resW,this->resH),//Current Resolution
                           renderObjects[i]->getSceneEntity(),//Selected sceneEntity
-                          i);//Selected Index
+                          i);//Selected Index for current sceneEntity
         }
 
         //Frame update----
@@ -169,7 +199,10 @@ void _Scene::updateCamera(_Camera c)
         }
     }
 }
-
+/*
+ *
+ * Created: 3_05_2019
+ */
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
 {
     if(m == Qt::RightButton)
@@ -184,61 +217,56 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
      ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄
     ▐█▪·•██ ▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
     .▀   ▀▀  ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
- */
+*/
 /*
- *Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
- * update the physcs variables realtime and is callsed in the scene class
- * in the drawFunction
+ * Function: updatePhysics(glm::vec2 mousePos,glm::vec3 camPos)
+ * update the physcs variables realtime and
+ * is called in the _scene class's render() function.
  * Created: 22_05_2019
  */
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
-    updateMouseRay(mousePos,screenRes,s);
-    upDateRayCollisonTest(camPos,s,index);
-}
-/* Function: updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
- *
-*/
-void _Scene::updateMouseRay(glm::vec2 mousePos, glm::vec2 screenRes, _SceneEntity s)
-{
-    //calculate ray vector
-    this->phys.setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
-    //debug helper  implentation
-    pointerObject.x = this->phys.getrayEye().x; //sets the mousePointerObject position
-    pointerObject.y = this->phys.getrayEye().y;
+    //    qDebug() << mousePos.x << mousePos.y;
+    for(int p = 0; p < physVector.size(); p++)
+    {
+        //updates the physics object instance and runs the main physics updateOperations.
+        physVector[p].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
+        //sets the position of the pointer object fixed at index no 2 to be at the point of intersection.
+        renderObjects[2]->setPosition(QVector3D(physVector[p].getRayTriIntersectionPoint().x,physVector[p].getRayTriIntersectionPoint().y,physVector[p].getRayTriIntersectionPoint().z));
+        //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
+        //this is needed if we need to see changes to the sceneEntity in the main render as well.
+        renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
+    }
 }
 
 /*
  *
+ * Created: 10_06_2019
  */
-void _Scene::upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index)
+_SceneEntity _Scene::findSceneEntity(unsigned int iD)
 {
-    if(s.getPhysicsObjectType() == _Physics::Sphere)
-    {//the radius will come from calulation of maxextent in assetLoader for current purposes its same as the scale
-        float colliderSize = s.getScale();
-        if(this->phys.hitSphere(glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize,camPos))
+    for(int f = 0 ; f < this->renderObjects.size() ; f++)
+    {
+        if(renderObjects[f]->getSceneEntity().getId() == iD)
         {
-            //On event of collison with ray
-            pointerObject.z = this->phys.raySphereIntersect(camPos,glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z()),colliderSize);
-            //set values in the sceneEntity and ressetit it in the  relavant renderObject
-            s.setIsHitByRay(true);
-            s.setColor(QVector4D(0.6,0.0,0.0,0.8));
-            renderObjects[index]->setSceneEntityInRenderer(s);
-        }
-        else
-        {
-            //On event
-            s.setIsHitByRay(false);
-            s.setColor(QVector4D(1.0,0.6,0.0,0.5));
-            renderObjects[index]->setSceneEntityInRenderer(s);
+            return renderObjects[f]->getSceneEntity();
         }
     }
-    else if(s.getPhysicsObjectType() == _Physics::Box)//run operations for HitBox
+    _SceneEntity empty;
+    return empty;
+}
+/*
+ * Created: 10_06_2019
+ */
+_SceneEntity _Scene::findSceneEntity(std::string tag)
+{
+    for(int f = 0 ; f < this->renderObjects.size() ; f++)
     {
-
+        if(renderObjects[f]->getSceneEntity().getTag() == tag.c_str())
+        {
+            return renderObjects[f]->getSceneEntity();
+        }
     }
-    else if(s.getPhysicsObjectType() == _Physics::Mesh)//Run operation for Mesh collider
-    {
-
-    }
+    _SceneEntity empty;
+    return empty;
 }

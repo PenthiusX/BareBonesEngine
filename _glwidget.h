@@ -45,6 +45,7 @@ protected:
 
 private:
     void addRandomSceneEntitestoScene();
+    void removeSceneEntityFromScene();
     void applyStuffToallEntites(bool isit);
 
     //Variables
@@ -66,7 +67,8 @@ private:
     unsigned int idmatch;
     double scroolScale;
     QVector2D rotRads;
-	bool isCamFocus;
+    bool isCamFocus;
+//    bool ist = false;
     QVector2D mousePressPositionL,mousePressPositionR;
     QVector2D mousePositionL,mousePositionR;
 

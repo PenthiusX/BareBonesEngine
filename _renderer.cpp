@@ -400,6 +400,7 @@ void _Renderer::setscale(float scale)
 void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 {
     this->sceneEntity = s;
+    actualColor = this->sceneEntity.getColor();
     this->isTranfomationLocal = s.getIsTransfomationLocal();
     setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
@@ -407,7 +408,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     //can be converted to using the same VAO for the same set of vertex+index data.
     //will need to move the whole model loading and id geenration to assetLoader class
     //and only pass the relavant ids to VAO at runtime to reduce ovehead.
-    setModelDataInBuffers(s.getvertexData(), s.getIndexData());
+    setModelDataInBuffers(s.getVertexData(), s.getIndexData());
     setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
 
@@ -424,6 +425,7 @@ void _Renderer::keepSceneEntityUpdated()
     this->sceneEntity.setScaleingMatrix(this->scalingMatrix);
     this->sceneEntity.setProjectionMatrix(this->glm_projection4x4);
     this->sceneEntity.setViewMatrix(this->glm_view4x4);
+    this->sceneEntity.setModelMatrix(this->glm_model4x4);
 
     //get the real position values from the modelMatrix
     glm::mat4x4 tmat4 = glm_model4x4 * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
@@ -505,4 +507,5 @@ void _Renderer::setColors()
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
+    this->sceneEntity.getisHitByRay() ? this->sceneEntity.setColor(actualColor * 0.5) : this->sceneEntity.setColor(actualColor);
 }

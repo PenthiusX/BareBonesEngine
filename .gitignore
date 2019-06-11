@@ -1,11 +1,13 @@
-*.pro.user
-*.autosave
-*.log
 /x64
 /debug
 /release
+/.vs
 /vs
 /build
+/.vscode
+*.pro.user
+*.autosave
+*.log
 *.vs
 *.vcxproj
 *.vcxproj.filters
