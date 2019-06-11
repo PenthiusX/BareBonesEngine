@@ -8,6 +8,8 @@
 #include <QOpenGLContext>
 #include <QWidget>
 #include <Compute/_gpu_compute.h>
+#include <Compute/_cpu_compute.h>
+
 //22_04_2019
 class _Processing : public QObject , protected QOpenGLExtraFunctions
 {
@@ -18,6 +20,7 @@ public:
     bool makeCurrent();
     void doneCurrent();
     _GPU_Compute *gpu_compute = nullptr;
+    _Cpu_Compute *cpu_compute = nullptr;
 
     void setApplicationSettings(_ConfigControlEntity *app_sett);
 

@@ -1,6 +1,6 @@
 #include "_cpu_compute.h"
 
-_Cpu_Compute::_Cpu_Compute()
+_Cpu_Compute::_Cpu_Compute(QObject *parent) : QObject(parent)
 {
 
 }
@@ -34,4 +34,12 @@ std::vector<int> _Cpu_Compute::compute_k_means(std::array<unsigned int, 256> arr
     }while((glm::abs(change[0])+glm::abs(change[1]))>0.5);
 
     return k_means;
+}
+
+void _Cpu_Compute::genImg()
+{
+    _frameOriginal = cv::imread	("lena.jpg");
+    cv::cvtColor(_frameOriginal, _frameProcessed, cv::COLOR_BGR2GRAY);
+    QImage output((const unsigned char *)_frameProcessed.data, _frameProcessed.cols, _frameProcessed.rows, QImage::Format_Grayscale8);
+    emit imageOut(output);
 }

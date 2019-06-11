@@ -161,6 +161,7 @@ void _Processing::init()
 
         //this object will handle all compute operations
         gpu_compute = new _GPU_Compute();//should be created when context is active
+        cpu_compute = new _Cpu_Compute();//should be created when context is active
 
         //checking if gl context is working
 
