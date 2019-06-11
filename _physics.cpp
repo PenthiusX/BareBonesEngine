@@ -326,10 +326,10 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
         sp.radius = sceneEntity.getScale();//should be replaced by max extents or user input
-        hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);}
+        hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+    }
     //Box Intersection Test
-    else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box)
-    {
+    else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
         //pending
         HitBoundingBox();
     }
@@ -338,9 +338,8 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         //sets the updated modelMatrix from the sceneEntity.
         transFormPhysicsTriangles(sceneEntity.getModelMatrix());
         for(int it= 0 ; it < triVector.size() ; it++)
-            if(triVector.size() > 0)
-            {
-                //              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+            if(triVector.size() != NULL){
+//              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
                 if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],this->outIntersectionPoint)){
                     sceneEntity.setIsHitByRay(true);
                     qDebug() << outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;
