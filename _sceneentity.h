@@ -133,6 +133,7 @@ private:
     //
     _AssetLoader assetLoader;//Asset loading
     _AssetLoader::Model_Info modelInfo;
+    //
     _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
 };
 

@@ -56,9 +56,6 @@ public:
     Phy_Plane constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2);
     Phy_Plane constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 Normal);
     //
-    bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
-    void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
-    //
     glm::vec3 getRayWorld()const;
     glm::vec4 getrayEye()const;
     glm::vec3 getrayNormalizedDeviceCoordinates()const;
@@ -90,7 +87,11 @@ private:
     int resW,resH;
     //
     _SceneEntity sceneEntity;
-    glm::vec3 outIntersectionPoint;
+    glm::vec3 outIntersectionPoint;\
+
+    //Functions:
+    bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
+    void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
 };
 
 #endif // _PHYSICS_H

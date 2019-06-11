@@ -379,7 +379,6 @@ void _GLWidget::addRandomSceneEntitestoScene()
 /*
  *
 */
-
 void _GLWidget::removeSceneEntityFromScene()
 {
     //    scene->removeSceneObject(s1);
