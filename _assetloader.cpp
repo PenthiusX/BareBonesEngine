@@ -1,12 +1,13 @@
 #include "_assetloader.h"
 #include <iostream>
-#include <_tools.h>
 #include <string>
 #include <stdlib.h>
 #include <sstream>
 
 #include <qdiriterator.h>
 #include <QXmlStreamReader>
+
+#include "_tools.h"
 
 /*
 * Constructor/Distructor:
@@ -17,10 +18,13 @@ _AssetLoader::_AssetLoader()
     vertMax.setX(0.0);
     vertMax.setY(0.0);
     vertMax.setZ(0.0);
-
     vertMin.setX(999.0f);
     vertMin.setY(999.0f);
     vertMin.setZ(999.0f);
+    posCounter = 0;
+    arrayCounter = 0;
+
+    modelInfo.setIsLoaded(false);
 }
 _AssetLoader::~_AssetLoader(){}
 /*
@@ -28,7 +32,7 @@ _AssetLoader::~_AssetLoader(){}
 */
 _AssetLoader::_Model_Info _AssetLoader::getModelInfo()
 {
-    return this->minfo;
+    return this->modelInfo;
 }
 /*
 * Function:getAssetVertices()
@@ -56,8 +60,6 @@ std::vector<unsigned int> _AssetLoader::getAssetIndices()
 * a string array to get the approptie onfo to render the model
 * Created:15_03_2019
 */
-int posCounter = 0;
-int arrayCounter = 0;
 void _AssetLoader::objLoader(QString pathToFile)
 {
     qDebug() << "Loading Model" << pathToFile <<  "vertices.";
@@ -81,9 +83,11 @@ void _AssetLoader::objLoader(QString pathToFile)
             posCounter++;
         }
         temp = "";
-        //assigning the max and min values for vertices
+        //assigning the max and min values for vertices at the same
+        //time that they are beiing assigned.
         if(posCounter >= 3 && (arrayCounter + 2) < vertices.size())
         {
+            //minExtent
             posCounter = 0;
             if(vertices[arrayCounter] >= vertMax.x())
                 vertMax.setX(vertices[arrayCounter]);
@@ -91,7 +95,7 @@ void _AssetLoader::objLoader(QString pathToFile)
                 vertMax.setY(vertices[arrayCounter + 1]);
             if(vertices[arrayCounter + 2] >= vertMax.z())
                 vertMax.setZ(vertices[arrayCounter + 2]);
-
+             //maxEntent
             if(vertices[arrayCounter] <= vertMin.x())
                 vertMin.setX(vertices[arrayCounter]);
             if(vertices[arrayCounter + 1] <= vertMin.y())
@@ -117,11 +121,14 @@ void _AssetLoader::objLoader(QString pathToFile)
         temp2 = "";
     }
 
-    minfo.path = pathToFile;
-    minfo.vertexArray = this->vertices;
-    minfo.indexAarray = this->indices;
-    minfo.max = this->vertMax;
-    minfo.min = this->vertMin;
+    //sets the ModelInfo data at the end of modelfile parse.
+
+    modelInfo.setPath(pathToFile);
+    modelInfo.setVertexArray(this->vertices);
+    modelInfo.setIndexArray(this->indices);
+    modelInfo.setMaxExtents(this->vertMax);
+    modelInfo.setMinExtents(this->vertMin);
+    modelInfo.setIsLoaded(true);
 }
 
 /* //Not in use---future implementation via VAO.
@@ -133,13 +140,66 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 {
     foreach(const QString &imageName, QDir(":/"+folderName).entryList())
     {
-        minfo.name = imageName;
-        minfo.path = ":/"+ folderName +"/" + imageName;
+        modelInfo.setName(imageName);
+        modelInfo.setPath(":/"+ folderName +"/" + imageName);
         objLoader(":/"+ folderName +"/" + imageName);
-        minfo.vertexArray = this->vertices;
-        minfo.indexAarray = this->indices;
+        modelInfo.setVertexArray(this->vertices);
+        modelInfo.setIndexArray(this->indices);
 //        modelInfoArray.push_back(minfo);
         this->vertices.clear();
         this->indices.clear();
     }
+}
+/*
+• ▌ ▄ ·.       ·▄▄▄▄  ▄▄▄ .▄▄▌  ▪   ▐ ▄ ·▄▄▄           ▄▄ • ▄▄▄ .▄▄▄▄▄   .▄▄ · ▄▄▄ .▄▄▄▄▄
+·██ ▐███▪▪     ██▪ ██ ▀▄.▀·██•  ██ •█▌▐█▐▄▄·▪         ▐█ ▀ ▪▀▄.▀·•██     ▐█ ▀. ▀▄.▀·•██
+▐█ ▌▐▌▐█· ▄█▀▄ ▐█· ▐█▌▐▀▀▪▄██▪  ▐█·▐█▐▐▌██▪  ▄█▀▄     ▄█ ▀█▄▐▀▀▪▄ ▐█.▪   ▄▀▀▀█▄▐▀▀▪▄ ▐█.▪
+██ ██▌▐█▌▐█▌.▐▌██. ██ ▐█▄▄▌▐█▌▐▌▐█▌██▐█▌██▌.▐█▌.▐▌    ▐█▄▪▐█▐█▄▄▌ ▐█▌·   ▐█▄▪▐█▐█▄▄▌ ▐█▌·
+▀▀  █▪▀▀▀ ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ .▀▀▀ ▀▀▀▀▀ █▪▀▀▀  ▀█▄▀▪    ·▀▀▀▀  ▀▀▀  ▀▀▀  ▀  ▀▀▀▀  ▀▀▀  ▀▀▀
+*/
+
+void _AssetLoader::Model_Info::setName(QString name){
+    this->name = name;
+}
+void _AssetLoader::Model_Info::setPath(QString path){
+    this->path = path;
+}
+void _AssetLoader::Model_Info::setIsLoaded(bool isLoaded){
+    this->isLoaded = isLoaded;
+}
+void _AssetLoader::Model_Info::setVertexArray(std::vector<float> vertexArray){
+    this->vertexArray = vertexArray;
+}
+void _AssetLoader::Model_Info::setIndexArray(std::vector<unsigned int> indexAarray){
+    this->indexAarray = indexAarray;
+}
+void _AssetLoader::Model_Info::setMaxExtents(QVector3D max){
+    this->max = max;
+}
+void _AssetLoader::Model_Info::setMinExtents(QVector3D min){
+    this->min = min;
+}
+QString _AssetLoader::Model_Info::getName() const{
+    return this->name;
+}
+QString _AssetLoader::Model_Info::getPath() const{
+    return this->path;
+}
+std::vector<float> _AssetLoader::Model_Info::getVertices() const{
+    return this->vertexArray;
+}
+std::vector<unsigned int> _AssetLoader::Model_Info::getIndices() const{
+    return this->indexAarray;
+}
+QVector3D _AssetLoader::Model_Info::getMaxExtent() const{
+    return this->max;
+}
+QVector3D _AssetLoader::Model_Info::getMinExtent() const{
+    return this->min;
+}
+QVector3D _AssetLoader::Model_Info::getCentroid() const{
+   return this->centroid;
+}
+bool _AssetLoader::Model_Info::getIsLoaded() const{
+    return this->isLoaded;
 }

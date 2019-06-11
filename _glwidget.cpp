@@ -398,5 +398,3 @@ void _GLWidget::applyStuffToallEntites(bool isit)
         qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
     }
 }
-
-
