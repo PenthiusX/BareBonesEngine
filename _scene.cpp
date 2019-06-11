@@ -22,16 +22,7 @@ _Scene::~_Scene()
     renderObjects.clear();
     delete r;
 }
-/*
- * Function: getSceneObjects()
- * returns the vector array of sceneObjects.
- * this is being called by the _GlWidget class.
- * Created:26_02_2019
-*/
-std::vector<_Renderer*> _Scene::getSceneObjects()
-{
-    return this->renderObjects;
-}
+
 //  ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
 //  ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▪▀·.█▌▀▄.▀·
 //  ▐█·▐█▐▐▌▐█· ▐█.▪▐█·▄█▀▀█ ██▪  ▐█·▄█▀▀▀•▐▀▀▪▄
@@ -63,7 +54,8 @@ void _Scene::addSceneObject(_SceneEntity s)
             if(s.getIsPhysicsObject())
             {   _Physics phys;
                 phys.setSceneEntity(s);
-                physVector.push_back(phys);}
+                physVector.push_back(phys);
+            }
         }
         else if(!isCamera) //use default values for camera if no camera set.
         {
@@ -79,7 +71,8 @@ void _Scene::addSceneObject(_SceneEntity s)
             if(s.getIsPhysicsObject())
             {   _Physics phys;
                 phys.setSceneEntity(s);
-                physVector.push_back(phys);}
+                physVector.push_back(phys);
+            }
         }
     }
     else
@@ -87,19 +80,22 @@ void _Scene::addSceneObject(_SceneEntity s)
         qDebug() << "scene object has not been set Properly";
     }
 }
-
-void _Scene::removeSceneObject(unsigned int index)
+/*
+     ▄▄ • ▄▄▄ .▄▄▄▄▄     ▪  .▄▄ · ▄▄▄ .▄▄▄▄▄
+    ▐█ ▀ ▪▀▄.▀·•██      ▪   ▐█ ▀. ▀▄.▀·•██
+    ▄█ ▀█▄▐▀▀▪▄ ▐█.▪   ▪    ▄▀▀▀█▄▐▀▀▪▄ ▐█.▪
+    ▐█▄▪▐█▐█▄▄▌ ▐█▌·  ▪     ▐█▄▪▐█▐█▄▄▌ ▐█▌·
+    ·▀▀▀▀  ▀▀▀  ▀▀▀  ▪       ▀▀▀▀  ▀▀▀  ▀▀▀
+*/
+/*
+ * Function: getSceneObjects()
+ * returns the vector array of sceneObjects.
+ * this is being called by the _GlWidget class.
+ * Created:26_02_2019
+*/
+std::vector<_Renderer*> _Scene::getSceneObjects()
 {
-    renderObjects.erase(renderObjects.begin()+index);
-}
-void _Scene::removeSceneObject(_SceneEntity s)
-{
-    for(int r = 0 ; r < renderObjects.size() ; r++){
-        if(renderObjects[r]->getSceneEntity().getId() == s.getId())
-        {
-            renderObjects.erase(renderObjects.begin()+r);
-        }
-    }
+    return this->renderObjects;
 }
 /*
  * Function: addCamera(_Camera c)
@@ -113,7 +109,62 @@ void _Scene::addCamera(_Camera c)
     isCamera = true;
     cam = c;
 }
+/*
+ * Function: updateCamera(_Camera c)
+ * sets the camera updated values to every render entity matrix
+ * Created:26_02_2019
+*/
+void _Scene::updateCamera(_Camera c)
+{
+    cam = c;
+    if(isCamera == true)
+        for (unsigned int i = 0; i < renderObjects.size(); i++)
+            renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
+}
+/*
+ * Created: 3_05_2019
+ */
+void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
+{
+    if(m == Qt::RightButton)
+        this->mousePositionR = mousePos;
+    else if(m == Qt::LeftButton)
+        this->mousePositionL = mousePos;
+}
+/*
+ * Created: 10_06_2019
+ */
+_SceneEntity _Scene::findSceneEntity(unsigned int iD)
+{
+    for(int f = 0 ; f < this->renderObjects.size() ; f++)
+        if(renderObjects[f]->getSceneEntity().getId() == iD)
+            return renderObjects[f]->getSceneEntity();
 
+    _SceneEntity empty;
+    return empty;
+}
+_SceneEntity _Scene::findSceneEntity(std::string tag)
+{
+    for(int f = 0 ; f < this->renderObjects.size() ; f++)
+        if(renderObjects[f]->getSceneEntity().getTag() == tag.c_str())
+            return renderObjects[f]->getSceneEntity();
+
+    _SceneEntity empty;
+    return empty;
+}
+/*
+ * Created: 5_06_2019
+ */
+void _Scene::removeSceneObject(unsigned int index)
+{
+    renderObjects.erase(renderObjects.begin()+index);
+}
+void _Scene::removeSceneObject(_SceneEntity s)
+{
+    for(int r = 0 ; r < renderObjects.size() ; r++)
+        if(renderObjects[r]->getSceneEntity().getId() == s.getId())
+            renderObjects.erase(renderObjects.begin()+r);
+}
 //         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
 //  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
 //   ▄█▀▄ ▐█▐▐▌    ▐▀▀▄ ▐▀▀▪▄▄▀▀▀█▄▐█·▄█▀▀▀•▐▀▀▪▄
@@ -130,9 +181,8 @@ void _Scene::onResize(int w,int h)
     this->resW = w;
     this->resH = h;
     for (unsigned int i = 0; i < renderObjects.size(); i++)
-    {
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
-    }
+
     //FBO init and updateTexture on Resize
     fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
     fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
@@ -184,34 +234,6 @@ void _Scene::render()
 }
 
 /*
- * Function: updateCamera(_Camera c)
- * sets the camera updated values to every render entity matrix
- * Created:26_02_2019
-*/
-void _Scene::updateCamera(_Camera c)
-{
-    cam = c;
-    if(isCamera == true)
-    {
-        for (unsigned int i = 0; i < renderObjects.size(); i++)
-        {
-            renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
-        }
-    }
-}
-/*
- *
- * Created: 3_05_2019
- */
-void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
-{
-    if(m == Qt::RightButton)
-        this->mousePositionR = mousePos;
-    else if(m == Qt::LeftButton)
-        this->mousePositionL = mousePos;
-}
-
-/*
      ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·
     ▐█ ▄███▪▐█▐█▪██▌▐█ ▀. ██ ▐█ ▌▪▐█ ▀.
      ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄
@@ -237,35 +259,4 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
         //this is needed if we need to see changes to the sceneEntity in the main render as well.
         renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
     }
-}
-/*
- *
- * Created: 10_06_2019
- */
-_SceneEntity _Scene::findSceneEntity(unsigned int iD)
-{
-    for(int f = 0 ; f < this->renderObjects.size() ; f++)
-    {
-        if(renderObjects[f]->getSceneEntity().getId() == iD)
-        {
-            return renderObjects[f]->getSceneEntity();
-        }
-    }
-    _SceneEntity empty;
-    return empty;
-}
-/*
- * Created: 10_06_2019
- */
-_SceneEntity _Scene::findSceneEntity(std::string tag)
-{
-    for(int f = 0 ; f < this->renderObjects.size() ; f++)
-    {
-        if(renderObjects[f]->getSceneEntity().getTag() == tag.c_str())
-        {
-            return renderObjects[f]->getSceneEntity();
-        }
-    }
-    _SceneEntity empty;
-    return empty;
 }
