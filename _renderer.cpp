@@ -15,12 +15,9 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    glEnable(GL_FRONT_AND_BACK);
-    glEnable(GL_BLEND);
+    glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
+    glEnable(GL_BLEND);//for transparency in alpha values
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_MULTISAMPLE);
-
-
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
