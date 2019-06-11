@@ -36,7 +36,6 @@ _SceneEntity::~_SceneEntity(){
     tag = nullptr;
     delete tag;
 }
-
 /*
  * Function: setId(int id) & getId()
  * sets/gets the id for the current object.
@@ -50,7 +49,6 @@ void _SceneEntity::setId(unsigned int id){
 unsigned int _SceneEntity::getId() const{
     return this->id;
 }
-
 /* Function: setTag(const char *tag)
  * sets/gets the tag for the scene object
  * Tag is a string name uniqe identifier for the
@@ -63,7 +61,6 @@ const char *_SceneEntity::getTag() const{
     return this->tag;
 }
 /*
- *
  * Created: 10_06_2019
 */
 void _SceneEntity::setOrderInIndex(unsigned int i){
@@ -72,7 +69,6 @@ void _SceneEntity::setOrderInIndex(unsigned int i){
 unsigned int _SceneEntity::getIndexPosInScene()const{
     return this->orderInIndex;
 }
-
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
  * sets/gets the position for the current object.
@@ -84,7 +80,6 @@ void _SceneEntity::setPosition(QVector3D pos){
 QVector3D _SceneEntity::getPostion() const{
     return this->postion;
 }
-
 /*
  * Function: setRotation(QQuaternion rot) & getRotation()
  * sets/gets the rotation for the current object.
@@ -96,7 +91,6 @@ void _SceneEntity::setRotation(QVector3D rot){
 QVector3D _SceneEntity::getRotation() const{
     return this->rotation;
 }
-
 /*
  * Function: set/getPivot
  * sets gets the pivot position for the
@@ -114,7 +108,6 @@ QVector3D _SceneEntity::getPivot() const{
 bool _SceneEntity::getIsPivotSet(){
     return this->isPivotSet;
 }
-
 /*
  * Function: setScale(float scale) & getScale()
  * sets/gets the scale for the current object.
@@ -126,7 +119,6 @@ void _SceneEntity::setScale(float scale){
 float _SceneEntity::getScale() const{
     return this->scale;
 }
-
 /*
  * Function: set/getColor
  * sts gets the color variable of the
@@ -139,7 +131,6 @@ void _SceneEntity::setColor(QVector4D col){
 QVector4D _SceneEntity::getColor() const{
     return this->color;
 }
-
 /*
  * Function: set/get translationMatrix()
  * that stores the traslation part of the modelMatrix
@@ -176,7 +167,6 @@ void _SceneEntity::setScaleingMatrix(glm::mat4x4 smat){
 glm::mat4x4 _SceneEntity::getScaleingMatrix() const{
     return this->ScaleMatirx;
 }
-
 void _SceneEntity::setModelMatrix(glm::mat4x4 mmat){
     this->ModelMatrix = mmat;
 }
@@ -238,7 +228,6 @@ void _SceneEntity::setuvData(std::vector<int> uvCoords){
 std::vector<int> _SceneEntity::getUvData()const{
     return this->uvData;
 }
-
 /*
  * Function: setnormalData(std::vector<float> normalData) & getNormalData()
  * sets/gets the normaldata for the current object.
@@ -277,7 +266,6 @@ void _SceneEntity::setIsLineMode(bool isit){
 bool _SceneEntity::getIsLineMode(){
     return this->isLineMode;
 }
-
 /*
  *Function:isTransfomationLocal()
  * sets gets the isTranformationlocal boolean object
@@ -290,7 +278,6 @@ void _SceneEntity::setIsTransfomationLocal(bool isLoc){
 bool _SceneEntity::getIsTransfomationLocal(){
     return this->isTransfomationLocal;
 }
-
 /*
  * Function: setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
  * sets the vertex and index data in one function, for the current object.
@@ -344,7 +331,7 @@ void _SceneEntity::setModelData(QString path)
         this->indexData = assetLoader.getAssetIndices();
         this->isActive = true;
     }
-    else {
+    else{
         qInfo() << "no model data in file, please check the path to file";
         this->isActive = false;
     }
@@ -359,7 +346,6 @@ void _SceneEntity::setShader(QString vSh, QString fSh){
     this->vShaderPath = vSh;
     this->fShaderPath = fSh;
 }
-
 /* Function:gets/sets texture path getTexturePath().
  * returns the path of the texture that is applied to the sceneObject.
  * Date: 26_02_2019
@@ -370,16 +356,14 @@ QString _SceneEntity::getTexturePath() const{
 void _SceneEntity::setTexturePath(QString texPath){
     this->texturePath = texPath;
 }
-
 /*
 * Function: getVertexShaderPath()
 * returns the Vertex shader path set in the object via set shader Path
- * Created:26_02_2019
+* Created:26_02_2019
 */
 QString _SceneEntity::getVertexShaderPath() const{
     return this->vShaderPath;
 }
-
 /*
 * Function: getFragmentShaderPath()
 * returns the fragment shader path set in the object via set shader Path
