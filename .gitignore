@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+*.pro.user
+*.autosave
+*.log
+>>>>>>> a0bd17529071b388b1ba8f6686e2ce2429738e86
 /x64
 /debug
 /release
@@ -5,9 +11,12 @@
 /vs
 /build
 /.vscode
+<<<<<<< HEAD
 *.pro.user
 *.autosave
 *.log
+=======
+>>>>>>> a0bd17529071b388b1ba8f6686e2ce2429738e86
 *.vs
 *.vcxproj
 *.vcxproj.filters

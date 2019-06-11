@@ -266,7 +266,6 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QVector2D diff = QVector2D(e->localPos()) - mousePressPositionL;
-
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
@@ -438,9 +437,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         doneCurrent();
     }
 }
-/*
- *
-*/
+//Press L to activte(not in use currently)
 void _GLWidget::removeSceneEntityFromScene()
 {
     //    scene->removeSceneObject(s1);
@@ -532,7 +529,6 @@ void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
         }
     }
 }
-
 
 //Press L to activate.
 void _GLWidget::applyStuffToallEntites(bool isit)
