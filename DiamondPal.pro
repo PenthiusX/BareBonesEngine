@@ -132,8 +132,8 @@ win32: LIBS += -L$$PWD/Dependancies/win/Picolo/Lib/amd64/ -lMultiCam
 INCLUDEPATH += $$PWD/Dependancies/win/Picolo/Include
 DEPENDPATH += $$PWD/Dependancies/win/Picolo/Include
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/OpenCV/lib/Debug/ -lopencv_core401
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/win/OpenCV/lib/Debug/ -lopencv_core401d
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/OpenCV/lib/Debug/ -lopencv_core401d -lopencv_imgcodecs401d -lopencv_highgui401d -lopencv_imgproc401d
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/win/OpenCV/lib/Debug/ -lopencv_core401d -lopencv_imgcodecs401d -lopencv_highgui401d -lopencv_imgproc401d
 
 INCLUDEPATH += $$PWD/Dependancies/win/OpenCV/include
 DEPENDPATH += $$PWD/Dependancies/win/OpenCV/include

@@ -40,6 +40,6 @@ void _Cpu_Compute::genImg()
 {
     _frameOriginal = cv::imread	("lena.jpg");
     cv::cvtColor(_frameOriginal, _frameProcessed, cv::COLOR_BGR2GRAY);
-    QImage output((const unsigned char *)_frameProcessed.data, _frameProcessed.cols, _frameProcessed.rows, QImage::Format_Grayscale8);
+    QImage output((const unsigned char *)_frameOriginal.data, _frameProcessed.cols, _frameProcessed.rows, QImage::Format_RGB888);
     emit imageOut(output);
 }

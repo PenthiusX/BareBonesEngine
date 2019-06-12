@@ -163,6 +163,7 @@ void _Processing::init()
         gpu_compute = new _GPU_Compute();//should be created when context is active
         cpu_compute = new _Cpu_Compute();//should be created when context is active
 
+
         //checking if gl context is working
 
         qDebug() << QString::fromUtf8((char*)glGetString(GL_VERSION));

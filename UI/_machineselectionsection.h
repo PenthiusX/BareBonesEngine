@@ -19,6 +19,7 @@ public:
 public slots:
     void init();
     void save();
+    void showImage(QImage img);
 private:
     Ui::_MachineSelectionSection *ui;
 };

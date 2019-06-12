@@ -30,9 +30,10 @@ void _MachineSelectionSection::init()
 
     if(machine->isInitialised())
     {
+
         int n = ui->machine_type_dropdown->count();
         for (int index = 0; index < n; ++index) {
-            QString l = machine->config["Configuration"].getStringEntity("MACHINE_TYPE") ;
+            QString l = machine->config["Configuration"].getStringEntity("MACHINE_TYPE");
             QString r = ui->machine_type_dropdown->itemText(index);
             if(l==r)
                 ui->machine_type_dropdown->setCurrentIndex(index);
@@ -62,6 +63,9 @@ void _MachineSelectionSection::init()
                 qWarning() << QString("parent pointer of %1 is not valid or is not of type QStackedWidget").arg(this->objectName());
             }
         }
+        connect(processing->cpu_compute,SIGNAL(imageOut(QImage)),this,SLOT(showImage(QImage)));
+
+        processing->cpu_compute->genImg();
     }
 }
 
@@ -69,4 +73,8 @@ void _MachineSelectionSection::save()
 {
     machine->config["Configuration"].getStringEntity("MACHINE_TYPE") = ui->machine_type_dropdown->currentText();
     saveConfig();
+}
+void _MachineSelectionSection::showImage(QImage img)
+{
+    ui->img_label->setPixmap(QPixmap::fromImage(img));
 }
