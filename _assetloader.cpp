@@ -86,11 +86,11 @@ _AssetLoader::_AssetLoader()
     modelInfo.setIsLoaded(false);
 }
 _AssetLoader::~_AssetLoader(){}
-/*
- *
-*/
-_AssetLoader::_Model_Info _AssetLoader::getModelInfo()
-{
+
+void _AssetLoader::setModelInfo(_AssetLoader::Model_Info minfo){
+    this->modelInfo = minfo;
+}
+_AssetLoader::Model_Info _AssetLoader::getModelInfo(){
     return this->modelInfo;
 }
 /*
@@ -99,8 +99,7 @@ _AssetLoader::_Model_Info _AssetLoader::getModelInfo()
 * form the model object loader
 * Created:15_03_2019
 */
-std::vector<float> _AssetLoader::getAssetVertices()
-{
+std::vector<float> _AssetLoader::getAssetVertices(){
     return this->vertices;
 }
 /*
@@ -109,8 +108,7 @@ std::vector<float> _AssetLoader::getAssetVertices()
 * filled in the objloader.
 * Created:15_03_2019
 */
-std::vector<unsigned int> _AssetLoader::getAssetIndices()
-{
+std::vector<unsigned int> _AssetLoader::getAssetIndices(){
     return this->indices;
 }
 /*
@@ -133,19 +131,16 @@ void _AssetLoader::objLoader(QString pathToFile)
     std::stringstream ssv;
     ssv << av;
     float foundf;
-    while (!ssv.eof())
-    {
+    while (!ssv.eof()){
         ssv >> temp;
-        if (std::stringstream(temp) >> foundf)
-        {
+        if (std::stringstream(temp) >> foundf){
             vertices.push_back(foundf);
             posCounter++;
         }
         temp = "";
         //assigning the max and min values for vertices at the same
         //time that they are beiing assigned.
-        if(posCounter >= 3 && (arrayCounter + 2) < vertices.size())
-        {
+        if(posCounter >= 3 && (arrayCounter + 2) < vertices.size()){
             //minExtent
             posCounter = 0;
             if(vertices[arrayCounter] >= vertMax.x())
@@ -179,9 +174,7 @@ void _AssetLoader::objLoader(QString pathToFile)
         }
         temp2 = "";
     }
-
     //sets the ModelInfo data at the end of modelfile parse.
-
     modelInfo.setPath(pathToFile);
     modelInfo.setVertexArray(this->vertices);
     modelInfo.setIndexArray(this->indices);
@@ -209,4 +202,29 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
         this->indices.clear();
     }
 }
+
+/*
+ * Created: 12_06_2019
+*/
+void _AssetLoader::calcMinMaxExtents()
+{
+    std::vector<float> v = this->modelInfo.getVertices();
+   for(unsigned int i = 0 ; i < v.size() ; i += 3)
+    {
+        if(v[i] >= vertMax.x())
+            vertMax.setX(v[i]);
+        if(v[i + 1] >= vertMax.y())
+            vertMax.setY(v[i + 1]);
+        if(v[i + 2] >= vertMax.z())
+            vertMax.setZ(v[i + 2]);
+         //maxEntent
+        if(v[i] <= vertMin.x())
+            vertMin.setX(v[i]);
+        if(v[i + 1] <= vertMin.y())
+            vertMin.setY(v[i + 1]);
+        if(v[i + 2] <= vertMin.z())
+            vertMin.setZ(v[i + 2]);
+    }
+}
+
 

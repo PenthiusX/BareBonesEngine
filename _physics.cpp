@@ -34,7 +34,8 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
     // this point will not change on translation
     glm::vec4 vpoint;
     std::vector< glm::vec4> pv;
-    if(vert.size() > 0){
+    if(vert.size() > 0)
+    {
         for(int i = 0 ; i < vert.size() ; i += 3)
         {
             vpoint.x = vert[i];
@@ -247,8 +248,8 @@ char HitBoundingBox()
     double maxT[NUMDIM];
     double candidatePlane[NUMDIM];
 
-//  Find candidate planes; this loop can be avoided if
-//  rays cast all from the eye(assume perpsective view)
+    //  Find candidate planes; this loop can be avoided if
+    //  rays cast all from the eye(assume perpsective view)
     for (i=0; i<NUMDIM; i++)
         if(origin[i] < minB[i]){
             quadrant[i] = LEFT;
@@ -262,7 +263,7 @@ char HitBoundingBox()
             quadrant[i] = MIDDLE;
         }
 
-//  Ray origin inside bounding box
+    //  Ray origin inside bounding box
     if(inside){
         coord[0] = origin[0];
         coord[1] = origin[1];
@@ -270,20 +271,20 @@ char HitBoundingBox()
         return (true);
     }
 
-//  Calculate T distances to candidate planes
+    //  Calculate T distances to candidate planes
     for (i = 0; i < NUMDIM; i++)
         if (quadrant[i] != MIDDLE && dir[i] !=0.)
             maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
         else
             maxT[i] = -1.;
 
-//  Get largest of the maxT's for final choice of intersection
+    //  Get largest of the maxT's for final choice of intersection
     whichPlane = 0;
     for (i = 1; i < NUMDIM; i++)
         if (maxT[whichPlane] < maxT[i])
             whichPlane = i;
 
-//  Check final candidate actually inside box
+    //  Check final candidate actually inside box
     if (maxT[whichPlane] < 0.) return (false);
     for (i = 0; i < NUMDIM; i++)
         if (whichPlane != i){
@@ -300,17 +301,17 @@ char HitBoundingBox()
 bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin)
 {
     double tmin = -INFINITY, tmax = INFINITY;
-//    for (int i = 0; i < 3; ++i) {
-//        if (ray.dir[i] != 0.0) {
-//            double t1 = (box.min[i] - r.origin[i])/r.dir[i];
-//            double t2 = (box.max[i] - r.origin[i])/r.dir[i];
+    //    for (int i = 0; i < 3; ++i) {
+    //        if (ray.dir[i] != 0.0) {
+    //            double t1 = (box.min[i] - r.origin[i])/r.dir[i];
+    //            double t2 = (box.max[i] - r.origin[i])/r.dir[i];
 
-//            tmin = max(tmin, min(t1, t2));
-//            tmax = min(tmax, max(t1, t2));
-//        } else if (ray.origin[i] <= b.min[i] || ray.origin[i] >= b.max[i]) {
-//            return false;
-//        }
-//    }
+    //            tmin = max(tmin, min(t1, t2));
+    //            tmax = min(tmax, max(t1, t2));
+    //        } else if (ray.origin[i] <= b.min[i] || ray.origin[i] >= b.max[i]) {
+    //            return false;
+    //        }
+    //    }
     return tmax > tmin && tmax > 0.0;
 }
 
@@ -337,16 +338,15 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
         //sets the updated modelMatrix from the sceneEntity.
         transFormPhysicsTriangles(sceneEntity.getModelMatrix());
-        for(int it= 0 ; it < triVector.size() ; it++)
+        for(int it= 0 ; it < triVector.size() ; it++){
             if(triVector.size() != NULL){
 //              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
                 if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],this->outIntersectionPoint)){
                     sceneEntity.setIsHitByRay(true);
-                    qDebug() << outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;
-                }
+                    qDebug() << outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;}
                 else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)){
-                    sceneEntity.setIsHitByRay(false);
-                }
+                    sceneEntity.setIsHitByRay(false);}
             }
+        }
     }
 }

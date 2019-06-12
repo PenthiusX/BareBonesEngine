@@ -283,11 +283,10 @@ bool _SceneEntity::getIsTransfomationLocal(){
 */
 void _SceneEntity::setModelData(_AssetLoader::Model_Info minfo)
 {
-    if(minfo.getVertices().size() > 0 && minfo.getIndices().size() > 0)
-    {
-        this->modelInfo.setVertexArray(minfo.getVertices());
-        this->modelInfo.setIndexArray(minfo.getIndices());
-        this->modelInfo.setPath(minfo.getPath());
+    if(minfo.getVertices().size() > 0 && minfo.getIndices().size() > 0){
+        assetLoader.setModelInfo(minfo);
+        assetLoader.calcMinMaxExtents();
+        this->modelInfo = assetLoader.getModelInfo();
         this->modelInfo.setIsLoaded(true);
         this->isActive = true;
     }
@@ -307,15 +306,14 @@ void _SceneEntity::setModelData(QString path)
 {
     this->assetLoader.objLoader(path);
     if(assetLoader.getAssetVertices().size() > 0 && assetLoader.getAssetIndices().size() > 0){
-        this->vertexData = assetLoader.getAssetVertices();
-        this->indexData = assetLoader.getAssetIndices();
+        this->modelInfo = assetLoader.getModelInfo();
+        this->modelInfo.setIsLoaded(true);
         this->isActive = true;
     }
     else{
         qInfo() << "no model data in file, please check the path to file";
         this->isActive = false;
     }
-    this->modelInfo = assetLoader.getModelInfo();
 }
 /*
  * Function: setShaderPath(QString vSh, QString fSh)

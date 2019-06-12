@@ -62,7 +62,7 @@ void _GLWidget::initializeGL()
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
 
-    _AssetLoader::Model_Info quad;
+    _AssetLoader::Model_Info quad;//implemented 12_06_2018
     quad.setName("quad");
     quad.setVertexArray(vertsV);
     quad.setIndexArray(indiceV);
@@ -362,7 +362,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
 {
     for(int i = 0 ; i < 1 ; i++)
     {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
-        //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
+     //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
         makeCurrent();
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
