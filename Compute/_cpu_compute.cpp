@@ -53,5 +53,4 @@ char *_Cpu_Compute::frameGray2RGB(char *img, unsigned int iwidth, unsigned int i
     cv::cvtColor(_frameOriginal, _frameProcessed, cv::COLOR_GRAY2RGBA);
 
     return (char*)_frameProcessed.data;
-
 }

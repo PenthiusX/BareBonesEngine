@@ -5,7 +5,7 @@
 #include <QOpenGLExtraFunctions>
 #include <map>
 
-class _Texture : private QOpenGLExtraFunctions
+class _Texture : protected QOpenGLExtraFunctions
 {
 public:
     //constructors to set texture
