@@ -212,30 +212,6 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
     else {// This means that there is a line intersection but not a ray intersection.
         return false;}
 }
-/* Function: transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
- * tranforms the physics bodies in sync with the actual object it
- * is bound on.
- * Created: 5_06_2019
-*/
-void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
-{
-    for(unsigned int tr = 0 ; tr < triVector.size() ; tr++)
-    {
-        triVector[tr].pointA =  modelMatrix * triVectorCopy[tr].pointA;
-        triVector[tr].pointB =  modelMatrix * triVectorCopy[tr].pointB;
-        triVector[tr].pointC =  modelMatrix * triVectorCopy[tr].pointC;
-    }
-}
-/*
- * Created: 12_06_2019
-*/
-void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
-{
-    glm::vec4 max = modelMatrix * initialMax;
-    glm::vec4 min = modelMatrix * initialMin;
-    this->sceneEntity.getModelInfo().setMaxExtents(max);
-    this->sceneEntity.getModelInfo().setMinExtents(min);
-}
 /*
  * Created: 5_06_2019
 */
@@ -303,25 +279,29 @@ bool _Physics::hitBoundingBox(Phy_Box b , glm::vec3 rayOrigin ,glm::vec3 rDirect
         }
     return (true);				//ray hits box
 }
-/*
+/* Function: transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
+ * tranforms the physics bodies in sync with the actual object it
+ * is bound on.
  * Created: 5_06_2019
 */
-//faster but does not return a point
-bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin)
+void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
 {
-    double tmin = -INFINITY, tmax = INFINITY;
-    //    for (int i = 0; i < 3; ++i) {
-    //        if (ray.dir[i] != 0.0) {
-    //            double t1 = (box.min[i] - r.origin[i])/r.dir[i];
-    //            double t2 = (box.max[i] - r.origin[i])/r.dir[i];
-
-    //            tmin = max(tmin, min(t1, t2));
-    //            tmax = min(tmax, max(t1, t2));
-    //        } else if (ray.origin[i] <= box.min[i] || ray.origin[i] >= box.max[i]) {
-    //            return false;
-    //        }
-    //    }
-    return tmax > tmin && tmax > 0.0;
+    for(unsigned int tr = 0 ; tr < triVector.size() ; tr++)
+    {
+        triVector[tr].pointA =  modelMatrix * triVectorCopy[tr].pointA;
+        triVector[tr].pointB =  modelMatrix * triVectorCopy[tr].pointB;
+        triVector[tr].pointC =  modelMatrix * triVectorCopy[tr].pointC;
+    }
+}
+/*
+ * Created: 12_06_2019
+*/
+void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
+{
+    glm::vec4 max = modelMatrix * initialMax;
+    glm::vec4 min = modelMatrix * initialMin;
+    this->sceneEntity.getModelInfo().setMaxExtents(max);
+    this->sceneEntity.getModelInfo().setMinExtents(min);
 }
 
 /*
@@ -340,7 +320,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     }
     //Box Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
-//        transFormBoxExtents(sceneEntity.getModelMatrix());
+        transFormBoxExtents(this->sceneEntity.getModelMatrix());
         bx.max = this->sceneEntity.getModelInfo().getMaxExtent();
         bx.min = this->sceneEntity.getModelInfo().getMinExtent();
         hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
@@ -348,7 +328,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     //Mesh Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
         //sets the updated modelMatrix from the sceneEntity.
-        transFormPhysicsTriangles(sceneEntity.getModelMatrix());
+        transFormPhysicsTriangles(this->sceneEntity.getModelMatrix());
         for(int it= 0 ; it < triVector.size() ; it++){
             if(triVector.size() != NULL){
              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
