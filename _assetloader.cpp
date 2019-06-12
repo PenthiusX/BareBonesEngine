@@ -138,7 +138,7 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
         objLoader(":/"+ folderName +"/" + imageName);
         minfo.vertexArray = this->vertices;
         minfo.indexAarray = this->indices;
-//        modelInfoArray.push_back(minfo);
+//      modelInfoArray.push_back(minfo);
         this->vertices.clear();
         this->indices.clear();
     }
