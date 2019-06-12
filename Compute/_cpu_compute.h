@@ -18,6 +18,7 @@ public:
     static std::vector<int> compute_k_means(std::array<unsigned int, 256> arr);
 
     void genImg();
+    char *frameGray2RGB(char *img, unsigned int iwidth, unsigned int iheight);
 signals:
     void imageOut(QImage img);
 protected:

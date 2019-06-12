@@ -97,6 +97,13 @@ void _Processing::inputImage(char *img, unsigned int iwidth, unsigned int iheigh
 */
 void _Processing::passThroughFrame(char *img, unsigned int iwidth, unsigned int iheight)
 {
+    colorFrame = cpu_compute->frameGray2RGB(img,iwidth,iheight);
+    //send image out after processing is done
+    emit outputImage(colorFrame,iwidth,iheight);
+}
+
+void _Processing::passThroughFrameLocal(char *img, unsigned int iwidth, unsigned int iheight)
+{
     if(!colorFrame) colorFrame = new char[MAX_FRAME_WIDTH*MAX_FRAME_HEIGHT*4];
     for (int index = 0; index < (iwidth*iheight); index++) {
         colorFrame[index*4] = img[index];

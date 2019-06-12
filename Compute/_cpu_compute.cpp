@@ -1,4 +1,5 @@
 #include "_cpu_compute.h"
+#include <QDebug>
 
 _Cpu_Compute::_Cpu_Compute(QObject *parent) : QObject(parent)
 {
@@ -40,6 +41,17 @@ void _Cpu_Compute::genImg()
 {
     _frameOriginal = cv::imread	("lena.jpg");
     cv::cvtColor(_frameOriginal, _frameProcessed, cv::COLOR_BGR2GRAY);
-    QImage output((const unsigned char *)_frameOriginal.data, _frameProcessed.cols, _frameProcessed.rows, QImage::Format_RGB888);
+    qDebug() << "step " << _frameProcessed.step;
+    QImage output((const unsigned char *)_frameProcessed.data, _frameProcessed.cols, _frameProcessed.rows,_frameProcessed.step, QImage::Format_Indexed8);
     emit imageOut(output);
+}
+
+char *_Cpu_Compute::frameGray2RGB(char *img, unsigned int iwidth, unsigned int iheight)
+{
+    _frameOriginal = cv::Mat(iheight, iwidth, CV_8UC1, img);
+
+    cv::cvtColor(_frameOriginal, _frameProcessed, cv::COLOR_GRAY2RGBA);
+
+    return (char*)_frameProcessed.data;
+
 }
