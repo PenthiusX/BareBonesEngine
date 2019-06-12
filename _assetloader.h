@@ -26,6 +26,7 @@ public:
         QString path;//the relative path of the model data file
         std::vector<float> vertexArray;//the actual vertices read from modelFile into memory
         std::vector<unsigned int> indexAarray;//the actual indeices read from modelFile into memory
+        //
         QVector3D max;//max extent.
         QVector3D min;//min extent.
         QVector3D centroid;//centroid from min & max.
@@ -35,6 +36,11 @@ public:
         //uint VAOlocation
         //uint VBOlocation
         //uint EBOlocation
+        //!!comes later
+        // UVs
+        // Normals
+        // PBR
+
     public:
         void setName(QString name);
         void setPath(QString path);
@@ -46,7 +52,6 @@ public:
         void setTranslationMatrix(glm::mat4x4 t);
         void setRotationMatrix(glm::mat4x4 r);
         void setScalingMatrix(glm::mat4x4 s);
-
         QString getName() const;
         QString getPath() const;
         std::vector<float> getVertices()const;
@@ -54,21 +59,20 @@ public:
         QVector3D getMaxExtent() const;
         QVector3D getMinExtent() const;
         QVector3D getCentroid() const;
-        //
         bool getIsLoaded() const;
-
     }_Model_Info;
-    _AssetLoader::_Model_Info getModelInfo();
-    //----
 
+    //----
+    void setModelInfo(_AssetLoader::Model_Info minfo);
+    _AssetLoader::Model_Info getModelInfo();
     std::vector<float> getAssetVertices();
     std::vector<unsigned int> getAssetIndices();
-    //
     void objLoader(QString pathToFile);
     void loadAllModelsInfoFromFolder(QString folderName);
+    void calcMinMaxExtents();
 
 private:
-    _AssetLoader::_Model_Info modelInfo;
+    _AssetLoader::Model_Info modelInfo;
     //
     std::vector<float> vertices;
     std::vector<unsigned int> indices;

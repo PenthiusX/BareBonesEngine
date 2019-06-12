@@ -60,8 +60,7 @@ public:
     //
     _AssetLoader::Model_Info getModelInfo()const;
     //
-//    void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
-    void setModelData(_AssetLoader::Model_Info minfo);
+    void setModelData(_AssetLoader::Model_Info minfo);//set the modelInfo object in sceneEntity
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
