@@ -61,6 +61,11 @@ void _GLWidget::initializeGL()
     };
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
+
+    _AssetLoader::Model_Info quad;
+    quad.setName("quad");
+    quad.setVertexArray(vertsV);
+    quad.setIndexArray(indiceV);
     //Essential rear background object
     background_quad.setId(777);
     background_quad.setTag("background");
@@ -69,7 +74,7 @@ void _GLWidget::initializeGL()
     background_quad.setPosition(QVector3D(0.0, 0.0, 0.0));
     background_quad.setRotation(QVector3D(0.0, 0.0, 0.0));
     background_quad.setScale(1.0);
-    background_quad.setModelData(vertsV,indiceV);
+    background_quad.setModelData(quad);
     //Essential default pivot object
     pivot.setId(888);
     pivot.setTag("pivot");
@@ -97,7 +102,7 @@ void _GLWidget::initializeGL()
     s.setColor(QVector4D(0.3,0.5,0.0,0.9));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
     s.setScale(1.0f);
-    s.setModelData(":/models/sphere.obj");
+    s.setModelData(mpoint.getModelInfo());
     //
     s1.setId(2);
     s1.setTag("object2");
@@ -119,7 +124,7 @@ void _GLWidget::initializeGL()
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s2.setColor(QVector4D(0.0,0.0,0.5,0.9));
     s2.setScale(1.0f);
-    s2.setModelData(vertsV,indiceV);
+    s2.setModelData(quad);
     //-----------------
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
@@ -174,7 +179,6 @@ void _GLWidget::paintGL()//the renderloop
     this->update();//is to send QtOpenglGl a flag to update openglFrames
     _Tools::printFrameRate();//prints the frame rate in the application output
 }
-
 
 //   ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·
 //  ▐█ ▌▪▪     •█▌▐█•██  ▀▄ █·▪     ██•  ██•  ▐█ ▀.
@@ -368,7 +372,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRange(0.2,2));
-        onPress->setModelData(s2.getVertexData(),s2.getIndexData());//dont need to reparse modelfile
+        onPress->setModelData(s2.getModelInfo());//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         delete onPress;
