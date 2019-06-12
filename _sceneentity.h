@@ -32,6 +32,8 @@ public:
     void setOrderInIndex(unsigned int i);
     unsigned int getIndexPosInScene() const;
     //
+    void setIsTransformationAllowed(bool isit);
+    bool getIsTransformationAllowed();
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
     QVector3D getPostion() const;//get the current position of the relvant object instace
     void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
@@ -75,8 +77,8 @@ public:
     void setIsLineMode(bool isit);
     bool getIsLineMode();
     //flag for type of transformations
-    void setIsTransfomationLocal(bool isLoc);
-    bool getIsTransfomationLocal();
+    void setIsTransformationLocal(bool isLoc);
+    bool getIsTransformationLocal();
     //Physics
     enum scenePhysicsObjects{
         Sphere = 0,
@@ -113,13 +115,14 @@ private:
     void setuvData(std::vector<int> uvCoords);//sets the UV data.
     void setnormalData(std::vector<float> normalData);//sets the normal data.
     //
-    bool isTransfomationLocal;
+    bool isTransformationLocal;
     bool isPivotSet;
     bool isActive;
     bool isMeshEditable;
     bool isHitByRay;
     bool isPhysicsObject;
     bool isLineMode;
+    bool isTransformationAllowed;
     //
     glm::mat4x4 TranslationMatrix;
     glm::mat4x4 RotationMatrix;

@@ -11,13 +11,14 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     this->scale = 1.0;
     this->orderInIndex = 0;
     this->isActive = true;
-    this->isTransfomationLocal = false;
+    this->isTransformationLocal = false;
     this->isPivotSet = false;
     this->isPhysicsObject = false;
     this->isHitByRay = false;
     this->isMeshEditable = false;
     this->tag = new char();
-    isLineMode = false;
+    this->isLineMode = false;
+    this->isTransformationAllowed = true;
 
     this->modelInfo.setIsLoaded(false);
 }
@@ -68,6 +69,14 @@ void _SceneEntity::setOrderInIndex(unsigned int i){
 }
 unsigned int _SceneEntity::getIndexPosInScene()const{
     return this->orderInIndex;
+}
+
+void _SceneEntity::setIsTransformationAllowed(bool isit){
+    this->isTransformationAllowed = isit;
+}
+
+bool _SceneEntity::getIsTransformationAllowed(){
+    return this->isTransformationAllowed;
 }
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
@@ -195,53 +204,6 @@ glm::mat4x4 _SceneEntity::getViewMatrix() const
 _AssetLoader::Model_Info _SceneEntity::getModelInfo() const{
     return this->modelInfo;
 }
-///*
-// * Function: setVertexData(std::vector<float> vertices) & getvertexData()
-// * sets/gets the vertexData for the current object.
-// * Created:26_02_2019
-//*/
-//void _SceneEntity::setVertexData(std::vector<float> vertices){
-//    this->vertexData = vertices;
-//}
-//std::vector<float> _SceneEntity::getVertexData() const{
-//    return this->vertexData;
-//}
-///*
-// * Function: setIndexData(std::vector<unsigned int> indices) & getIndexData()
-// * sets/gets the indexData for the current object.
-// * Created:26_02_2019
-//*/
-//void _SceneEntity::setIndexData(std::vector<unsigned int> indices){
-//    this->indexData = indices;
-//}
-//std::vector<unsigned int> _SceneEntity::getIndexData() const{
-//    return this->indexData;
-//}
-///*
-// * Function: setuvData(std::vector<unsigned int> uvCoords) & getUvData()
-// * sets/gets the uvcooords for the current object.
-// * Created:26_02_2019
-//*/
-//void _SceneEntity::setuvData(std::vector<int> uvCoords){
-//    this->uvData = uvCoords;
-//}
-//std::vector<int> _SceneEntity::getUvData()const{
-//    return this->uvData;
-//}
-///*
-// * Function: setnormalData(std::vector<float> normalData) & getNormalData()
-// * sets/gets the normaldata for the current object.
-// * Created:26_02_2019
-//*/
-//void _SceneEntity::setnormalData(std::vector<float> normalData){
-//    this->normalData = normalData;
-//}
-//std::vector<float> _SceneEntity::getNormalData()const{
-//    return this->normalData;
-//}
-/*
- *
-*/
 void _SceneEntity::setIsActive(bool isIt){
     this->isActive = isIt;
 }
@@ -267,16 +229,16 @@ bool _SceneEntity::getIsLineMode(){
     return this->isLineMode;
 }
 /*
- *Function:isTransfomationLocal()
+ *Function:isTransformationLocal()
  * sets gets the isTranformationlocal boolean object
  * that flags if this scene object need to tranform on local axis
  * or global axis
 */
-void _SceneEntity::setIsTransfomationLocal(bool isLoc){
-    this->isTransfomationLocal = isLoc;
+void _SceneEntity::setIsTransformationLocal(bool isLoc){
+    this->isTransformationLocal = isLoc;
 }
-bool _SceneEntity::getIsTransfomationLocal(){
-    return this->isTransfomationLocal;
+bool _SceneEntity::getIsTransformationLocal(){
+    return this->isTransformationLocal;
 }
 /*
  *Created:11_06_2017
@@ -375,7 +337,7 @@ void _SceneEntity::setIsHitByRay(bool isHitByRay){
 /*
  * Created:3_06_2015
 */
-bool _SceneEntity::getIsPhysicsObject() const{
+bool _SceneEntity::getIsPhysicsObject() const {
     return this->isPhysicsObject;
 }
 _SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType(){

@@ -86,9 +86,6 @@ private:
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
     //
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
-    //
-    bool isTranfomationLocal;//Sets the flag to determine if tranformations need to be set on a local or world pivot
-    bool isFramebufferActive;
     //Stores the uniform location allocated in the shader
     void setuniformLocations();
     void keepSceneEntityUpdated();

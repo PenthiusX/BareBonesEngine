@@ -8,6 +8,8 @@
 #include "_sceneentity.h"
 #include <vector>
 
+#include <thread>         // std::thread
+
 /*
  * Class: _Scene
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -52,6 +54,11 @@ private:
     int resW,resH;
     //Physics
     std::vector<_Physics> physVector;
+
+    //Threads
+    void physicsThread();
+    std::thread tUpdatePhysics;
+
 };
 
 #endif // _SCENE_H

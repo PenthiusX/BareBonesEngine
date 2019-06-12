@@ -29,8 +29,6 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glm_model4x4 = glm::mat4(1.0f);
     glm_view4x4 = glm::mat4(1.0f);
     pivotTmat = glm::mat4(1.0f);
-    isTranfomationLocal = false;
-    isFramebufferActive = false;
     qDebug() << "render initialised ";
 }
 /*
@@ -254,38 +252,43 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 */
 void _Renderer::setPosition(QVector3D pos)
 {
-    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
-    if(isTranfomationLocal)
+    if(this->sceneEntity.getIsTransformationAllowed())
     {
-        glm_model4x4 = glm::mat4(1.0f);
-        glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+        if(this->sceneEntity.getIsTransformationLocal())
+        {
+            glm_model4x4 = glm::mat4(1.0f);
+            glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+        }
+        else if(!this->sceneEntity.getIsTransformationLocal())
+        {
+            translationMatrix = glm::mat4(1.f);
+            translationMatrix = glm::translate(translationMatrix,glm::vec3( pos.x(),
+                                                                            pos.y(),
+                                                                            pos.z()));
+            glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+        }
+        keepSceneEntityUpdated();
     }
-    else if(!isTranfomationLocal)
-    {
-        translationMatrix = glm::mat4(1.f);
-        translationMatrix = glm::translate(translationMatrix,glm::vec3( pos.x(),
-                                                                        pos.y(),
-                                                                        pos.z()));
-        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-    }
-    keepSceneEntityUpdated();
 }
 
 void _Renderer::translate(QVector3D pos)
 {
-    //update the traformation matrix with the current values
-    setPosition(sceneEntity.getPostion());
-    if(isTranfomationLocal)
+    if(this->sceneEntity.getIsTransformationAllowed())
     {
-        //        glm_model4x4 *= translationMatrix;
-        glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+        //update the traformation matrix with the current values
+        setPosition(sceneEntity.getPostion());
+        if(this->sceneEntity.getIsTransformationLocal())
+        {
+            //        glm_model4x4 *= translationMatrix;
+            glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+        }
+        else if(!this->sceneEntity.getIsTransformationLocal())
+        {
+            translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+            glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+        }
+        keepSceneEntityUpdated();
     }
-    else if(!isTranfomationLocal)
-    {
-        translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
-        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
-    }
-    keepSceneEntityUpdated();
 }
 /*
  * Function: setRotation(QVector3D pos)
@@ -296,35 +299,37 @@ void _Renderer::translate(QVector3D pos)
 */
 void _Renderer::setRotation(QVector3D rot)
 {
-    if(this->sceneEntity.getIsPivotSet() == false)
+    if(this->sceneEntity.getIsTransformationAllowed())
     {
-        this->sceneEntity.setRotation(rot);
-        this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
-        if(isTranfomationLocal)
+        if(this->sceneEntity.getIsPivotSet() == false)
         {
-            glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
-                                  this->sceneEntity.getRotation().y(),
-                                  this->sceneEntity.getRotation().z());
-            glm::quat quat = glm::quat(EulerAngles);
-            glm_model4x4 *= glm::mat4_cast(quat);
+            this->sceneEntity.setRotation(rot);
+            if(this->sceneEntity.getIsTransformationLocal())
+            {
+                glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                                      this->sceneEntity.getRotation().y(),
+                                      this->sceneEntity.getRotation().z());
+                glm::quat quat = glm::quat(EulerAngles);
+                glm_model4x4 *= glm::mat4_cast(quat);
+            }
+            else if(!this->sceneEntity.getIsTransformationLocal())
+            {
+                //        rotationMatrix = glm::mat4x4(1.f);
+                glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                                      this->sceneEntity.getRotation().y(),
+                                      this->sceneEntity.getRotation().z());
+                glm::quat quat = glm::quat(EulerAngles);
+                rotationMatrix = glm::mat4_cast(quat);
+                //rotate at center
+                glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+            }
         }
-        else if(!isTranfomationLocal)
+        else if(this->sceneEntity.getIsPivotSet() == true)
         {
-            //        rotationMatrix = glm::mat4x4(1.f);
-            glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
-                                  this->sceneEntity.getRotation().y(),
-                                  this->sceneEntity.getRotation().z());
-            glm::quat quat = glm::quat(EulerAngles);
-            rotationMatrix = glm::mat4_cast(quat);
-            //rotate at center
-            glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+            setRotationAroundPivot(rot, this->sceneEntity.getPivot());
         }
+        keepSceneEntityUpdated();
     }
-    else if(this->sceneEntity.getIsPivotSet() == true)
-    {
-        setRotationAroundPivot(rot, this->sceneEntity.getPivot());
-    }
-    keepSceneEntityUpdated();
 }
 /*
  * Function: setRotationAroundPivot(QVector3D rot, QVector3D pivot)
@@ -334,31 +339,33 @@ void _Renderer::setRotation(QVector3D rot)
 */
 void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
 {
-    this->sceneEntity.setRotation(rot);
-    this->isTranfomationLocal = this->sceneEntity.getIsTransfomationLocal();
-    if(isTranfomationLocal)
-    {//still buggy
-        setPosition(pivot);
-        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
-                              this->sceneEntity.getRotation().y(),
-                              this->sceneEntity.getRotation().z());
-        glm::quat quat = glm::quat(EulerAngles);
-        glm_model4x4 *= glm::mat4_cast(quat);
-    }
-    if(!isTranfomationLocal)
+    if(this->sceneEntity.getIsTransformationAllowed())
     {
-        pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
-        pivotTmat[3][0] = pivot.x();
-        pivotTmat[3][1] = pivot.y();
-        pivotTmat[3][2] = pivot.z();
-        glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
-                              this->sceneEntity.getRotation().y(),
-                              this->sceneEntity.getRotation().z());
-        glm::quat quat = glm::quat(EulerAngles);
-        rotationMatrix = glm::mat4_cast(quat);
-        glm_model4x4 = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
+        this->sceneEntity.setRotation(rot);
+        if(this->sceneEntity.getIsTransformationLocal())
+        {//still buggy
+            setPosition(pivot);
+            glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                                  this->sceneEntity.getRotation().y(),
+                                  this->sceneEntity.getRotation().z());
+            glm::quat quat = glm::quat(EulerAngles);
+            glm_model4x4 *= glm::mat4_cast(quat);
+        }
+        if(!this->sceneEntity.getIsTransformationLocal())
+        {
+            pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
+            pivotTmat[3][0] = pivot.x();
+            pivotTmat[3][1] = pivot.y();
+            pivotTmat[3][2] = pivot.z();
+            glm::vec3 EulerAngles(this->sceneEntity.getRotation().x(),
+                                  this->sceneEntity.getRotation().y(),
+                                  this->sceneEntity.getRotation().z());
+            glm::quat quat = glm::quat(EulerAngles);
+            rotationMatrix = glm::mat4_cast(quat);
+            glm_model4x4 = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
+        }
+        keepSceneEntityUpdated();
     }
-    keepSceneEntityUpdated();
 }
 /*
  * Function: setscale(float scale)
@@ -369,12 +376,15 @@ void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
 */
 void _Renderer::setscale(float scale)
 {
-    this->sceneEntity.setScale(scale);//reimplemnt
-    scalingMatrix = glm::mat4(1.f);
-    scalingMatrix = glm::scale(scalingMatrix, glm::vec3(this->sceneEntity.getScale(),//scale eqally on all axis(dont need respective sclaing)
-                                                        this->sceneEntity.getScale(),
-                                                        this->sceneEntity.getScale()));
-    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+    if(this->sceneEntity.getIsTransformationAllowed())
+    {
+        this->sceneEntity.setScale(scale);//reimplemnt
+        scalingMatrix = glm::mat4(1.f);
+        scalingMatrix = glm::scale(scalingMatrix, glm::vec3(this->sceneEntity.getScale(),//scale eqally on all axis(dont need respective sclaing)
+                                                            this->sceneEntity.getScale(),
+                                                            this->sceneEntity.getScale()));
+        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+    }
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
@@ -387,7 +397,6 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 {
     this->sceneEntity = s;
     actualColor = this->sceneEntity.getColor();
-    this->isTranfomationLocal = s.getIsTransfomationLocal();
     setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
     //setModelDataInBuffers() happens for every object,and is sufficent for the usecases
@@ -436,7 +445,7 @@ void _Renderer::keepSceneEntityUpdated()
 void _Renderer::_Renderer::draw()
 {
     if(this->sceneEntity.getIsLineMode())
-      glPolygonMode(GL_FRONT,GL_LINE);
+        glPolygonMode(GL_FRONT,GL_LINE);
     else if(this->sceneEntity.getIsLineMode() == false)
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     if(this->sceneEntity.getIsActive())
@@ -449,8 +458,8 @@ void _Renderer::_Renderer::draw()
         }
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
         if(this->sceneEntity.getIsMeshEditable()){
-                glBindBuffer(GL_ARRAY_BUFFER,VBO);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);}
+            glBindBuffer(GL_ARRAY_BUFFER,VBO);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);}
         //Bind the VAO of the respective buffer object (needs to be bound everytime)
         glBindVertexArray(VAO);
         //
