@@ -86,7 +86,7 @@ void _GLWidget::initializeGL()
     //Debug helper use mpoint.
     mpoint.setId(999);
     mpoint.setTag("mousePointerObject");
-    mpoint.setIsTransfomationLocal(false);
+    mpoint.setIsTransformationLocal(false);
     mpoint.setPosition(QVector3D(0.0,0.0,0.0));
     mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     mpoint.setColor(QVector4D(0.5,0.5,0.5,1.0));
@@ -97,7 +97,7 @@ void _GLWidget::initializeGL()
     s.setTag("object1");
     s.setIsLineMode(true);
     s.setPhysicsObject(_SceneEntity::Sphere);
-    s.setIsTransfomationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
+    s.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.3,0.5,0.0,0.9));
     s.setPosition(QVector3D(0.0,2.0, 0.0));
@@ -107,18 +107,18 @@ void _GLWidget::initializeGL()
     s1.setId(2);
     s1.setTag("object2");
     s1.setIsLineMode(true);
-    s1.setPhysicsObject(_SceneEntity::Mesh);
-    s1.setIsTransfomationLocal(false);
+    s1.setPhysicsObject(_SceneEntity::Box);
+    s1.setIsTransformationLocal(false);
     s1.setPosition(QVector3D(0.0,-3.0, 0.0));
     s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s1.setColor(QVector4D(0.5,1.0,1.0,0.9));
-    s1.setScale(0.4f);
+    s1.setScale(1.0f);
     s1.setModelData(":/models/cube.obj");//dont need to reparse modelfile
     //
     s2.setId(3);
     s2.setTag("clickSurface");
     s2.setPhysicsObject(_SceneEntity::Mesh);
-    s2.setIsTransfomationLocal(false);
+    s2.setIsTransformationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
@@ -197,7 +197,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-        //        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
+        //      scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
@@ -287,9 +287,9 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 * event pointer of QKeyEvent object.
 * Created: 25_02_2019
 *
- Controls: WASD to move ,
- * C to switch focut to  camera or model. R to reset to default with respect to focus
- * Q to switch between models(models need to have a sequntial ID for this to work properly)
+* Controls: WASD to move ,
+* C to switch focut to  camera or model. R to reset to default with respect to focus
+* Q to switch between models(models need to have a sequntial ID for this to work properly)
 */
 void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final controlls set.
 {
@@ -340,8 +340,10 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
             rotRads = QVector2D(0.0f,0.0f);
         }
     }
-    if (event->text() == "c" || event->text() == "C")
+    if (event->text() == "c" || event->text() == "C"){
         this->isCamFocus = !isCamFocus;
+        applyStuffToallEntites(!isCamFocus);
+    }
     if (event->text() == "p" || event->text() == "P")
         addRandomSceneEntitestoScene();
     if (event->text() == "l" || event->text() == "L")
@@ -362,11 +364,11 @@ void _GLWidget::addRandomSceneEntitestoScene()
 {
     for(int i = 0 ; i < 1 ; i++)
     {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
-     //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
+        //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
         makeCurrent();
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
-        onPress->setIsTransfomationLocal(false);
+        onPress->setIsTransformationLocal(false);
         onPress->setPhysicsObject(_SceneEntity::Mesh);
         onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
@@ -381,23 +383,27 @@ void _GLWidget::addRandomSceneEntitestoScene()
     }
 }
 /*
- *
+ *Press L to activate.
 */
 void _GLWidget::removeSceneEntityFromScene()
 {
-//     scene->removeSceneObject(s1);
+    //     scene->removeSceneObject(s1);
     if(scene->getSceneObjects().size() > 3)
         scene->removeSceneObject(scene->getSceneObjects().size()-1);
 }
-//Press L to activate.
+
 void _GLWidget::applyStuffToallEntites(bool isit)
 {
     for(int i = 1 ; i < scene->getSceneObjects().size() ; i++)
     {
-        _SceneEntity s;//Alternate implementation to Making changes to the SceneEntity.
-        s = scene->getSceneObjects()[i]->getSceneEntity();//copy the existing scene entity,
-        s.setIsActive(isit);// makes specific changes then,
-        scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);//reSet it inside the SceneRenderer.
-        qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
+        if(scene->getSceneObjects()[i]->getSceneEntity().getId() != 999 && scene->getSceneObjects()[i]->getSceneEntity().getId() != 888 )
+        {
+            _SceneEntity s;//Alternate implementation to Making changes to the SceneEntity.
+            s = scene->getSceneObjects()[i]->getSceneEntity();//copy the existing scene entity,
+            s.setIsTransformationAllowed(isit);// makes specific changes then,
+            scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);//reSet it inside the SceneRenderer.
+            qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
+        }
+
     }
 }

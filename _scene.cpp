@@ -1,5 +1,6 @@
 #include "_scene.h"
 #include "_tools.h"
+
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -222,7 +223,6 @@ void _Scene::render()
                           renderObjects[i]->getSceneEntity(),//Selected sceneEntity
                           i);//Selected Index for current sceneEntity
         }
-
         //Frame update----
         //Render all objects that are active.
         renderObjects[i]->draw();//calls the draw function unique to each renderObject
@@ -249,14 +249,17 @@ void _Scene::render()
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
     //    qDebug() << mousePos.x << mousePos.y;
-    for(int p = 0; p < physVector.size(); p++)
+    for(int n = 0; n < physVector.size(); n++)
     {
         //updates the physics object instance and runs the main physics updateOperations.
-        physVector[p].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
+        //takes in essentails and the relevant sceneEntity updated object.
+        physVector[n].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
         //sets the position of the pointer object fixed at index no 2 to be at the point of intersection.
-        renderObjects[2]->setPosition(QVector3D(physVector[p].getRayTriIntersectionPoint().x,physVector[p].getRayTriIntersectionPoint().y,physVector[p].getRayTriIntersectionPoint().z));
+        glm::vec3 p = physVector[n].getRayTriIntersectionPoint();
+        renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
         //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
         //this is needed if we need to see changes to the sceneEntity in the main render as well.
-        renderObjects[index]->setSceneEntityInRenderer(physVector[p].getSceneEntity());
+        renderObjects[index]->setSceneEntityInRenderer(physVector[n].getSceneEntity());
     }
 }
+

@@ -33,7 +33,8 @@ typedef struct Phy_Plane{
 }_Phy_Plane;
 
 typedef struct Phy_Box{
-
+    glm::vec3 max;
+    glm::vec3 min;
 }_Phy_Box;
 
 class _Physics
@@ -51,6 +52,7 @@ public:
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
+    bool hitBoundingBox(Phy_Box b, glm::vec3 rayOrigin, glm::vec3 rDirection);
     //
     Phy_Plane constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1,glm::vec3 V2);
     Phy_Plane constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2);
@@ -62,22 +64,21 @@ public:
     glm::vec4 getrayClip()const;
     glm::vec3 getRayTriIntersectionPoint() const;
     //
-    void hitTriangle();
-    void hitBox();
-    //
+
     void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s);
-//    enum PhysicsObjects{
-//        Sphere = 0,
-//        Box = 1,
-//        Mesh = 2,
-//    };
 
 private:
+#define NUMDIM	3
+#define RIGHT	0
+#define LEFT	1
+#define MIDDLE	2
+
     std::vector<_Phy_Triangle> triVector,triVectorCopy;
     //
     Phy_Sphere sp;
     Phy_Triangle tri;
     Phy_Plane pl;
+    _Phy_Box bx;
     //
     glm::vec4 rayEye;
     glm::vec3 ray_wor;
@@ -87,11 +88,14 @@ private:
     int resW,resH;
     //
     _SceneEntity sceneEntity;
-    glm::vec3 outIntersectionPoint;\
+    glm::vec3 outIntersectionPoint;
+    //
+    glm::vec4 initialMax,initialMin;
 
     //Functions:
     bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
     void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
+    void transFormBoxExtents(glm::mat4x4 modelMatrix);
 };
 
 #endif // _PHYSICS_H

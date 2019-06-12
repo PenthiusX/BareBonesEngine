@@ -15,7 +15,8 @@ void _Physics::setSceneEntity(_SceneEntity s)
     }
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box)
     {
-        //pending
+       initialMax = this->sceneEntity.getModelInfo().getMaxExtent();
+       initialMin = this->sceneEntity.getModelInfo().getMinExtent();
     }
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh)
     {
@@ -91,7 +92,6 @@ void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_
 bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin)
 {
     glm::vec3 rayDir = this->ray_wor;
-
     glm::vec3 oc = rayOrigin - center;
     float a = glm::dot(rayDir,rayDir);
     float b = 2.0 * glm::dot(oc, rayDir);
@@ -226,20 +226,27 @@ void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
         triVector[tr].pointC =  modelMatrix * triVectorCopy[tr].pointC;
     }
 }
-
 /*
- * Not in use
+ * Created: 12_06_2019
 */
-char HitBoundingBox()
+void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
 {
-#define NUMDIM	3
-#define RIGHT	0
-#define LEFT	1
-#define MIDDLE	2
-
+    glm::vec4 max = modelMatrix * initialMax;
+    glm::vec4 min = modelMatrix * initialMin;
+    this->sceneEntity.getModelInfo().setMaxExtents(max);
+    this->sceneEntity.getModelInfo().setMinExtents(min);
+}
+/*
+ * Created: 5_06_2019
+*/
+bool _Physics::hitBoundingBox(Phy_Box b , glm::vec3 rayOrigin ,glm::vec3 rDirection)
+{
     double minB[NUMDIM], maxB[NUMDIM];		//box
     double origin[NUMDIM], dir[NUMDIM];		//ray
     double coord[NUMDIM];				    //hit point
+    minB[0] = b.min.x; maxB[0] = b.max.x; origin[0] = rayOrigin.x; dir[0] = rDirection.x;
+    minB[1] = b.min.y; maxB[1] = b.max.y; origin[1] = rayOrigin.y; dir[1] = rDirection.y;
+    minB[2] = b.min.z; maxB[2] = b.max.z; origin[2] = rayOrigin.z; dir[2] = rDirection.z;
 
     char inside = true;
     char quadrant[NUMDIM];
@@ -259,9 +266,8 @@ char HitBoundingBox()
             quadrant[i] = RIGHT;
             candidatePlane[i] = maxB[i];
             inside = false;
-        }else{
+        }else
             quadrant[i] = MIDDLE;
-        }
 
     //  Ray origin inside bounding box
     if(inside){
@@ -293,10 +299,13 @@ char HitBoundingBox()
                 return (false);
         } else {
             coord[i] = candidatePlane[i];
+            qDebug() << coord[i];
         }
     return (true);				//ray hits box
 }
-
+/*
+ * Created: 5_06_2019
+*/
 //faster but does not return a point
 bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin)
 {
@@ -308,7 +317,7 @@ bool intersection(Phy_Box box, glm::vec3 raydir, glm::vec3 rayorigin)
 
     //            tmin = max(tmin, min(t1, t2));
     //            tmax = min(tmax, max(t1, t2));
-    //        } else if (ray.origin[i] <= b.min[i] || ray.origin[i] >= b.max[i]) {
+    //        } else if (ray.origin[i] <= box.min[i] || ray.origin[i] >= box.max[i]) {
     //            return false;
     //        }
     //    }
@@ -331,8 +340,10 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     }
     //Box Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
-        //pending
-        HitBoundingBox();
+//        transFormBoxExtents(sceneEntity.getModelMatrix());
+        bx.max = this->sceneEntity.getModelInfo().getMaxExtent();
+        bx.min = this->sceneEntity.getModelInfo().getMinExtent();
+        hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
     }
     //Mesh Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
@@ -340,12 +351,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         transFormPhysicsTriangles(sceneEntity.getModelMatrix());
         for(int it= 0 ; it < triVector.size() ; it++){
             if(triVector.size() != NULL){
-//              rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
-                if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],this->outIntersectionPoint)){
-                    sceneEntity.setIsHitByRay(true);
-                    qDebug() << outIntersectionPoint.x << outIntersectionPoint.y << outIntersectionPoint.z;}
-                else if(!rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)){
-                    sceneEntity.setIsHitByRay(false);}
+             rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
             }
         }
     }

@@ -31,10 +31,14 @@ void _AssetLoader::Model_Info::setVertexArray(std::vector<float> vertexArray){
 void _AssetLoader::Model_Info::setIndexArray(std::vector<unsigned int> indexAarray){
     this->indexAarray = indexAarray;
 }
-void _AssetLoader::Model_Info::setMaxExtents(QVector3D max){
+
+void _AssetLoader::Model_Info::setCentroid(glm::vec4 cent){
+    this->centroid = cent;
+}
+void _AssetLoader::Model_Info::setMaxExtents(glm::vec4 max){
     this->max = max;
 }
-void _AssetLoader::Model_Info::setMinExtents(QVector3D min){
+void _AssetLoader::Model_Info::setMinExtents(glm::vec4 min){
     this->min = min;
 }
 QString _AssetLoader::Model_Info::getName() const{
@@ -49,13 +53,13 @@ std::vector<float> _AssetLoader::Model_Info::getVertices() const{
 std::vector<unsigned int> _AssetLoader::Model_Info::getIndices() const{
     return this->indexAarray;
 }
-QVector3D _AssetLoader::Model_Info::getMaxExtent() const{
+glm::vec4 _AssetLoader::Model_Info::getMaxExtent() const{
     return this->max;
 }
-QVector3D _AssetLoader::Model_Info::getMinExtent() const{
+glm::vec4 _AssetLoader::Model_Info::getMinExtent() const{
     return this->min;
 }
-QVector3D _AssetLoader::Model_Info::getCentroid() const{
+glm::vec4 _AssetLoader::Model_Info::getCentroid() const{
     return this->centroid;
 }
 bool _AssetLoader::Model_Info::getIsLoaded() const {
@@ -75,12 +79,12 @@ bool _AssetLoader::Model_Info::getIsLoaded() const {
 */
 _AssetLoader::_AssetLoader()
 {
-    vertMax.setX(0.0);
-    vertMax.setY(0.0);
-    vertMax.setZ(0.0);
-    vertMin.setX(999.0f);
-    vertMin.setY(999.0f);
-    vertMin.setZ(999.0f);
+    vertMax.x = (0.0);
+    vertMax.y = (0.0);
+    vertMax.z = (0.0);
+    vertMin.x = (999.0f);
+    vertMin.y = (999.0f);
+    vertMin.z = (999.0f);
     posCounter = 0;
     arrayCounter = 0;
     modelInfo.setIsLoaded(false);
@@ -143,19 +147,19 @@ void _AssetLoader::objLoader(QString pathToFile)
         if(posCounter >= 3 && (arrayCounter + 2) < vertices.size()){
             //minExtent
             posCounter = 0;
-            if(vertices[arrayCounter] >= vertMax.x())
-                vertMax.setX(vertices[arrayCounter]);
-            if(vertices[arrayCounter + 1] >= vertMax.y())
-                vertMax.setY(vertices[arrayCounter + 1]);
-            if(vertices[arrayCounter + 2] >= vertMax.z())
-                vertMax.setZ(vertices[arrayCounter + 2]);
+            if(vertices[arrayCounter] >= vertMax.x)
+                vertMax.x = (vertices[arrayCounter]);
+            if(vertices[arrayCounter + 1] >= vertMax.y)
+                vertMax.y = (vertices[arrayCounter + 1]);
+            if(vertices[arrayCounter + 2] >= vertMax.z)
+                vertMax.z = (vertices[arrayCounter + 2]);
              //maxEntent
-            if(vertices[arrayCounter] <= vertMin.x())
-                vertMin.setX(vertices[arrayCounter]);
-            if(vertices[arrayCounter + 1] <= vertMin.y())
-                vertMin.setY(vertices[arrayCounter + 1]);
-            if(vertices[arrayCounter + 2] <= vertMin.z())
-                vertMin.setZ(vertices[arrayCounter + 2]);
+            if(vertices[arrayCounter] <= vertMin.x)
+                vertMin.x = (vertices[arrayCounter]);
+            if(vertices[arrayCounter + 1] <= vertMin.y)
+                vertMin.y = (vertices[arrayCounter + 1]);
+            if(vertices[arrayCounter + 2] <= vertMin.z)
+                vertMin.z = (vertices[arrayCounter + 2]);
             arrayCounter += 3;
         }
     }
@@ -211,20 +215,33 @@ void _AssetLoader::calcMinMaxExtents()
     std::vector<float> v = this->modelInfo.getVertices();
    for(unsigned int i = 0 ; i < v.size() ; i += 3)
     {
-        if(v[i] >= vertMax.x())
-            vertMax.setX(v[i]);
-        if(v[i + 1] >= vertMax.y())
-            vertMax.setY(v[i + 1]);
-        if(v[i + 2] >= vertMax.z())
-            vertMax.setZ(v[i + 2]);
+        if(v[i] >= vertMax.x)
+            vertMax.x=(v[i]);
+        if(v[i + 1] >= vertMax.y)
+            vertMax.y=(v[i + 1]);
+        if(v[i + 2] >= vertMax.z)
+            vertMax.z=(v[i + 2]);
          //maxEntent
-        if(v[i] <= vertMin.x())
-            vertMin.setX(v[i]);
-        if(v[i + 1] <= vertMin.y())
-            vertMin.setY(v[i + 1]);
-        if(v[i + 2] <= vertMin.z())
-            vertMin.setZ(v[i + 2]);
+        if(v[i] <= vertMin.x)
+            vertMin.x=(v[i]);
+        if(v[i + 1] <= vertMin.y)
+            vertMin.y=(v[i + 1]);
+        if(v[i + 2] <= vertMin.z)
+            vertMin.z=(v[i + 2]);
     }
+
+   this->modelInfo.setMinExtents(vertMin);
+   this->modelInfo.setMaxExtents(vertMax);
+   this->modelInfo.setCentroid(calcCentroidFromMinMax());
+}
+
+glm::vec4 _AssetLoader::calcCentroidFromMinMax()
+{
+    glm::vec4 centroid;
+    centroid.x = (vertMax.x + vertMin.x)*0.5f;
+    centroid.y = (vertMax.y + vertMin.y)*0.5f;
+    centroid.z = (vertMax.z + vertMin.z)*0.5f;
+    return centroid;
 }
 
 

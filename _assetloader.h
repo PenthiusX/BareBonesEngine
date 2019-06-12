@@ -21,25 +21,7 @@ public:
 
     //----
     typedef struct Model_Info{//Stores the data of the model loded into scene as a SceneEntity.
-    private:
-        QString name;//the tag
-        QString path;//the relative path of the model data file
-        std::vector<float> vertexArray;//the actual vertices read from modelFile into memory
-        std::vector<unsigned int> indexAarray;//the actual indeices read from modelFile into memory
-        //
-        QVector3D max;//max extent.
-        QVector3D min;//min extent.
-        QVector3D centroid;//centroid from min & max.
-        bool isLoaded;
-        //
-        //!!buffer stuff should be done here and should hold these bindings.!!
-        //uint VAOlocation
-        //uint VBOlocation
-        //uint EBOlocation
-        //!!comes later
-        // UVs
-        // Normals
-        // PBR
+
 
     public:
         void setName(QString name);
@@ -47,19 +29,40 @@ public:
         void setIsLoaded(bool isLoaded);
         void setVertexArray(std::vector<float> vertexArray);
         void setIndexArray(std::vector<unsigned int> indexAarray);
-        void setMaxExtents(QVector3D max);
-        void setMinExtents(QVector3D min);
-        void setTranslationMatrix(glm::mat4x4 t);
-        void setRotationMatrix(glm::mat4x4 r);
-        void setScalingMatrix(glm::mat4x4 s);
+        void setMaxExtents(glm::vec4 max);
+        void setMinExtents(glm::vec4 min);
+        void setCentroid(glm::vec4 cent);
+
         QString getName() const;
         QString getPath() const;
         std::vector<float> getVertices()const;
         std::vector<unsigned int> getIndices()const;
-        QVector3D getMaxExtent() const;
-        QVector3D getMinExtent() const;
-        QVector3D getCentroid() const;
+        glm::vec4 getMaxExtent() const;
+        glm::vec4 getMinExtent() const;
+        glm::vec4 getCentroid() const;
         bool getIsLoaded() const;
+
+    private:
+        QString name;//the tag
+        QString path;//the relative path of the model data file
+        std::vector<float> vertexArray;//the actual vertices read from modelFile into memory
+        std::vector<unsigned int> indexAarray;//the actual indeices read from modelFile into memory
+        //
+        glm::vec4 max;//max extent.
+        glm::vec4 min;//min extent.
+        glm::vec4 centroid;//centroid from min & max.
+        bool isLoaded;
+        //
+        //!!buffer stuff should be done here and should hold these bindings.!!
+        //uint VAOlocation
+        //uint VBOlocation
+        //uint EBOlocation
+
+        //!!comes later
+        // UVs
+        // Normals
+        // PBR?
+
     }_Model_Info;
 
     //----
@@ -78,10 +81,13 @@ private:
     std::vector<unsigned int> indices;
     std::vector<float> uvs;
     //
-    QVector3D vertMin;
-    QVector3D vertMax;
+    glm::vec4 vertMin;
+    glm::vec4 vertMax;
     int posCounter;
     int arrayCounter;
+
+    glm::vec4 calcCentroidFromMinMax();
+
 };
 
 #endif // _ASSETLOADER_H
