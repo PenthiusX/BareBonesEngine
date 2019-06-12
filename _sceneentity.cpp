@@ -174,7 +174,7 @@ glm::mat4x4 _SceneEntity::getModelMatrix() const{
     return this->ModelMatrix;
 }
 /*
- * Created:
+ * Created:3_06_2019
 */
 void _SceneEntity::setProjectionMatrix(glm::mat4x4 proj){
     this->ProjectionMatrix = proj;
@@ -183,7 +183,7 @@ glm::mat4x4 _SceneEntity::getProjectionMatrix() const{
     return this->ProjectionMatrix;
 }
 /*
- * Created:
+ * Created:3_06_2019
 */
 void _SceneEntity::setViewMatrix(glm::mat4x4 view){
     this->ViewMatrix = view;
@@ -195,50 +195,50 @@ glm::mat4x4 _SceneEntity::getViewMatrix() const
 _AssetLoader::Model_Info _SceneEntity::getModelInfo() const{
     return this->modelInfo;
 }
-/*
- * Function: setVertexData(std::vector<float> vertices) & getvertexData()
- * sets/gets the vertexData for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setVertexData(std::vector<float> vertices){
-    this->vertexData = vertices;
-}
-std::vector<float> _SceneEntity::getVertexData() const{
-    return this->vertexData;
-}
-/*
- * Function: setIndexData(std::vector<unsigned int> indices) & getIndexData()
- * sets/gets the indexData for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setIndexData(std::vector<unsigned int> indices){
-    this->indexData = indices;
-}
-std::vector<unsigned int> _SceneEntity::getIndexData() const{
-    return this->indexData;
-}
-/*
- * Function: setuvData(std::vector<unsigned int> uvCoords) & getUvData()
- * sets/gets the uvcooords for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setuvData(std::vector<int> uvCoords){
-    this->uvData = uvCoords;
-}
-std::vector<int> _SceneEntity::getUvData()const{
-    return this->uvData;
-}
-/*
- * Function: setnormalData(std::vector<float> normalData) & getNormalData()
- * sets/gets the normaldata for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setnormalData(std::vector<float> normalData){
-    this->normalData = normalData;
-}
-std::vector<float> _SceneEntity::getNormalData()const{
-    return this->normalData;
-}
+///*
+// * Function: setVertexData(std::vector<float> vertices) & getvertexData()
+// * sets/gets the vertexData for the current object.
+// * Created:26_02_2019
+//*/
+//void _SceneEntity::setVertexData(std::vector<float> vertices){
+//    this->vertexData = vertices;
+//}
+//std::vector<float> _SceneEntity::getVertexData() const{
+//    return this->vertexData;
+//}
+///*
+// * Function: setIndexData(std::vector<unsigned int> indices) & getIndexData()
+// * sets/gets the indexData for the current object.
+// * Created:26_02_2019
+//*/
+//void _SceneEntity::setIndexData(std::vector<unsigned int> indices){
+//    this->indexData = indices;
+//}
+//std::vector<unsigned int> _SceneEntity::getIndexData() const{
+//    return this->indexData;
+//}
+///*
+// * Function: setuvData(std::vector<unsigned int> uvCoords) & getUvData()
+// * sets/gets the uvcooords for the current object.
+// * Created:26_02_2019
+//*/
+//void _SceneEntity::setuvData(std::vector<int> uvCoords){
+//    this->uvData = uvCoords;
+//}
+//std::vector<int> _SceneEntity::getUvData()const{
+//    return this->uvData;
+//}
+///*
+// * Function: setnormalData(std::vector<float> normalData) & getNormalData()
+// * sets/gets the normaldata for the current object.
+// * Created:26_02_2019
+//*/
+//void _SceneEntity::setnormalData(std::vector<float> normalData){
+//    this->normalData = normalData;
+//}
+//std::vector<float> _SceneEntity::getNormalData()const{
+//    return this->normalData;
+//}
 /*
  *
 */
@@ -249,7 +249,7 @@ bool _SceneEntity::getIsActive(){
     return this->isActive;
 }
 /*
- *
+ * Created:15_05_2019
 */
 void _SceneEntity::setIsMeshEditable(bool isit){
     this->isMeshEditable = isit;
@@ -258,7 +258,7 @@ bool _SceneEntity::getIsMeshEditable(){
     return this->isMeshEditable;
 }
 /*
- *
+ * Created:15_05_2019
 */
 void _SceneEntity::setIsLineMode(bool isit){
     this->isLineMode = isit;
@@ -277,26 +277,6 @@ void _SceneEntity::setIsTransfomationLocal(bool isLoc){
 }
 bool _SceneEntity::getIsTransfomationLocal(){
     return this->isTransfomationLocal;
-}
-/*
- * Function: setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
- * sets the vertex and index data in one function, for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned int> indices)
-{
-    if(vertices.size() > 0 && indices.size() > 0)
-    {
-        this->vertexData = vertices;
-        this->indexData = indices;
-        this->isActive = true;
-    }
-    else {
-        qInfo() << "model data not sufficent,please check input";
-        this->isActive = false;
-    }
-    this->modelInfo.setVertexArray(vertices);
-    this->modelInfo.setIndexArray(indices);
 }
 /*
  *Created:11_06_2017

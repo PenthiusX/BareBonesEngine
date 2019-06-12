@@ -10,6 +10,66 @@
 #include "_tools.h"
 
 /*
+• ▌ ▄ ·.       ·▄▄▄▄  ▄▄▄ .▄▄▌  ▪   ▐ ▄ ·▄▄▄          ·▄▄▄▄• ▄▌ ▐ ▄  ▄▄· ▄▄▄▄▄▪         ▐ ▄ .▄▄ ·
+·██ ▐███▪▪     ██▪ ██ ▀▄.▀·██•  ██ •█▌▐█▐▄▄·▪         ▐▄▄·█▪██▌•█▌▐█▐█ ▌▪•██  ██ ▪     •█▌▐█▐█ ▀.
+▐█ ▌▐▌▐█· ▄█▀▄ ▐█· ▐█▌▐▀▀▪▄██▪  ▐█·▐█▐▐▌██▪  ▄█▀▄     ██▪ █▌▐█▌▐█▐▐▌██ ▄▄ ▐█.▪▐█· ▄█▀▄ ▐█▐▐▌▄▀▀▀█▄
+██ ██▌▐█▌▐█▌.▐▌██. ██ ▐█▄▄▌▐█▌▐▌▐█▌██▐█▌██▌.▐█▌.▐▌    ██▌.▐█▄█▌██▐█▌▐███▌ ▐█▌·▐█▌▐█▌.▐▌██▐█▌▐█▄▪▐█
+▀▀  █▪▀▀▀ ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ .▀▀▀ ▀▀▀▀▀ █▪▀▀▀  ▀█▄▀▪    ▀▀▀  ▀▀▀ ▀▀ █▪·▀▀▀  ▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪ ▀▀▀▀
+*/
+void _AssetLoader::Model_Info::setName(QString name){
+    this->name = name;
+}
+void _AssetLoader::Model_Info::setPath(QString path){
+    this->path = path;
+}
+void _AssetLoader::Model_Info::setIsLoaded(bool isLoaded){
+    this->isLoaded = isLoaded;
+}
+void _AssetLoader::Model_Info::setVertexArray(std::vector<float> vertexArray){
+    this->vertexArray = vertexArray;
+}
+void _AssetLoader::Model_Info::setIndexArray(std::vector<unsigned int> indexAarray){
+    this->indexAarray = indexAarray;
+}
+void _AssetLoader::Model_Info::setMaxExtents(QVector3D max){
+    this->max = max;
+}
+void _AssetLoader::Model_Info::setMinExtents(QVector3D min){
+    this->min = min;
+}
+QString _AssetLoader::Model_Info::getName() const{
+    return this->name;
+}
+QString _AssetLoader::Model_Info::getPath() const{
+    return this->path;
+}
+std::vector<float> _AssetLoader::Model_Info::getVertices() const{
+    return this->vertexArray;
+}
+std::vector<unsigned int> _AssetLoader::Model_Info::getIndices() const{
+    return this->indexAarray;
+}
+QVector3D _AssetLoader::Model_Info::getMaxExtent() const{
+    return this->max;
+}
+QVector3D _AssetLoader::Model_Info::getMinExtent() const{
+    return this->min;
+}
+QVector3D _AssetLoader::Model_Info::getCentroid() const{
+    return this->centroid;
+}
+bool _AssetLoader::Model_Info::getIsLoaded() const {
+    return this->isLoaded;
+}
+
+/*
+ ▄▄▄· .▄▄ · .▄▄ · ▄▄▄ .▄▄▄▄▄▄▄▌         ▄▄▄· ·▄▄▄▄  ▄▄▄ .▄▄▄      ·▄▄▄▄• ▄▌ ▐ ▄  ▄▄· ▄▄▄▄▄▪         ▐ ▄ .▄▄ ·
+▐█ ▀█ ▐█ ▀. ▐█ ▀. ▀▄.▀·•██  ██•  ▪     ▐█ ▀█ ██▪ ██ ▀▄.▀·▀▄ █·    ▐▄▄·█▪██▌•█▌▐█▐█ ▌▪•██  ██ ▪     •█▌▐█▐█ ▀.
+▄█▀▀█ ▄▀▀▀█▄▄▀▀▀█▄▐▀▀▪▄ ▐█.▪██▪   ▄█▀▄ ▄█▀▀█ ▐█· ▐█▌▐▀▀▪▄▐▀▀▄     ██▪ █▌▐█▌▐█▐▐▌██ ▄▄ ▐█.▪▐█· ▄█▀▄ ▐█▐▐▌▄▀▀▀█▄
+▐█ ▪▐▌▐█▄▪▐█▐█▄▪▐█▐█▄▄▌ ▐█▌·▐█▌▐▌▐█▌.▐▌▐█ ▪▐▌██. ██ ▐█▄▄▌▐█•█▌    ██▌.▐█▄█▌██▐█▌▐███▌ ▐█▌·▐█▌▐█▌.▐▌██▐█▌▐█▄▪▐█
+ ▀  ▀  ▀▀▀▀  ▀▀▀▀  ▀▀▀  ▀▀▀ .▀▀▀  ▀█▄▀▪ ▀  ▀ ▀▀▀▀▀•  ▀▀▀ .▀  ▀    ▀▀▀  ▀▀▀ ▀▀ █▪·▀▀▀  ▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪ ▀▀▀▀
+*/
+/*
 * Constructor/Distructor:
 * Created:15_03_2019
 */
@@ -23,7 +83,6 @@ _AssetLoader::_AssetLoader()
     vertMin.setZ(999.0f);
     posCounter = 0;
     arrayCounter = 0;
-
     modelInfo.setIsLoaded(false);
 }
 _AssetLoader::~_AssetLoader(){}
@@ -145,61 +204,9 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
         objLoader(":/"+ folderName +"/" + imageName);
         modelInfo.setVertexArray(this->vertices);
         modelInfo.setIndexArray(this->indices);
-//        modelInfoArray.push_back(minfo);
+//      modelInfoArray.push_back(minfo);
         this->vertices.clear();
         this->indices.clear();
     }
 }
-/*
-• ▌ ▄ ·.       ·▄▄▄▄  ▄▄▄ .▄▄▌  ▪   ▐ ▄ ·▄▄▄           ▄▄ • ▄▄▄ .▄▄▄▄▄   .▄▄ · ▄▄▄ .▄▄▄▄▄
-·██ ▐███▪▪     ██▪ ██ ▀▄.▀·██•  ██ •█▌▐█▐▄▄·▪         ▐█ ▀ ▪▀▄.▀·•██     ▐█ ▀. ▀▄.▀·•██
-▐█ ▌▐▌▐█· ▄█▀▄ ▐█· ▐█▌▐▀▀▪▄██▪  ▐█·▐█▐▐▌██▪  ▄█▀▄     ▄█ ▀█▄▐▀▀▪▄ ▐█.▪   ▄▀▀▀█▄▐▀▀▪▄ ▐█.▪
-██ ██▌▐█▌▐█▌.▐▌██. ██ ▐█▄▄▌▐█▌▐▌▐█▌██▐█▌██▌.▐█▌.▐▌    ▐█▄▪▐█▐█▄▄▌ ▐█▌·   ▐█▄▪▐█▐█▄▄▌ ▐█▌·
-▀▀  █▪▀▀▀ ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ .▀▀▀ ▀▀▀▀▀ █▪▀▀▀  ▀█▄▀▪    ·▀▀▀▀  ▀▀▀  ▀▀▀  ▀  ▀▀▀▀  ▀▀▀  ▀▀▀
-*/
 
-void _AssetLoader::Model_Info::setName(QString name){
-    this->name = name;
-}
-void _AssetLoader::Model_Info::setPath(QString path){
-    this->path = path;
-}
-void _AssetLoader::Model_Info::setIsLoaded(bool isLoaded){
-    this->isLoaded = isLoaded;
-}
-void _AssetLoader::Model_Info::setVertexArray(std::vector<float> vertexArray){
-    this->vertexArray = vertexArray;
-}
-void _AssetLoader::Model_Info::setIndexArray(std::vector<unsigned int> indexAarray){
-    this->indexAarray = indexAarray;
-}
-void _AssetLoader::Model_Info::setMaxExtents(QVector3D max){
-    this->max = max;
-}
-void _AssetLoader::Model_Info::setMinExtents(QVector3D min){
-    this->min = min;
-}
-QString _AssetLoader::Model_Info::getName() const{
-    return this->name;
-}
-QString _AssetLoader::Model_Info::getPath() const{
-    return this->path;
-}
-std::vector<float> _AssetLoader::Model_Info::getVertices() const{
-    return this->vertexArray;
-}
-std::vector<unsigned int> _AssetLoader::Model_Info::getIndices() const{
-    return this->indexAarray;
-}
-QVector3D _AssetLoader::Model_Info::getMaxExtent() const{
-    return this->max;
-}
-QVector3D _AssetLoader::Model_Info::getMinExtent() const{
-    return this->min;
-}
-QVector3D _AssetLoader::Model_Info::getCentroid() const{
-   return this->centroid;
-}
-bool _AssetLoader::Model_Info::getIsLoaded() const{
-    return this->isLoaded;
-}

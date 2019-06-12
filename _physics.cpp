@@ -19,7 +19,7 @@ void _Physics::setSceneEntity(_SceneEntity s)
     }
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh)
     {
-        genTriesforCollision(this->sceneEntity.getVertexData(),this->sceneEntity.getIndexData());
+        genTriesforCollision(this->sceneEntity.getModelInfo().getVertices(),this->sceneEntity.getModelInfo().getIndices());
         triVectorCopy = triVector;
     }
 }

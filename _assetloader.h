@@ -3,6 +3,8 @@
 #include <vector>
 #include <qstring.h>
 #include <qvector3d.h>
+
+#include <glm/glm.hpp>
 /*
  * Class: _AssetLoader
  * class sets values needed by the viewMatrix
@@ -28,6 +30,7 @@ public:
         QVector3D min;//min extent.
         QVector3D centroid;//centroid from min & max.
         bool isLoaded;
+        //
         //!!buffer stuff should be done here and should hold these bindings.!!
         //uint VAOlocation
         //uint VBOlocation
@@ -40,6 +43,9 @@ public:
         void setIndexArray(std::vector<unsigned int> indexAarray);
         void setMaxExtents(QVector3D max);
         void setMinExtents(QVector3D min);
+        void setTranslationMatrix(glm::mat4x4 t);
+        void setRotationMatrix(glm::mat4x4 r);
+        void setScalingMatrix(glm::mat4x4 s);
 
         QString getName() const;
         QString getPath() const;
@@ -48,7 +54,9 @@ public:
         QVector3D getMaxExtent() const;
         QVector3D getMinExtent() const;
         QVector3D getCentroid() const;
+        //
         bool getIsLoaded() const;
+
     }_Model_Info;
     _AssetLoader::_Model_Info getModelInfo();
     //----

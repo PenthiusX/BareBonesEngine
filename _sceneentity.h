@@ -60,7 +60,7 @@ public:
     //
     _AssetLoader::Model_Info getModelInfo()const;
     //
-    void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
+//    void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
     void setModelData(_AssetLoader::Model_Info minfo);
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
@@ -69,11 +69,7 @@ public:
     //
     QString getVertexShaderPath() const;//returns the vertexshader path
     QString getFragmentShaderPath() const;//returns the fragment shader path
-    //getting setting modelData.
-    std::vector<float> getVertexData() const;// get  the array of verterticess for refrence
-    std::vector<unsigned int> getIndexData() const;// get the array of indices for refrence
-    std::vector<int> getUvData() const;// get the array of UVs for refrence
-    std::vector<float> getNormalData() const;// get the Array of normals for refrence
+
     //flag for enabling mesh editing
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
