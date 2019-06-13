@@ -31,7 +31,6 @@ void _AssetLoader::Model_Info::setVertexArray(std::vector<float> vertexArray){
 void _AssetLoader::Model_Info::setIndexArray(std::vector<unsigned int> indexAarray){
     this->indexAarray = indexAarray;
 }
-
 void _AssetLoader::Model_Info::setCentroid(glm::vec4 cent){
     this->centroid = cent;
 }
@@ -149,21 +148,21 @@ void _AssetLoader::objLoader(QString pathToFile)
         //time that they are beiing assigned.
         if(posCounter >= 3 && (arrayCounter + 2) < vertices.size()){
             //minExtent
-            posCounter = 0;
-            if(vertices[arrayCounter] >= vertMax.x)
-                vertMax.x = (vertices[arrayCounter]);
-            if(vertices[arrayCounter + 1] >= vertMax.y)
-                vertMax.y = (vertices[arrayCounter + 1]);
-            if(vertices[arrayCounter + 2] >= vertMax.z)
-                vertMax.z = (vertices[arrayCounter + 2]);
-             //maxEntent
-            if(vertices[arrayCounter] <= vertMin.x)
-                vertMin.x = (vertices[arrayCounter]);
-            if(vertices[arrayCounter + 1] <= vertMin.y)
-                vertMin.y = (vertices[arrayCounter + 1]);
-            if(vertices[arrayCounter + 2] <= vertMin.z)
-                vertMin.z = (vertices[arrayCounter + 2]);
-            arrayCounter += 3;
+            this->posCounter = 0;
+            if(vertices[arrayCounter] >= this->vertMax.x)
+                this->vertMax.x = (this->vertices[arrayCounter]);
+            if(vertices[arrayCounter + 1] >= this->vertMax.y)
+                this->vertMax.y = (this->vertices[arrayCounter + 1]);
+            if(vertices[arrayCounter + 2] >= this->vertMax.z)
+                this->vertMax.z = (this->vertices[arrayCounter + 2]);
+            //maxEntent
+            if(vertices[arrayCounter] <= this->vertMin.x)
+                this->vertMin.x = (vertices[arrayCounter]);
+            if(vertices[arrayCounter + 1] <= this->vertMin.y)
+                this->vertMin.y = (vertices[arrayCounter + 1]);
+            if(vertices[arrayCounter + 2] <= this->vertMin.z)
+                this->vertMin.z = (vertices[arrayCounter + 2]);
+            this->arrayCounter += 3;
         }
     }
 
@@ -177,17 +176,18 @@ void _AssetLoader::objLoader(QString pathToFile)
         ss >> temp2;
         if (std::stringstream(temp2) >> foundi)
         {
-            indices.push_back(foundi - 1);
+            this->indices.push_back(foundi - 1);
         }
         temp2 = "";
     }
     //sets the ModelInfo data at the end of modelfile parse.
-    modelInfo.setPath(pathToFile);
-    modelInfo.setVertexArray(this->vertices);
-    modelInfo.setIndexArray(this->indices);
-    modelInfo.setMaxExtents(this->vertMax);
-    modelInfo.setMinExtents(this->vertMin);
-    modelInfo.setIsLoaded(true);
+    this->modelInfo.setPath(pathToFile);
+    this->modelInfo.setVertexArray(this->vertices);
+    this->modelInfo.setIndexArray(this->indices);
+    this->modelInfo.setMaxExtents(this->vertMax);
+    this->modelInfo.setMinExtents(this->vertMin);
+    this->modelInfo.setCentroid(calcCentroidFromMinMax());
+    this->modelInfo.setIsLoaded(true);
 }
 
 /* //Not in use---future implementation via VAO.
@@ -199,12 +199,12 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 {
     foreach(const QString &imageName, QDir(":/"+folderName).entryList())
     {
-        modelInfo.setName(imageName);
-        modelInfo.setPath(":/"+ folderName +"/" + imageName);
+        this->modelInfo.setName(imageName);
+        this->modelInfo.setPath(":/"+ folderName +"/" + imageName);
         objLoader(":/"+ folderName +"/" + imageName);
-        modelInfo.setVertexArray(this->vertices);
-        modelInfo.setIndexArray(this->indices);
-//      modelInfoArray.push_back(minfo);
+        this->modelInfo.setVertexArray(this->vertices);
+        this->modelInfo.setIndexArray(this->indices);
+        //      modelInfoArray.push_back(minfo);
         this->vertices.clear();
         this->indices.clear();
     }
@@ -216,34 +216,34 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 void _AssetLoader::calcMinMaxExtents()
 {
     std::vector<float> v = this->modelInfo.getVertices();
-   for(unsigned int i = 0 ; i < v.size() ; i += 3)
+    for(unsigned int i = 0 ; i < v.size() ; i += 3)
     {
-        if(v[i] >= vertMax.x)
-            vertMax.x=(v[i]);
-        if(v[i + 1] >= vertMax.y)
-            vertMax.y=(v[i + 1]);
-        if(v[i + 2] >= vertMax.z)
-            vertMax.z=(v[i + 2]);
-         //maxEntent
-        if(v[i] <= vertMin.x)
-            vertMin.x=(v[i]);
-        if(v[i + 1] <= vertMin.y)
-            vertMin.y=(v[i + 1]);
-        if(v[i + 2] <= vertMin.z)
-            vertMin.z=(v[i + 2]);
+        if(v[i] >= this->vertMax.x)
+            this->vertMax.x=(v[i]);
+        if(v[i + 1] >= this->vertMax.y)
+            this->vertMax.y=(v[i + 1]);
+        if(v[i + 2] >= this->vertMax.z)
+            this->vertMax.z=(v[i + 2]);
+        //maxEntent
+        if(v[i] <= this->vertMin.x)
+            this->vertMin.x=(v[i]);
+        if(v[i + 1] <= this->vertMin.y)
+            this->vertMin.y=(v[i + 1]);
+        if(v[i + 2] <= this->vertMin.z)
+            this->vertMin.z=(v[i + 2]);
     }
 
-   this->modelInfo.setMinExtents(vertMin);
-   this->modelInfo.setMaxExtents(vertMax);
-   this->modelInfo.setCentroid(calcCentroidFromMinMax());
+    this->modelInfo.setMinExtents(this->vertMin);
+    this->modelInfo.setMaxExtents(this->vertMax);
+    this->modelInfo.setCentroid(calcCentroidFromMinMax());
 }
 
 glm::vec4 _AssetLoader::calcCentroidFromMinMax()
 {
     glm::vec4 centroid;
-    centroid.x = (vertMax.x + vertMin.x)*0.5f;
-    centroid.y = (vertMax.y + vertMin.y)*0.5f;
-    centroid.z = (vertMax.z + vertMin.z)*0.5f;
+    centroid.x = (this->vertMax.x + this->vertMin.x)*0.5f;
+    centroid.y = (this->vertMax.y + this->vertMin.y)*0.5f;
+    centroid.z = (this->vertMax.z + this->vertMin.z)*0.5f;
     return centroid;
 }
 

@@ -47,7 +47,7 @@ void _GLWidget::initializeGL()
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
     //needs this to make the GL widgit have the strongest focus when switching widgets.
-    cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
+    cam.setEyePosition(QVector3D(0.0, 0.0, 7.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
@@ -84,38 +84,29 @@ void _GLWidget::initializeGL()
     pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
     pivot.setScale(1.0f);
     pivot.setModelData(":/models/pivot.obj");
-    //Debug helper use mpoint.
-    mpoint.setId(999);
-    mpoint.setTag("mousePointerObject");
-    mpoint.setIsTransformationLocal(false);
-    mpoint.setPosition(QVector3D(0.0,0.0,0.0));
-    mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    mpoint.setColor(QVector4D(0.5,0.5,0.5,1.0));
-    mpoint.setScale(0.1f);
-    mpoint.setModelData(":/models/sphere.obj");
-    //-----------------
-    s.setId(1);
-    s.setTag("object1");
-    s.setIsLineMode(true);
-    s.setPhysicsObject(_SceneEntity::Sphere);
-    s.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s.setColor(QVector4D(0.3,0.5,0.0,0.9));
-    s.setPosition(QVector3D(0.0,2.0, 0.0));
-    s.setScale(1.0f);
-    s.setModelData(mpoint.getModelInfo());
-    //
-    s1.setId(2);
-    s1.setTag("object2");
-    s1.setIsLineMode(true);
-    s1.setPhysicsObject(_SceneEntity::Box);
-    s1.setIsTransformationLocal(false);
-    s1.setPosition(QVector3D(0.0,0.0, 0.0));
-    s1.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s1.setColor(QVector4D(0.5,1.0,1.0,0.9));
-    s1.setScale(1.0f);
-    s1.setModelData(":/models/cube.obj");//dont need to reparse modelfile
-    //
+    //----------Physics Objects-------
+    sph.setId(1);
+    sph.setTag("boundingSphere");
+    sph.setIsLineMode(true);
+    sph.setPhysicsObject(_SceneEntity::Sphere);
+    sph.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
+    sph.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    sph.setColor(QVector4D(0.3,0.5,0.0,0.9));
+    sph.setPosition(QVector3D(0.0,2.0, 0.0));
+    sph.setScale(1.0f);
+    sph.setModelData(mpoint.getModelInfo());
+    //--
+    bb.setId(2);
+    bb.setTag("boundingBox");
+    bb.setIsLineMode(true);
+    bb.setPhysicsObject(_SceneEntity::Box);
+    bb.setIsTransformationLocal(false);
+    bb.setPosition(QVector3D(0.0,0.0, 0.0));
+    bb.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    bb.setColor(QVector4D(0.5,1.0,1.0,0.9));
+    bb.setScale(1.0f);
+    bb.setModelData(":/models/cube.obj");//dont need to reparse modelfile
+    //-----------------------------------
     s2.setId(3);
     s2.setTag("clickSurface");
     s2.setPhysicsObject(_SceneEntity::Box);
@@ -126,16 +117,34 @@ void _GLWidget::initializeGL()
     s2.setColor(QVector4D(0.0,0.0,0.5,0.9));
     s2.setScale(1.0f);
     s2.setModelData(quad);
-    //-----------------
+    //Debug helper use mpoint.
+    mpoint.setId(999);
+    mpoint.setTag("mousePointerObject");
+    mpoint.setIsTransformationLocal(false);
+    mpoint.setPosition(QVector3D(0.0,0.0,0.0));
+    mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    mpoint.setColor(QVector4D(0.5,0.5,0.5,1.0));
+    mpoint.setScale(0.1f);
+    mpoint.setModelData(":/models/sphere.obj");
+    //----------Essentials---------
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(background_quad); //add the backGround quad first for it to render last
     scene->addSceneObject(pivot);//pivot helper essential
     scene->addSceneObject(mpoint);//mousePoint helper
-    //
-//    scene->addSceneObject(s);
-//    scene->addSceneObject(s1);
+    //Physics
+    scene->addSceneObject(sph);
+    scene->addSceneObject(bb);
+    //-----------------------------
+    //temporary
+    mpoint.setId(991);//maxextent helper
+    mpoint.setColor(QVector4D(9.0,9.0,9.0,1.0));
+    scene->addSceneObject(mpoint);
+    mpoint.setId(992);//minextent helper
+    mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
+    scene->addSceneObject(mpoint);
+    //---Scene Objects--------
     scene->addSceneObject(s2);
-    //-----------------
+    //------------------------
 }
 //         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
 //  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
@@ -198,7 +207,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-//      scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
+        //      scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
@@ -295,27 +304,27 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         idmatch += 1;}
     if (idmatch >= scene->getSceneObjects().size()){
         idmatch = 0;}
-    if (event->text() == "d" || event->text() == "D"){
+    if (event->text() == "a" || event->text() == "A"){
         if (isCamFocus)
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() - 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
         else
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(-0.1f, -0.f, 0.0));
     }
-    if (event->text() == "a" || event->text() == "A"){
+    if (event->text() == "d" || event->text() == "D"){
         if (isCamFocus){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() + 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
             scene->updateCamera(cam);
         }else
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(0.1f, 0.f, 0.0));
     }
-    if (event->text() == "w" || event->text() == "W"){
+    if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y(), cam.getEyePosition().z() + 0.2));
             scene->updateCamera(cam);
         }else
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(0.f, 0.1, 0.0));
     }
-    if (event->text() == "s" || event->text() == "S"){
+    if (event->text() == "w" || event->text() == "W"){
         if (isCamFocus == true){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y(), cam.getEyePosition().z() - 0.2));
             scene->updateCamera(cam);
@@ -324,7 +333,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     }
     if (event->text() == "r" || event->text() == "R"){
         if(isCamFocus){
-            cam.setEyePosition(QVector3D(0.0, 0.0, -7.0));
+            cam.setEyePosition(QVector3D(0.0, 0.0, 7.0));
         }
         else{
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setPosition(QVector3D(0.0f, 0.0, 0.0));
@@ -378,7 +387,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
 */
 void _GLWidget::removeSceneEntityFromScene()
 {
-//    scene->removeSceneObject(s1);
+    //    scene->removeSceneObject(s1);
     if(scene->getSceneObjects().size() > 3)
         scene->removeSceneObject(scene->getSceneObjects().size()-1);
 }
@@ -389,11 +398,11 @@ void _GLWidget::applyStuffToallEntites(bool isit)
     {
         if(scene->getSceneObjects()[i]->getSceneEntity().getId() != 999 && scene->getSceneObjects()[i]->getSceneEntity().getId() != 888 )
         {
-          _SceneEntity s;//Alternate implementation to Making changes to the SceneEntity.
-          s = scene->getSceneObjects()[i]->getSceneEntity();//copy the existing scene entity,
-          s.setIsTransformationAllowed(isit);// makes specific changes then,
-          scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);//reSet it inside the SceneRenderer.
-          qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
+            _SceneEntity s;//Alternate implementation to Making changes to the SceneEntity.
+            s = scene->getSceneObjects()[i]->getSceneEntity();//copy the existing scene entity,
+            s.setIsTransformationAllowed(isit);// makes specific changes then,
+            scene->getSceneObjects()[i]->setSceneEntityInRenderer(s);//reSet it inside the SceneRenderer.
+            qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
         }
     }
 }

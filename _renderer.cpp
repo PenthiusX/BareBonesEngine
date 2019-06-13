@@ -445,8 +445,8 @@ void _Renderer::keepSceneEntityUpdated()
 void _Renderer::_Renderer::draw()
 {
     if(this->sceneEntity.getIsLineMode())
-        glPolygonMode(GL_FRONT,GL_LINE);
-    else if(this->sceneEntity.getIsLineMode() == false)
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    else if(!this->sceneEntity.getIsLineMode())
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     if(this->sceneEntity.getIsActive())
     {
@@ -474,7 +474,6 @@ void _Renderer::_Renderer::draw()
         setColors();//Setting the uniform for color
         //
         glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
-        //
         glBindVertexArray(0);//Clear the buffer
     }
 }
