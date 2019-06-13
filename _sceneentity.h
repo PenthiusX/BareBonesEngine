@@ -27,8 +27,8 @@ public:
     //
     void setId(unsigned int id);//sets the iD either externaly or internally generated
     unsigned int getId() const;
-    void setTag(const char* tag);//sets a name based identifier for the object
-    const char* getTag() const;
+    void setTag(QString tag);//sets a name based identifier for the object
+    QString getTag() const;
     void setOrderInIndex(unsigned int i);
     unsigned int getIndexPosInScene() const;
     //
@@ -94,7 +94,7 @@ public:
 
 private:
     unsigned int id;
-    const char* tag;
+    QString tag;
     QVector3D postion;
     QVector3D rotation;
     QVector3D pivot;
