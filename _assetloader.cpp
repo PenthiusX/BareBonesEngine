@@ -131,7 +131,10 @@ void _AssetLoader::objLoader(QString pathToFile)
     std::string temp = "0000000";
     std::string temp2 = "0000000";
 
-    std::string av = objData.substr(objData.find("v ") + 1);
+    unsigned int start = objData.find("v ");
+    unsigned int finish = objData.find("s ");
+
+    std::string av = objData.substr(start ,finish - start);
     std::stringstream ssv;
     ssv << av;
     float foundf;
