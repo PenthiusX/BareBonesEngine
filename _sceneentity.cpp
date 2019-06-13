@@ -34,8 +34,6 @@ _SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale){
     this->scale = scale;
 }
 _SceneEntity::~_SceneEntity(){
-    tag = nullptr;
-    delete tag;
 }
 /*
  * Function: setId(int id) & getId()
@@ -55,10 +53,10 @@ unsigned int _SceneEntity::getId() const{
  * Tag is a string name uniqe identifier for the
  * object,similar to iD.
 */
-void _SceneEntity::setTag(const char *tag){
+void _SceneEntity::setTag(QString tag){
     this->tag = tag;
 }
-const char *_SceneEntity::getTag() const{
+QString _SceneEntity::getTag() const{
     return this->tag;
 }
 /*
