@@ -1,5 +1,6 @@
 #include "_physics.h"
 #include <QDebug>
+#include <algorithm>    // std::swap
 
 _Physics::_Physics(){}
 _Physics::~_Physics(){}
@@ -15,8 +16,8 @@ void _Physics::setSceneEntity(_SceneEntity s)
     }
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box)
     {
-       initialMax = this->sceneEntity.getModelInfo().getMaxExtent();
-       initialMin = this->sceneEntity.getModelInfo().getMinExtent();
+        initialMax = this->sceneEntity.getModelInfo().getMaxExtent();
+        initialMin = this->sceneEntity.getModelInfo().getMinExtent();
     }
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh)
     {
@@ -279,6 +280,43 @@ bool _Physics::hitBoundingBox(Phy_Box b , glm::vec3 rayOrigin ,glm::vec3 rDirect
         }
     return (true);				//ray hits box
 }
+/*
+ * Created: 5_06_2019
+*/
+bool hitBoundingBoxF(_Phy_Box b,glm::vec3 orig, glm::vec3 r)
+{
+    float tmin = (b.min.x - orig.x) / r.x;
+    float tmax = (b.max.x - orig.x) / r.x;
+
+    if(tmin > tmax) std::swap(tmin, tmax);
+
+    float tymin = (b.min.y - orig.y) / r.y;
+    float tymax = (b.max.y - orig.y) / r.y;
+
+    if(tymin > tymax) std::swap(tymin, tymax);
+    if((tmin > tymax) || (tymin > tmax))
+        return false;
+
+    if(tymin > tmin)
+       tmin = tymin;
+    if(tymax < tmax)
+        tmax = tymax;
+
+    float tzmin = (b.min.z - orig.z) / r.z;
+    float tzmax = (b.max.z - orig.z) / r.z;
+
+    if(tzmin > tzmax) std::swap(tzmin, tzmax);
+    if((tmin > tzmax) || (tzmin > tmax))
+        return false;
+
+    if(tzmin > tmin)
+       tmin = tzmin;
+    if(tzmax < tmax)
+       tmax = tzmax;
+
+    return true;
+}
+
 /* Function: transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
  * tranforms the physics bodies in sync with the actual object it
  * is bound on.
@@ -300,8 +338,14 @@ void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
 {
     glm::vec4 max = modelMatrix * initialMax;
     glm::vec4 min = modelMatrix * initialMin;
-    this->sceneEntity.getModelInfo().setMaxExtents(max);
-    this->sceneEntity.getModelInfo().setMinExtents(min);
+    _AssetLoader::Model_Info m = this->sceneEntity.getModelInfo();
+    m.setMaxExtents(max);
+    m.setMinExtents(min);
+    this->sceneEntity.setModelInfo(m);
+
+    qDebug()<<"max"<< max.x << max.y << max.z ;
+    qDebug()<<"min"<< min.x << min.y << min.z;
+    qDebug()<< "--------------------------------";
 }
 
 /*
@@ -320,10 +364,15 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     }
     //Box Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
-        transFormBoxExtents(this->sceneEntity.getModelMatrix());
+        transFormBoxExtents(this->sceneEntity.getTranslationMatrix() * this->sceneEntity.getRotationmatrix() * this->sceneEntity.getScaleingMatrix());
         bx.max = this->sceneEntity.getModelInfo().getMaxExtent();
         bx.min = this->sceneEntity.getModelInfo().getMinExtent();
-        hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
+        //       hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
+        hitBoundingBoxF(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
+
+        qDebug()<<"maxp"<< bx.max.x << bx.max.y << bx.max.z ;
+        qDebug()<<"minp"<< bx.min.x << bx.min.y << bx.min.z;
+        qDebug()<< "--------------------------------";
     }
     //Mesh Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
@@ -331,7 +380,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         transFormPhysicsTriangles(this->sceneEntity.getModelMatrix());
         for(int it= 0 ; it < triVector.size() ; it++){
             if(triVector.size() != NULL){
-             rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+                rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
             }
         }
     }

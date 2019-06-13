@@ -197,9 +197,14 @@ glm::mat4x4 _SceneEntity::getProjectionMatrix() const{
 void _SceneEntity::setViewMatrix(glm::mat4x4 view){
     this->ViewMatrix = view;
 }
-glm::mat4x4 _SceneEntity::getViewMatrix() const
-{
+glm::mat4x4 _SceneEntity::getViewMatrix() const{
     return this->ViewMatrix;
+}
+/*
+ * Created:13_06_2019
+*/
+void _SceneEntity::setModelInfo(_AssetLoader::Model_Info minfo){
+    this->modelInfo = minfo;
 }
 _AssetLoader::Model_Info _SceneEntity::getModelInfo() const{
     return this->modelInfo;

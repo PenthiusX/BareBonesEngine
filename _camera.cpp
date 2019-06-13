@@ -17,7 +17,7 @@
 _Camera::_Camera(){
     //default values
     this->upVector = QVector3D(0.0, 1.0, 0.0);
-    this->eyePosition = QVector3D(0.0, 0.0, -10.0);
+    this->eyePosition = QVector3D(0.0, 0.0, 10.0);
     this->focalPoint = QVector3D(0.0, 0.0, 0.0);
     this->nearClipDistance = 0.1;
     this->farClipDistance = 50.0;

@@ -60,6 +60,7 @@ public:
     void setViewMatrix(glm::mat4x4 view);
     glm::mat4x4 getViewMatrix()const;
     //
+    void setModelInfo(_AssetLoader::Model_Info minfo);
     _AssetLoader::Model_Info getModelInfo()const;
     //
     void setModelData(_AssetLoader::Model_Info minfo);//set the modelInfo object in sceneEntity
