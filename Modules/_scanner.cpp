@@ -219,7 +219,7 @@ void _Scanner::scanGenerateModelVoxels()
         //send the grabbed frame to gui widget for display
         //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
-        processing->generateVoxelsModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
+        processing->generateVoxelsModelCV(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
 
     }
 

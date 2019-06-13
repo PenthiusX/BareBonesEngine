@@ -7,7 +7,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 
-class _Image : public cv::Mat , public cv::gpu::Mat
+class _Image : public cv::Mat
 {
     enum LastOperation
     {

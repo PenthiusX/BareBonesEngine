@@ -444,6 +444,31 @@ void _Processing::generateVoxelsModel(char *img, unsigned int iwidth, unsigned i
 
 }
 
+void _Processing::generateVoxelsModelCV(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step,glm::vec2 stage_center)
+{
+    static bool init = true;
+
+    //initialise empty textures for processing
+    static cv::Mat texture_model_wrap(iheight,200,CV_32S,100);
+    static cv::Mat texture_in;
+    static cv::Mat texture_out;
+
+    if(rotation_step == 0)
+        texture_model_wrap=400;
+    //Do the Processing
+
+    //send the image to gpu texture
+    texture_in = cv::Mat(iheight, iwidth, CV_8UC1, img);
+
+    //cpu_compute->showImageInterval(texture_in);
+
+    cpu_compute->computeVoxelsModel(texture_in,texture_out,texture_model_wrap,rotation_step,stage_center);
+
+    emit outputImage((char*)texture_out.data,iwidth,iheight);
+    emit generatedModelTextureOut((char*)texture_model_wrap.data,texture_model_wrap.cols,texture_model_wrap.rows);
+
+}
+
 /* function: makeCurrent
  * set the context active
 */

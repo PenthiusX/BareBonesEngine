@@ -19,6 +19,10 @@ public:
 
     void genImg();
     char *frameGray2RGB(char *img, unsigned int iwidth, unsigned int iheight);
+    void showImageStill(cv::Mat img);
+    void showImageInterval(cv::Mat img, int interval=10);
+    void computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, cv::Mat &texture_model_wrap, int rotation_step, glm::vec2 stage_center);
+    void computeRowWiseLeftEdge(cv::Mat &input_img, cv::Mat &output_img);
 signals:
     void imageOut(QImage img);
 protected:

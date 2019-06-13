@@ -43,6 +43,7 @@ public slots:
     void init();
     void setActiveProcess(const char *slot);
     void generateVoxelsModel(char *img, unsigned int iwidth, unsigned int iheight, int rotation_step, glm::vec2 stage_center);
+    void generateVoxelsModelCV(char *img, unsigned int iwidth, unsigned int iheight, int rotation_step, glm::vec2 stage_center);
 
     void passThroughFrameLocal(char *img, unsigned int iwidth, unsigned int iheight);
 protected:
@@ -54,6 +55,8 @@ protected:
 
     const char* active_slot = nullptr;
     static _ConfigControlEntity *application_settings;
+    cv::Mat _frameOriginal;
+    cv::Mat _frameProcessed;
 };
 
 #endif // _PROCESSING_H

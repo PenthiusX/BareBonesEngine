@@ -41,9 +41,54 @@ void _Cpu_Compute::genImg()
 {
     _frameOriginal = cv::imread	("lena.jpg");
     cv::cvtColor(_frameOriginal, _frameProcessed, cv::COLOR_BGR2GRAY);
-    qDebug() << "step " << _frameProcessed.step;
+//    cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+//    cv::imshow( "Display window", _frameOriginal );                   // Show our image inside it.
+
+//    cv::waitKey(0);
     QImage output((const unsigned char *)_frameProcessed.data, _frameProcessed.cols, _frameProcessed.rows,_frameProcessed.step, QImage::Format_Indexed8);
     emit imageOut(output);
+}
+
+void _Cpu_Compute::showImageStill(cv::Mat img)
+{
+        cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+        cv::imshow( "Display window", img );                   // Show our image inside it.
+        cv::waitKey(0);
+}
+
+void _Cpu_Compute::showImageInterval(cv::Mat img,int interval)
+{
+        cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+        cv::imshow( "Display window", img );                   // Show our image inside it.
+        cv::waitKey(interval);
+}
+
+void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, cv::Mat &texture_out_8_bit, int rotation_step, glm::vec2 stage_center)
+{
+    static std::vector<cv::Mat> texture_cyl_voxels(100, cv::Mat(input_img.cols,input_img.rows, CV_8UC1));
+    static bool init = true;
+    cv::Mat texture_thres;
+
+    if(init)
+    {
+        for (int i = 0; i < 100; ++i) {
+
+            texture_cyl_voxels[i]=255;
+        }
+        init = false;
+    }
+
+    threshold(input_img, texture_thres, 100, 255,cv::THRESH_BINARY_INV );
+
+    cvtColor(texture_thres, output_img, cv::COLOR_GRAY2RGBA);
+
+    //showImageInterval(texture_in);
+
+}
+
+void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img)
+{
+
 }
 
 char *_Cpu_Compute::frameGray2RGB(char *img, unsigned int iwidth, unsigned int iheight)
