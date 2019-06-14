@@ -21,7 +21,7 @@ void _Image::sync()
 }
 
 
-void* _Image::dataFromGPUTexture()
-{
+//void* _Image::dataFromGPUTexture()
+//{
 
-}
+//}

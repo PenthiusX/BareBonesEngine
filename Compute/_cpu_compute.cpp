@@ -67,7 +67,7 @@ void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, c
 {
     static std::vector<cv::Mat> texture_cyl_voxels(100, cv::Mat(input_img.cols,input_img.rows, CV_8UC1));
     static bool init = true;
-    cv::Mat texture_thres;
+    cv::Mat texture_thres,texture_edge(input_img.rows,input_img.cols,CV_32F);
 
     if(init)
     {
@@ -82,13 +82,41 @@ void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, c
 
     cvtColor(texture_thres, output_img, cv::COLOR_GRAY2RGBA);
 
+    computeRowWiseLeftEdge(texture_thres,texture_edge);
+    showImageInterval(texture_edge);
+    //qDebug() <<"type" << texture_edge.type() << texture_thres.type() << input_img.type();
+
     //showImageInterval(texture_in);
 
 }
 
 void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img)
 {
+    cv::Mat kernal = cv::Mat(1,2,CV_32F),input_img_signed,diff_img;
+    kernal.at<float>(0,0)=-1.0;
+    kernal.at<float>(0,1)=1.0;
+    //kernal = cv::Mat::ones( 3, 3, CV_32F )/ (float)(3*3);
 
+    input_img.convertTo(input_img_signed,CV_32F);
+    cv::Point anchor;
+    double delta;
+    int ddepth;
+    anchor = cv::Point( -1, -1 );
+    delta = 0;
+    ddepth = -1;
+    filter2D(input_img_signed, diff_img, ddepth , kernal, anchor, delta, cv::BORDER_DEFAULT );
+    cv::Mat edge(input_img.rows,2,CV_32S),img_row;
+
+    cv::Point min_loc, max_loc;
+    double min,max;
+    for (int i=0;i<input_img.rows;i++) {
+        img_row = diff_img.rowRange(i, i + 1);
+        cv::minMaxLoc(img_row, &min, &max, &min_loc, &max_loc);
+        edge.at<int>(i,0) = int(max_loc.x);
+        edge.at<int>(i,1) = int(min_loc.x);
+        output_img.at<float>(i,max_loc.x) = 256;
+        output_img.at<float>(i,min_loc.x) = 256;
+    }
 }
 
 char *_Cpu_Compute::frameGray2RGB(char *img, unsigned int iwidth, unsigned int iheight)

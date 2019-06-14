@@ -20,7 +20,7 @@ public:
     void sync();
     void setLastOperation(LastOperation op){sync_dir_rev=op;}
 
-    void *dataFromGPUTexture();
+    //void *dataFromGPUTexture();
 protected:
     LastOperation sync_dir_rev=_CV;
 
