@@ -361,6 +361,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         sp.center.x = sceneEntity.getPostion().x();sp.center.y = sceneEntity.getPostion().y();sp.center.z = sceneEntity.getPostion().z();
         sp.radius = sceneEntity.getScale();//should be replaced by max extents or user input
         hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+        if(hitSphere(sp.center,sp.radius,camPos))qDebug() <<"Hit Id-"<<sceneEntity.getId();
     }
     //Box Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
@@ -369,6 +370,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         bx.min = this->sceneEntity.getModelInfo().getMinExtent();
         //       hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
         hitBoundingBoxF(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
+                if(hitBoundingBoxF(bx,camPos,ray_wor))qDebug() <<"Hit Id-"<<sceneEntity.getId();
 
 //        qDebug()<<"maxp"<< bx.max.x << bx.max.y << bx.max.z ;
 //        qDebug()<<"minp"<< bx.min.x << bx.min.y << bx.min.z;
@@ -381,6 +383,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         for(int it= 0 ; it < triVector.size() ; it++){
             if(triVector.size() != NULL){
                 rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+                if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint))qDebug() <<"Hit Id-"<<sceneEntity.getId();
             }
         }
     }
