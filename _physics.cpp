@@ -343,9 +343,9 @@ void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
     m.setMinExtents(min);
     this->sceneEntity.setModelInfo(m);
 
-    qDebug()<<"max"<< max.x << max.y << max.z ;
-    qDebug()<<"min"<< min.x << min.y << min.z;
-    qDebug()<< "--------------------------------";
+//    qDebug()<<"max"<< max.x << max.y << max.z ;
+//    qDebug()<<"min"<< min.x << min.y << min.z;
+//    qDebug()<< "--------------------------------";
 }
 
 /*
@@ -370,9 +370,9 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         //       hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
         hitBoundingBoxF(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
 
-        qDebug()<<"maxp"<< bx.max.x << bx.max.y << bx.max.z ;
-        qDebug()<<"minp"<< bx.min.x << bx.min.y << bx.min.z;
-        qDebug()<< "--------------------------------";
+//        qDebug()<<"maxp"<< bx.max.x << bx.max.y << bx.max.z ;
+//        qDebug()<<"minp"<< bx.min.x << bx.min.y << bx.min.z;
+//        qDebug()<< "--------------------------------";
     }
     //Mesh Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
