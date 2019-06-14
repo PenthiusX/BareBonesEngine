@@ -125,15 +125,15 @@ void _GLWidget::initializeGL()
     mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     mpoint.setColor(QVector4D(0.5,0.5,0.5,1.0));
     mpoint.setScale(0.1f);
-    mpoint.setModelData(":/models/sphere.obj");
+    mpoint.setModelData(sph.getModelInfo());
     //----------Essentials---------
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(backgroundQuad); //add the backGround quad first for it to render last
     scene->addSceneObject(pivot);//pivot helper essential
     scene->addSceneObject(mpoint);//mousePoint helper
     //Physics
-    scene->addSceneObject(sph);
-    scene->addSceneObject(bb);
+//    scene->addSceneObject(sph);
+//    scene->addSceneObject(bb);
     //-----------------------------
     //temporary
     mpoint.setId(991);//maxextent helper

@@ -17,6 +17,7 @@ _Scene::_Scene()
 {
     isCamera = false;
     fboObject = new _FrameBuffer();
+    isPhysicsObjectClicked = false;
 }
 _Scene::~_Scene()
 {
@@ -131,6 +132,11 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m)
         this->mousePositionR = mousePos;
     else if(m == Qt::LeftButton)
         this->mousePositionL = mousePos;
+    isPhysicsObjectClicked = true;
+
+    //sets Physics only on Click
+    updatePhysicsForAllObjects();
+
 }
 /*
  * Created: 10_06_2019
@@ -164,7 +170,7 @@ void _Scene::removeSceneObject(_SceneEntity s)
 {
     for(int r = 0 ; r < renderObjects.size() ; r++)
         if(renderObjects[r]->getSceneEntity().getId() == s.getId()){
-            renderObjects[r] = NULL;
+            renderObjects[r] == NULL;
             renderObjects.erase(renderObjects.begin()+r);
         }
 }
@@ -214,17 +220,7 @@ void _Scene::render()
     {
         //Physics update--
         //update Physics for all the sceneObject with property enabled
-        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
-        {   //Passing some essentials into the updateLoop for physics
-            updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
-                                    this->mousePositionL.y()),
-                          glm::vec3(cam.getEyePosition().x(),//Camera Position
-                                    cam.getEyePosition().y(),
-                                    cam.getEyePosition().z()),
-                          glm::vec2(this->resW,this->resH),//Current Resolution
-                          renderObjects[i]->getSceneEntity(),//Selected sceneEntity
-                          i);//Selected Index for current sceneEntity
-        }
+//        updatePhysicsForAllObjects();//dont need it here as were doing it on MouseClick insted, saves performance
         //Frame update----
         //Render all objects that are active.
         renderObjects[i]->draw();//calls the draw function unique to each renderObject
@@ -263,7 +259,7 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
         //---------------------Helpers-------------------
         //helper for mouseIntersection point
         glm::vec3 p = physVector[n].getRayTriIntersectionPoint();
-//        renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
+        //        renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
         //Helpers for Max min extents
         glm::vec3 mx = physVector[n].getSceneEntity().getModelInfo().getMaxExtent();
         glm::vec3 mn = physVector[n].getSceneEntity().getModelInfo().getMinExtent();
@@ -272,6 +268,26 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
         renderObjects[3]->setPosition(QVector3D(mx.x,mx.y,mx.z));
         renderObjects[4]->setPosition(QVector3D(mn.x,mn.y,mn.z));
         //-----------------------------------------------
+    }
+}
+
+void _Scene::updatePhysicsForAllObjects()
+{
+    for (unsigned int i = 0; i < renderObjects.size(); i++)
+    {
+        //Physics update--
+        //update Physics for all the sceneObject with property enabled
+        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
+        {   //Passing some essentials into the updateLoop for physics
+            updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
+                                    this->mousePositionL.y()),
+                          glm::vec3(cam.getEyePosition().x(),//Camera Position
+                                    cam.getEyePosition().y(),
+                                    cam.getEyePosition().z()),
+                          glm::vec2(this->resW,this->resH),//Current Resolution
+                          renderObjects[i]->getSceneEntity(),//Selected sceneEntity
+                          i);//Selected Index for current sceneEntity
+        }
     }
 }
 
