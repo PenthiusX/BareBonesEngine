@@ -163,8 +163,10 @@ void _Scene::removeSceneObject(unsigned int index)
 void _Scene::removeSceneObject(_SceneEntity s)
 {
     for(int r = 0 ; r < renderObjects.size() ; r++)
-        if(renderObjects[r]->getSceneEntity().getId() == s.getId())
+        if(renderObjects[r]->getSceneEntity().getId() == s.getId()){
+            renderObjects[r] = NULL;
             renderObjects.erase(renderObjects.begin()+r);
+        }
 }
 //         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
 //  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·

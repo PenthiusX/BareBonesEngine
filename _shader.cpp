@@ -80,11 +80,10 @@ void _Shader::attachShaders()
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
             std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;
         }
-
         //delete shader
         for (auto const& child_shader : child_shaders)
         {
-            glDeleteShader( child_shader.second);
+            glDeleteShader(child_shader.second);
         }
     }
     else//if no child shaders attatched
@@ -120,9 +119,8 @@ void _Shader::setGeometryShader(QString geoS)
     glCompileShader(geometryShader);
     glAttachShader(this->shaderProgram, geometryShader);
     glLinkProgram(this->shaderProgram);
+    glDeleteShader(geometryShader);
 }
-
-
 /*
 * Function: getUniformLocation(char* nameOfUniform)
 * returns a uint representing the loaction index of
@@ -134,7 +132,6 @@ GLint _Shader::getUniformLocation(const char* nameOfUniform)
 {
     return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
 }
-
 /*
  *
 */
@@ -143,7 +140,8 @@ void _Shader::setChildShader(QString s, unsigned int typ)
     unsigned int shader = compileShader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-
+/*
+ */
 void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
 {
     QString combined_src;
@@ -155,7 +153,6 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ
     unsigned int shader = compileShader(combined_src,typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-
 /*
  * Function: useShaderProgram() Needs to be called before draw
  * everyloop for multiple
@@ -192,7 +189,6 @@ unsigned int _Shader::compileShader(QString src, unsigned int typ)
     }
     return shader;
 }
-
 /*
 void _Shader::setComputeShader(QString compShader)
 {

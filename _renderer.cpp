@@ -36,8 +36,6 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 */
 _Renderer::~_Renderer()
 {
-    shdr = nullptr;
-    fboShader = nullptr;
     delete fboShader;
     delete shdr;
 }
