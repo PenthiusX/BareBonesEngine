@@ -20,9 +20,9 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     idmatch = 0;
     this->isCamFocus = false;
-    //keeps the event callbacks working for the GL widget
-    setFocusPolicy(Qt::StrongFocus);
-    //  makeCurrent();
+    //  keeps the event callbacks working for the GL widget
+    this->setFocusPolicy(Qt::StrongFocus);
+    this->setFocusPolicy(Qt::ClickFocus);
 }
 _GLWidget::~_GLWidget()
 {
@@ -112,7 +112,7 @@ void _GLWidget::initializeGL()
     s2.setPhysicsObject(_SceneEntity::Mesh);
     s2.setIsTransformationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
-//    s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
+//  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s2.setColor(QVector4D(0.0,0.0,0.5,0.9));
     s2.setScale(1.0f);
@@ -126,24 +126,23 @@ void _GLWidget::initializeGL()
     mpoint.setColor(QVector4D(0.5,0.5,0.5,1.0));
     mpoint.setScale(0.1f);
     mpoint.setModelData(sph.getModelInfo());
-    //----------Essentials---------
+    //--------Essentials------
     scene->addCamera(cam);//camera essential
-    scene->addSceneObject(backgroundQuad); //add the backGround quad first for it to render last
-    scene->addSceneObject(pivot);//pivot helper essential
-    scene->addSceneObject(mpoint);//mousePoint helper
-    //Physics
-//    scene->addSceneObject(sph);
-//    scene->addSceneObject(bb);
-    //-----------------------------
+    scene->addSceneObject(backgroundQuad); //add the backGround quad first for it to render last // 1
+    scene->addSceneObject(pivot);//pivot helper essential // 2
+    scene->addSceneObject(mpoint);//mousePoint helper // 3
     //temporary
     mpoint.setId(991);//maxextent helper
     mpoint.setColor(QVector4D(9.0,9.0,9.0,1.0));
-    scene->addSceneObject(mpoint);
+    scene->addSceneObject(mpoint); // 4
     mpoint.setId(992);//minextent helper
     mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
-    scene->addSceneObject(mpoint);
-    //---Scene Objects--------
-    scene->addSceneObject(s2);
+    scene->addSceneObject(mpoint); // 5
+    //-------Physics----------
+//   scene->addSceneObject(sph);
+//   scene->addSceneObject(bb);
+    //-----Scene Objects------
+    scene->addSceneObject(s2); // 6
     //------------------------
 }
 //         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -207,7 +206,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-       scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
+        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
@@ -226,7 +225,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-        //scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
+        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
@@ -245,7 +244,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {
         mousePositionL = QVector2D(e->localPos());
-//        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
+        //        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
         //RotateTarget with mouse
         {
             QVector2D mosPosL = mousePressPositionL;

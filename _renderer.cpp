@@ -499,5 +499,8 @@ void _Renderer::setColors()
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
-    this->sceneEntity.getisHitByRay() ? this->sceneEntity.setColor(actualColor * 0.5) : this->sceneEntity.setColor(actualColor);
+    if( this->sceneEntity.getisHitByRay())
+        this->sceneEntity.setColor(actualColor * 0.5);
+    else
+        this->sceneEntity.setColor(actualColor);
 }

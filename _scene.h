@@ -36,7 +36,7 @@ public:
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo
     //
     void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
-    void updatePhysicsForAllObjects();
+    void updateAllPhysicsObjects();
     //
     _SceneEntity findSceneEntity(unsigned int iD);
     _SceneEntity findSceneEntity(std::string tag);
@@ -53,9 +53,8 @@ private:
     int resW,resH;
     //Physics
     std::vector<_Physics> physVector;
-    bool isPhysicsObjectClicked;
-
-
+    bool isPhysicsObjectClicked;//Not in use but needs to set it to click and the rest to unclicked
+    unsigned int pc = 0;//physics object counter
 };
 
 #endif // _SCENE_H
