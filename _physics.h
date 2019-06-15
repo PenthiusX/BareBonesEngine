@@ -68,10 +68,6 @@ public:
     void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s);
 
 private:
-#define NUMDIM	3
-#define RIGHT	0
-#define LEFT	1
-#define MIDDLE	2
 
     std::vector<_Phy_Triangle> triVector,triVectorCopy;
     //
