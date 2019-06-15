@@ -61,36 +61,30 @@ void _Shader::setVertexShader(QString v)
 void _Shader::attachShaders()
 {
     //check for child shaders
-    if(child_shaders.size()!=0)
-    {
+    if(child_shaders.size()!=0){
         //create Shader Program
         this->shaderProgram = glCreateProgram();
 
         //attatch child shaders to program
-        for (auto const& child_shader : child_shaders)
-        {
-            glAttachShader(shaderProgram, child_shader.second);//second specifies value at key in map(dictionary)
-        }
-        glLinkProgram(shaderProgram);
+        for (auto const& child_shader : child_shaders){
+            glAttachShader(shaderProgram, child_shader.second);}//second specifies value at key in map(dictionary)
 
+        glLinkProgram(shaderProgram);
         //check for link error
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-        if(!success)
-        {
+        if(!success){
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;
-        }
+            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;}
         //delete shader
         for (auto const& child_shader : child_shaders)
         {
             glDeleteShader(child_shader.second);
+            glDetachShader(this->shaderProgram,child_shader.second);
         }
     }
-    else//if no child shaders attatched
-    {
+    else{//if no child shaders attatched
         std::cerr << "ERROR::SHADERCLASS::NO_CHILD_SHADERS_ATTATCHED." << std::endl;
-        exit(0);
-    }
+        exit(0);}
 }
 /*
  * Function: attachShaders(QString v,QString f),
@@ -120,6 +114,7 @@ void _Shader::setGeometryShader(QString geoS)
     glAttachShader(this->shaderProgram, geometryShader);
     glLinkProgram(this->shaderProgram);
     glDeleteShader(geometryShader);
+    glDetachShader(this->shaderProgram,geometryShader);
 }
 /*
 * Function: getUniformLocation(char* nameOfUniform)
