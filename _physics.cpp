@@ -213,73 +213,7 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
     else {// This means that there is a line intersection but not a ray intersection.
         return false;}
 }
-/*
- * Created: 5_06_2019
-*/
-bool _Physics::hitBoundingBox(Phy_Box b , glm::vec3 rayOrigin ,glm::vec3 rDirection)
-{
-    double minB[NUMDIM], maxB[NUMDIM];		//box
-    double origin[NUMDIM], dir[NUMDIM];		//ray
-    double coord[NUMDIM];				    //hit point
-    minB[0] = b.min.x; maxB[0] = b.max.x; origin[0] = rayOrigin.x; dir[0] = rDirection.x;
-    minB[1] = b.min.y; maxB[1] = b.max.y; origin[1] = rayOrigin.y; dir[1] = rDirection.y;
-    minB[2] = b.min.z; maxB[2] = b.max.z; origin[2] = rayOrigin.z; dir[2] = rDirection.z;
 
-    char inside = true;
-    char quadrant[NUMDIM];
-    register int i;
-    int whichPlane;
-    double maxT[NUMDIM];
-    double candidatePlane[NUMDIM];
-
-    //  Find candidate planes; this loop can be avoided if
-    //  rays cast all from the eye(assume perpsective view)
-    for (i=0; i<NUMDIM; i++)
-        if(origin[i] < minB[i]){
-            quadrant[i] = LEFT;
-            candidatePlane[i] = minB[i];
-            inside = false;
-        }else if (origin[i] > maxB[i]){
-            quadrant[i] = RIGHT;
-            candidatePlane[i] = maxB[i];
-            inside = false;
-        }else
-            quadrant[i] = MIDDLE;
-
-    //  Ray origin inside bounding box
-    if(inside){
-        coord[0] = origin[0];
-        coord[1] = origin[1];
-        coord[2] = origin[2];
-        return (true);
-    }
-
-    //  Calculate T distances to candidate planes
-    for (i = 0; i < NUMDIM; i++)
-        if (quadrant[i] != MIDDLE && dir[i] !=0.)
-            maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
-        else
-            maxT[i] = -1.;
-
-    //  Get largest of the maxT's for final choice of intersection
-    whichPlane = 0;
-    for (i = 1; i < NUMDIM; i++)
-        if (maxT[whichPlane] < maxT[i])
-            whichPlane = i;
-
-    //  Check final candidate actually inside box
-    if (maxT[whichPlane] < 0.) return (false);
-    for (i = 0; i < NUMDIM; i++)
-        if (whichPlane != i){
-            coord[i] = origin[i] + maxT[whichPlane] *dir[i];
-            if (coord[i] < minB[i] || coord[i] > maxB[i])
-                return (false);
-        } else {
-            coord[i] = candidatePlane[i];
-            qDebug() << coord[i];
-        }
-    return (true);				//ray hits box
-}
 /*
  * Created: 5_06_2019
 */
@@ -358,10 +292,11 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     //Sphere Intersection Test
     if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
         _SceneEntity s = this->sceneEntity;
-        this->sp.center = s.getModelInfo().getCentroid();
-        this->sp.radius = glm::distance(s.getModelInfo().getMaxExtent(), s.getModelInfo().getCentroid()) ;//should be replaced by max extents or user input
+        this->sp.center = glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z());
+        this->sp.radius = glm::distance(glm::vec3(s.getModelInfo().getCentroid()), glm::vec3(s.getModelInfo().getMaxExtent())) ;//should be replaced by max extents or user input
         hitSphere(this->sp.center,this->sp.radius,camPos)?s.setIsHitByRay(true):s.setIsHitByRay(false);
         if(hitSphere(this->sp.center,this->sp.radius,camPos))qDebug() <<"Hit Id-"<<s.getId();
+
         qDebug() << sp.center.x << sp.center.y << sp.center.z << "rad" << sp.radius;
     }
     //Box Intersection Test

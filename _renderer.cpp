@@ -404,14 +404,16 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     setModelDataInBuffers(s.getModelInfo().getVertices(), s.getModelInfo().getIndices());
     setModelMatrix(s.getPostion(), s.getScale(), s.getRotation());
 }
-
-void _Renderer::setSceneEntityInRenderer(_SceneEntity s)
-{
+/*
+ * Created: 1_03_2019
+*/
+void _Renderer::setSceneEntityInRenderer(_SceneEntity s){
     this->sceneEntity = s;
 }
-
-void _Renderer::keepSceneEntityUpdated()
-{
+/*
+ * Created: 2_03_2019
+*/
+void _Renderer::keepSceneEntityUpdated(){
     //Keeps a copy of the current matrix info in the respective sceneEntity
     this->sceneEntity.setTranslationMatrix(this->translationMatrix);
     this->sceneEntity.setRotationmatrix(this->rotationMatrix);
@@ -427,12 +429,13 @@ void _Renderer::keepSceneEntityUpdated()
             tmat4[3][2]));
     //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
-
-//  ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌    ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
-//  ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█    █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
-//  ▐█· ▐█▌▐▀▀▄ ▄█▀▀█ ██▪▐█▐▐▌    █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
-//  ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌    ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
-//  ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪     ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
+/*
+  ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌    ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
+  ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█    █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
+  ▐█· ▐█▌▐▀▀▄ ▄█▀▀█ ██▪▐█▐▐▌    █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
+  ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌    ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
+  ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪     ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
+*/
 /*
  * Function: draw()
  * This is your proprietory draw function
