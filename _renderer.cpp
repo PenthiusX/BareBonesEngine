@@ -220,6 +220,13 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D
     keepSceneEntityUpdated();
 }
 /*
+        ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
+ ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
+  ▄█▀▄ ▐█▐▐▌    ▐▀▀▄ ▐▀▀▪▄▄▀▀▀█▄▐█·▄█▀▀▀•▐▀▀▪▄
+ ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
+  ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
+*/
+/*
 * Function: setProjectionMatrix(int w, int h)
 * takes thew width and height of the window and sets the relative
 * field of view and the aspect ration bindings. will update itself each time the
@@ -235,12 +242,13 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 
     qDebug() << "setProjectionMatrix() on entity" << this->sceneEntity.getTag();
 }
-
-//  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
-//  •██  ▀▄ █·▐█ ▀█ •█▌▐█▐█ ▀. ▐▄▄·▪     ▀▄ █··██ ▐███▪
-//   ▐█.▪▐▀▀▄ ▄█▀▀█ ▐█▐▐▌▄▀▀▀█▄██▪  ▄█▀▄ ▐▀▀▄ ▐█ ▌▐▌▐█·
-//   ▐█▌·▐█•█▌▐█ ▪▐▌██▐█▌▐█▄▪▐███▌.▐█▌.▐▌▐█•█▌██ ██▌▐█▌
-//   ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
+/*
+ ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
+ •██  ▀▄ █·▐█ ▀█ •█▌▐█▐█ ▀. ▐▄▄·▪     ▀▄ █··██ ▐███▪
+  ▐█.▪▐▀▀▄ ▄█▀▀█ ▐█▐▐▌▄▀▀▀█▄██▪  ▄█▀▄ ▐▀▀▄ ▐█ ▌▐▌▐█·
+  ▐█▌·▐█•█▌▐█ ▪▐▌██▐█▌▐█▄▪▐███▌.▐█▌.▐▌▐█•█▌██ ██▌▐█▌
+  ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
+*/
 /*
  * Function: setPosition(QVector3D pos)\translate(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
@@ -378,7 +386,8 @@ void _Renderer::setscale(float scale)
     {
         this->sceneEntity.setScale(scale);//reimplemnt
         scalingMatrix = glm::mat4(1.f);
-        scalingMatrix = glm::scale(scalingMatrix, glm::vec3(this->sceneEntity.getScale(),//scale eqally on all axis(dont need respective sclaing)
+        //scale eqally on all axis(dont need respective sclaing)
+        scalingMatrix = glm::scale(scalingMatrix, glm::vec3(this->sceneEntity.getScale(),
                                                             this->sceneEntity.getScale(),
                                                             this->sceneEntity.getScale()));
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
@@ -397,7 +406,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     actualColor = this->sceneEntity.getColor();
     setShader(s.getVertexShaderPath(), s.getFragmentShaderPath());
     setupTexture(s.getTexturePath());
-    //setModelDataInBuffers() happens for every object,and is sufficent for the usecases
+    //setModelDataInBuffers() happens for every object,and is sufficent for the usecases // !!!Comment for structural change!!!!
     //can be converted to using the same VAO for the same set of vertex+index data.
     //will need to move the whole model loading and id geenration to assetLoader class
     //and only pass the relavant ids to VAO at runtime to reduce ovehead.
@@ -430,11 +439,11 @@ void _Renderer::keepSceneEntityUpdated(){
     //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 /*
-  ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌    ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
-  ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█    █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
-  ▐█· ▐█▌▐▀▀▄ ▄█▀▀█ ██▪▐█▐▐▌    █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
-  ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌    ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
-  ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪     ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
+  ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌
+  ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█
+  ▐█· ▐█▌▐▀▀▄ ▄█▀▀█ ██▪▐█▐▐▌
+  ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌
+  ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪
 */
 /*
  * Function: draw()
