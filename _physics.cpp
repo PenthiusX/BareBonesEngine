@@ -293,7 +293,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
         _SceneEntity s = this->sceneEntity;
         this->sp.center = glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z());
-        this->sp.radius = glm::distance(glm::vec3(s.getModelInfo().getCentroid()), glm::vec3(s.getModelInfo().getMaxExtent())) ;//should be replaced by max extents or user input
+        this->sp.radius = glm::distance(glm::vec3(s.getModelInfo().getCentroid()), glm::vec3(s.getModelInfo().getMaxExtent())) ;
         hitSphere(this->sp.center,this->sp.radius,camPos)?s.setIsHitByRay(true):s.setIsHitByRay(false);
         if(hitSphere(this->sp.center,this->sp.radius,camPos))qDebug() <<"Hit Id-"<<s.getId();
 
@@ -304,7 +304,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         transFormBoxExtents(this->sceneEntity.getTranslationMatrix() * this->sceneEntity.getRotationmatrix() * this->sceneEntity.getScaleingMatrix());
         bx.max = this->sceneEntity.getModelInfo().getMaxExtent();
         bx.min = this->sceneEntity.getModelInfo().getMinExtent();
-//       hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
+//      hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
         hitBoundingBoxF(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
                 if(hitBoundingBoxF(bx,camPos,ray_wor))qDebug() <<"Hit Id-"<<sceneEntity.getId();
 
