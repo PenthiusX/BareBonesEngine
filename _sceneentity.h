@@ -42,8 +42,8 @@ public:
     bool getIsPivotSet();
     QVector3D getPivot() const;
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
-    float getScale() const;
-    void setColor(QVector4D col);
+    float getScale() const;//get the flot value for scale for unifor scaling, can be converted to a vec3 for more explicit scaling on axis
+    void setColor(QVector4D col);//sets the collor value that passes into shder of the objects program instance.
     QVector4D getColor() const;
     //
     void setTranslationMatrix(glm::mat4x4 tmat);

@@ -25,12 +25,16 @@ void _Physics::setSceneEntity(_SceneEntity s)
         triVectorCopy = triVector;
     }
 }
-
+/*
+ *
+*/
 _SceneEntity _Physics::getSceneEntity()
 {
     return this->sceneEntity;
 }
-
+/*
+ *
+*/
 void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigned int> index)
 {
     // this point will not change on translation
