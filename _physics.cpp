@@ -21,7 +21,7 @@ void _Physics::setSceneEntity(_SceneEntity s)
     }
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh)
     {
-        genTriesforCollision(this->sceneEntity.getModelInfo().getVertices(),this->sceneEntity.getModelInfo().getIndices());
+        genTriesforCollision(this->sceneEntity.getModelInfo().getVerticexArray(),this->sceneEntity.getModelInfo().getIndexArray());
         triVectorCopy = triVector;
     }
 }
@@ -276,9 +276,10 @@ void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
 {
     glm::vec4 max = modelMatrix * initialMax;
     glm::vec4 min = modelMatrix * initialMin;
-    _AssetLoader::Model_Info m = this->sceneEntity.getModelInfo();
+    _ModelInfo m = this->sceneEntity.getModelInfo();
     m.setMaxExtents(max);
     m.setMinExtents(min);
+    m.getCentroid();
     this->sceneEntity.setModelInfo(m);
 //    qDebug()<<"max"<< max.x << max.y << max.z ;
 //    qDebug()<<"min"<< min.x << min.y << min.z;

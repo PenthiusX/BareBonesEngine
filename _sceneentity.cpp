@@ -201,10 +201,10 @@ glm::mat4x4 _SceneEntity::getViewMatrix() const{
 /*
  * Created:13_06_2019
 */
-void _SceneEntity::setModelInfo(_AssetLoader::Model_Info minfo){
+void _SceneEntity::setModelInfo(_ModelInfo minfo){
     this->modelInfo = minfo;
 }
-_AssetLoader::Model_Info _SceneEntity::getModelInfo() const{
+_ModelInfo _SceneEntity::getModelInfo() const{
     return this->modelInfo;
 }
 void _SceneEntity::setIsActive(bool isIt){
@@ -246,11 +246,10 @@ bool _SceneEntity::getIsTransformationLocal(){
 /*
  *Created:11_06_2017
 */
-void _SceneEntity::setModelData(_AssetLoader::Model_Info minfo)
+void _SceneEntity::setModelData(_AssetLoader aloader)
 {
-    if(minfo.getVertices().size() > 0 && minfo.getIndices().size() > 0){
-        assetLoader.setModelInfo(minfo);
-        assetLoader.calcMinMaxExtents();
+    if(aloader.getModelInfo().getVerticexArray().size() > 0 && aloader.getModelInfo().getIndexArray().size() > 0){
+        this->assetLoader = aloader;
         this->modelInfo = assetLoader.getModelInfo();
         this->modelInfo.setIsLoaded(true);
         this->isActive = true;
@@ -260,6 +259,21 @@ void _SceneEntity::setModelData(_AssetLoader::Model_Info minfo)
         this->isActive = false;
     }
 }
+
+void _SceneEntity::setModelData(_ModelInfo minfo)
+{
+    if(minfo.getVerticexArray().size() > 0 && minfo.getIndexArray().size() > 0){
+        this->assetLoader.setModelInfo(minfo);
+        this->modelInfo = assetLoader.getModelInfo();
+        this->modelInfo.setIsLoaded(true);
+        this->isActive = true;
+    }
+    else{
+        qInfo() << "model data not sufficent,please check input";
+        this->isActive = false;
+    }
+}
+
 /*
  * Function: setModelData(Qstring path)
  * sets the vertex and index data in one function, for the current object.
@@ -270,7 +284,7 @@ void _SceneEntity::setModelData(_AssetLoader::Model_Info minfo)
 void _SceneEntity::setModelData(QString path)
 {
     this->assetLoader.objLoader(path);
-    if(assetLoader.getAssetVertices().size() > 0 && assetLoader.getAssetIndices().size() > 0){
+    if(this->assetLoader.getModelInfo().getVerticexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
         this->modelInfo = assetLoader.getModelInfo();
         this->modelInfo.setIsLoaded(true);
         this->isActive = true;

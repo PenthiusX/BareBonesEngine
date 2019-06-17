@@ -63,10 +63,12 @@ void _GLWidget::initializeGL()
                                          1, 2, 3 };
 
     //implemented 12_06_2018
-    _AssetLoader::Model_Info quad;
-    quad.setName("quad");
-    quad.setVertexArray(vertsV);
-    quad.setIndexArray(indiceV);
+    _AssetLoader quad;
+    _ModelInfo m;
+    m.setName("quad");
+    m.setVertexArray(vertsV);
+    m.setIndexArray(indiceV);
+    quad.setModelInfo(m);
     //Essential rear background object
     backgroundQuad.setId(777);
     backgroundQuad.setTag("background");
@@ -220,7 +222,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
-        mousePressPositionR = QVector2D(e->localPos());
+      mousePressPositionR = QVector2D(e->localPos());
     }
 }
 
@@ -371,7 +373,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 void _GLWidget::addRandomSceneEntitestoScene()
 {
     for(int i = 0 ; i < 1 ; i++)
-    {//makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
+    {   //makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
         //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
         makeCurrent();
         onPress = new _SceneEntity();
@@ -395,7 +397,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
 */
 void _GLWidget::removeSceneEntityFromScene()
 {
-    //    scene->removeSceneObject(s1);
+//    scene->removeSceneObject(s1);
     if(scene->getSceneObjects().size() > 3)
         scene->removeSceneObject(scene->getSceneObjects().size()-1);
 }

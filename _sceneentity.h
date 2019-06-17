@@ -60,10 +60,11 @@ public:
     void setViewMatrix(glm::mat4x4 view);
     glm::mat4x4 getViewMatrix()const;
     //
-    void setModelInfo(_AssetLoader::Model_Info minfo);
-    _AssetLoader::Model_Info getModelInfo()const;
+    void setModelInfo(_ModelInfo minfo);
+    _ModelInfo getModelInfo()const;
     //
-    void setModelData(_AssetLoader::Model_Info minfo);//set the modelInfo object in sceneEntity
+    void setModelData(_AssetLoader aloader);//set the modelInfo object in sceneEntity
+    void setModelData(_ModelInfo minfo);//set the modelInfo object in sceneEntity
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setTexturePath(QString texPath);
@@ -133,7 +134,7 @@ private:
     glm::mat4x4 ViewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
-    _AssetLoader::Model_Info modelInfo;
+    _ModelInfo modelInfo;
     //
     _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
 };

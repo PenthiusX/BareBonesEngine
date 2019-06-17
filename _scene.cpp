@@ -262,10 +262,10 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
         renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
     }
     //---------------------Helpers-------------------
-    //helper for mouseIntersection point
+//  Helper for mouseIntersection point
     glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
     renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
-//    //Helpers for Max min extents
+//  Temporary Helpers for Max min extents
     glm::vec3 mx = physVector[pc].getSceneEntity().getModelInfo().getMaxExtent();
     glm::vec3 mn = physVector[pc].getSceneEntity().getModelInfo().getMinExtent();
     glm::vec3 cntrd = physVector[pc].getSceneEntity().getModelInfo().getCentroid();
