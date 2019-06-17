@@ -41,7 +41,6 @@ public:
     _SceneEntity findSceneEntity(unsigned int iD);
     _SceneEntity findSceneEntity(std::string tag);
 
-
 private:
     std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> renderObjects;

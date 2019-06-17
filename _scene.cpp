@@ -118,7 +118,7 @@ void _Scene::updateCamera(_Camera c){
 }
 /*
  * Created: 3_05_2019
- */
+*/
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     if(m == Qt::RightButton)
         this->mousePositionR = mousePos;
@@ -228,7 +228,7 @@ void _Scene::render()
 */
 /*
  * Function: updatePhysicsForAllObjects()
- * update the physcs variables realtime or on MouseClick as currently
+ * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
  * Created: 22_05_2019
  */
@@ -264,18 +264,19 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
     //---------------------Helpers-------------------
     //helper for mouseIntersection point
     glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
-    //    renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
+    renderObjects[3]->setPosition(QVector3D(p.x,p.y,p.z));
     //Helpers for Max min extents
     glm::vec3 mx = physVector[pc].getSceneEntity().getModelInfo().getMaxExtent();
     glm::vec3 mn = physVector[pc].getSceneEntity().getModelInfo().getMinExtent();
     glm::vec3 cntrd = physVector[pc].getSceneEntity().getModelInfo().getCentroid();
-    renderObjects[3]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
-    renderObjects[4]->setPosition(QVector3D(mx.x,mx.y,mx.z));
-    renderObjects[5]->setPosition(QVector3D(mn.x,mn.y,mn.z));
+    renderObjects[4]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
+    renderObjects[5]->setPosition(QVector3D(mx.x,mx.y,mx.z));
+    renderObjects[6]->setPosition(QVector3D(mn.x,mn.y,mn.z));
     //-----------------------------------------------
     pc++;
     if(pc >= physVector.size())
         pc = 0;
 }
+
 
 
