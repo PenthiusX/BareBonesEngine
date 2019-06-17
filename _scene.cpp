@@ -254,18 +254,18 @@ void _Scene::updateAllPhysicsObjects()
 
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
-    if(physVector[pc].getSceneEntity().getPhysicsObjectType() == renderObjects[index]->getSceneEntity().getPhysicsObjectType()){
-        //updates the physics object instance and runs the main physics updateOperations.
-        qDebug() << index << pc;
-        physVector[pc].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity()); //Takes in essentails and the relevant sceneEntity updated object.
-        //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
-        renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
-    }
+    //updates the physics object instance and runs the main physics updateOperations.
+//    qDebug() << index << pc;
+    physVector[pc].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity()); //Takes in essentails and the relevant sceneEntity updated object.
+    //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
+    renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
     //---------------------Helpers-------------------
-//  Helper for mouseIntersection point
-    glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
-    renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
-//  Temporary Helpers for Max min extents
+    //  Helper for mouseIntersection point
+    if(physVector[pc].getSceneEntity().getisHitByRay()){
+        glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
+        renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
+    }
+    //  Temporary Helpers for Max min extents
     glm::vec3 mx = physVector[pc].getSceneEntity().getModelInfo().getMaxExtent();
     glm::vec3 mn = physVector[pc].getSceneEntity().getModelInfo().getMinExtent();
     glm::vec3 cntrd = physVector[pc].getSceneEntity().getModelInfo().getCentroid();

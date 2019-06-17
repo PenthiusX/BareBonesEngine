@@ -114,7 +114,7 @@ void _GLWidget::initializeGL()
     s2.setPhysicsObject(_SceneEntity::Mesh);
     s2.setIsTransformationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
-//  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
+    //  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s2.setColor(QVector4D(0.0,0.0,0.5,0.9));
     s2.setScale(1.0f);
@@ -144,8 +144,8 @@ void _GLWidget::initializeGL()
     mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
     scene->addSceneObject(mpoint); // 5
     //-------Physics----------
-//   scene->addSceneObject(sph);
-//   scene->addSceneObject(bb);
+    //   scene->addSceneObject(sph);
+    //   scene->addSceneObject(bb);
     //-----Scene Objects------
     scene->addSceneObject(s2); // 6
     //------------------------
@@ -214,18 +214,17 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     //convert global cursor pos to localWidgetPositions
     //needed for widgetfocus free mousePosition updates
     globalMPoint = this->mapFromGlobal(QCursor::pos());
-
-    if(e->buttons() == Qt::LeftButton)
-    {//get mouse position only on left button click
-      mousePressPositionL = QVector2D(e->localPos());
-      scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);
+    if(e->buttons() == Qt::LeftButton){
+        //get mouse position only on left button click
+        mousePressPositionL = QVector2D(e->localPos());
+        //sets the left button click on for picking in the scene for use in physics
+        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);
     }
-    if(e->buttons() == Qt::RightButton)
-    {//get mouse position only on left button click
-      mousePressPositionR = QVector2D(e->localPos());
+    if(e->buttons() == Qt::RightButton){
+        //get mouse position only on left button click
+        mousePressPositionR = QVector2D(e->localPos());
     }
 }
-
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
 * This is a overriden function from the QWidget parent
@@ -354,7 +353,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     }
     if (event->text() == "c" || event->text() == "C"){
         this->isCamFocus = !isCamFocus;
-//        applyStuffToallEntites(!isCamFocus);
+        //        applyStuffToallEntites(!isCamFocus);
     }
     if (event->text() == "p" || event->text() == "P")
         addRandomSceneEntitestoScene();
@@ -397,7 +396,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
 */
 void _GLWidget::removeSceneEntityFromScene()
 {
-//    scene->removeSceneObject(s1);
+    //    scene->removeSceneObject(s1);
     if(scene->getSceneObjects().size() > 3)
         scene->removeSceneObject(scene->getSceneObjects().size()-1);
 }
