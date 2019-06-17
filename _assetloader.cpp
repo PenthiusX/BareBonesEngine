@@ -8,70 +8,6 @@
 #include <QXmlStreamReader>
 
 #include "_tools.h"
-
-/*
-• ▌ ▄ ·.       ·▄▄▄▄  ▄▄▄ .▄▄▌  ▪   ▐ ▄ ·▄▄▄          ·▄▄▄▄• ▄▌ ▐ ▄  ▄▄· ▄▄▄▄▄▪         ▐ ▄ .▄▄ ·
-·██ ▐███▪▪     ██▪ ██ ▀▄.▀·██•  ██ •█▌▐█▐▄▄·▪         ▐▄▄·█▪██▌•█▌▐█▐█ ▌▪•██  ██ ▪     •█▌▐█▐█ ▀.
-▐█ ▌▐▌▐█· ▄█▀▄ ▐█· ▐█▌▐▀▀▪▄██▪  ▐█·▐█▐▐▌██▪  ▄█▀▄     ██▪ █▌▐█▌▐█▐▐▌██ ▄▄ ▐█.▪▐█· ▄█▀▄ ▐█▐▐▌▄▀▀▀█▄
-██ ██▌▐█▌▐█▌.▐▌██. ██ ▐█▄▄▌▐█▌▐▌▐█▌██▐█▌██▌.▐█▌.▐▌    ██▌.▐█▄█▌██▐█▌▐███▌ ▐█▌·▐█▌▐█▌.▐▌██▐█▌▐█▄▪▐█
-▀▀  █▪▀▀▀ ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ .▀▀▀ ▀▀▀▀▀ █▪▀▀▀  ▀█▄▀▪    ▀▀▀  ▀▀▀ ▀▀ █▪·▀▀▀  ▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪ ▀▀▀▀
-*/
-void _AssetLoader::Model_Info::setName(QString name){
-    this->name = name;
-}
-void _AssetLoader::Model_Info::setPath(QString path){
-    this->path = path;
-}
-void _AssetLoader::Model_Info::setIsLoaded(bool isLoaded){
-    this->isLoaded = isLoaded;
-}
-void _AssetLoader::Model_Info::setVertexArray(std::vector<float> vertexArray){
-    this->vertexArray = vertexArray;
-}
-void _AssetLoader::Model_Info::setIndexArray(std::vector<unsigned int> indexAarray){
-    this->indexAarray = indexAarray;
-}
-void _AssetLoader::Model_Info::setCentroid(glm::vec4 cent){
-    this->centroid = cent;
-}
-void _AssetLoader::Model_Info::setMaxExtents(glm::vec4 max){
-    this->max = max;
-}
-void _AssetLoader::Model_Info::setMinExtents(glm::vec4 min){
-    this->min = min;
-}
-QString _AssetLoader::Model_Info::getName() const{
-    return this->name;
-}
-QString _AssetLoader::Model_Info::getPath() const{
-    return this->path;
-}
-std::vector<float> _AssetLoader::Model_Info::getVertices() const{
-    return this->vertexArray;
-}
-std::vector<unsigned int> _AssetLoader::Model_Info::getIndices() const{
-    return this->indexAarray;
-}
-glm::vec4 _AssetLoader::Model_Info::getMaxExtent() const{
-    return this->max;
-}
-glm::vec4 _AssetLoader::Model_Info::getMinExtent() const{
-    return this->min;
-}
-glm::vec4 _AssetLoader::Model_Info::getCentroid() const{
-    return this->centroid;
-}
-bool _AssetLoader::Model_Info::getIsLoaded() const {
-    return this->isLoaded;
-}
-
-/*
- ▄▄▄· .▄▄ · .▄▄ · ▄▄▄ .▄▄▄▄▄▄▄▌         ▄▄▄· ·▄▄▄▄  ▄▄▄ .▄▄▄      ·▄▄▄▄• ▄▌ ▐ ▄  ▄▄· ▄▄▄▄▄▪         ▐ ▄ .▄▄ ·
-▐█ ▀█ ▐█ ▀. ▐█ ▀. ▀▄.▀·•██  ██•  ▪     ▐█ ▀█ ██▪ ██ ▀▄.▀·▀▄ █·    ▐▄▄·█▪██▌•█▌▐█▐█ ▌▪•██  ██ ▪     •█▌▐█▐█ ▀.
-▄█▀▀█ ▄▀▀▀█▄▄▀▀▀█▄▐▀▀▪▄ ▐█.▪██▪   ▄█▀▄ ▄█▀▀█ ▐█· ▐█▌▐▀▀▪▄▐▀▀▄     ██▪ █▌▐█▌▐█▐▐▌██ ▄▄ ▐█.▪▐█· ▄█▀▄ ▐█▐▐▌▄▀▀▀█▄
-▐█ ▪▐▌▐█▄▪▐█▐█▄▪▐█▐█▄▄▌ ▐█▌·▐█▌▐▌▐█▌.▐▌▐█ ▪▐▌██. ██ ▐█▄▄▌▐█•█▌    ██▌.▐█▄█▌██▐█▌▐███▌ ▐█▌·▐█▌▐█▌.▐▌██▐█▌▐█▄▪▐█
- ▀  ▀  ▀▀▀▀  ▀▀▀▀  ▀▀▀  ▀▀▀ .▀▀▀  ▀█▄▀▪ ▀  ▀ ▀▀▀▀▀•  ▀▀▀ .▀  ▀    ▀▀▀  ▀▀▀ ▀▀ █▪·▀▀▀  ▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪ ▀▀▀▀
-*/
 /*
 * Constructor/Distructor:
 * Created:15_03_2019
@@ -90,29 +26,12 @@ _AssetLoader::_AssetLoader()
 }
 _AssetLoader::~_AssetLoader(){}
 
-void _AssetLoader::setModelInfo(_AssetLoader::Model_Info minfo){
+void _AssetLoader::setModelInfo(_ModelInfo minfo){
     this->modelInfo = minfo;
+    calcMinMaxExtents();
 }
-_AssetLoader::Model_Info _AssetLoader::getModelInfo(){
+_ModelInfo _AssetLoader::getModelInfo(){
     return this->modelInfo;
-}
-/*
-* Function:getAssetVertices()
-* returns the vertices array for the model obeject
-* form the model object loader
-* Created:15_03_2019
-*/
-std::vector<float> _AssetLoader::getAssetVertices(){
-    return this->vertices;
-}
-/*
-* Function:getAssetIndices()
-* returns the indices array which gets 
-* filled in the objloader.
-* Created:15_03_2019
-*/
-std::vector<unsigned int> _AssetLoader::getAssetIndices(){
-    return this->indices;
 }
 /*
 * Function:objLoader(QString pathToFile)
@@ -215,7 +134,7 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 */
 void _AssetLoader::calcMinMaxExtents()
 {
-    std::vector<float> v = this->modelInfo.getVertices();
+    std::vector<float> v = this->modelInfo.getVerticexArray();
     for(unsigned int i = 0 ; i < v.size() ; i += 3)
     {
         if(v[i] >= this->vertMax.x)
