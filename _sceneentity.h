@@ -126,12 +126,12 @@ private:
     bool isLineMode;
     bool isTransformationAllowed;
     //
-    glm::mat4x4 TranslationMatrix;
-    glm::mat4x4 RotationMatrix;
-    glm::mat4x4 ScaleMatirx;
-    glm::mat4x4 ModelMatrix;
-    glm::mat4x4 ProjectionMatrix;
-    glm::mat4x4 ViewMatrix;
+    glm::mat4x4 translationMatrix;
+    glm::mat4x4 rotationMatrix;
+    glm::mat4x4 scaleMatirx;
+    glm::mat4x4 modelMatrix;
+    glm::mat4x4 projectionMatrix;
+    glm::mat4x4 viewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
     _ModelInfo modelInfo;

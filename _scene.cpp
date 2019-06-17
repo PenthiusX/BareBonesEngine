@@ -45,7 +45,7 @@ void _Scene::addSceneObject(_SceneEntity s)
         if (isCamera){
             r = new _Renderer();
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-            r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+            r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             _SceneEntity s =  r->getSceneEntity();
             s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
@@ -61,7 +61,7 @@ void _Scene::addSceneObject(_SceneEntity s)
         else if(!isCamera){//use default values for camera if no camera set.
             r = new _Renderer();
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
-            r->setProjectionMatrix(this->resW,this->resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+            r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
             _SceneEntity s =  r->getSceneEntity();
             s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
@@ -92,7 +92,7 @@ void _Scene::addSceneObject(_SceneEntity s)
  * Created:26_02_2019
 */
 std::vector<_Renderer*> _Scene::getSceneObjects(){
-    return this->renderObjects;
+    return renderObjects;
 }
 /*
  * Function: addCamera(_Camera c)
@@ -121,9 +121,9 @@ void _Scene::updateCamera(_Camera c){
 */
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     if(m == Qt::RightButton)
-        this->mousePositionR = mousePos;
+        mousePositionR = mousePos;
     else if(m == Qt::LeftButton)
-        this->mousePositionL = mousePos;
+        mousePositionL = mousePos;
     isPhysicsObjectClicked = true;
 
     //sets Physics only on Click
@@ -133,7 +133,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
  * Created: 10_06_2019
  */
 _SceneEntity _Scene::findSceneEntity(unsigned int iD){
-    for(int f = 0 ; f < this->renderObjects.size() ; f++)
+    for(int f = 0 ; f < renderObjects.size() ; f++)
         if(renderObjects[f]->getSceneEntity().getId() == iD)
             return renderObjects[f]->getSceneEntity();
 
@@ -141,7 +141,7 @@ _SceneEntity _Scene::findSceneEntity(unsigned int iD){
     return empty;
 }
 _SceneEntity _Scene::findSceneEntity(std::string tag){
-    for(int f = 0 ; f < this->renderObjects.size() ; f++)
+    for(int f = 0 ; f < renderObjects.size() ; f++)
         if(renderObjects[f]->getSceneEntity().getTag() == tag.c_str())
             return renderObjects[f]->getSceneEntity();
 
@@ -175,8 +175,8 @@ void _Scene::removeSceneObject(_SceneEntity s){
  * Created:26_02_2019
 */
 void _Scene::onResize(int w,int h){
-    this->resW = w;
-    this->resH = h;
+    resW = w;
+    resH = h;
     for (unsigned int i = 0; i < renderObjects.size(); i++)
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     //FBO init and updateTexture on Resize
@@ -215,7 +215,7 @@ void _Scene::render()
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below
-    fboObject->setMousePos(this->mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
+    fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
     fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 
@@ -240,22 +240,21 @@ void _Scene::updateAllPhysicsObjects()
         //update Physics for all the sceneObject with property enabled
         if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
         {   //Passing some essentials into the updateLoop for physics
-            updatePhysics(glm::vec2(this->mousePositionL.x(),//Mouse position
-                                    this->mousePositionL.y()),
+            updatePhysics(glm::vec2(mousePositionL.x(),//Mouse position
+                                    mousePositionL.y()),
                           glm::vec3(cam.getEyePosition().x(),//Camera Position
                                     cam.getEyePosition().y(),
                                     cam.getEyePosition().z()),
-                          glm::vec2(this->resW,this->resH),//Current Resolution
+                          glm::vec2(resW,resH),//Current Resolution
                           renderObjects[i]->getSceneEntity(),//Selected sceneEntity
                           i);//Selected Index for current sceneEntity
         }
     }
 }
-
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
     //updates the physics object instance and runs the main physics updateOperations.
-//    qDebug() << index << pc;
+    //    qDebug() << index << pc;
     physVector[pc].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity()); //Takes in essentails and the relevant sceneEntity updated object.
     //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
     renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
