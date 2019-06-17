@@ -50,7 +50,7 @@ void _StageCaliberationSection::init()
     {
         //set the defaults here (min/max)
 
-        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(markStageEdge(char* ,unsigned int,unsigned int))));
+        QMetaObject::invokeMethod(processing, "setActiveProcess", Qt::QueuedConnection,Q_ARG(const char*,SLOT(markStageEdgeCV(char* ,unsigned int,unsigned int))));
 
 
         if(dynamic_cast<QStackedWidget*>(parentWidget()))

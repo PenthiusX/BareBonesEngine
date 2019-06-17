@@ -46,6 +46,7 @@ public slots:
     void generateVoxelsModelCV(char *img, unsigned int iwidth, unsigned int iheight, int rotation_step, glm::vec2 stage_center);
 
     void passThroughFrameLocal(char *img, unsigned int iwidth, unsigned int iheight);
+    void markStageEdgeCV(char *img, unsigned int iwidth, unsigned int iheight);
 protected:
 
     QOpenGLContext *context = nullptr;

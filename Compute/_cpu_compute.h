@@ -8,6 +8,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
+#include <iostream>
 #include <QImage>
 
 class _Cpu_Compute : public QObject
@@ -23,6 +24,7 @@ public:
     void showImageInterval(cv::Mat img, int interval=10);
     void computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, cv::Mat &texture_model_wrap, int rotation_step, glm::vec2 stage_center);
     void computeRowWiseLeftEdge(cv::Mat &input_img, cv::Mat &output_img);
+    glm::vec3 compute_stage_angle(cv::Mat &input_img, cv::Mat &output_img);
 signals:
     void imageOut(QImage img);
 protected:

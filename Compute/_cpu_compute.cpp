@@ -63,11 +63,11 @@ void _Cpu_Compute::showImageInterval(cv::Mat img,int interval)
         cv::waitKey(interval);
 }
 
-void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, cv::Mat &texture_out_8_bit, int rotation_step, glm::vec2 stage_center)
+void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, cv::Mat &texture_model_wrap, int rotation_step, glm::vec2 stage_center)
 {
     static std::vector<cv::Mat> texture_cyl_voxels(100, cv::Mat(input_img.cols,input_img.rows, CV_8UC1));
     static bool init = true;
-    cv::Mat texture_thres,texture_edge(input_img.rows,input_img.cols,CV_32F);
+    cv::Mat texture_thres,texture_edge(input_img.rows,2,CV_32S),texture_model_wrap_8_bit;
 
     if(init)
     {
@@ -80,18 +80,25 @@ void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, c
 
     threshold(input_img, texture_thres, 100, 255,cv::THRESH_BINARY_INV );
 
+    texture_thres.colRange(rotation_step,rotation_step+1) = 200;//texture_edge.colRange(0,1);
+
     cvtColor(texture_thres, output_img, cv::COLOR_GRAY2RGBA);
 
     computeRowWiseLeftEdge(texture_thres,texture_edge);
-    showImageInterval(texture_edge);
+
+    texture_model_wrap.colRange(rotation_step,rotation_step+1) = 200;//texture_edge.colRange(0,1);
+    //texture_model_wrap.colRange(((rotation_step+100)%200),((rotation_step+100)%200)+1) = 100;//texture_edge.colRange(1,2);
+
+    texture_model_wrap.convertTo(texture_model_wrap_8_bit,CV_8UC1);
+    showImageInterval(texture_model_wrap_8_bit);
     //qDebug() <<"type" << texture_edge.type() << texture_thres.type() << input_img.type();
 
     //showImageInterval(texture_in);
-
 }
 
 void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img)
 {
+    //size of output image should be [height , 2]
     cv::Mat kernal = cv::Mat(1,2,CV_32F),input_img_signed,diff_img;
     kernal.at<float>(0,0)=-1.0;
     kernal.at<float>(0,1)=1.0;
@@ -105,19 +112,71 @@ void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img
     delta = 0;
     ddepth = -1;
     filter2D(input_img_signed, diff_img, ddepth , kernal, anchor, delta, cv::BORDER_DEFAULT );
-    cv::Mat edge(input_img.rows,2,CV_32S),img_row;
+    cv::Mat img_row;
 
     cv::Point min_loc, max_loc;
     double min,max;
     for (int i=0;i<input_img.rows;i++) {
         img_row = diff_img.rowRange(i, i + 1);
         cv::minMaxLoc(img_row, &min, &max, &min_loc, &max_loc);
-        edge.at<int>(i,0) = int(max_loc.x);
-        edge.at<int>(i,1) = int(min_loc.x);
-        output_img.at<float>(i,max_loc.x) = 256;
-        output_img.at<float>(i,min_loc.x) = 256;
+        output_img.at<int>(i,0) = int(max_loc.x);
+        output_img.at<int>(i,1) = int(min_loc.x);
     }
 }
+
+/* Function : compute_stage_angle(cv::Mat& input_img,cv::Mat& output_img)
+ *
+ * this function calculates stage angle and center point of stage and returns it in a vec3 format :
+ * glm::vec3(center_x,center_y,theta);
+ * created : 17/06/2019
+ *
+*/
+glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_img)
+{
+    //create temp images for operations
+    cv::Mat edge,masked_edge,mask=cv::Mat::zeros(input_img.rows,input_img.cols,CV_8UC1);
+
+    //find canny edge
+    cv::Canny(input_img, edge, 50, 200, 3);
+
+    //mask to remove anomalies at boundries
+    mask(cv::Rect(16,16,input_img.cols-32,input_img.rows-32)) = 255;
+    cv::bitwise_and(edge, edge, masked_edge, mask);
+
+    showImageInterval(masked_edge);
+
+    //show masked_edge image as output
+    cvtColor(masked_edge, output_img, cv::COLOR_GRAY2RGBA);
+
+    std::vector<cv::Vec4i> lines;
+    std::vector<glm::vec3> line_center_and_angle;
+
+    HoughLinesP(masked_edge, lines, 1, CV_PI/180, 20, 30, 10 );
+    for( size_t i = 0; i < lines.size(); i++ )
+    {
+      cv::Vec4i l = lines[i];
+      cv::line( output_img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255,255), 1, cv::LINE_AA);
+    }
+
+
+
+//    std::vector<LineEquation> equations = computeHoughLines(texture_edge,texture_hough_space);
+
+//    std::vector<LineEquationMC> eqns;
+
+//    for (auto eq:equations) {
+//        eqns.push_back(convertLineEquationPolarToMc(eq));
+//    }
+
+//    float center_x = (((eqns[0].c-eqns[1].c)/(eqns[1].m-eqns[0].m))+((eqns[2].c-eqns[1].c)/(eqns[1].m-eqns[2].m)))/2.0;
+
+//    float center_y = (eqns[0].m*center_x)+eqns[0].c;
+
+//    return glm::vec3(center_x,center_y,equations[0].theta);
+
+    return glm::vec3(1.0,1.0,1.0);
+}
+
 
 char *_Cpu_Compute::frameGray2RGB(char *img, unsigned int iwidth, unsigned int iheight)
 {

@@ -329,6 +329,45 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
 
 }
 
+void _Processing::markStageEdgeCV(char *img, unsigned int iwidth, unsigned int iheight)
+{
+    static bool init = true;
+
+    //initialise empty textures for processing
+    static cv::Mat texture_in;
+    //static _Texture texture_thres(nullptr,iwidth,iheight);
+    static cv::Mat texture_edge,texture_out;
+
+    if(init)
+    {
+    //load texture
+//    texture_in.load(GL_RED,GL_UNSIGNED_BYTE);
+//    //texture_thres.load(GL_RED,GL_UNSIGNED_BYTE);
+//    texture_edge.load(GL_RED,GL_UNSIGNED_BYTE);
+//    texture_out.load(GL_RGBA,GL_UNSIGNED_BYTE);
+
+    //texture.unbind();
+    init = false;
+    }
+    //Do the Processing
+
+    //send the image to gpu texture
+    texture_in = cv::Mat(iheight, iwidth, CV_8UC1, img);
+
+    glm::vec3 angle_x_y = cpu_compute->compute_stage_angle(texture_in,texture_out);
+    //gpu_compute->compute_copy_red_to_rgba(texture_edge,texture_out);
+    //gpu_compute->compute_mark_column_index(texture_outt,texture_out);
+    //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);
+
+    //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+
+    //get image from gpu texture
+    //send signal to update display texture
+
+    emit outputImage((char*)texture_out.data,iwidth,iheight);
+    emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
+}
+
 void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step,glm::vec2 stage_center)
 {
     static bool init = true;
@@ -449,7 +488,7 @@ void _Processing::generateVoxelsModelCV(char *img, unsigned int iwidth, unsigned
     static bool init = true;
 
     //initialise empty textures for processing
-    static cv::Mat texture_model_wrap(iheight,200,CV_32S,100);
+    static cv::Mat texture_model_wrap(iheight,200,CV_32S,400);
     static cv::Mat texture_in;
     static cv::Mat texture_out;
 
@@ -459,7 +498,6 @@ void _Processing::generateVoxelsModelCV(char *img, unsigned int iwidth, unsigned
 
     //send the image to gpu texture
     texture_in = cv::Mat(iheight, iwidth, CV_8UC1, img);
-
 
     cpu_compute->computeVoxelsModel(texture_in,texture_out,texture_model_wrap,rotation_step,stage_center);
 
