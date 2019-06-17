@@ -55,8 +55,8 @@ void _FrameBuffer::setupQuad()
 */
 void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
 {
-    this->resH = resHeight;
-    this->resW = resWidth;
+    resH = resHeight;
+    resW = resWidth;
 
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -99,7 +99,7 @@ void _FrameBuffer::initialise()
     qDebug() << "Frambuffer initailised";
     setupQuad();
     qDebug() << "Quad setup complete";
-    this->mousePosUniform = fboShader->getUniformLocation("iMouse");
+    mousePosUniform = fboShader->getUniformLocation("iMouse");
     qDebug() << "mousePosUniform->" << mousePosUniform << "FBO";
 }
 
@@ -130,7 +130,7 @@ void _FrameBuffer::renderFrameOnQuad()
     glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
 
-    glBindTexture(GL_TEXTURE_2D,this->textureColorbuffer);//bind the texture created above
+    glBindTexture(GL_TEXTURE_2D,textureColorbuffer);//bind the texture created above
     fboShader->useShaderProgram();//pass the texture to this fboShader
 
     glBindVertexArray(quadVAO);//bind VAO for quad
@@ -155,8 +155,8 @@ void _FrameBuffer::setMousePos(QVector2D mPos)
 {
     //mouse y coordinate values are inverse of the the screen coordinate values
     //aligning it here the same way the resolution Height values(from gl_FragCoords) are aligned in the FBOshader.
-    unsigned int alignedMouseheight = this->resH - (unsigned int)mPos.y();
-    this->mousePos.setX(mPos.x());
+    unsigned int alignedMouseheight = resH - (unsigned int)mPos.y();
+    mousePos.setX(mPos.x());
     //this allignment is needed for it to be represented acurately in the shade.
-    this->mousePos.setY(alignedMouseheight);
+    mousePos.setY(alignedMouseheight);
 }

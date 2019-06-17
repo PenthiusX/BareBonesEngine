@@ -16,11 +16,11 @@
 */
 _Camera::_Camera(){
     //default values
-    this->upVector = QVector3D(0.0, 1.0, 0.0);
-    this->eyePosition = QVector3D(0.0, 0.0, 10.0);
-    this->focalPoint = QVector3D(0.0, 0.0, 0.0);
-    this->nearClipDistance = 0.1;
-    this->farClipDistance = 50.0;
+    upVector = QVector3D(0.0, 1.0, 0.0);
+    eyePosition = QVector3D(0.0, 0.0, 10.0);
+    focalPoint = QVector3D(0.0, 0.0, 0.0);
+    nearClipDistance = 0.1;
+    farClipDistance = 50.0;
 }
 _Camera::~_Camera(){
 
@@ -34,11 +34,11 @@ _Camera::~_Camera(){
 */
 void _Camera::setEyePosition(QVector3D epos)
 {
-    this->eyePosition = epos;
+    eyePosition = epos;
 }
 QVector3D _Camera::getEyePosition() const
 {
-    return this->eyePosition;
+    return eyePosition;
 }
 /*
 * Function: set/get FocalPoint()
@@ -47,11 +47,11 @@ QVector3D _Camera::getEyePosition() const
 */
 void _Camera::setFocalPoint(QVector3D focalPos)
 {
-    this->focalPoint = focalPos;
+    focalPoint = focalPos;
 }
 QVector3D _Camera::getFocalPoint() const
 {
-    return this->focalPoint;
+    return focalPoint;
 }
 /*
 * Function: set/get UpVector()
@@ -61,11 +61,11 @@ QVector3D _Camera::getFocalPoint() const
 */
 void _Camera::setUpVector(QVector3D upVec)
 {
-    this->upVector = upVec;
+    upVector = upVec;
 }
 QVector3D _Camera::getUpVector() const
 {
-    return this->upVector;
+    return upVector;
 }
 
 /*
@@ -76,27 +76,27 @@ QVector3D _Camera::getUpVector() const
 */
 void _Camera::setFOV(unsigned int fove)
 {
-    this->fov = fove;
+    fov = fove;
 }
 unsigned int _Camera::getFOV() const
 {
-    return this->fov;
+    return fov;
 }
 
 void _Camera::setFarClipDistance(float fclp)
 {
-    this->farClipDistance = fclp;
+    farClipDistance = fclp;
 }
 void _Camera::setNearClipDistance(float nclp)
 {
-    this->nearClipDistance = nclp;
+    nearClipDistance = nclp;
 }
 
 float _Camera::getNearClipDistance() const
 {
-    return this->nearClipDistance;
+    return nearClipDistance;
 }
 float _Camera::getFarClipDistance() const
 {
-    return this->farClipDistance;
+    return farClipDistance;
 }

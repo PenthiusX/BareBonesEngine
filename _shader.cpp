@@ -27,7 +27,7 @@ _Shader::~_Shader(){}
 */
 uint _Shader::getShaderProgram()
 {
-    return this->shaderProgram;
+    return shaderProgram;
 }
 /*
  * Function: setFragmentShader(QString f) copiles and,
@@ -63,7 +63,7 @@ void _Shader::attachShaders()
     //check for child shaders
     if(child_shaders.size()!=0){
         //create Shader Program
-        this->shaderProgram = glCreateProgram();
+        shaderProgram = glCreateProgram();
 
         //attatch child shaders to program
         for (auto const& child_shader : child_shaders){
@@ -79,7 +79,7 @@ void _Shader::attachShaders()
         for (auto const& child_shader : child_shaders)
         {
             glDeleteShader(child_shader.second);
-            glDetachShader(this->shaderProgram,child_shader.second);
+            glDetachShader(shaderProgram,child_shader.second);
         }
     }
     else{//if no child shaders attatched
@@ -111,10 +111,10 @@ void _Shader::setGeometryShader(QString geoS)
     auto geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
     glShaderSource(geometryShader, 1, &shader_src, nullptr);
     glCompileShader(geometryShader);
-    glAttachShader(this->shaderProgram, geometryShader);
-    glLinkProgram(this->shaderProgram);
+    glAttachShader(shaderProgram, geometryShader);
+    glLinkProgram(shaderProgram);
     glDeleteShader(geometryShader);
-    glDetachShader(this->shaderProgram,geometryShader);
+    glDetachShader(shaderProgram,geometryShader);
 }
 /*
 * Function: getUniformLocation(char* nameOfUniform)
@@ -125,7 +125,7 @@ void _Shader::setGeometryShader(QString geoS)
 */
 GLint _Shader::getUniformLocation(const char* nameOfUniform)
 {
-    return  glGetUniformLocation(this->shaderProgram, nameOfUniform);
+    return  glGetUniformLocation(shaderProgram, nameOfUniform);
 }
 /*
  *
@@ -157,7 +157,7 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ
  */
 void _Shader::useShaderProgram()
 {
-    glUseProgram(this->shaderProgram);
+    glUseProgram(shaderProgram);
 }
 /*
  * Function: compileShader()

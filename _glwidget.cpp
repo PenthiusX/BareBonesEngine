@@ -19,10 +19,9 @@
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     idmatch = 0;
-    this->isCamFocus = false;
+    isCamFocus = false;
     //  keeps the event callbacks working for the GL widget
     this->setFocusPolicy(Qt::StrongFocus);
-    this->setFocusPolicy(Qt::ClickFocus);
 }
 _GLWidget::~_GLWidget()
 {
@@ -111,7 +110,7 @@ void _GLWidget::initializeGL()
     //-----------------------------------
     s2.setId(3);
     s2.setTag("clickSurface");
-    s2.setPhysicsObject(_SceneEntity::Mesh);
+    s2.setPhysicsObject(_SceneEntity::Box);
     s2.setIsTransformationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     //  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
@@ -270,7 +269,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     if(e->buttons() == Qt::RightButton)
     {
         mousePositionR = QVector2D(e->localPos());
-        scene->setMousePositionInScene(this->mousePositionR,Qt::RightButton);//sets the mouse position in the scene for use
+        scene->setMousePositionInScene(mousePositionR,Qt::RightButton);//sets the mouse position in the scene for use
     }
 }
 /*
@@ -352,7 +351,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         }
     }
     if (event->text() == "c" || event->text() == "C"){
-        this->isCamFocus = !isCamFocus;
+        isCamFocus = !isCamFocus;
         //        applyStuffToallEntites(!isCamFocus);
     }
     if (event->text() == "p" || event->text() == "P")

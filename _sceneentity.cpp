@@ -6,21 +6,21 @@
  * Author: Aditya
 */
 _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the from axis angle
-    this->rotation = QVector3D(0.0,0.0,0.0);
-    this->postion = QVector3D(0.0, 0.0, 0.0);
-    this->scale = 1.0;
-    this->orderInIndex = 0;
-    this->isActive = true;
-    this->isTransformationLocal = false;
-    this->isPivotSet = false;
-    this->isPhysicsObject = false;
-    this->isHitByRay = false;
-    this->isMeshEditable = false;
-    this->tag = new char();
-    this->isLineMode = false;
-    this->isTransformationAllowed = true;
+    rotation = QVector3D(0.0,0.0,0.0);
+    postion = QVector3D(0.0, 0.0, 0.0);
+    scale = 1.0;
+    orderInIndex = 0;
+    isActive = true;
+    isTransformationLocal = false;
+    isPivotSet = false;
+    isPhysicsObject = false;
+    isHitByRay = false;
+    isMeshEditable = false;
+    tag = new char();
+    isLineMode = false;
+    isTransformationAllowed = true;
 
-    this->modelInfo.setIsLoaded(false);
+    modelInfo.setIsLoaded(false);
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -29,8 +29,8 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
  * Created:26_02_2019
 */
 _SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale){
-    this->postion = pos;
-    this->rotation = rot;
+    postion = pos;
+    rotation = rot;
     this->scale = scale;
 }
 _SceneEntity::~_SceneEntity(){
@@ -46,7 +46,7 @@ void _SceneEntity::setId(unsigned int id){
     this->id = id;
 }
 unsigned int _SceneEntity::getId() const{
-    return this->id;
+    return id;
 }
 /* Function: setTag(const char *tag)
  * sets/gets the tag for the scene object
@@ -57,24 +57,24 @@ void _SceneEntity::setTag(QString tag){
     this->tag = tag;
 }
 QString _SceneEntity::getTag() const{
-    return this->tag;
+    return tag;
 }
 /*
  * Created: 10_06_2019
 */
 void _SceneEntity::setOrderInIndex(unsigned int i){
-    this->orderInIndex = i;
+    orderInIndex = i;
 }
 unsigned int _SceneEntity::getIndexPosInScene()const{
-    return this->orderInIndex;
+    return orderInIndex;
 }
 
 void _SceneEntity::setIsTransformationAllowed(bool isit){
-    this->isTransformationAllowed = isit;
+    isTransformationAllowed = isit;
 }
 
 bool _SceneEntity::getIsTransformationAllowed(){
-    return this->isTransformationAllowed;
+    return isTransformationAllowed;
 }
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
@@ -82,10 +82,10 @@ bool _SceneEntity::getIsTransformationAllowed(){
  * Created:26_02_2019
 */
 void _SceneEntity::setPosition(QVector3D pos){
-    this->postion = pos;
+    postion = pos;
 }
 QVector3D _SceneEntity::getPostion() const{
-    return this->postion;
+    return postion;
 }
 /*
  * Function: setRotation(QQuaternion rot) & getRotation()
@@ -93,10 +93,10 @@ QVector3D _SceneEntity::getPostion() const{
  * Created:26_02_2019
 */
 void _SceneEntity::setRotation(QVector3D rot){
-    this->rotation = rot;
+    rotation = rot;
 }
 QVector3D _SceneEntity::getRotation() const{
-    return this->rotation;
+    return rotation;
 }
 /*
  * Function: set/getPivot
@@ -109,11 +109,11 @@ void _SceneEntity::setPivot(QVector3D pivot){
     isPivotSet = true;
 }
 QVector3D _SceneEntity::getPivot() const{
-    return this->pivot;
+    return pivot;
 }
 //return if the pivot is set or not
 bool _SceneEntity::getIsPivotSet(){
-    return this->isPivotSet;
+    return isPivotSet;
 }
 /*
  * Function: setScale(float scale) & getScale()
@@ -124,7 +124,7 @@ void _SceneEntity::setScale(float scale){
     this->scale = scale;
 }
 float _SceneEntity::getScale() const{
-    return this->scale;
+    return scale;
 }
 /*
  * Function: set/getColor
@@ -133,10 +133,10 @@ float _SceneEntity::getScale() const{
  * Created: 21_05_2019
 */
 void _SceneEntity::setColor(QVector4D col){
-    this->color = col;
+    color = col;
 }
 QVector4D _SceneEntity::getColor() const{
-    return this->color;
+    return color;
 }
 /*
  * Function: set/get translationMatrix()
@@ -145,10 +145,10 @@ QVector4D _SceneEntity::getColor() const{
  * Created: 20_05_2019
 */
 void _SceneEntity::setTranslationMatrix(glm::mat4x4 tmat){
-    this->TranslationMatrix = tmat;
+    translationMatrix = tmat;
 }
 glm::mat4x4 _SceneEntity::getTranslationMatrix() const{
-    return this->TranslationMatrix;
+    return translationMatrix;
 }
 /*
  * Function: set/get Rotationmatrix()
@@ -157,10 +157,10 @@ glm::mat4x4 _SceneEntity::getTranslationMatrix() const{
  * Created: 20_05_2019
 */
 void _SceneEntity::setRotationmatrix(glm::mat4x4 rmat){
-    this->RotationMatrix = rmat;
+    rotationMatrix = rmat;
 }
 glm::mat4x4 _SceneEntity::getRotationmatrix() const{
-    return this->RotationMatrix;
+    return rotationMatrix;
 }
 /*
  * Function: set/get ScaleingMatrix()
@@ -169,67 +169,67 @@ glm::mat4x4 _SceneEntity::getRotationmatrix() const{
  * Created: 20_05_2019
 */
 void _SceneEntity::setScaleingMatrix(glm::mat4x4 smat){
-    this->ScaleMatirx = smat;
+    scaleMatirx = smat;
 }
 glm::mat4x4 _SceneEntity::getScaleingMatrix() const{
-    return this->ScaleMatirx;
+    return scaleMatirx;
 }
 void _SceneEntity::setModelMatrix(glm::mat4x4 mmat){
-    this->ModelMatrix = mmat;
+    modelMatrix = mmat;
 }
 glm::mat4x4 _SceneEntity::getModelMatrix() const{
-    return this->ModelMatrix;
+    return modelMatrix;
 }
 /*
  * Created:3_06_2019
 */
 void _SceneEntity::setProjectionMatrix(glm::mat4x4 proj){
-    this->ProjectionMatrix = proj;
+    projectionMatrix = proj;
 }
 glm::mat4x4 _SceneEntity::getProjectionMatrix() const{
-    return this->ProjectionMatrix;
+    return projectionMatrix;
 }
 /*
  * Created:3_06_2019
 */
 void _SceneEntity::setViewMatrix(glm::mat4x4 view){
-    this->ViewMatrix = view;
+    viewMatrix = view;
 }
 glm::mat4x4 _SceneEntity::getViewMatrix() const{
-    return this->ViewMatrix;
+    return viewMatrix;
 }
 /*
  * Created:13_06_2019
 */
 void _SceneEntity::setModelInfo(_ModelInfo minfo){
-    this->modelInfo = minfo;
+    modelInfo = minfo;
 }
 _ModelInfo _SceneEntity::getModelInfo() const{
-    return this->modelInfo;
+    return modelInfo;
 }
 void _SceneEntity::setIsActive(bool isIt){
-    this->isActive = isIt;
+    isActive = isIt;
 }
 bool _SceneEntity::getIsActive(){
-    return this->isActive;
+    return isActive;
 }
 /*
  * Created:15_05_2019
 */
 void _SceneEntity::setIsMeshEditable(bool isit){
-    this->isMeshEditable = isit;
+    isMeshEditable = isit;
 }
 bool _SceneEntity::getIsMeshEditable(){
-    return this->isMeshEditable;
+    return isMeshEditable;
 }
 /*
  * Created:15_05_2019
 */
 void _SceneEntity::setIsLineMode(bool isit){
-    this->isLineMode = isit;
+    isLineMode = isit;
 }
 bool _SceneEntity::getIsLineMode(){
-    return this->isLineMode;
+    return isLineMode;
 }
 /*
  *Function:isTransformationLocal()
@@ -238,10 +238,10 @@ bool _SceneEntity::getIsLineMode(){
  * or global axis
 */
 void _SceneEntity::setIsTransformationLocal(bool isLoc){
-    this->isTransformationLocal = isLoc;
+    isTransformationLocal = isLoc;
 }
 bool _SceneEntity::getIsTransformationLocal(){
-    return this->isTransformationLocal;
+    return isTransformationLocal;
 }
 /*
  *Created:11_06_2017
@@ -249,28 +249,28 @@ bool _SceneEntity::getIsTransformationLocal(){
 void _SceneEntity::setModelData(_AssetLoader aloader)
 {
     if(aloader.getModelInfo().getVerticexArray().size() > 0 && aloader.getModelInfo().getIndexArray().size() > 0){
-        this->assetLoader = aloader;
-        this->modelInfo = assetLoader.getModelInfo();
-        this->modelInfo.setIsLoaded(true);
-        this->isActive = true;
+        assetLoader = aloader;
+        modelInfo = assetLoader.getModelInfo();
+        modelInfo.setIsLoaded(true);
+        isActive = true;
     }
     else{
         qInfo() << "model data not sufficent,please check input";
-        this->isActive = false;
+        isActive = false;
     }
 }
 
 void _SceneEntity::setModelData(_ModelInfo minfo)
 {
     if(minfo.getVerticexArray().size() > 0 && minfo.getIndexArray().size() > 0){
-        this->assetLoader.setModelInfo(minfo);
-        this->modelInfo = assetLoader.getModelInfo();
-        this->modelInfo.setIsLoaded(true);
-        this->isActive = true;
+        assetLoader.setModelInfo(minfo);
+        modelInfo = assetLoader.getModelInfo();
+        modelInfo.setIsLoaded(true);
+        isActive = true;
     }
     else{
         qInfo() << "model data not sufficent,please check input";
-        this->isActive = false;
+        isActive = false;
     }
 }
 
@@ -283,15 +283,15 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
  */
 void _SceneEntity::setModelData(QString path)
 {
-    this->assetLoader.objLoader(path);
-    if(this->assetLoader.getModelInfo().getVerticexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
-        this->modelInfo = assetLoader.getModelInfo();
-        this->modelInfo.setIsLoaded(true);
-        this->isActive = true;
+    assetLoader.objLoader(path);
+    if(assetLoader.getModelInfo().getVerticexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
+        modelInfo = assetLoader.getModelInfo();
+        modelInfo.setIsLoaded(true);
+        isActive = true;
     }
     else{
         qInfo() << "no model data in file, please check the path to file";
-        this->isActive = false;
+        isActive = false;
     }
 }
 /*
@@ -300,18 +300,18 @@ void _SceneEntity::setModelData(QString path)
  * Created:26_02_2019
 */
 void _SceneEntity::setShader(QString vSh, QString fSh){
-    this->vShaderPath = vSh;
-    this->fShaderPath = fSh;
+    vShaderPath = vSh;
+    fShaderPath = fSh;
 }
 /* Function:gets/sets texture path getTexturePath().
  * returns the path of the texture that is applied to the sceneObject.
  * Date: 26_02_2019
 */
 QString _SceneEntity::getTexturePath() const{
-    return this->texturePath;
+    return texturePath;
 }
 void _SceneEntity::setTexturePath(QString texPath){
-    this->texturePath = texPath;
+    texturePath = texPath;
 }
 /*
 * Function: getVertexShaderPath()
@@ -319,7 +319,7 @@ void _SceneEntity::setTexturePath(QString texPath){
 * Created:26_02_2019
 */
 QString _SceneEntity::getVertexShaderPath() const{
-    return this->vShaderPath;
+    return vShaderPath;
 }
 /*
 * Function: getFragmentShaderPath()
@@ -327,7 +327,7 @@ QString _SceneEntity::getVertexShaderPath() const{
 * Created:26_02_2019
 */
 QString _SceneEntity::getFragmentShaderPath() const{
-    return this->fShaderPath;
+    return fShaderPath;
 }
 /*
  * Function: setPhysicsObject(_Physics::PhysicsObjects penum)
@@ -336,8 +336,8 @@ QString _SceneEntity::getFragmentShaderPath() const{
  * Created: 22_05_2019
 */
 void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum){
-    this->isPhysicsObject = true;
-    this->phyObjtype = penum;
+    isPhysicsObject = true;
+    phyObjtype = penum;
 }
 /*
  * Funtion: getisHitRay()
@@ -346,7 +346,7 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum){
  * Created: 22_05_2019
 */
 bool _SceneEntity::getisHitByRay(){
-    return this->isHitByRay;
+    return isHitByRay;
 }
 void _SceneEntity::setIsHitByRay(bool isHitByRay){
     this->isHitByRay = isHitByRay;
@@ -355,8 +355,8 @@ void _SceneEntity::setIsHitByRay(bool isHitByRay){
  * Created:3_06_2015
 */
 bool _SceneEntity::getIsPhysicsObject() const {
-    return this->isPhysicsObject;
+    return isPhysicsObject;
 }
 _SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType(){
-    return this->phyObjtype;
+    return phyObjtype;
 }
