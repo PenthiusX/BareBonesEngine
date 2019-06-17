@@ -109,7 +109,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     this->modelInfo.setIsLoaded(true);
 }
 
-/* //Not in use---future implementation via VAO.
+/* //Not in use---future implementation for VAO based optimisation.
  * Preprocess all models into memory
  * will reduce ovehead on runtime.
  * Created: 31_05_2019

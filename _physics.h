@@ -89,6 +89,7 @@ private:
 
     //Functions:
     bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
+    bool rayIntersectsTriangles(std::vector<_Phy_Triangle> tries, glm::vec3 rayOrigin, glm::vec3 rayVector);
     void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
     void transFormBoxExtents(glm::mat4x4 modelMatrix);
 };

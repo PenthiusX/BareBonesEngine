@@ -218,6 +218,18 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
         return false;}
 }
 
+bool _Physics::rayIntersectsTriangles(std::vector<_Phy_Triangle> tries,glm::vec3 rayOrigin,glm::vec3 rayVector)
+{
+    if(tries.size() != NULL){
+        for(int it= 0 ; it < tries.size() ; it++){
+            if(rayIntersectsTriangle(rayOrigin,rayVector,triVector[it],this->outIntersectionPoint)){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 /*
  * Created: 5_06_2019
 */
@@ -236,7 +248,7 @@ bool hitBoundingBoxF(_Phy_Box b,glm::vec3 orig, glm::vec3 r)
         return false;
 
     if(tymin > tmin)
-       tmin = tymin;
+        tmin = tymin;
     if(tymax < tmax)
         tmax = tymax;
 
@@ -248,9 +260,9 @@ bool hitBoundingBoxF(_Phy_Box b,glm::vec3 orig, glm::vec3 r)
         return false;
 
     if(tzmin > tmin)
-       tmin = tzmin;
+        tmin = tzmin;
     if(tzmax < tmax)
-       tmax = tzmax;
+        tmax = tzmax;
 
     return true;
 }
@@ -281,9 +293,9 @@ void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
     m.setMinExtents(min);
     m.getCentroid();
     this->sceneEntity.setModelInfo(m);
-//    qDebug()<<"max"<< max.x << max.y << max.z ;
-//    qDebug()<<"min"<< min.x << min.y << min.z;
-//    qDebug()<< "--------------------------------";
+    //    qDebug()<<"max"<< max.x << max.y << max.z ;
+    //    qDebug()<<"min"<< min.x << min.y << min.z;
+    //    qDebug()<< "--------------------------------";
 }
 
 /*
@@ -293,7 +305,6 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
 {
     this->sceneEntity = se;
     setMousePointerRay(mousePos,this->sceneEntity.getProjectionMatrix(),this->sceneEntity.getViewMatrix(),screenRes);
-
     //Sphere Intersection Test
     if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
         _SceneEntity si = this->sceneEntity;
@@ -307,21 +318,21 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         transFormBoxExtents(this->sceneEntity.getTranslationMatrix() * this->sceneEntity.getRotationmatrix() * this->sceneEntity.getScaleingMatrix());
         bx.max = this->sceneEntity.getModelInfo().getMaxExtent();
         bx.min = this->sceneEntity.getModelInfo().getMinExtent();
-        hitBoundingBoxF(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
-                if(hitBoundingBoxF(bx,camPos,ray_wor))qDebug() <<"Hit Id-"<<sceneEntity.getId();
-//        qDebug()<<"maxp"<< bx.max.x << bx.max.y << bx.max.z ;
-//        qDebug()<<"minp"<< bx.min.x << bx.min.y << bx.min.z;
-//        qDebug()<< "--------------------------------";
+        hitBoundingBoxF(bx,camPos,this->ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
+        if(hitBoundingBoxF(bx,camPos,this->ray_wor))qDebug() <<"Hit Id-"<<sceneEntity.getId();
+        //        qDebug()<<"maxp"<< bx.max.x << bx.max.y << bx.max.z ;
+        //        qDebug()<<"minp"<< bx.min.x << bx.min.y << bx.min.z;
+        //        qDebug()<< "--------------------------------";
     }
     //Mesh Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
         //sets the updated modelMatrix from the sceneEntity.
         transFormPhysicsTriangles(this->sceneEntity.getModelMatrix());
-        for(int it= 0 ; it < triVector.size() ; it++){
-            if(triVector.size() != NULL){
-                rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
-                if(rayIntersectsTriangle(camPos,ray_wor,triVector[it],outIntersectionPoint))qDebug() <<"Hit Id-"<<sceneEntity.getId();
-            }
+        if(rayIntersectsTriangles(triVector,camPos,this->ray_wor)){
+            this->sceneEntity.setIsHitByRay(true);
+            qDebug() <<"Hit Id-"<<sceneEntity.getId();
+        }else if(!rayIntersectsTriangles(triVector,camPos,this->ray_wor)){
+            this->sceneEntity.setIsHitByRay(false);
         }
     }
 }
