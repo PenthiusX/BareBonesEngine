@@ -288,30 +288,26 @@ void _Physics::transFormBoxExtents(glm::mat4x4 modelMatrix)
 /*
  * Update everything Internally goes in the _scene update loop
 */
-void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, _SceneEntity s)
+void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, _SceneEntity se)
 {
-    sceneEntity = s;
-    setMousePointerRay(mousePos,s.getProjectionMatrix(),s.getViewMatrix(),screenRes);
+    this->sceneEntity = se;
+    setMousePointerRay(mousePos,this->sceneEntity.getProjectionMatrix(),this->sceneEntity.getViewMatrix(),screenRes);
 
     //Sphere Intersection Test
     if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
-        _SceneEntity s = this->sceneEntity;
-        this->sp.center = glm::vec3(s.getPostion().x(),s.getPostion().y(),s.getPostion().z());
-        this->sp.radius = glm::distance(glm::vec3(s.getModelInfo().getCentroid()), glm::vec3(s.getModelInfo().getMaxExtent())) ;
-        hitSphere(this->sp.center,this->sp.radius,camPos)?s.setIsHitByRay(true):s.setIsHitByRay(false);
-        if(hitSphere(this->sp.center,this->sp.radius,camPos))qDebug() <<"Hit Id-"<<s.getId();
-
-        qDebug() << sp.center.x << sp.center.y << sp.center.z << "rad" << sp.radius;
+        _SceneEntity si = this->sceneEntity;
+        this->sp.center = glm::vec3(si.getPostion().x(),si.getPostion().y(),si.getPostion().z());
+        this->sp.radius = glm::distance(glm::vec3(si.getModelInfo().getCentroid()), glm::vec3(si.getModelInfo().getMaxExtent())) ;
+        hitSphere(this->sp.center,this->sp.radius,camPos)?si.setIsHitByRay(true):si.setIsHitByRay(false);
+        if(hitSphere(this->sp.center,this->sp.radius,camPos))qDebug() <<"Hit Id-"<<si.getId();
     }
     //Box Intersection Test
     else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
         transFormBoxExtents(this->sceneEntity.getTranslationMatrix() * this->sceneEntity.getRotationmatrix() * this->sceneEntity.getScaleingMatrix());
         bx.max = this->sceneEntity.getModelInfo().getMaxExtent();
         bx.min = this->sceneEntity.getModelInfo().getMinExtent();
-//      hitBoundingBox(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
         hitBoundingBoxF(bx,camPos,ray_wor)?this->sceneEntity.setIsHitByRay(true):this->sceneEntity.setIsHitByRay(false);
                 if(hitBoundingBoxF(bx,camPos,ray_wor))qDebug() <<"Hit Id-"<<sceneEntity.getId();
-
 //        qDebug()<<"maxp"<< bx.max.x << bx.max.y << bx.max.z ;
 //        qDebug()<<"minp"<< bx.min.x << bx.min.y << bx.min.z;
 //        qDebug()<< "--------------------------------";

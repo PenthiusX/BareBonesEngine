@@ -109,7 +109,7 @@ void _GLWidget::initializeGL()
     //-----------------------------------
     s2.setId(3);
     s2.setTag("clickSurface");
-    s2.setPhysicsObject(_SceneEntity::Sphere);
+    s2.setPhysicsObject(_SceneEntity::Mesh);
     s2.setIsTransformationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
 //  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
@@ -130,19 +130,22 @@ void _GLWidget::initializeGL()
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(backgroundQuad); //add the backGround quad first for it to render last // 1
     scene->addSceneObject(pivot);//pivot helper essential // 2
+    //temporary Helpers
     scene->addSceneObject(mpoint);//mousePoint helper // 3
-    //temporary
     mpoint.setId(991);//maxextent helper
     mpoint.setColor(QVector4D(9.0,9.0,9.0,1.0));
     scene->addSceneObject(mpoint); // 4
     mpoint.setId(992);//minextent helper
     mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
     scene->addSceneObject(mpoint); // 5
+    mpoint.setId(993);//minextent helper
+    mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
+    scene->addSceneObject(mpoint); // 6
     //-------Physics----------
 //   scene->addSceneObject(sph);
 //   scene->addSceneObject(bb);
     //-----Scene Objects------
-    scene->addSceneObject(s2); // 6
+    scene->addSceneObject(s2); // 7
     //------------------------
 }
 /*
@@ -206,16 +209,21 @@ void _GLWidget::paintGL()//the renderloop
 */
 void _GLWidget::mousePressEvent(QMouseEvent *e)
 {
+    //convert global cursor pos to localWidgetPositions
+    //needed for widgetfocus free mousePosition updates
+    globalMPoint = this->mapFromGlobal(QCursor::pos());
+
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
-        mousePressPositionL = QVector2D(e->localPos());
-        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
+      mousePressPositionL = QVector2D(e->localPos());
+      scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
         mousePressPositionR = QVector2D(e->localPos());
     }
 }
+
 /*
 * Function: mouseReleaseEvent(QMouseEvent *e)
 * This is a overriden function from the QWidget parent
@@ -228,7 +236,6 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {//get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton)
     {//get mouse position only on left button click
@@ -247,7 +254,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {
         mousePositionL = QVector2D(e->localPos());
-        //        scene->setMousePositionInScene(this->mousePositionL,Qt::LeftButton);
         //RotateTarget with mouse
         {
             QVector2D mosPosL = mousePressPositionL;
@@ -346,7 +352,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     }
     if (event->text() == "c" || event->text() == "C"){
         this->isCamFocus = !isCamFocus;
-        applyStuffToallEntites(!isCamFocus);
+//        applyStuffToallEntites(!isCamFocus);
     }
     if (event->text() == "p" || event->text() == "P")
         addRandomSceneEntitestoScene();
@@ -398,7 +404,8 @@ void _GLWidget::applyStuffToallEntites(bool isit)
 {
     for(int i = 1 ; i < scene->getSceneObjects().size() ; i++)
     {
-        if(scene->getSceneObjects()[i]->getSceneEntity().getId() != 999 && scene->getSceneObjects()[i]->getSceneEntity().getId() != 888 )
+        unsigned int id = scene->getSceneObjects()[i]->getSceneEntity().getId();
+        if(id != 999 && id != 888)
         {
             _SceneEntity s;//Alternate implementation to Making changes to the SceneEntity.
             s = scene->getSceneObjects()[i]->getSceneEntity();//copy the existing scene entity,

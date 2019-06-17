@@ -59,6 +59,7 @@ private:
     bool isCamFocus;
 //    bool ist = false;
     QVector2D mousePressPositionL,mousePressPositionR;
+    QPoint globalMPoint;
     QVector2D mousePositionL,mousePositionR;
 };
 
