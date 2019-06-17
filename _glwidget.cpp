@@ -96,6 +96,7 @@ void _GLWidget::initializeGL()
     sph.setPosition(QVector3D(0.0,0.0, 0.0));
     sph.setScale(1.0f);
     sph.setModelData(":/models/sphere.obj");
+    sph.setIsActive(false);
     //--
     bb.setId(2);
     bb.setTag("boundingBox");
@@ -107,6 +108,7 @@ void _GLWidget::initializeGL()
     bb.setColor(QVector4D(0.5,1.0,1.0,0.9));
     bb.setScale(1.0f);
     bb.setModelData(":/models/cube.obj");//dont need to reparse modelfile
+    bb.setIsActive(false);
     //-----------------------------------
     s2.setId(3);
     s2.setTag("clickSurface");
@@ -115,7 +117,7 @@ void _GLWidget::initializeGL()
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     //  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s2.setColor(QVector4D(0.0,0.0,0.5,0.9));
+    s2.setColor(QVector4D(0.0,0.0,0.5,0.3));
     s2.setScale(1.0f);
     s2.setModelData(quad);
     //Debug helper use mpoint.
@@ -143,8 +145,8 @@ void _GLWidget::initializeGL()
     mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
     scene->addSceneObject(mpoint); // 5
     //-------Physics----------
-    //   scene->addSceneObject(sph);
-    //   scene->addSceneObject(bb);
+    scene->addSceneObject(sph);
+    scene->addSceneObject(bb);
     //-----Scene Objects------
     scene->addSceneObject(s2); // 6
     //------------------------
@@ -213,15 +215,18 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
     //convert global cursor pos to localWidgetPositions
     //needed for widgetfocus free mousePosition updates
     globalMPoint = this->mapFromGlobal(QCursor::pos());
+
     if(e->buttons() == Qt::LeftButton){
         //get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
         //sets the left button click on for picking in the scene for use in physics
-        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);
     }
     if(e->buttons() == Qt::RightButton){
         //get mouse position only on left button click
         mousePressPositionR = QVector2D(e->localPos());
+    }
+    if(e->buttons() == Qt::MiddleButton){
+        qDebug() << "MidB pressed" << e->localPos().x() << e->localPos().y();
     }
 }
 /*
@@ -232,15 +237,12 @@ void _GLWidget::mousePressEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
+    //convert global cursor pos to localWidgetPositions
+    //needed for widgetfocus free mousePosition updates
+    globalMPoint = this->mapFromGlobal(QCursor::pos());
+
     QVector2D diff = QVector2D(e->localPos()) - mousePressPositionL;
-    if(e->buttons() == Qt::LeftButton)
-    {//get mouse position only on left button click
-        mousePressPositionL = QVector2D(e->localPos());
-    }
-    if(e->buttons() == Qt::RightButton)
-    {//get mouse position only on left button click
-        mousePressPositionR = QVector2D(e->localPos());
-    }
+    scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);
 }
 /*
 * Function: mouseMoveEvent(QMouseEvent *e)
@@ -250,6 +252,10 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {
+    //convert global cursor pos to localWidgetPositions
+    //needed for widgetfocus free mousePosition updates
+    globalMPoint = this->mapFromGlobal(QCursor::pos());
+
     //selet button is pressed when updating mousevalues
     if(e->buttons() == Qt::LeftButton)
     {
