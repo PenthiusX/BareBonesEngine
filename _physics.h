@@ -33,8 +33,9 @@ typedef struct Phy_Plane{
 }_Phy_Plane;
 
 typedef struct Phy_Box{
-    glm::vec3 max;
-    glm::vec3 min;
+    glm::vec3 max;//max extent
+    glm::vec3 min;//min extent
+    glm::vec3 centroid;//center between two extents;
 }_Phy_Box;
 
 class _Physics

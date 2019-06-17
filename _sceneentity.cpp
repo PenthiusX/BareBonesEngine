@@ -252,10 +252,9 @@ void _SceneEntity::setModelData(_AssetLoader aloader)
         assetLoader = aloader;
         modelInfo = assetLoader.getModelInfo();
         modelInfo.setIsLoaded(true);
-        isActive = true;
     }
     else{
-        qInfo() << "model data not sufficent,please check input";
+        qInfo() << "_Error::model data not sufficent,please check input";
         isActive = false;
     }
 }
@@ -266,10 +265,9 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
         assetLoader.setModelInfo(minfo);
         modelInfo = assetLoader.getModelInfo();
         modelInfo.setIsLoaded(true);
-        isActive = true;
     }
     else{
-        qInfo() << "model data not sufficent,please check input";
+        qInfo() << "_Error::Model data not sufficent,please check input";
         isActive = false;
     }
 }
@@ -290,7 +288,7 @@ void _SceneEntity::setModelData(QString path)
         isActive = true;
     }
     else{
-        qInfo() << "no model data in file, please check the path to file";
+        qInfo() << "_Error::No model data in file, please check the path to file!!!!!!";
         isActive = false;
     }
 }
