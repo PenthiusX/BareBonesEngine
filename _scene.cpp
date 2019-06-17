@@ -254,25 +254,25 @@ void _Scene::updateAllPhysicsObjects()
 
 void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index)
 {
-    //updates the physics object instance and runs the main physics updateOperations.
-    //takes in essentails and the relevant sceneEntity updated object.
-    physVector[pc].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity());
-    //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
-    //this is needed if we need to see changes to the sceneEntity in the main render as well.
-    renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());
-
+    if(physVector[pc].getSceneEntity().getPhysicsObjectType() == renderObjects[index]->getSceneEntity().getPhysicsObjectType()){
+        //updates the physics object instance and runs the main physics updateOperations.
+        qDebug() << index << pc;
+        physVector[pc].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity()); //Takes in essentails and the relevant sceneEntity updated object.
+        //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
+        renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
+    }
     //---------------------Helpers-------------------
     //helper for mouseIntersection point
     glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
-    renderObjects[3]->setPosition(QVector3D(p.x,p.y,p.z));
-    //Helpers for Max min extents
+    renderObjects[2]->setPosition(QVector3D(p.x,p.y,p.z));
+//    //Helpers for Max min extents
     glm::vec3 mx = physVector[pc].getSceneEntity().getModelInfo().getMaxExtent();
     glm::vec3 mn = physVector[pc].getSceneEntity().getModelInfo().getMinExtent();
     glm::vec3 cntrd = physVector[pc].getSceneEntity().getModelInfo().getCentroid();
-    renderObjects[4]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
-    renderObjects[5]->setPosition(QVector3D(mx.x,mx.y,mx.z));
-    renderObjects[6]->setPosition(QVector3D(mn.x,mn.y,mn.z));
-    //-----------------------------------------------
+    renderObjects[3]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
+    renderObjects[4]->setPosition(QVector3D(mx.x,mx.y,mx.z));
+    renderObjects[5]->setPosition(QVector3D(mn.x,mn.y,mn.z));
+    //-------------------------------------------------
     pc++;
     if(pc >= physVector.size())
         pc = 0;

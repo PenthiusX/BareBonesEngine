@@ -128,24 +128,24 @@ void _GLWidget::initializeGL()
     mpoint.setModelData(sph.getModelInfo());
     //--------Essentials------
     scene->addCamera(cam);//camera essential
-    scene->addSceneObject(backgroundQuad); //add the backGround quad first for it to render last // 1
-    scene->addSceneObject(pivot);//pivot helper essential // 2
+    scene->addSceneObject(backgroundQuad); //add the backGround quad first for it to render last // 0
+    scene->addSceneObject(pivot);//pivot helper essential // 1
     //temporary Helpers
-    scene->addSceneObject(mpoint);//mousePoint helper // 3
+    scene->addSceneObject(mpoint);//mousePoint helper // 2
     mpoint.setId(991);//maxextent helper
     mpoint.setColor(QVector4D(9.0,9.0,9.0,1.0));
-    scene->addSceneObject(mpoint); // 4
+    scene->addSceneObject(mpoint); // 3
     mpoint.setId(992);//minextent helper
     mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
-    scene->addSceneObject(mpoint); // 5
+    scene->addSceneObject(mpoint); // 4
     mpoint.setId(993);//minextent helper
     mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
-    scene->addSceneObject(mpoint); // 6
+    scene->addSceneObject(mpoint); // 5
     //-------Physics----------
 //   scene->addSceneObject(sph);
 //   scene->addSceneObject(bb);
     //-----Scene Objects------
-    scene->addSceneObject(s2); // 7
+    scene->addSceneObject(s2); // 6
     //------------------------
 }
 /*
@@ -391,7 +391,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
     }
 }
 /*
- *Press L to activate.
+ * Press L to activate.
 */
 void _GLWidget::removeSceneEntityFromScene()
 {
