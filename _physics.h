@@ -33,9 +33,9 @@ typedef struct Phy_Plane{
 }_Phy_Plane;
 
 typedef struct Phy_Box{
-    glm::vec3 max;//max extent
-    glm::vec3 min;//min extent
-    glm::vec3 centroid;//center between two extents;
+    glm::vec4 max;//max extent
+    glm::vec4 min;//min extent
+    glm::vec4 centroid;//center between two extents;
 }_Phy_Box;
 
 class _Physics
@@ -92,7 +92,7 @@ private:
     bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
     bool rayIntersectsTriangles(std::vector<_Phy_Triangle> tries, glm::vec3 rayOrigin, glm::vec3 rayVector);
     void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
-    void transFormBoxExtents(glm::mat4x4 modelMatrix);
+    void transFormBoxExtents(glm::mat4x4 rotScaleMatrix);
 };
 
 #endif // _PHYSICS_H

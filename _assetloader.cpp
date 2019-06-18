@@ -28,6 +28,7 @@ _AssetLoader::~_AssetLoader(){}
 
 void _AssetLoader::setModelInfo(_ModelInfo minfo){
     modelInfo = minfo;
+//    modelInfo.calcCentroidFromMinMax();
     calcMinMaxExtents();
 }
 _ModelInfo _AssetLoader::getModelInfo(){
@@ -64,7 +65,7 @@ void _AssetLoader::objLoader(QString pathToFile)
         }
         temp = "";
         //assigning the max and min values for vertices at the same
-        //time that they are beiing assigned.
+        //time that they are beiing assigned. reduces time complexity
         if(posCounter >= 3 && (arrayCounter + 2) < vertices.size()){
             //minExtent
             posCounter = 0;
@@ -143,6 +144,7 @@ void _AssetLoader::calcMinMaxExtents()
             vertMax.y=(v[i + 1]);
         if(v[i + 2] >= vertMax.z)
             vertMax.z=(v[i + 2]);
+        vertMax.w = 0.0f;
         //maxEntent
         if(v[i] <= vertMin.x)
             vertMin.x=(v[i]);
@@ -150,8 +152,8 @@ void _AssetLoader::calcMinMaxExtents()
             vertMin.y=(v[i + 1]);
         if(v[i + 2] <= vertMin.z)
             vertMin.z=(v[i + 2]);
+        vertMin.w = 0.0f;
     }
-
     modelInfo.setMinExtents(vertMin);
     modelInfo.setMaxExtents(vertMax);
     modelInfo.setCentroid(calcCentroidFromMinMax());
@@ -163,6 +165,7 @@ glm::vec4 _AssetLoader::calcCentroidFromMinMax()
     centroid.x = (vertMax.x + vertMin.x)*0.5f;
     centroid.y = (vertMax.y + vertMin.y)*0.5f;
     centroid.z = (vertMax.z + vertMin.z)*0.5f;
+    centroid.w = 0.0f;
     return centroid;
 }
 

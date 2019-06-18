@@ -27,6 +27,10 @@ public:
     glm::vec4 getCentroid() const;
     bool getIsLoaded() const;
 
+    void calcMinMaxExtents();
+    glm::vec4 calcCentroidFromMinMax();
+    glm::vec4 calcCentroidFromMinMax(glm::vec3 min, glm::vec3 max);
+
 private:
     QString name;//the tag
     QString path;//the relative path of the model data file
@@ -35,10 +39,8 @@ private:
     //
     glm::vec4 max;//max extent.
     glm::vec4 min;//min extent.
-    glm::vec4 centroid;//centroid from min & max.
+    glm::vec4 cent;//centroid from min & max.
     bool isLoaded;
-
-    glm::vec4 calcCentroidFromMinMax();
     //
     //!!buffer stuff should be done here and should hold these bindings.!!
     //uint VAOlocation

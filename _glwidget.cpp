@@ -135,14 +135,14 @@ void _GLWidget::initializeGL()
     scene->addSceneObject(pivot);//pivot helper essential // 1
     //temporary Helpers
     scene->addSceneObject(mpoint);//mousePoint helper // 2
-    mpoint.setId(991);//maxextent helper
+    mpoint.setId(991);//centroid helper
     mpoint.setColor(QVector4D(9.0,9.0,9.0,1.0));
     scene->addSceneObject(mpoint); // 3
-    mpoint.setId(992);//minextent helper
-    mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
+    mpoint.setId(992);//maxextent helper
+    mpoint.setColor(QVector4D(1.0,1.,1.,1.0));
     scene->addSceneObject(mpoint); // 4
     mpoint.setId(993);//minextent helper
-    mpoint.setColor(QVector4D(0.5,0.50,0.50,1.0));
+    mpoint.setColor(QVector4D(0.2,0.2,0.2,1.0));
     scene->addSceneObject(mpoint); // 5
     //-------Physics----------
     scene->addSceneObject(sph);
@@ -383,11 +383,12 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransformationLocal(false);
+//        onPress->setPhysicsObject(_SceneEntity::Mesh);
         onPress->setPhysicsObject(_SceneEntity::Mesh);
-        onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRange(-10,10),_Tools::getRandomNumberfromRange(-10,10), _Tools::getRandomNumberfromRange(-5,10)));
-        onPress->setColor(QVector4D(_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1),_Tools::getRandomNumberfromRange(0,1)));
+        onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+        onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-        onPress->setScale(_Tools::getRandomNumberfromRange(0.2,2));
+        onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
         onPress->setModelData(s2.getModelInfo());//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
