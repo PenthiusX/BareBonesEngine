@@ -816,7 +816,6 @@ void _GPU_Compute::compute_threshold(_Texture* input_img,_Texture* output_img,un
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
 }
 
 void _GPU_Compute::compute_threshold_inv(_Texture& input_img,_Texture& output_img,unsigned int threshold_value)
@@ -842,7 +841,6 @@ void _GPU_Compute::compute_threshold_inv(_Texture& input_img,_Texture& output_im
     glDispatchCompute(groupsize.NumWorkGroups.x,groupsize.NumWorkGroups.y,groupsize.NumWorkGroups.z);
 
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
 }
 
 void _GPU_Compute::compute_saturate_color(_Texture& input_img,_Texture& output_img)

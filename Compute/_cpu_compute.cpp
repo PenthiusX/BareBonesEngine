@@ -134,7 +134,11 @@ void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img
 glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_img)
 {
     //create temp images for operations
-    cv::Mat edge,masked_edge,mask=cv::Mat::zeros(input_img.rows,input_img.cols,CV_8UC1);
+    cv::Mat edge,dilated_img,masked_edge,mask=cv::Mat::zeros(input_img.rows,input_img.cols,CV_8UC1);
+
+    cv::Mat element = getStructuringElement( cv::MORPH_ELLIPSE,cv::Size( 5, 5 ),cv::Point(2, 2 ) );
+
+    cv::dilate(input_img, dilated_img, element, cv::Point(-1, -1), 3, 1, 1);
 
     //find canny edge
     cv::Canny(input_img, edge, 50, 200, 3);
@@ -146,37 +150,92 @@ glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_i
     showImageInterval(masked_edge);
 
     //show masked_edge image as output
-    cvtColor(masked_edge, output_img, cv::COLOR_GRAY2RGBA);
+    cvtColor(input_img, output_img, cv::COLOR_GRAY2RGBA);
 
-    std::vector<cv::Vec4i> lines;
+    std::vector<cv::Vec4i> lines,h_lines,v_lines;
     std::vector<glm::vec3> line_center_and_angle;
 
-    HoughLinesP(masked_edge, lines, 1, CV_PI/180, 20, 30, 10 );
-    for( size_t i = 0; i < lines.size(); i++ )
+    HoughLinesP(masked_edge, lines, 1, CV_PI/180, 20, 30, 5 );
+//    for( size_t i = 0; i < lines.size(); i++ )
+//    {
+//      cv::Vec4i l = lines[i];
+      //cv::line( output_img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255,255), 1, cv::LINE_AA);
+//    }
+    float delta = 2;
+    std::vector<cv::Point2f> points,centers,h_points,v_points;
+
+    //categorise lines in vertical and horizontal
+    for(auto line:lines)
     {
-      cv::Vec4i l = lines[i];
-      cv::line( output_img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255,255), 1, cv::LINE_AA);
+        if(cv::abs(line[2]-line[0])< delta)// x-values are near; line is vertical
+        {
+            v_lines.push_back(line);
+            v_points.push_back(cv::Point2f(line[0],line[1]));
+            v_points.push_back(cv::Point2f(line[2],line[3]));
+            cv::line( output_img, cv::Point(line[0], line[1]), cv::Point(line[2], line[3]), cv::Scalar(0,0,255,255), 1, cv::LINE_AA);
+        }
+
+        if(cv::abs(line[3]-line[1])< delta)//  y-values are near; line is horizontal
+        {
+            h_lines.push_back(line);
+            h_points.push_back(cv::Point2f(line[0],line[1]));
+            h_points.push_back(cv::Point2f(line[2],line[3]));
+            cv::line( output_img, cv::Point(line[0], line[1]), cv::Point(line[2], line[3]), cv::Scalar(255,0,0,255), 1, cv::LINE_AA);
+        }
     }
 
+    std::vector<int> io_array(points.size());
+
+    for(auto h_line:h_lines)
+    {
+        for(auto v_line:v_lines)
+        {
+            auto pt =find_line_intersection(h_line,v_line);
+            points.push_back(pt);
+        }
+    }
+    cv::TermCriteria criteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 10, 1.0);
+    cv::kmeans(v_points, 2, io_array, criteria,10,cv::KMEANS_PP_CENTERS,centers);
+
+    //qDebug() << centers;
+    int n = h_points.size();
+
+    //fit a single horizontal line with slope and intercept = a, b respectively
+
+    double xsum=0,x2sum=0,ysum=0,xysum=0,a,b;                //variables for sums/sigma of xi,yi,xi^2,xiyi etc
+    for (auto pt:h_points)
+    {
+        xsum=xsum+pt.x;                        //calculate sigma(xi)
+        ysum=ysum+pt.y;                        //calculate sigma(yi)
+        x2sum=x2sum+pow(pt.x,2);                //calculate sigma(x^2i)
+        xysum=xysum+pt.x*pt.y;                    //calculate sigma(xi*yi)
+    }
+    a=(n*xysum-xsum*ysum)/(n*x2sum-xsum*xsum);            //calculate slope
+    b=(x2sum*ysum-xsum*xysum)/(x2sum*n-xsum*xsum);            //calculate intercept
 
 
-//    std::vector<LineEquation> equations = computeHoughLines(texture_edge,texture_hough_space);
 
-//    std::vector<LineEquationMC> eqns;
+    //find intesections
+    float mid_x = (centers[0].x+centers[1].x)/2.0;
+    glm::vec3 stage_center_angle(mid_x,a*mid_x+b,glm::atan(a)*180.0/CV_PI);
 
-//    for (auto eq:equations) {
-//        eqns.push_back(convertLineEquationPolarToMc(eq));
-//    }
-
-//    float center_x = (((eqns[0].c-eqns[1].c)/(eqns[1].m-eqns[0].m))+((eqns[2].c-eqns[1].c)/(eqns[1].m-eqns[2].m)))/2.0;
-
-//    float center_y = (eqns[0].m*center_x)+eqns[0].c;
-
-//    return glm::vec3(center_x,center_y,equations[0].theta);
-
-    return glm::vec3(1.0,1.0,1.0);
+    cv::circle(output_img, cv::Point2f(stage_center_angle.x,stage_center_angle.y), 3, cv::Scalar(0,255,0,255), -1);
+    return stage_center_angle;
 }
 
+cv::Point2f _Cpu_Compute::find_line_intersection(cv::Vec4i line1, cv::Vec4i line2)
+{
+// compute determinant
+
+//Px = ((x1*y2 - y1*x2)*(x3-x4) - (x1-x2)*(x3*y4 - y3*x4))/((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
+    float x1 = line1[0],y1 = line1[1],x2 = line1[2],y2 = line1[3];
+    float x3 = line2[0],y3 = line2[1],x4 = line2[2],y4 = line2[3];
+
+    float x = (x1*((x1 - x2)*(y3 - y4) - (x3 - x4)*(y1 - y2)) - (x1 - x3)*((x1 - x2)*(y3 - y4) - (x3 - x4)*(y1 - y2)) + (x3 - x4)*((x1 - x2)*(y1 - y3) - (x1 - x3)*(y1 - y2)))/((x1 - x2)*(y3 - y4) - (x3 - x4)*(y1 - y2));
+    float y = (x1*y2*y3 - x1*y2*y4 - x2*y1*y3 + x2*y1*y4 - x3*y1*y4 + x3*y2*y4 + x4*y1*y3 - x4*y2*y3)/(x1*y3 - x1*y4 - x2*y3 + x2*y4 - x3*y1 + x3*y2 + x4*y1 - x4*y2);
+
+    return cv::Point2f(x, y);
+}
 
 char *_Cpu_Compute::frameGray2RGB(char *img, unsigned int iwidth, unsigned int iheight)
 {

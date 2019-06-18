@@ -25,6 +25,7 @@ public:
     void computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, cv::Mat &texture_model_wrap, int rotation_step, glm::vec2 stage_center);
     void computeRowWiseLeftEdge(cv::Mat &input_img, cv::Mat &output_img);
     glm::vec3 compute_stage_angle(cv::Mat &input_img, cv::Mat &output_img);
+    cv::Point2f find_line_intersection(cv::Vec4i line1, cv::Vec4i line2);
 signals:
     void imageOut(QImage img);
 protected:
