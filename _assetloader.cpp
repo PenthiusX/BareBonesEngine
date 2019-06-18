@@ -110,7 +110,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     modelInfo.setIsLoaded(true);
 }
 
-/* //Not in use---future implementation for VAO based optimisation.
+/* Not in use---future implementation for VAO based optimisation.
  * Preprocess all models into memory
  * will reduce ovehead on runtime.
  * Created: 31_05_2019
@@ -158,7 +158,9 @@ void _AssetLoader::calcMinMaxExtents()
     modelInfo.setMaxExtents(vertMax);
     modelInfo.setCentroid(calcCentroidFromMinMax());
 }
-
+/*
+ * Created: 12_06_2019
+ */
 glm::vec4 _AssetLoader::calcCentroidFromMinMax()
 {
     glm::vec4 centroid;

@@ -44,7 +44,13 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
             vpoint.w = 1.0f;
             pv.push_back(vpoint);
         }
-        for(int i = 0 ; i < index.size() ; i += 3){
+    }
+    if(index.size() > 0){
+        //Exception handeling: Forces improper models with extra
+        //vertices that are not forming tries to invoke and out of
+        //bounds error in this collection algorith.
+        unsigned int setOfTries = index.size()/3;
+        for(int i = 0 ; i < setOfTries * 3 ; i += 3){
             _Phy_Triangle tri;
             tri.pointA = pv[index[i]];
             tri.pointB = pv[index[i+1]];
