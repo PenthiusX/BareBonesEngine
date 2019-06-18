@@ -78,7 +78,7 @@ void _Tools::printFrameRate()
     }
 }
 
-float _Tools::getRandomNumberfromRange(float min, float max)
+float _Tools::getRandomNumberfromRangeF(float min, float max)
 {
 //    std::srand(2);
     return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
