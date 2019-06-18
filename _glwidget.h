@@ -47,8 +47,8 @@ private:
 
     std::vector<_Scene*> sceneVector;//Vector of scene for drawing multiple scene Contexts//!!prototype implmentaition not implemented and checked!!!
     _Scene *scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
-    _SceneEntity sph,bb,s2,mpoint,*onPress;//custom Objects
-    _SceneEntity backgroundQuad,pivot;//default sceneobjects
+    _SceneEntity sph,bb,s,mpnt,cnet,max,min,*onPress;//custom Objects
+    _SceneEntity bg,pivot;//default sceneobjects
     _AssetLoader assetLoader;
     _Camera cam;
 

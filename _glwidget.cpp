@@ -42,15 +42,7 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-    //Initailise the scene in InitaliseGl
-    //needs to be run after the openGl contxt is initialised
-    scene = new _Scene();
-    //needs this to make the GL widgit have the strongest focus when switching widgets.
-    cam.setEyePosition(QVector3D(0.0, 0.0, 10.0));
-    cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
-    cam.setFarClipDistance(100.0f);
-    cam.setFOV(65);
-    //
+    //Code to be excluded only for Test purposes
     //Hard coded vertices and indices
     std::vector<float> vertsV = {
         1.0,   1.0,  0.0f,	// top right
@@ -61,6 +53,17 @@ void _GLWidget::initializeGL()
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
 
+
+    //needs to be run after the openGl contxt is initialised
+    scene = new _Scene();
+
+    //Presets the camera properties
+    cam.setEyePosition(QVector3D(0.0, 0.0, 10.0));
+    cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
+    cam.setFarClipDistance(100.0f);
+    cam.setFOV(65);
+
+    //PreLoad ScenenEnties with desired properties.
     //implemented 12_06_2018
     _AssetLoader quad;
     _ModelInfo m;
@@ -69,14 +72,14 @@ void _GLWidget::initializeGL()
     m.setIndexArray(indiceV);
     quad.setModelInfo(m);
     //Essential rear background object
-    backgroundQuad.setId(777);
-    backgroundQuad.setTag("background");
-    backgroundQuad.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    backgroundQuad.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
-    backgroundQuad.setPosition(QVector3D(0.0, 0.0, 0.0));
-    backgroundQuad.setRotation(QVector3D(0.0, 0.0, 0.0));
-    backgroundQuad.setScale(1.0);
-    backgroundQuad.setModelData(quad);
+    bg.setId(777);
+    bg.setTag("background");
+    bg.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
+    bg.setPosition(QVector3D(0.0, 0.0, 0.0));
+    bg.setRotation(QVector3D(0.0, 0.0, 0.0));
+    bg.setScale(1.0);
+    bg.setModelData(quad);
     //Essential default pivot object
     pivot.setId(888);
     pivot.setTag("pivot");
@@ -97,7 +100,7 @@ void _GLWidget::initializeGL()
     sph.setScale(1.0f);
     sph.setModelData(":/models/sphere.obj");
     sph.setIsActive(false);
-    //--
+    //---
     bb.setId(2);
     bb.setTag("boundingBox");
     bb.setIsLineMode(true);
@@ -109,46 +112,61 @@ void _GLWidget::initializeGL()
     bb.setScale(1.0f);
     bb.setModelData(":/models/cube.obj");//dont need to reparse modelfile
     bb.setIsActive(false);
-    //-----------------------------------
-    s2.setId(3);
-    s2.setTag("clickSurface");
-    s2.setPhysicsObject(_SceneEntity::Mesh);
-    s2.setIsTransformationLocal(false);
-    s2.setPosition(QVector3D(0.0,0.0, 0.0));
-    //  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
-    s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s2.setColor(QVector4D(0.0,0.0,0.5,0.8));
-    s2.setScale(1.0f);
-    s2.setModelData(":/models/diamonds/otpear.obj");
-    //Debug helper use mpoint.
-    mpoint.setId(999);
-    mpoint.setTag("mousePointerObject");
-    mpoint.setIsTransformationLocal(false);
-    mpoint.setPosition(QVector3D(0.0,0.0,0.0));
-    mpoint.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    mpoint.setColor(QVector4D(0.5,0.5,0.5,1.0));
-    mpoint.setScale(0.1f);
-    mpoint.setModelData(sph.getModelInfo());
+    //------------Scene Objects--------
+    s.setId(3);
+    s.setTag("clickSurface");
+    s.setPhysicsObject(_SceneEntity::Mesh);
+    s.setIsTransformationLocal(false);
+    s.setPosition(QVector3D(0.0,0.0, 0.0));
+    s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    s.setColor(QVector4D(0.0,0.0,0.5,0.8));
+    s.setScale(1.0f);
+    s.setModelData(quad);
+    //----------Helpers---------------
+    mpnt.setId(999);
+    mpnt.setTag("mousePointerObject");
+    mpnt.setIsTransformationLocal(false);
+    mpnt.setPosition(QVector3D(0.0,0.0,0.0));
+    mpnt.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    mpnt.setScale(0.02f);
+    mpnt.setModelData(sph.getModelInfo());
+    //---
+    cnet.setId(991);
+    cnet.setTag("cent");
+    cnet.setIsTransformationLocal(false);
+    cnet.setPosition(QVector3D(0.0,0.0,0.0));
+    cnet.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    cnet.setScale(0.07f);
+    cnet.setModelData(sph.getModelInfo());
+    //---
+    max.setId(992);
+    max.setTag("max");
+    max.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    max.setColor(QVector4D(0.5,0.5,0.5,1.0));
+    max.setScale(0.1f);
+    max.setModelData(":/models/helpers/max.obj");
+    //---
+    min.setId(993);
+    min.setTag("min");
+    min.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    min.setScale(0.1f);
+    min.setModelData(":/models/helpers/min.obj");
+
+    //Add stuff preloaded Scene Entities to scene;
     //--------Essentials------
     scene->addCamera(cam);//camera essential
-    scene->addSceneObject(backgroundQuad); //add the backGround quad first for it to render last // 0
-    scene->addSceneObject(pivot);//pivot helper essential // 1
-    //temporary Helpers
-    scene->addSceneObject(mpoint);//mousePoint helper // 2
-    mpoint.setId(991);//centroid helper
-    mpoint.setColor(QVector4D(9.0,9.0,9.0,1.0));
-    scene->addSceneObject(mpoint); // 3
-    mpoint.setId(992);//maxextent helper
-    mpoint.setColor(QVector4D(1.0,1.,1.,1.0));
-    scene->addSceneObject(mpoint); // 4
-    mpoint.setId(993);//minextent helper
-    mpoint.setColor(QVector4D(0.2,0.2,0.2,1.0));
-    scene->addSceneObject(mpoint); // 5
+    scene->addSceneObject(bg); //add the backGround quad first for it to render last
+    scene->addSceneObject(pivot);//pivot helper essential
     //-------Physics----------
     scene->addSceneObject(sph);
     scene->addSceneObject(bb);
     //-----Scene Objects------
-    scene->addSceneObject(s2); // 6
+    scene->addSceneObject(s);
+    //--------Helpers---------
+    scene->addSceneObject(mpnt);
+    scene->addSceneObject(cnet);
+    scene->addSceneObject(min);
+    scene->addSceneObject(max);
     //------------------------
 }
 /*
@@ -383,13 +401,13 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransformationLocal(false);
-//        onPress->setPhysicsObject(_SceneEntity::Mesh);
+        //        onPress->setPhysicsObject(_SceneEntity::Mesh);
         onPress->setPhysicsObject(_SceneEntity::Mesh);
         onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
-        onPress->setModelData(s2.getModelInfo());//dont need to reparse modelfile
+        onPress->setModelData(s.getModelInfo());//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         delete onPress;

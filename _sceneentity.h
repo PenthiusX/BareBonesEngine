@@ -90,8 +90,10 @@ public:
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
     bool getIsPhysicsObject()const;
+    bool getIsPhysicsHelper()const;
     _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
+    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,bool isHelper);
 
 private:
     unsigned int id;
@@ -123,6 +125,7 @@ private:
     bool isMeshEditable;
     bool isHitByRay;
     bool isPhysicsObject;
+    bool isPhysicsHelper;
     bool isLineMode;
     bool isTransformationAllowed;
     //
