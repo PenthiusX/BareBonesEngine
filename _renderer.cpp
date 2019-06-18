@@ -496,7 +496,7 @@ void _Renderer::setColors()
 {
     glUniform4f(colorUniform,sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
     //set sfidex color attributes for defined objects
-    if(sceneEntity.getId() == 999)//pivot
+    if(sceneEntity.getId() == 999 || sceneEntity.getId() == 991|| sceneEntity.getId() == 992 || sceneEntity.getId() == 993)//PointHelpers
     {
         QVector4D col = sceneEntity.getColor();
         col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));

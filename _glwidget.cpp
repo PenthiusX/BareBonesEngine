@@ -112,14 +112,14 @@ void _GLWidget::initializeGL()
     //-----------------------------------
     s2.setId(3);
     s2.setTag("clickSurface");
-    s2.setPhysicsObject(_SceneEntity::Box);
+    s2.setPhysicsObject(_SceneEntity::Mesh);
     s2.setIsTransformationLocal(false);
     s2.setPosition(QVector3D(0.0,0.0, 0.0));
     //  s2.setPivot(QVector3D(2.0,0.0,0.0));//sets the pivot offset from center
     s2.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s2.setColor(QVector4D(0.0,0.0,0.5,0.3));
+    s2.setColor(QVector4D(0.0,0.0,0.5,0.8));
     s2.setScale(1.0f);
-    s2.setModelData(quad);
+    s2.setModelData(":/models/diamonds/otpear.obj");
     //Debug helper use mpoint.
     mpoint.setId(999);
     mpoint.setTag("mousePointerObject");
