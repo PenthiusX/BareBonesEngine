@@ -46,6 +46,7 @@ public:
     void setRotation(QVector3D rot);
     void setRotationAroundPivot(QVector3D rot,QVector3D pivot);
     void setscale(float scale);
+    void lookAt(QVector3D ptl);
     //
     void initSceneEntityInRenderer(_SceneEntity s_);
     void setSceneEntityInRenderer(_SceneEntity s);

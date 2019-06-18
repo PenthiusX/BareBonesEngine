@@ -203,6 +203,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
 
     glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     qDebug() << "setModelMatrix() on entity" << sceneEntity.getTag();
+    keepSceneEntityUpdated();
 }
 /*
 * Function: setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
@@ -313,19 +314,19 @@ void _Renderer::setRotation(QVector3D rot)
             sceneEntity.setRotation(rot);
             if(sceneEntity.getIsTransformationLocal())
             {
-                glm::vec3 EulerAngles(sceneEntity.getRotation().x(),
+                glm::vec3 eulerAngles(sceneEntity.getRotation().x(),
                                       sceneEntity.getRotation().y(),
                                       sceneEntity.getRotation().z());
-                glm::quat quat = glm::quat(EulerAngles);
+                glm::quat quat = glm::quat(eulerAngles);
                 glm_model4x4 *= glm::mat4_cast(quat);
             }
             else if(!sceneEntity.getIsTransformationLocal())
             {
                 //        rotationMatrix = glm::mat4x4(1.f);
-                glm::vec3 EulerAngles(sceneEntity.getRotation().x(),
+                glm::vec3 eulerAngles(sceneEntity.getRotation().x(),
                                       sceneEntity.getRotation().y(),
                                       sceneEntity.getRotation().z());
-                glm::quat quat = glm::quat(EulerAngles);
+                glm::quat quat = glm::quat(eulerAngles);
                 rotationMatrix = glm::mat4_cast(quat);
                 //rotate at center
                 glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
@@ -393,6 +394,38 @@ void _Renderer::setscale(float scale)
                                                             sceneEntity.getScale()));
         glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
     }
+}
+/*
+ * Created:18_06_2019
+*/
+void _Renderer::lookAt(QVector3D ptl)
+{
+    glm::vec3 obPos = glm::vec3(ptl.x(),ptl.y(),ptl.z());
+    glm::vec3 tarPo = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
+
+    glm::vec3 delta = tarPo - obPos;//targetPosition-objectPosition
+    glm::vec3 up;
+    glm::vec3 dir(glm::normalize(delta));
+
+    if(abs(dir.x)< 0.00001 && abs(dir.z) < 0.00001){
+        if(dir.y > 0)
+            up = glm::vec3(0.0, 0.0, -1.0); //if direction points in +y
+        else
+            up = glm::vec3(0.0, 0.0, 1.0); //if direction points in -y
+    } else {
+        up = glm::vec3(0.0, 1.0, 0.0); //y-axis is the general up
+    }
+    up=glm::normalize(up);
+    glm::vec3 right = glm::normalize(glm::cross(up,dir));
+    up= glm::normalize(glm::cross(dir, right));
+
+    glm_model4x4 *= glm::mat4(right.x, right.y, right.z, 0.0f,
+                                   up.x, up.y, up.z, 0.0f,
+                                   dir.x, dir.y, dir.z, 0.0f,
+                                   obPos.x, obPos.y, obPos.z, 1.0f);
+
+    keepSceneEntityUpdated();
+    _Tools::Debugmatrix4x4(this->sceneEntity.getModelMatrix());
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
@@ -477,10 +510,8 @@ void _Renderer::_Renderer::draw()
         //Sets the values for the MVP matrix in the vertex shader
         glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
         glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
-        glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*
-                                                                     sceneEntity.getRotationmatrix()*
-                                                                     pivotTmat *
-                                                                     sceneEntity.getScaleingMatrix()));
+        //      glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
+        glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
         //
         setColors();//Setting the uniform for color
         //

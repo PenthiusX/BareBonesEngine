@@ -277,6 +277,7 @@ void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
     _ModelInfo m = sceneEntity.getModelInfo();
     m.setMaxExtents(max);
     m.setMinExtents(min);
+    m.calcCentroidFromMinMax();
     sceneEntity.setModelInfo(m);
 }
 /*
