@@ -8,6 +8,9 @@
 _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the from axis angle
     rotation = QVector3D(0.0,0.0,0.0);
     postion = QVector3D(0.0, 0.0, 0.0);
+    color = QVector4D(0.5,0.5,0.5,1.0);
+//    vShaderPath = ":/shaders/dmvshader.glsl";
+//    fShaderPath = ":/shaders/dmfshader.glsl";
     scale = 1.0;
     orderInIndex = 0;
     isActive = true;
@@ -258,7 +261,6 @@ void _SceneEntity::setModelData(_AssetLoader aloader)
         isActive = false;
     }
 }
-
 void _SceneEntity::setModelData(_ModelInfo minfo)
 {
     if(minfo.getVerticexArray().size() > 0 && minfo.getIndexArray().size() > 0){
@@ -335,6 +337,13 @@ QString _SceneEntity::getFragmentShaderPath() const{
 */
 void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum){
     isPhysicsObject = true;
+    isPhysicsHelper = true;
+    phyObjtype = penum;
+}
+void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, bool isHelper)
+{
+    isPhysicsHelper = isHelper;
+    isPhysicsObject = true;
     phyObjtype = penum;
 }
 /*
@@ -354,6 +363,11 @@ void _SceneEntity::setIsHitByRay(bool isHitByRay){
 */
 bool _SceneEntity::getIsPhysicsObject() const {
     return isPhysicsObject;
+}
+
+bool _SceneEntity::getIsPhysicsHelper() const
+{
+    return isPhysicsHelper;
 }
 _SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType(){
     return phyObjtype;

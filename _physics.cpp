@@ -13,14 +13,21 @@ void _Physics::setSceneEntity(_SceneEntity s){
     if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
         sp.center = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
         sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent())) ;
+        //used for maxextent update
+        initialMax = sceneEntity.getModelInfo().getMaxExtent();
+        initialMin = sceneEntity.getModelInfo().getMinExtent();
     }
     else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
+        //used for maxextent update
         initialMax = sceneEntity.getModelInfo().getMaxExtent();
         initialMin = sceneEntity.getModelInfo().getMinExtent();
     }
     else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
         genTriesforCollision(sceneEntity.getModelInfo().getVerticexArray(),sceneEntity.getModelInfo().getIndexArray());
         triVectorCopy = triVector;
+        //used for maxextent update
+        initialMax = sceneEntity.getModelInfo().getMaxExtent();
+        initialMin = sceneEntity.getModelInfo().getMinExtent();
     }
 }
 /*
@@ -276,21 +283,29 @@ void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
  * Update everything Internally goes in the _scene update loop
 */
 void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, _SceneEntity se){
+
     sceneEntity = se;
     setMousePointerRay(mousePos,sceneEntity.getProjectionMatrix(),sceneEntity.getViewMatrix(),screenRes);
     //Sphere Intersection Test
     if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
+        //updates the maxExtents
+        //In this case just to keep the extent helpers Updated
+        transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
+        //set sphere collider dimensions
         sp.center = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
-        sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent())) ;
+        sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent()));
+        //intersection check
         hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
         if(hitSphere(sp.center,sp.radius,camPos))qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId();
     }
     //Box Intersection Test
     else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
-        //updates the maxExtents for the box collider to work
+        //updates the maxExtents
         transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
+        //set box collider extents
         bx.max = sceneEntity.getModelInfo().getMaxExtent();
         bx.min = sceneEntity.getModelInfo().getMinExtent();
+        //intersection check.
         if(hitBoundingBoxF(bx,camPos,ray_wor)){
             sceneEntity.setIsHitByRay(true);
             qDebug() <<"HitBox"<<"Hit Id-"<<sceneEntity.getId();
@@ -300,8 +315,11 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
     }
     //Mesh Intersection Test
     else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
+        //updates the maxExtents
+        transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
         //sets the updated modelMatrix from the sceneEntity.
         transFormPhysicsTriangles(sceneEntity.getModelMatrix());
+        //Intersection check.
         if(rayIntersectsTriangles(triVector,camPos,ray_wor)){
             sceneEntity.setIsHitByRay(true);
             qDebug() <<"HitMesh"<<"Hit Id-"<<sceneEntity.getId();
