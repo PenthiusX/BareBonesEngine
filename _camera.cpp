@@ -22,9 +22,7 @@ _Camera::_Camera(){
     nearClipDistance = 0.1;
     farClipDistance = 50.0;
 }
-_Camera::~_Camera(){
-
-}
+_Camera::~_Camera(){}
 /*
 * Function: set/get Eye postition(QVector3D epos)
 * sets and gets the postion for the camera object 
@@ -32,12 +30,10 @@ _Camera::~_Camera(){
 * into the viewMatrix.
 * Created: 01_03_2019
 */
-void _Camera::setEyePosition(QVector3D epos)
-{
+void _Camera::setEyePosition(QVector3D epos){
     eyePosition = epos;
 }
-QVector3D _Camera::getEyePosition() const
-{
+QVector3D _Camera::getEyePosition() const{
     return eyePosition;
 }
 /*
@@ -45,12 +41,10 @@ QVector3D _Camera::getEyePosition() const
 * sets and returns the point the camera is looking at.
 * Created: 01_03_2019
 */
-void _Camera::setFocalPoint(QVector3D focalPos)
-{
+void _Camera::setFocalPoint(QVector3D focalPos){
     focalPoint = focalPos;
 }
-QVector3D _Camera::getFocalPoint() const
-{
+QVector3D _Camera::getFocalPoint() const{
     return focalPoint;
 }
 /*
@@ -59,12 +53,10 @@ QVector3D _Camera::getFocalPoint() const
 * the direction in which the camera orents itself.
 * Created: 01_03_2019
 */
-void _Camera::setUpVector(QVector3D upVec)
-{
+void _Camera::setUpVector(QVector3D upVec){
     upVector = upVec;
 }
-QVector3D _Camera::getUpVector() const
-{
+QVector3D _Camera::getUpVector() const{
     return upVector;
 }
 
@@ -74,29 +66,24 @@ QVector3D _Camera::getUpVector() const
  * field of view setting
  * Created: 08_04_2019
 */
-void _Camera::setFOV(unsigned int fove)
-{
+void _Camera::setFOV(unsigned int fove){
     fov = fove;
 }
-unsigned int _Camera::getFOV() const
-{
+unsigned int _Camera::getFOV() const{
     return fov;
 }
-
-void _Camera::setFarClipDistance(float fclp)
-{
+/*
+* Created: 08_04_2019
+*/
+void _Camera::setFarClipDistance(float fclp){
     farClipDistance = fclp;
 }
-void _Camera::setNearClipDistance(float nclp)
-{
+void _Camera::setNearClipDistance(float nclp){
     nearClipDistance = nclp;
 }
-
-float _Camera::getNearClipDistance() const
-{
+float _Camera::getNearClipDistance() const{
     return nearClipDistance;
 }
-float _Camera::getFarClipDistance() const
-{
+float _Camera::getFarClipDistance() const{
     return farClipDistance;
 }

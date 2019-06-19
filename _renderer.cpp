@@ -243,7 +243,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     float aspect = float(resW) / float(resH ? resH : 1);
     glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
 
-    qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
+//    qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
 }
 /*
  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
@@ -420,12 +420,12 @@ void _Renderer::lookAt(QVector3D ptl)
     up= glm::normalize(glm::cross(dir, right));
 
     glm_model4x4 *= glm::mat4(right.x, right.y, right.z, 0.0f,
-                                   up.x, up.y, up.z, 0.0f,
-                                   dir.x, dir.y, dir.z, 0.0f,
-                                   obPos.x, obPos.y, obPos.z, 1.0f);
+                              up.x, up.y, up.z, 0.0f,
+                              dir.x, dir.y, dir.z, 0.0f,
+                              obPos.x, obPos.y, obPos.z, 1.0f);
 
     keepSceneEntityUpdated();
-    _Tools::Debugmatrix4x4(this->sceneEntity.getModelMatrix());
+//    _Tools::Debugmatrix4x4(this->sceneEntity.getModelMatrix());
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
@@ -490,7 +490,9 @@ void _Renderer::_Renderer::draw()
 {
     if(sceneEntity.getIsLineMode())
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    else if(!sceneEntity.getIsLineMode())
+    else if(sceneEntity.getIsLineNoCullMode())
+        glPolygonMode(GL_FRONT,GL_LINE);
+    else
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     if(sceneEntity.getIsActive())
     {

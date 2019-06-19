@@ -76,8 +76,11 @@ public:
     //flag for enabling mesh editing
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
+    //flag for setting if glLineMode
     void setIsLineMode(bool isit);
     bool getIsLineMode();
+    void setIsLineNoCullMode(bool isit);
+    bool getIsLineNoCullMode();
     //flag for type of transformations
     void setIsTransformationLocal(bool isLoc);
     bool getIsTransformationLocal();
@@ -127,6 +130,7 @@ private:
     bool isPhysicsObject;
     bool isPhysicsHelper;
     bool isLineMode;
+    bool isLineNoCullMode;
     bool isTransformationAllowed;
     //
     glm::mat4x4 translationMatrix;

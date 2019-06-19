@@ -21,6 +21,7 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     isMeshEditable = false;
     tag = new char();
     isLineMode = false;
+    isLineNoCullMode = false;
     isTransformationAllowed = true;
 
     modelInfo.setIsLoaded(false);
@@ -233,6 +234,14 @@ void _SceneEntity::setIsLineMode(bool isit){
 }
 bool _SceneEntity::getIsLineMode(){
     return isLineMode;
+}
+
+void _SceneEntity::setIsLineNoCullMode(bool isit){
+    isLineNoCullMode = isit;
+}
+bool _SceneEntity::getIsLineNoCullMode()
+{
+    return isLineNoCullMode;
 }
 /*
  *Function:isTransformationLocal()
