@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <algorithm>    // std::swap
 
-#include "_tools.h"
+//#include "_tools.h"
 
 _Physics::_Physics(){}
 _Physics::~_Physics(){}
@@ -284,7 +284,6 @@ void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
  * Update everything Internally goes in the _scene update loop
 */
 void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, _SceneEntity se){
-
     sceneEntity = se;
     setMousePointerRay(mousePos,sceneEntity.getProjectionMatrix(),sceneEntity.getViewMatrix(),screenRes);
     //Sphere Intersection Test

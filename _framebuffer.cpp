@@ -17,7 +17,6 @@ _FrameBuffer::~_FrameBuffer()
     fboShader = nullptr;
     delete fboShader;
 }
-
 /* Function: setupQuad()
  * this function sets up a basic quad to render the frabbuffer texture to
  * we put it in front of the camera for postprocessing implementations.
@@ -47,7 +46,6 @@ void _FrameBuffer::setupQuad()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
-
 /*
  * Function: setupFramebufferObjects(int resWidth, int resHeight)
  * this function sets up the the buffers for framebuffer to Texture rendering
@@ -81,7 +79,6 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
     //reset to the default framebuffer 0
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-
 /*
  * Function: initialise()
  * this function calls to all function needed on initialisation
@@ -102,7 +99,6 @@ void _FrameBuffer::initialise()
     mousePosUniform = fboShader->getUniformLocation("iMouse");
     qDebug() << "mousePosUniform->" << mousePosUniform << "FBO";
 }
-
 /*
  * Function: setFrame()
  * this function set the Frame for the frameBuffer
@@ -116,7 +112,6 @@ void _FrameBuffer::setUpdatedFrame()
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
 }
-
 /*
  * Function: renderFrameOnQuad()
  * this function will render the frame generated via setFrame, and render it on the Quad

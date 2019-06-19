@@ -113,8 +113,10 @@ void _Scene::addCamera(_Camera c){
 void _Scene::updateCamera(_Camera c){
     cam = c;
     if(isCamera == true)
-        for (unsigned int i = 0; i < renderObjects.size(); i++)
+        for (unsigned int i = 0; i < renderObjects.size(); i++){
             renderObjects[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
+            renderObjects[i]->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+        }
 }
 /*
  * Created: 3_05_2019

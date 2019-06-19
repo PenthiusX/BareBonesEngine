@@ -20,6 +20,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     idmatch = 0;
     isCamFocus = false;
+    isCTRL =false;
     //  keeps the event callbacks working for the GL widget
     this->setFocusPolicy(Qt::StrongFocus);
 }
@@ -92,7 +93,7 @@ void _GLWidget::initializeGL()
     sph.setId(1);
     sph.setTag("boundingSphere");
     sph.setIsLineMode(true);
-    sph.setPhysicsObject(_SceneEntity::Sphere);
+    sph.setPhysicsObject(_SceneEntity::Sphere,false);
     sph.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     sph.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     sph.setColor(QVector4D(0.3,0.5,0.0,0.9));
@@ -104,7 +105,7 @@ void _GLWidget::initializeGL()
     bb.setId(2);
     bb.setTag("boundingBox");
     bb.setIsLineMode(true);
-    bb.setPhysicsObject(_SceneEntity::Box);
+    bb.setPhysicsObject(_SceneEntity::Box,false);
     bb.setIsTransformationLocal(false);
     bb.setPosition(QVector3D(0.0,0.0, 0.0));
     bb.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
@@ -117,11 +118,12 @@ void _GLWidget::initializeGL()
     s.setTag("clickSurface");
     s.setPhysicsObject(_SceneEntity::Mesh);
     s.setIsTransformationLocal(false);
+    s.setIsLineNoCullMode(true);
     s.setPosition(QVector3D(0.0,0.0, 0.0));
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    s.setColor(QVector4D(0.0,0.0,0.5,0.8));
+    s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(1.0f);
-    s.setModelData(quad);
+    s.setModelData(":/models/hipolyore.obj");
     //----------Helpers---------------
     mpnt.setId(999);
     mpnt.setTag("mousePointerObject");
@@ -258,9 +260,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     //convert global cursor pos to localWidgetPositions
     //needed for widgetfocus free mousePosition updates
     globalMPoint = this->mapFromGlobal(QCursor::pos());
-
-    QVector2D diff = QVector2D(e->localPos()) - mousePressPositionL;
-    scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);
+    scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
 }
 /*
 * Function: mouseMoveEvent(QMouseEvent *e)
@@ -278,22 +278,25 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     if(e->buttons() == Qt::LeftButton)
     {
         mousePositionL = QVector2D(e->localPos());
-        //RotateTarget with mouse
-        {
-            QVector2D mosPosL = mousePressPositionL;
-            QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
-            if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
-                mosPosL = maxpoint;
-            }
-            double damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
-            rotRads  += mousePositionL - mosPosL;
-            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
-        }
     }
     if(e->buttons() == Qt::RightButton)
     {
         mousePositionR = QVector2D(e->localPos());
-        scene->setMousePositionInScene(mousePositionR,Qt::RightButton);//sets the mouse position in the scene for use
+        scene->setMousePositionInScene(mousePositionR,Qt::RightButton);//sets the mouse position in the scene
+    }
+    if(e->buttons() == Qt::MiddleButton){
+        mousePositionM = QVector2D(e->localPos());
+        //RotateTarget with mouse
+        {
+            QVector2D mosPos = mousePositionM;
+            QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
+            if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
+                mosPos = maxpoint;
+            }
+            double damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
+            rotRads  += mousePositionM - mosPos;
+            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
+        }
     }
 }
 /*
@@ -310,14 +313,16 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     //Scale target with mouseWheel
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
-    if (e->orientation() == Qt::Horizontal){
-        scroolScale = numSteps * 0.005;
-        scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setscale(scroolScale);
-    }
-    else{
+
+    if(isCTRL == true){
         scroolScale = scene->findSceneEntity(idmatch).getScale() + (numSteps * 0.005);
         scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setscale(scroolScale);
+        isCTRL = false;
     }
+    scroolScale = cam.getFOV() + numSteps;
+    cam.setFOV(scroolScale);
+    qDebug() << cam.getFOV();
+    scene->updateCamera(cam);
 }
 
 /*
@@ -337,17 +342,14 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     if (idmatch >= scene->getSceneObjects().size()){
         idmatch = 0;}
     if (event->text() == "a" || event->text() == "A"){
-        if (isCamFocus)
-            cam.setEyePosition(QVector3D(cam.getEyePosition().x() - 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
-        else
-            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(-0.1f, -0.f, 0.0));
+        if (isCamFocus)cam.setEyePosition(QVector3D(cam.getEyePosition().x() - 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
+        else scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(-0.1f, -0.f, 0.0));
     }
     if (event->text() == "d" || event->text() == "D"){
         if (isCamFocus){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() + 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
             scene->updateCamera(cam);
-        }else
-            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(0.1f, 0.f, 0.0));
+        }else scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->translate(QVector3D(0.1f, 0.f, 0.0));
     }
     if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus){
@@ -376,12 +378,14 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     }
     if (event->text() == "c" || event->text() == "C"){
         isCamFocus = !isCamFocus;
-        //        applyStuffToallEntites(!isCamFocus);
+        applyStuffToallEntites(!isCamFocus);
     }
     if (event->text() == "p" || event->text() == "P")
         addRandomSceneEntitestoScene();
     if (event->text() == "l" || event->text() == "L")
         removeSceneEntityFromScene();
+    if(event->key() == Qt::Key_Control)
+        isCTRL = true;
 }
 
 /*
@@ -394,7 +398,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 //Press P to activate.
 void _GLWidget::addRandomSceneEntitestoScene()
 {
-    for(int i = 0 ; i < 1 ; i++)
+    for(int i = 0 ; i < 1000 ; i++)
     {   //makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
         //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).
         makeCurrent();

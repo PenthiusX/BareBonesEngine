@@ -6,7 +6,8 @@
            <file>models/monkey.obj</file>
            <file>models/sphere.obj</file>
            <file>models/sphere1.obj</file>
-           <file>models/stickman.obj</file>           
+           <file>models/stickman.obj</file>  
+		   <file>models/hipolyore.obj</file>           		   
            <file>models/car.obj</file>
            <file>models/pivot.obj</file>
 		   <file>models/helpers/min.obj</file>
