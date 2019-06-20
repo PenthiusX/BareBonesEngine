@@ -32,6 +32,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *e) override;
     virtual void wheelEvent(QWheelEvent *e) override;
     virtual void  keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
     void addRandomSceneEntitestoScene();
@@ -57,7 +58,7 @@ private:
     QVector2D rotRads;
     bool isCamFocus;
     bool isCTRL;
-    QVector2D mousePressPositionL,mousePressPositionR;
+    QVector2D mousePressPositionL,mousePressPositionR,mousePressPositionM;
     QPoint globalMPoint;
     QVector2D mousePositionL,mousePositionR,mousePositionM;
 };
