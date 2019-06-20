@@ -24,8 +24,9 @@ public:
     void showImageInterval(cv::Mat img, int interval=10);
     void computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, cv::Mat &texture_model_wrap, int rotation_step, glm::vec2 stage_center);
     void computeRowWiseLeftEdge(cv::Mat &input_img, cv::Mat &output_img);
-    glm::vec3 compute_stage_angle(cv::Mat &input_img, cv::Mat &output_img);
+    glm::vec3 compute_stage_angle(cv::Mat &input_img, cv::Mat &output_img,std::vector<float> params={0.0,0.0,0.0,0.0,0.0,0.0});
     cv::Point2f find_line_intersection(cv::Vec4i line1, cv::Vec4i line2);
+    glm::vec3 compute_stage_angle_gradient(cv::Mat &input_img, cv::Mat &output_img, std::vector<float> params);
 signals:
     void imageOut(QImage img);
 protected:

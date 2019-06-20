@@ -329,7 +329,7 @@ void _Processing::markStageEdge(char *img, unsigned int iwidth, unsigned int ihe
 
 }
 
-void _Processing::markStageEdgeCV(char *img, unsigned int iwidth, unsigned int iheight)
+void _Processing::markStageEdgeCV(char *img, unsigned int iwidth, unsigned int iheight,std::vector<float> params)
 {
     static bool init = true;
 
@@ -354,7 +354,8 @@ void _Processing::markStageEdgeCV(char *img, unsigned int iwidth, unsigned int i
     //send the image to gpu texture
     texture_in = cv::Mat(iheight, iwidth, CV_8UC1, img);
 
-    glm::vec3 angle_x_y = cpu_compute->compute_stage_angle(texture_in,texture_out);
+
+    glm::vec3 angle_x_y = cpu_compute->compute_stage_angle_gradient(texture_in,texture_out,params);
     //gpu_compute->compute_copy_red_to_rgba(texture_edge,texture_out);
     //gpu_compute->compute_mark_column_index(texture_outt,texture_out);
     //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);

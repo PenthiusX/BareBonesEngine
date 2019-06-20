@@ -124,6 +124,8 @@ void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img
     }
 }
 
+
+
 /* Function : compute_stage_angle(cv::Mat& input_img,cv::Mat& output_img)
  *
  * this function calculates stage angle and center point of stage and returns it in a vec3 format :
@@ -131,14 +133,148 @@ void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img
  * created : 17/06/2019
  *
 */
-glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_img)
+glm::vec3 _Cpu_Compute::compute_stage_angle_gradient(cv::Mat& input_img,cv::Mat& output_img,std::vector<float> params)
+{
+    //create temp images for operations
+    imwrite( "Gray_Image.png", input_img );
+    cv::Mat edge,dilated_img,angle,angle_x,angle_y,masked_img,mask=cv::Mat::zeros(input_img.rows,input_img.cols,CV_8UC1),grad_x, grad_y,thres_grad_x, thres_grad_y,abs_grad_x,abs_grad_y;
+
+    //preprocessing filtering
+    mask(cv::Rect(16,16,input_img.cols-32,input_img.rows-32)) = 255;
+//    cv::bitwise_and(input_img, input_img, masked_img, mask);
+
+        //cv::Mat grad;
+        int ksize = 3;
+        double scale = 1/4.0;
+        int delta = 0;
+        int ddepth = CV_32FC1;
+
+    Sobel(input_img, grad_x, ddepth, 1, 0, ksize, scale, delta, cv::BORDER_DEFAULT);
+    Sobel(input_img, grad_y, ddepth, 0, 1, ksize, scale, delta, cv::BORDER_DEFAULT);
+
+    //take magnitude of edges
+    convertScaleAbs( grad_x, thres_grad_x );
+    convertScaleAbs( grad_y, thres_grad_y );
+
+    cv::bitwise_and(thres_grad_x, thres_grad_x, abs_grad_x, mask);
+    cv::bitwise_and(thres_grad_y, thres_grad_y, abs_grad_y, mask);
+
+    //seletcing verticle gradients
+    threshold(abs_grad_x, thres_grad_x, 40, 255,cv::THRESH_BINARY );
+    threshold(abs_grad_y, thres_grad_y, 40, 255,cv::THRESH_BINARY );
+
+    phase(grad_x , grad_y , angle, true);
+
+    //multiply(thres_grad_x,angle,angle_x,1.0,CV_32FC1);
+    //multiply(thres_grad_y,angle,angle_y,1.0,CV_32FC1);
+
+    cv::bitwise_and(angle, angle, angle_x, thres_grad_x);
+    cv::bitwise_and(angle, angle, angle_y, thres_grad_y);
+
+    showImageInterval(angle_y);
+
+    //seletcing horizontal gradients
+
+    //find canny edge
+//    cv::Canny(input_img, edge, 50, 200, 3);
+
+//    //mask to remove anomalies at boundries
+
+
+//    //show masked_edge image as output
+//    cvtColor(input_img, output_img, cv::COLOR_GRAY2RGBA);
+
+//    std::vector<cv::Vec4i> lines,h_lines,v_lines;
+//    std::vector<glm::vec3> line_center_and_angle;
+
+//    cv::Mat element = getStructuringElement( cv::MORPH_ELLIPSE,cv::Size( 3, 3 ),cv::Point(1,1));
+
+//    cv::dilate(masked_edge, dilated_img, element, cv::Point(-1, -1), 1, 1, 1);
+
+//    showImageInterval(dilated_img);
+
+//    HoughLinesP(dilated_img, lines, 1, CV_PI/180,50, 50, 10);
+////    for( size_t i = 0; i < lines.size(); i++ )
+////    {
+////      cv::Vec4i l = lines[i];
+//      //cv::line( output_img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255,255), 1, cv::LINE_AA);
+////    }
+//    float delta = 5;
+//    std::vector<cv::Point2f> points,centers,h_points,v_points;
+//    centers.push_back(cv::Point2f(1.0,1.0));
+//    centers.push_back(cv::Point2f(1.0,1.0));
+
+//    //categorise lines in vertical and horizontal
+//    for(auto line:lines)
+//    {
+//        if(cv::abs(line[2]-line[0])< delta)// x-values are near; line is vertical
+//        {
+//            v_lines.push_back(line);
+//            v_points.push_back(cv::Point2f(line[0],line[1]));
+//            v_points.push_back(cv::Point2f(line[2],line[3]));
+//            cv::line( output_img, cv::Point(line[0], line[1]), cv::Point(line[2], line[3]), cv::Scalar(0,0,255,255), 1, cv::LINE_AA);
+//        }
+
+//        if(cv::abs(line[3]-line[1])< delta)//  y-values are near; line is horizontal
+//        {
+//            h_lines.push_back(line);
+//            h_points.push_back(cv::Point2f(line[0],line[1]));
+//            h_points.push_back(cv::Point2f(line[2],line[3]));
+//            cv::line( output_img, cv::Point(line[0], line[1]), cv::Point(line[2], line[3]), cv::Scalar(255,0,0,255), 1, cv::LINE_AA);
+//        }
+//    }
+
+//    std::vector<int> io_array(points.size());
+
+////    for(auto h_line:h_lines)
+////    {
+////        for(auto v_line:v_lines)
+////        {
+////            auto pt =find_line_intersection(h_line,v_line);
+////            points.push_back(pt);
+////        }
+////    }
+//    //cv::TermCriteria criteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 10, 1.0);
+//    //cv::kmeans(v_points, 2, io_array, criteria,10,cv::KMEANS_PP_CENTERS,centers);
+
+//    //qDebug() << centers;
+//    int n = h_points.size();
+
+//    //fit a single horizontal line with slope and intercept = a, b respectively
+
+//    double xsum=0,x2sum=0,ysum=0,xysum=0,a,b;                //variables for sums/sigma of xi,yi,xi^2,xiyi etc
+//    for (auto pt:h_points)
+//    {
+//        xsum=xsum+pt.x;                        //calculate sigma(xi)
+//        ysum=ysum+pt.y;                        //calculate sigma(yi)
+//        x2sum=x2sum+pow(pt.x,2);                //calculate sigma(x^2i)
+//        xysum=xysum+pt.x*pt.y;                    //calculate sigma(xi*yi)
+//    }
+//    a=(n*xysum-xsum*ysum)/(n*x2sum-xsum*xsum);            //calculate slope
+//    b=(x2sum*ysum-xsum*xysum)/(x2sum*n-xsum*xsum);            //calculate intercept
+
+//    //find intesections
+//    float mid_x = (centers[0].x+centers[1].x)/2.0;
+//    glm::vec3 stage_center_angle(mid_x,a*mid_x+b,glm::atan(a)*180.0/CV_PI);
+
+//    cv::circle(output_img, cv::Point2f(stage_center_angle.x,stage_center_angle.y), 3, cv::Scalar(0,255,0,255), -1);
+//    return stage_center_angle;
+    return glm::vec3(1.0,1.0,1.0);
+}
+
+
+
+/* Function : compute_stage_angle(cv::Mat& input_img,cv::Mat& output_img)
+ *
+ * this function calculates stage angle and center point of stage and returns it in a vec3 format :
+ * glm::vec3(center_x,center_y,theta);
+ * created : 17/06/2019
+ *
+*/
+glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_img,std::vector<float> params)
 {
     //create temp images for operations
     cv::Mat edge,dilated_img,masked_edge,mask=cv::Mat::zeros(input_img.rows,input_img.cols,CV_8UC1);
-
-    cv::Mat element = getStructuringElement( cv::MORPH_ELLIPSE,cv::Size( 5, 5 ),cv::Point(2, 2 ) );
-
-    cv::dilate(input_img, dilated_img, element, cv::Point(-1, -1), 3, 1, 1);
 
     //find canny edge
     cv::Canny(input_img, edge, 50, 200, 3);
@@ -147,22 +283,28 @@ glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_i
     mask(cv::Rect(16,16,input_img.cols-32,input_img.rows-32)) = 255;
     cv::bitwise_and(edge, edge, masked_edge, mask);
 
-    showImageInterval(masked_edge);
-
     //show masked_edge image as output
     cvtColor(input_img, output_img, cv::COLOR_GRAY2RGBA);
 
     std::vector<cv::Vec4i> lines,h_lines,v_lines;
     std::vector<glm::vec3> line_center_and_angle;
 
-    HoughLinesP(masked_edge, lines, 1, CV_PI/180, 20, 30, 5 );
+    cv::Mat element = getStructuringElement( cv::MORPH_ELLIPSE,cv::Size( 3, 3 ),cv::Point(1,1));
+
+    cv::dilate(masked_edge, dilated_img, element, cv::Point(-1, -1), 1, 1, 1);
+
+    showImageInterval(dilated_img);
+
+    HoughLinesP(dilated_img, lines, 1, CV_PI/180,50, 50, 10);
 //    for( size_t i = 0; i < lines.size(); i++ )
 //    {
 //      cv::Vec4i l = lines[i];
       //cv::line( output_img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255,255), 1, cv::LINE_AA);
 //    }
-    float delta = 2;
+    float delta = 5;
     std::vector<cv::Point2f> points,centers,h_points,v_points;
+    centers.push_back(cv::Point2f(1.0,1.0));
+    centers.push_back(cv::Point2f(1.0,1.0));
 
     //categorise lines in vertical and horizontal
     for(auto line:lines)
@@ -186,16 +328,16 @@ glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_i
 
     std::vector<int> io_array(points.size());
 
-    for(auto h_line:h_lines)
-    {
-        for(auto v_line:v_lines)
-        {
-            auto pt =find_line_intersection(h_line,v_line);
-            points.push_back(pt);
-        }
-    }
-    cv::TermCriteria criteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 10, 1.0);
-    cv::kmeans(v_points, 2, io_array, criteria,10,cv::KMEANS_PP_CENTERS,centers);
+//    for(auto h_line:h_lines)
+//    {
+//        for(auto v_line:v_lines)
+//        {
+//            auto pt =find_line_intersection(h_line,v_line);
+//            points.push_back(pt);
+//        }
+//    }
+    //cv::TermCriteria criteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 10, 1.0);
+    //cv::kmeans(v_points, 2, io_array, criteria,10,cv::KMEANS_PP_CENTERS,centers);
 
     //qDebug() << centers;
     int n = h_points.size();
@@ -212,8 +354,6 @@ glm::vec3 _Cpu_Compute::compute_stage_angle(cv::Mat& input_img,cv::Mat& output_i
     }
     a=(n*xysum-xsum*ysum)/(n*x2sum-xsum*xsum);            //calculate slope
     b=(x2sum*ysum-xsum*xysum)/(x2sum*n-xsum*xsum);            //calculate intercept
-
-
 
     //find intesections
     float mid_x = (centers[0].x+centers[1].x)/2.0;
