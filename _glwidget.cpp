@@ -20,7 +20,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     idmatch = 0;
     isCamFocus = false;
-    isCTRL =false;
+    isCTRL = false;
     //  keeps the event callbacks working for the GL widget
     this->setFocusPolicy(Qt::StrongFocus);
 }
@@ -235,20 +235,20 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
     //needed for widgetfocus free mousePosition updates
     globalMPoint = this->mapFromGlobal(QCursor::pos());
 
-    if(e->buttons() == Qt::LeftButton){
+    if(e->button() == Qt::LeftButton){
         //get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
         //sets the left button click on for picking in the scene for use in physics
-
+        //        qDebug() << "Lpress";
     }
-    if(e->buttons() == Qt::RightButton){
+    if(e->button() == Qt::RightButton){
         //get mouse position only on left button click
         mousePressPositionR = QVector2D(e->localPos());
-
+        //        qDebug() << "Rpress";
     }
-    if(e->buttons() == Qt::MiddleButton){
-        mousePositionM = QVector2D(e->localPos());
-
+    if(e->button() == Qt::MiddleButton){
+        mousePressPositionM = QVector2D(e->localPos());
+        //        qDebug() << "Mpress";
     }
 }
 /*
@@ -257,23 +257,22 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
 * runs each time the mouse is released.
 * Created: 5_02_2019
 */
+
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     //convert global cursor pos to localWidgetPositions
     //needed for widgetfocus free mousePosition updates
     globalMPoint = this->mapFromGlobal(QCursor::pos());
 
-    //wierd bug need to fix
-    if(e->buttons() == Qt::LeftButton){
+    if(e->button() == Qt::LeftButton){
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
-        qDebug() << "Lpress";
+        //        qDebug() << "LpressRel";
     }
-    if(e->buttons() == Qt::RightButton){
-        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
-        qDebug() << "Rpress";
+    if(e->button() == Qt::RightButton){
+        //        qDebug() << "RpressRel";
     }
-    if(e->buttons() == Qt::MiddleButton){
-        qDebug() << "Mpress";
+    if(e->button() == Qt::MiddleButton){
+        //        qDebug() << "MpressRel";
     }
 }
 /*
@@ -289,31 +288,29 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     globalMPoint = this->mapFromGlobal(QCursor::pos());
 
     //selet button is pressed when updating mousevalues
-    if(e->buttons() == Qt::LeftButton)
-    {
+    if(e->buttons() == Qt::LeftButton){
         mousePositionL = QVector2D(e->localPos());
-        qDebug() << "Lpress";
+        //        qDebug() << "LpressMv";
     }
-    if(e->buttons() == Qt::RightButton)
-    {
+    if(e->buttons() == Qt::RightButton){
         mousePositionR = QVector2D(e->localPos());
         scene->setMousePositionInScene(mousePositionR,Qt::RightButton);//sets the mouse position in the scene
-        qDebug() << "Rpress";
+        //        qDebug() << "RpressMv";
     }
     if(e->buttons() == Qt::MiddleButton){
         mousePositionM = QVector2D(e->localPos());
-
         //RotateTarget with mouse
-        QVector2D mosPos = mousePositionM;
-        QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
-        if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
-            mosPos = maxpoint;
+        if(isCTRL){
+            QVector2D mosPos = mousePositionM;
+            QVector2D maxpoint = _Tools::retunrnMaxPoint(QVector2D(e->localPos()));
+            if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
+                mosPos = maxpoint;
+            }
+            double damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
+            rotRads  += mousePositionL - mosPos;
+            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
+            //        qDebug() << "MpressMv";
         }
-        double damp = 0.05;//to decrese the magnitude of the value coming in from the mousepos
-        rotRads  += mousePositionM - mosPos;
-        scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
-
-        qDebug() << "Mpress";
     }
 }
 /*
@@ -331,15 +328,16 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
 
-    if(isCTRL == true){
+    if(isCTRL){
         scroolScale = scene->findSceneEntity(idmatch).getScale() + (numSteps * 0.005);
         scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setscale(scroolScale);
-        isCTRL = false;
     }
-    scroolScale = cam.getFOV() + numSteps;
-    cam.setFOV(scroolScale);
-    qDebug() << cam.getFOV();
-    scene->updateCamera(cam);
+    else{
+        scroolScale = cam.getFOV() + numSteps;
+        cam.setFOV(scroolScale);
+        qDebug() << cam.getFOV();
+        scene->updateCamera(cam);
+    }
 }
 
 /*
@@ -391,13 +389,19 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         }
     }
     if (event->text() == "c" || event->text() == "C")
-        isCamFocus = !isCamFocus;
+        isCamFocus = true;
     if (event->text() == "p" || event->text() == "P")
         addRandomSceneEntitestoScene();
     if (event->text() == "l" || event->text() == "L")
         removeSceneEntityFromScene();
     if(event->key() == Qt::Key_Control)
         isCTRL = true;
+}
+void _GLWidget::keyReleaseEvent(QKeyEvent *event){
+    if(event->key() == Qt::Key_Control)
+        isCTRL = false;
+    if (event->text() == "c" || event->text() == "C")
+        isCamFocus = false;
 }
 
 /*
