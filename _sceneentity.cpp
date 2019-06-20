@@ -9,8 +9,8 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     rotation = QVector3D(0.0,0.0,0.0);
     postion = QVector3D(0.0, 0.0, 0.0);
     color = QVector4D(0.5,0.5,0.5,1.0);
-//    vShaderPath = ":/shaders/dmvshader.glsl";
-//    fShaderPath = ":/shaders/dmfshader.glsl";
+    vShaderPath = ":/shaders/dmvshader.glsl";
+    fShaderPath = ":/shaders/dmfshader.glsl";
     scale = 1.0;
     orderInIndex = 0;
     isActive = true;
@@ -19,6 +19,7 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     isPhysicsObject = false;
     isHitByRay = false;
     isMeshEditable = false;
+    isPhysicsHelper = false;
     tag = new char();
     isLineMode = false;
     isLineNoCullMode = false;
@@ -346,12 +347,16 @@ QString _SceneEntity::getFragmentShaderPath() const{
 */
 void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum){
     isPhysicsObject = true;
-    isPhysicsHelper = true;
+    isPhysicsHelper = false;
     phyObjtype = penum;
 }
-void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, bool isHelper)
+void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, scenePhysicsObjects helper)
 {
-    isPhysicsHelper = isHelper;
+    if(helper = _SceneEntity::Helper){
+        isPhysicsHelper = true;}
+    else if(helper = _SceneEntity::NoHelper){
+        isPhysicsHelper = false;}
+
     isPhysicsObject = true;
     phyObjtype = penum;
 }

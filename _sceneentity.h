@@ -89,6 +89,8 @@ public:
         Sphere = 0,
         Box = 1,
         Mesh = 2,
+        Helper = 3,
+        NoHelper = 4
     };
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
@@ -96,7 +98,7 @@ public:
     bool getIsPhysicsHelper()const;
     _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
-    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,bool isHelper);
+    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,_SceneEntity::scenePhysicsObjects helper);
 
 private:
     unsigned int id;
