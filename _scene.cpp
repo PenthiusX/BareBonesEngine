@@ -273,10 +273,11 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
         renderObjects[findSceneEntity(991).getIndexPosInScene()]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
 
         renderObjects[findSceneEntity(992).getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
-         renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());
+        renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy lookat
         renderObjects[findSceneEntity(992).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
 
         renderObjects[findSceneEntity(993).getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
+        renderObjects[findSceneEntity(993).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy look at
         renderObjects[findSceneEntity(993).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
         //-------------------------------------------------
         pc++;
