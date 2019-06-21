@@ -208,8 +208,8 @@ void _GLWidget::paintGL()//the renderloop
     //debug use,sets camfocus on object with the iD that is selected---------------
     cam.setFocalPoint(scene->findSceneEntity(idmatch).getPostion());
     // index 1 is set Exclusively for the pivot object
-    scene->getSceneObjects()[1]->setPosition(scene->findSceneEntity(idmatch).getPostion());
-    scene->getSceneObjects()[1]->setRotation(scene->findSceneEntity(idmatch).getRotation());
+    scene->getSceneObjects()[scene->findSceneEntity("pivot").getIndexPosInScene()]->setPosition(scene->findSceneEntity(idmatch).getPostion());
+    scene->getSceneObjects()[scene->findSceneEntity("pivot").getIndexPosInScene()]->setRotation(scene->findSceneEntity(idmatch).getRotation());
 
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
@@ -238,6 +238,8 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
     if(e->button() == Qt::LeftButton){
         //get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
+        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
+        idmatch = scene->getSceneEntityHitWithRay().getId();
         //sets the left button click on for picking in the scene for use in physics
         //        qDebug() << "Lpress";
     }
@@ -266,6 +268,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 
     if(e->button() == Qt::LeftButton){
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
+        idmatch = scene->getSceneEntityHitWithRay().getId();
         //        qDebug() << "LpressRel";
     }
     if(e->button() == Qt::RightButton){
@@ -286,7 +289,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     //convert global cursor pos to localWidgetPositions
     //needed for widgetfocus free mousePosition updates
     globalMPoint = this->mapFromGlobal(QCursor::pos());
-
     //selet button is pressed when updating mousevalues
     if(e->buttons() == Qt::LeftButton){
         mousePositionL = QVector2D(e->localPos());
@@ -327,13 +329,12 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     //Scale target with mouseWheel
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
-
     if(isCTRL){
         scroolScale = scene->findSceneEntity(idmatch).getScale() + (numSteps * 0.005);
         scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setscale(scroolScale);
     }
     else{
-        scroolScale = cam.getFOV() + numSteps;
+        scroolScale = cam.getFOV() - numSteps;
         cam.setFOV(scroolScale);
         qDebug() << cam.getFOV();
         scene->updateCamera(cam);

@@ -39,7 +39,9 @@ public:
     void updateAllPhysicsObjects();
     //
     _SceneEntity findSceneEntity(unsigned int iD);
-    _SceneEntity findSceneEntity(std::string tag);
+    _SceneEntity findSceneEntity(QString tag);
+    //
+    _SceneEntity getSceneEntityHitWithRay();
 
 private:
     std::vector<_SceneEntity> sceneEntityVector;
@@ -52,6 +54,7 @@ private:
     int resW,resH;
     //Physics
     std::vector<_Physics> physVector;
+    _SceneEntity rayHitSceneEntity;
     bool isPhysicsObjectClicked;//Not in use but needs to set it to click and the rest to unclicked
     unsigned int pc = 0;//physics object counter
 };
