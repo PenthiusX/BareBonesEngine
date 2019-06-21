@@ -62,14 +62,14 @@ void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
     }
     qInfo() << "----------------------------------------------------";
 }
-
-
+/*
+ *
+*/
 void _Tools::printFrameRate()
 {
     frameCounter++;
     int t = timer.elapsed()/1000;
     int interval = 1;
-//    qDebug() << t;
     if(t > interval)
     {
         qInfo() <<"Framerate:"<< frameCounter / interval;
@@ -83,4 +83,20 @@ float _Tools::getRandomNumberfromRangeF(float min, float max)
 //    std::srand(2);
     return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
 }
-
+/*
+ * Created: 21_06_2019
+*/
+bool isDist = false;
+float dist = 0.f;
+QVector3D _Tools::interpolateBetweenPoints(QVector3D p1, QVector3D p2,float factor)
+{
+    glm::vec3 pB = glm::vec3(p2.x(),p2.y(),p2.z());
+    glm::vec3 pA = glm::vec3(p1.x(),p1.y(),p1.z());
+    if(!isDist){
+        dist =  glm::distance(pB,pA);
+        isDist = true;
+    }
+    dist *= factor;//factor
+    QVector3D out = QVector3D((pA + dist).x , (pA + dist).y,(pA + dist).z);
+    return out;
+}

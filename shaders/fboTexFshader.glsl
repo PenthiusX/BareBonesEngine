@@ -3,6 +3,7 @@ out vec4 FragColor;
 
 in vec2 TexCoords;
 in vec2 iMouseO;
+in vec2 iMouse1;
 in float iTime;
 
 uniform sampler2D screenTexture;
@@ -21,6 +22,16 @@ uniform sampler2D screenTexture;
 
 void main()
 {
+    //shows a cursor on screen
+    vec4 col = vec4(0.0,0.0,0.0,1.0);
+
+    //Makes a screen change shaders based on mouse pos
+    if(gl_FragCoord.x >= iMouseO.x){
+        col = vec4(vec3(1.0 - texture2D(screenTexture, TexCoords)), 1.0);}//invertColors
+    else{
+        col =  texture2D(screenTexture,TexCoords) * vec4(1.0,1.0,1.0,1.0);}
+    FragColor = col;
+
     //-----------------Storing some common usecases------------------------------
     // texture multiplied ot custom value
     //    FragColor = texture2D(screenTexture, TexCoords) * vec4(1.00,1.0,1.0,1.0);
@@ -52,17 +63,5 @@ void main()
     //    vec3 edgeColor = vec3(0., 1., 0.0);
     //    col = vec4(mix(diffuse, edgeColor, g), 1.);
     //----------------------------------------------------------------------------
-
-    //shows a cursor on screen
-    vec4 col = vec4(0.0,0.0,0.0,1.0);
-
-    //Makes a screen change shaders based on mouse pos
-    if(gl_FragCoord.x >= iMouseO.x){
-        col = vec4(vec3(1.0 - texture2D(screenTexture, TexCoords)), 1.0);
-    }
-    else{
-        col =  texture2D(screenTexture, TexCoords) * vec4(1.0,1.0,1.0,1.0);;
-    }
-    FragColor = col;
 }
 

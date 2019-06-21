@@ -264,30 +264,32 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
     renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
     if(s.getisHitByRay()) rayHitSceneEntity = s;//Stores the SceneEntity that is hitByray for acces.
 
-    //---------------------PhysicsHelpers--------------
-     if(s.getIsPhysicsHelper() && s.getisHitByRay()){
-        //  Helper for mouseIntersection point
-        if(physVector[pc].getSceneEntity().getisHitByRay()){
-            glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
-            renderObjects[findSceneEntity(999).getIndexPosInScene()]->setPosition(QVector3D(p.x,p.y,p.z));
+    //Update Physics Helpers
+    {
+        if(s.getIsPhysicsHelper() && s.getisHitByRay()){
+            //  Helper for mouseIntersection point
+            if(physVector[pc].getSceneEntity().getisHitByRay()){
+                glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
+                renderObjects[findSceneEntity(999).getIndexPosInScene()]->setPosition(QVector3D(p.x,p.y,p.z));
+            }
+            //  Temporary Helpers for Max min extents
+            glm::vec4 mx = physVector[pc].getSceneEntity().getModelInfo().getMaxExtent();
+            glm::vec4 mn = physVector[pc].getSceneEntity().getModelInfo().getMinExtent();
+            glm::vec4 cntrd = physVector[pc].getSceneEntity().getModelInfo().getCentroid();
+            renderObjects[findSceneEntity(991).getIndexPosInScene()]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
+
+            renderObjects[findSceneEntity(992).getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
+            renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy lookat
+            renderObjects[findSceneEntity(992).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
+
+            renderObjects[findSceneEntity(993).getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
+            renderObjects[findSceneEntity(993).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy look at
+            renderObjects[findSceneEntity(993).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
+            //-------------------------------------------------
+            pc++;
+            if(pc >= physVector.size())
+                pc = 0;
         }
-        //  Temporary Helpers for Max min extents
-        glm::vec4 mx = physVector[pc].getSceneEntity().getModelInfo().getMaxExtent();
-        glm::vec4 mn = physVector[pc].getSceneEntity().getModelInfo().getMinExtent();
-        glm::vec4 cntrd = physVector[pc].getSceneEntity().getModelInfo().getCentroid();
-        renderObjects[findSceneEntity(991).getIndexPosInScene()]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
-
-        renderObjects[findSceneEntity(992).getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
-        renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy lookat
-        renderObjects[findSceneEntity(992).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
-
-        renderObjects[findSceneEntity(993).getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
-        renderObjects[findSceneEntity(993).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy look at
-        renderObjects[findSceneEntity(993).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
-        //-------------------------------------------------
-        pc++;
-        if(pc >= physVector.size())
-            pc = 0;
     }
 }
 

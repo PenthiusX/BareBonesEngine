@@ -4,7 +4,8 @@
 
 //#include "_tools.h"
 
-_Physics::_Physics(){}
+_Physics::_Physics(){
+}
 _Physics::~_Physics(){}
 
 void _Physics::setSceneEntity(_SceneEntity s){
@@ -209,7 +210,9 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
     else {// This means that there is a line intersection but not a ray intersection.
         return false;}
 }
-
+/*
+ * Created: 15_06_2019
+ */
 bool _Physics::rayIntersectsTriangles(std::vector<_Phy_Triangle> tries,glm::vec3 rayOrigin,glm::vec3 rayVector){
     if(tries.size() != NULL){
         for(int it= 0 ; it < tries.size() ; it++){
@@ -220,7 +223,6 @@ bool _Physics::rayIntersectsTriangles(std::vector<_Phy_Triangle> tries,glm::vec3
     }
     return false;
 }
-
 /*
  * Created: 5_06_2019
 */

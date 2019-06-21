@@ -23,6 +23,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
     isCTRL = false;
     //  keeps the event callbacks working for the GL widget
     this->setFocusPolicy(Qt::StrongFocus);
+    qTimer.start();
 }
 _GLWidget::~_GLWidget()
 {
@@ -205,16 +206,24 @@ void _GLWidget::resizeGL(int w, int h)
 */
 void _GLWidget::paintGL()//the renderloop
 {
-    //debug use,sets camfocus on object with the iD that is selected---------------
-    cam.setFocalPoint(scene->findSceneEntity(idmatch).getPostion());
-    // index 1 is set Exclusively for the pivot object
+    //calculates Deltatime, should be used in Frame independent tranformations.
+    currentTime = qTimer.elapsed() * 0.001;//sets the time elapsed
+    deltaTime = currentTime - timeSinceLastFrame;//change in time Per frame
+    //-------------------------
+    //sets cam focus on object with the iD that is selected
+    newPosForCam = _Tools::interpolateBetweenPoints(oldPosForCam,scene->findSceneEntity(idmatch).getPostion(),0.005);
+    cam.setFocalPoint(newPosForCam);
+    scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
+    // binding the pivot object to focus object
     scene->getSceneObjects()[scene->findSceneEntity("pivot").getIndexPosInScene()]->setPosition(scene->findSceneEntity(idmatch).getPostion());
     scene->getSceneObjects()[scene->findSceneEntity("pivot").getIndexPosInScene()]->setRotation(scene->findSceneEntity(idmatch).getRotation());
-
-    scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
-    scene->render();//renders the scene with all the prequists pass into the scene via a  sceneEntity object.
-    this->update();//is to send QtOpenglGl a flag to update openglFrames
+    //renders the scene with all the prequists pass into the scene via a  sceneEntity object.
+    scene->render();
+    //is to send QtOpenglGl a flag to update openglFrames
+    this->update();
     _Tools::printFrameRate();//prints the frame rate in the application output
+    //---------------------------
+    timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
 }
 
 /*
@@ -239,7 +248,9 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
         //get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
+        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
         idmatch = scene->getSceneEntityHitWithRay().getId();
+
         //sets the left button click on for picking in the scene for use in physics
         //        qDebug() << "Lpress";
     }
@@ -265,9 +276,10 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     //convert global cursor pos to localWidgetPositions
     //needed for widgetfocus free mousePosition updates
     globalMPoint = this->mapFromGlobal(QCursor::pos());
-
     if(e->button() == Qt::LeftButton){
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
+        idmatch = scene->getSceneEntityHitWithRay().getId();
+        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
         idmatch = scene->getSceneEntityHitWithRay().getId();
         //        qDebug() << "LpressRel";
     }
@@ -308,8 +320,8 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             if (e->localPos().x() < maxpoint.x() || e->localPos().y() < maxpoint.y()){
                 mosPos = maxpoint;
             }
-            double damp = 0.00005;//to decrese the magnitude of the value coming in from the mousepos
-            rotRads  += mousePositionL - mosPos;
+            double damp = 0.01;//to decrese the magnitude of the value coming in from the mousepos
+            rotRads  += QVector2D(globalMPoint) - mosPos;
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
             //        qDebug() << "MpressMv";
         }
@@ -336,7 +348,6 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     else{
         scroolScale = cam.getFOV() - numSteps;
         cam.setFOV(scroolScale);
-        qDebug() << cam.getFOV();
         scene->updateCamera(cam);
     }
 }
