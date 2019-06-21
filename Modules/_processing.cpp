@@ -489,12 +489,12 @@ void _Processing::generateVoxelsModelCV(char *img, unsigned int iwidth, unsigned
     static bool init = true;
 
     //initialise empty textures for processing
-    static cv::Mat texture_model_wrap(iheight,200,CV_32S,400);
+    static cv::Mat texture_model_wrap(iheight,200,CV_32S,100);
     static cv::Mat texture_in;
     static cv::Mat texture_out;
 
     if(rotation_step == 0)
-        texture_model_wrap=400;
+        texture_model_wrap=100;
     //Do the Processing
 
     //send the image to gpu texture
@@ -506,7 +506,6 @@ void _Processing::generateVoxelsModelCV(char *img, unsigned int iwidth, unsigned
 
     emit outputImage((char*)texture_out.data,iwidth,iheight);
     emit generatedModelTextureOut((char*)texture_model_wrap.data,texture_model_wrap.cols,texture_model_wrap.rows);
-
 }
 
 /* function: makeCurrent

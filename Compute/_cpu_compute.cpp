@@ -80,15 +80,14 @@ void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, c
 
     threshold(input_img, texture_thres, 100, 255,cv::THRESH_BINARY_INV );
 
-    texture_thres.colRange(rotation_step,rotation_step+1) = 200;//texture_edge.colRange(0,1);
-
     cvtColor(texture_thres, output_img, cv::COLOR_GRAY2RGBA);
 
     computeRowWiseLeftEdge(texture_thres,texture_edge);
 
-    texture_model_wrap.colRange(rotation_step,rotation_step+1) = 200;//texture_edge.colRange(0,1);
-    //texture_model_wrap.colRange(((rotation_step+100)%200),((rotation_step+100)%200)+1) = 100;//texture_edge.colRange(1,2);
+    texture_model_wrap.colRange(rotation_step,rotation_step+1) = texture_edge.colRange(0,1);
+    texture_model_wrap.colRange(((rotation_step+100)%200),((rotation_step+100)%200)+1) = texture_edge.colRange(1,2);
 
+    //texture_model_wrap.at<int>(350,rotation_step) = 200;
     texture_model_wrap.convertTo(texture_model_wrap_8_bit,CV_8UC1);
     showImageInterval(texture_model_wrap_8_bit);
     //qDebug() <<"type" << texture_edge.type() << texture_thres.type() << input_img.type();

@@ -103,7 +103,7 @@ void _Texture::setImage(QString pathtoTexture)
     height = img.height();
     //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, _color_format, width, height, 0, _color_format, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
 
 }
 
@@ -118,7 +118,7 @@ void _Texture::setImage(QImage& img)
     height = img.height();
     //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, _color_format, width, height, 0, _color_format, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
 }
 
 /* Updates texture from char pointer array and resolution of last image
@@ -129,7 +129,7 @@ void _Texture::setImage(char* img)
     image = img;
     //qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, _color_format, width, height, 0, _color_format, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, _internal_format, width, height, 0, _color_format, _data_type, image);
 
 }
 
