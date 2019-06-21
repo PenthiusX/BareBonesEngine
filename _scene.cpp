@@ -142,13 +142,16 @@ _SceneEntity _Scene::findSceneEntity(unsigned int iD){
     _SceneEntity empty;
     return empty;
 }
-_SceneEntity _Scene::findSceneEntity(std::string tag){
+_SceneEntity _Scene::findSceneEntity(QString tag){
     for(int f = 0 ; f < renderObjects.size() ; f++)
-        if(renderObjects[f]->getSceneEntity().getTag() == tag.c_str())
+        if(renderObjects[f]->getSceneEntity().getTag() == tag)
             return renderObjects[f]->getSceneEntity();
-
     _SceneEntity empty;
     return empty;
+}
+
+_SceneEntity _Scene::getSceneEntityHitWithRay(){
+    return rayHitSceneEntity;
 }
 /*
  * Created: 5_06_2019
@@ -259,6 +262,8 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
     physVector[pc].updatePhysics(mousePos,camPos,screenRes,renderObjects[index]->getSceneEntity()); //Takes in essentails and the relevant sceneEntity updated object.
     //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
     renderObjects[index]->setSceneEntityInRenderer(physVector[pc].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
+    if(s.getisHitByRay()) rayHitSceneEntity = s;//Stores the SceneEntity that is hitByray for acces.
+
     //---------------------PhysicsHelpers--------------
      if(s.getIsPhysicsHelper() && s.getisHitByRay()){
         //  Helper for mouseIntersection point
