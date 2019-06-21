@@ -87,7 +87,7 @@ private:
     glm::vec3 outIntersectionPoint;
     //
     glm::vec4 initialMax,initialMin;//Store the initial extent positions before transformations.
-
+    //
     //Functions:
     bool rayIntersectsTriangle(glm::vec3 rayOrigin,glm::vec3 rayVector,_Phy_Triangle inTriangle,glm::vec3& outIntersectionPoint);
     bool rayIntersectsTriangles(std::vector<_Phy_Triangle> tries, glm::vec3 rayOrigin, glm::vec3 rayVector);

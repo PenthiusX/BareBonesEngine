@@ -3,6 +3,7 @@
 
 #include <QOpenGLWidget>
 #include <QMouseEvent>
+#include <QTimer>
 #include "_scene.h"
 #include "_physics.h"
 
@@ -61,6 +62,12 @@ private:
     QVector2D mousePressPositionL,mousePressPositionR,mousePressPositionM;
     QPoint globalMPoint;
     QVector2D mousePositionL,mousePositionR,mousePositionM;
+    QVector3D oldPosForCam,newPosForCam;
+    //
+    QElapsedTimer qTimer;
+    float deltaTime;
+    float currentTime;
+    float timeSinceLastFrame;
 };
 
 #endif // _GLWIDGET_H

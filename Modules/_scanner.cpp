@@ -36,14 +36,10 @@ void _Scanner::init()
     if (!context->create())
         qFatal("Cannot create the requested OpenGL context!");
     else {
-
         bool success = context->makeCurrent(surface);
         qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
-
         initializeOpenGLFunctions();
-
         qDebug() << QString::fromUtf8((char*)glGetString(GL_VERSION));
-
     }
 }
 
