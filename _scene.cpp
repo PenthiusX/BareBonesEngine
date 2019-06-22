@@ -280,7 +280,6 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
     if(pc >= physVector.size())
         pc = 0;
 }
-
 void _Scene::updateAllPhysicsObjectsLoop()
 {
     //Nothing yet
@@ -293,11 +292,9 @@ void _Scene::updateAllPhysicsObjectsLoop()
   ██▌▐▀▐█▄▄▌▐█▌▐▌▐█▪·•▐█▄▄▌▐█•█▌▐█▄▪▐█
   ▀▀▀ · ▀▀▀ .▀▀▀ .▀    ▀▀▀ .▀  ▀ ▀▀▀▀
 */
-
 /*
  * Created:22_06_2019
  */
-
 void _Scene::updateHelpersOnce()
 {
     glm::vec4 mx,mn,cntrd;
@@ -306,22 +303,26 @@ void _Scene::updateHelpersOnce()
         {
             glm::vec3 p = physVector[i].getRayTriIntersectionPoint();
             renderObjects[findSceneEntity(999).getIndexPosInScene()]->setPosition(QVector3D(p.x,p.y,p.z));
-//            sc = physVector[i].getSceneEntity().getScale();
+            //sc = physVector[i].getSceneEntity().getScale();
 
-            //  Temporary Helpers for Max min extents
+            //Temporary Helpers for Max min extents
             mx = physVector[i].getSceneEntity().getModelInfo().getMaxExtent();
             mn = physVector[i].getSceneEntity().getModelInfo().getMinExtent();
             cntrd = physVector[i].getSceneEntity().getModelInfo().getCentroid();
+            //Sets the helps to be active as it will be decativate if object is not selected
+            _SceneEntity s1 = renderObjects[findSceneEntity("cent").getIndexPosInScene()]->getSceneEntity();
+            _SceneEntity s2 = renderObjects[findSceneEntity("max").getIndexPosInScene()]->getSceneEntity();
+            _SceneEntity s3 = renderObjects[findSceneEntity("min").getIndexPosInScene()]->getSceneEntity();
 
             renderObjects[findSceneEntity("cent").getIndexPosInScene()]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
 
             renderObjects[findSceneEntity("max").getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
-            //    renderObjects[findSceneEntity("max").getIndexPosInScene()]->setscale(sc * 0.05);
+            //renderObjects[findSceneEntity("max").getIndexPosInScene()]->setscale(sc * 0.05);
             //renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy lookat
             renderObjects[findSceneEntity("max").getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
 
             renderObjects[findSceneEntity("min").getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
-            //    renderObjects[findSceneEntity("min").getIndexPosInScene()]->setscale(sc * 0.05);
+            //renderObjects[findSceneEntity("min").getIndexPosInScene()]->setscale(sc * 0.05);
             //renderObjects[findSceneEntity(993).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy look at
             renderObjects[findSceneEntity("min").getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
         }
@@ -347,7 +348,6 @@ void _Scene::updateHelpersLoop()
         }
     }
 }
-
 /*
  * Created:22_06_2019
 */
