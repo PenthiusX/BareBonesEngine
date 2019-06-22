@@ -27,7 +27,6 @@ public:
     void addSceneObject(_SceneEntity s);
     void removeSceneObject(unsigned int index);
     void removeSceneObject(_SceneEntity s);
-    void addAllHelperTypesInScene();
     //
     void addCamera(_Camera c);
     void updateCamera(_Camera c);
@@ -35,10 +34,8 @@ public:
     void render();
     //
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo
-    //
-    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
-    void updateAllPhysicsObjectsLoop();
-    void updateAllPhysicsObjectsOnce();
+    //Helpers
+    void addAllHelperTypesInScene();
     //
     _SceneEntity findSceneEntity(unsigned int iD);
     _SceneEntity findSceneEntity(QString tag);
@@ -57,11 +54,16 @@ private:
     //Physics
     std::vector<_Physics> physVector;
     _SceneEntity rayHitSceneEntity;
-    bool isPhysicsObjectClicked;//Not in use but needs to set it to click and the rest to unclicked
-    unsigned int pc = 0;//physics object counter
+    unsigned int pc,hc;//physics and helper object counter
 
     //Helpers
-     _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot;
+    _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot;
+    void updateHelpersOnce();
+    void updateHelpersLoop();
+    //Physics
+    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
+    void updateAllPhysicsObjectsLoop();
+    void updateAllPhysicsObjectsOnce();
 };
 
 #endif // _SCENE_H
