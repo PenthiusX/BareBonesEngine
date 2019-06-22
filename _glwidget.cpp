@@ -123,7 +123,7 @@ void _GLWidget::initializeGL()
     s.setPosition(QVector3D(0.0,0.0, 0.0));
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
-    s.setScale(5.0f);
+    s.setScale(1.0f);
     s.setModelData(":/models/hipolyore.obj");
     //----------Helpers---------------
     mpnt.setId(999);
@@ -211,12 +211,9 @@ void _GLWidget::paintGL()//the renderloop
     deltaTime = currentTime - timeSinceLastFrame;//change in time Per frame
     //-------------------------
     //sets cam focus on object with the iD that is selected
-    newPosForCam = _Tools::interpolateBetweenPoints(oldPosForCam,scene->findSceneEntity(idmatch).getPostion(),0.005);
-    cam.setFocalPoint(newPosForCam);
+//    newPosForCam = _Tools::interpolateBetweenPoints(oldPosForCam,scene->findSceneEntity(idmatch).getPostion(),0.005);
+    cam.setFocalPoint(scene->findSceneEntity(idmatch).getPostion());
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
-    // binding the pivot object to focus object
-    scene->getSceneObjects()[scene->findSceneEntity("pivot").getIndexPosInScene()]->setPosition(scene->findSceneEntity(idmatch).getPostion());
-    scene->getSceneObjects()[scene->findSceneEntity("pivot").getIndexPosInScene()]->setRotation(scene->findSceneEntity(idmatch).getRotation());
     //renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     scene->render();
     //is to send QtOpenglGl a flag to update openglFrames
