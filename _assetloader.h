@@ -24,7 +24,7 @@ public:
     //    std::vector<float> getAssetVertices();
     //    std::vector<unsigned int> getAssetIndices();
     void objLoader(QString pathToFile);
-    void loadAllModelsInfoFromFolder(QString folderName);
+    void loadAllModelsInfoFromFolder(QString folderName);//not in use
 
 private:
     _ModelInfo modelInfo;

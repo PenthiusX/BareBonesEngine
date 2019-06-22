@@ -141,6 +141,82 @@ _SceneEntity _Scene::findSceneEntity(QString tag){
 _SceneEntity _Scene::getSceneEntityHitWithRay(){
     return rayHitSceneEntity;
 }
+
+void _Scene::addAllHelperTypesInScene()
+{
+    //----------Orentation Helpers---------------
+    pivot.setId(888);
+    pivot.setTag("pivot");
+    pivot.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    pivot.setColor(QVector4D(1.0,1.0,1.0,1.0));
+    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
+    pivot.setScale(1.0f);
+    pivot.setModelData(":/models/pivot.obj");
+    //---
+    mpnt.setId(999);
+    mpnt.setTag("mousePointerObject");
+    mpnt.setIsTransformationLocal(false);
+    mpnt.setPosition(QVector3D(0.0,0.0,0.0));
+    mpnt.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    mpnt.setScale(0.02f);
+    mpnt.setModelData(sph.getModelInfo());
+    //---
+    cnet.setId(991);
+    cnet.setTag("cent");
+    cnet.setIsTransformationLocal(false);
+    cnet.setPosition(QVector3D(0.0,0.0,0.0));
+    cnet.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    cnet.setScale(0.07f);
+    cnet.setModelData(sph.getModelInfo());
+    //---
+    max.setId(992);
+    max.setTag("max");
+    max.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    max.setColor(QVector4D(0.5,0.5,0.5,1.0));
+    max.setScale(0.1f);
+    max.setModelData(":/models/helpers/max.obj");
+    //---
+    min.setId(993);
+    min.setTag("min");
+    min.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    min.setScale(0.1f);
+    min.setModelData(":/models/helpers/min.obj");
+    //
+    addSceneObject(pivot);
+    addSceneObject(mpnt);
+    addSceneObject(cnet);
+    addSceneObject(min);
+    addSceneObject(max);
+
+    //----------Physics Helpers-------
+    sph.setId(1);
+    sph.setTag("boundingSphere");
+    sph.setIsLineMode(true);
+    sph.setPhysicsObject(_SceneEntity::Sphere);
+    sph.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
+    sph.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    sph.setColor(QVector4D(0.3,0.5,0.0,0.9));
+    sph.setPosition(QVector3D(0.0,0.0, 0.0));
+    sph.setScale(1.0f);
+    sph.setModelData(":/models/sphere.obj");
+    sph.setIsActive(false);
+    //---
+    bb.setId(2);
+    bb.setTag("boundingBox");
+    bb.setIsLineMode(true);
+    bb.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
+    bb.setIsTransformationLocal(false);
+    bb.setPosition(QVector3D(0.0,0.0, 0.0));
+    bb.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    bb.setColor(QVector4D(0.5,1.0,1.0,0.9));
+    bb.setScale(1.0f);
+    bb.setModelData(":/models/cube.obj");//dont need to reparse modelfile
+    bb.setIsActive(false);
+    //
+    addSceneObject(sph);
+    addSceneObject(bb);
+}
+
 /*
  * Created: 5_06_2019
  */
@@ -165,13 +241,19 @@ void _Scene::removeSceneObject(_SceneEntity s){
  * Created: 3_05_2019
 */
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
-    if(m == Qt::RightButton)
+    if(m == Qt::RightButton){
         mousePositionR = mousePos;
-    else if(m == Qt::LeftButton)
+        //Physics update on Right MouseClick only
+
+    }
+    else if(m == Qt::LeftButton){
         mousePositionL = mousePos;
+    }
+    else if(m == Qt::MiddleButton){
+
+    }
     isPhysicsObjectClicked = true;
 
-    //Physics update on MouseClick
     updateAllPhysicsObjectsOnce();
 }
 /*
@@ -234,11 +316,11 @@ void _Scene::render()
 }
 
 /*
-   ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·
-  ▐█ ▄███▪▐█▐█▪██▌▐█ ▀. ██ ▐█ ▌▪▐█ ▀.
-   ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄
-  ▐█▪·•██ ▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
-  .▀   ▀▀  ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
+ ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·         ▄ .▄▄▄▄ .▄▄▌   ▄▄▄·▄▄▄ .▄▄▄  .▄▄ ·
+▐█ ▄███▪▐█▐█▪██▌▐█ ▀. ██ ▐█ ▌▪▐█ ▀.    █   ██▪▐█▀▄.▀·██•  ▐█ ▄█▀▄.▀·▀▄ █·▐█ ▀.
+ ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄  ███  ██▀▐█▐▀▀▪▄██▪   ██▀·▐▀▀▪▄▐▀▀▄ ▄▀▀▀█▄
+▐█▪·•██▌▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█   █   ██▌▐▀▐█▄▄▌▐█▌▐▌▐█▪·•▐█▄▄▌▐█•█▌▐█▄▪▐█
+.▀   ▀▀▀ ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀        ▀▀▀ · ▀▀▀ .▀▀▀ .▀    ▀▀▀ .▀  ▀ ▀▀▀▀
 */
 /*
  * Function: updatePhysicsForAllObjects()
@@ -250,8 +332,7 @@ void _Scene::updateAllPhysicsObjectsOnce()
 {
     for (unsigned int i = 0; i < renderObjects.size(); i++)
     {
-        //Physics update--
-        //update Physics for all the sceneObject with property enabled
+        //Physics and Helper update--
         if(renderObjects[i]->getSceneEntity().getIsPhysicsObject())//if the sceneEntity has physics body attached
         {   //Passing some essentials into the updateLoop for physics
             updatePhysics(glm::vec2(mousePositionL.x(),//Mouse position
@@ -280,7 +361,7 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
             //  Helper for mouseIntersection point
             if(physVector[pc].getSceneEntity().getisHitByRay()){
                 glm::vec3 p = physVector[pc].getRayTriIntersectionPoint();
-                renderObjects[findSceneEntity(999).getIndexPosInScene()]->setPosition(QVector3D(p.x,p.y,p.z));
+                renderObjects[findSceneEntity("mousePointerObject").getIndexPosInScene()]->setPosition(QVector3D(p.x,p.y,p.z));
                 sc = physVector[pc].getSceneEntity().getScale();
             }
             //  Temporary Helpers for Max min extents
@@ -288,17 +369,17 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
             glm::vec4 mn = physVector[pc].getSceneEntity().getModelInfo().getMinExtent();
             glm::vec4 cntrd = physVector[pc].getSceneEntity().getModelInfo().getCentroid();
 
-            renderObjects[findSceneEntity(991).getIndexPosInScene()]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
+            renderObjects[findSceneEntity("cent").getIndexPosInScene()]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
 
-            renderObjects[findSceneEntity(992).getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
-            renderObjects[findSceneEntity(992).getIndexPosInScene()]->setscale(sc * 0.05);
+            renderObjects[findSceneEntity("max").getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
+            renderObjects[findSceneEntity("max").getIndexPosInScene()]->setscale(sc * 0.05);
             //renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy lookat
-            renderObjects[findSceneEntity(992).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
+            renderObjects[findSceneEntity("max").getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
 
-            renderObjects[findSceneEntity(993).getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
-            renderObjects[findSceneEntity(993).getIndexPosInScene()]->setscale(sc * 0.05);
+            renderObjects[findSceneEntity("min").getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
+            renderObjects[findSceneEntity("min").getIndexPosInScene()]->setscale(sc * 0.05);
             //renderObjects[findSceneEntity(993).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy look at
-            renderObjects[findSceneEntity(993).getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
+            renderObjects[findSceneEntity("min").getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
             //-------------------------------------------------
             pc++;
             if(pc >= physVector.size())
@@ -309,18 +390,13 @@ void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenR
 
 void _Scene::updateAllPhysicsObjectsLoop()
 {
-    for (unsigned int i = 0; i < renderObjects.size(); i++)
-    {
-        //Physics update--
+    for (unsigned int i = 0; i < renderObjects.size(); i++){
+        //Physics and Helper update--
         //update Physics for all the sceneObject with property enabled
-        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject() &&  renderObjects[i]->getSceneEntity().getisHitByRay())//if the sceneEntity has physics body attached
-        {
-            //Update Physics Helpers
-            {
-                // binding the pivot object to focus object
-                renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setPosition(renderObjects[i]->getSceneEntity().getPostion());
-                renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setRotation(renderObjects[i]->getSceneEntity().getRotation());
-            }
+        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject() &&  renderObjects[i]->getSceneEntity().getisHitByRay()){//if the sceneEntity has physics body attached
+            // binding the pivot object to focus object
+            renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setPosition(renderObjects[i]->getSceneEntity().getPostion());
+            renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setRotation(renderObjects[i]->getSceneEntity().getRotation());
         }
     }
 }

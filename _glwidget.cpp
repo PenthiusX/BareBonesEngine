@@ -55,7 +55,6 @@ void _GLWidget::initializeGL()
     std::vector<unsigned int> indiceV = {0, 1, 3,
                                          1, 2, 3 };
 
-
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
 
@@ -82,38 +81,6 @@ void _GLWidget::initializeGL()
     bg.setRotation(QVector3D(0.0, 0.0, 0.0));
     bg.setScale(1.0);
     bg.setModelData(quad);
-    //Essential default pivot object
-    pivot.setId(888);
-    pivot.setTag("pivot");
-    pivot.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    pivot.setColor(QVector4D(1.0,1.0,1.0,1.0));
-    pivot.setPosition(QVector3D(0.0, 0.0, 0.0));
-    pivot.setScale(1.0f);
-    pivot.setModelData(":/models/pivot.obj");
-    //----------Physics Objects-------
-    sph.setId(1);
-    sph.setTag("boundingSphere");
-    sph.setIsLineMode(true);
-    sph.setPhysicsObject(_SceneEntity::Sphere);
-    sph.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    sph.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    sph.setColor(QVector4D(0.3,0.5,0.0,0.9));
-    sph.setPosition(QVector3D(0.0,0.0, 0.0));
-    sph.setScale(1.0f);
-    sph.setModelData(":/models/sphere.obj");
-    sph.setIsActive(false);
-    //---
-    bb.setId(2);
-    bb.setTag("boundingBox");
-    bb.setIsLineMode(true);
-    bb.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
-    bb.setIsTransformationLocal(false);
-    bb.setPosition(QVector3D(0.0,0.0, 0.0));
-    bb.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    bb.setColor(QVector4D(0.5,1.0,1.0,0.9));
-    bb.setScale(1.0f);
-    bb.setModelData(":/models/cube.obj");//dont need to reparse modelfile
-    bb.setIsActive(false);
     //------------Scene Objects--------
     s.setId(3);
     s.setTag("clickSurface");
@@ -125,52 +92,13 @@ void _GLWidget::initializeGL()
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(1.0f);
     s.setModelData(":/models/hipolyore.obj");
-    //----------Helpers---------------
-    mpnt.setId(999);
-    mpnt.setTag("mousePointerObject");
-    mpnt.setIsTransformationLocal(false);
-    mpnt.setPosition(QVector3D(0.0,0.0,0.0));
-    mpnt.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    mpnt.setScale(0.02f);
-    mpnt.setModelData(sph.getModelInfo());
-    //---
-    cnet.setId(991);
-    cnet.setTag("cent");
-    cnet.setIsTransformationLocal(false);
-    cnet.setPosition(QVector3D(0.0,0.0,0.0));
-    cnet.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    cnet.setScale(0.07f);
-    cnet.setModelData(sph.getModelInfo());
-    //---
-    max.setId(992);
-    max.setTag("max");
-    max.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    max.setColor(QVector4D(0.5,0.5,0.5,1.0));
-    max.setScale(0.1f);
-    max.setModelData(":/models/helpers/max.obj");
-    //---
-    min.setId(993);
-    min.setTag("min");
-    min.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    min.setScale(0.1f);
-    min.setModelData(":/models/helpers/min.obj");
-
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials------
     scene->addCamera(cam);//camera essential
     scene->addSceneObject(bg); //add the backGround quad first for it to render last
-    scene->addSceneObject(pivot);//pivot helper essential
-    //-------Physics----------
-    scene->addSceneObject(sph);
-    scene->addSceneObject(bb);
+    scene->addAllHelperTypesInScene();
     //-----Scene Objects------
     scene->addSceneObject(s);
-    //--------Helpers---------
-    scene->addSceneObject(mpnt);
-    scene->addSceneObject(cnet);
-    scene->addSceneObject(min);
-    scene->addSceneObject(max);
-    //------------------------
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -211,7 +139,7 @@ void _GLWidget::paintGL()//the renderloop
     deltaTime = currentTime - timeSinceLastFrame;//change in time Per frame
     //-------------------------
     //sets cam focus on object with the iD that is selected
-//    newPosForCam = _Tools::interpolateBetweenPoints(oldPosForCam,scene->findSceneEntity(idmatch).getPostion(),0.005);
+    //    newPosForCam = _Tools::interpolateBetweenPoints(oldPosForCam,scene->findSceneEntity(idmatch).getPostion(),0.005);
     cam.setFocalPoint(scene->findSceneEntity(idmatch).getPostion());
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     //renders the scene with all the prequists pass into the scene via a  sceneEntity object.
