@@ -217,7 +217,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             }
             double damp = 0.01;//to decrese the magnitude of the value coming in from the mousepos
             rotRads  += QVector2D(globalMPoint) - mosPos;
-            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(QVector3D(rotRads.y() * damp, rotRads.x() * damp, 0.f));
+            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(glm::vec3(rotRads.y() * damp, rotRads.x() * damp, 0.f));
             //        qDebug() << "MpressMv";
         }
     }
@@ -290,7 +290,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
             cam.setEyePosition(QVector3D(0.0, 0.0, 7.0));
         else{
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setPosition(QVector3D(0.0f, 0.0, 0.0));
-            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(QVector3D(0.0f, 0.0, 0.0));
+            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(glm::vec3(0.0f, 0.0, 0.0));
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setscale(1.0f);
             rotRads = QVector2D(0.0f,0.0f);
         }
@@ -331,7 +331,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         //        onPress->setPhysicsObject(_SceneEntity::Mesh);
         onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
         onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
-        onPress->setRotation(QVector3D(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+        onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));

@@ -319,12 +319,12 @@ void _Scene::updateHelpersOnce()
             renderObjects[findSceneEntity("max").getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
             //renderObjects[findSceneEntity("max").getIndexPosInScene()]->setscale(sc * 0.05);
             //renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy lookat
-            renderObjects[findSceneEntity("max").getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
+            renderObjects[findSceneEntity("max").getIndexPosInScene()]->setRotation(glm::vec3(90.0,0.0,0.0));
 
             renderObjects[findSceneEntity("min").getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
             //renderObjects[findSceneEntity("min").getIndexPosInScene()]->setscale(sc * 0.05);
             //renderObjects[findSceneEntity(993).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy look at
-            renderObjects[findSceneEntity("min").getIndexPosInScene()]->setRotation(QVector3D(90.0,0.0,0.0));
+            renderObjects[findSceneEntity("min").getIndexPosInScene()]->setRotation(glm::vec3(90.0,0.0,0.0));
         }
     }
 }
@@ -379,7 +379,7 @@ void _Scene::addAllHelperTypesInScene()
     bg.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
     bg.setPosition(QVector3D(0.0, 0.0, 0.0));
-    bg.setRotation(QVector3D(0.0, 0.0, 0.0));
+    bg.setRotation(glm::vec3(0.0, 0.0, 0.0));
     bg.setScale(1.0);
     bg.setModelData(quad);
     //

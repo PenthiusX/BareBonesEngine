@@ -6,7 +6,7 @@
  * Author: Aditya
 */
 _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the from axis angle
-    rotation = QVector3D(0.0,0.0,0.0);
+    rotation = glm::vec3(0.0,0.0,0.0);
     postion = QVector3D(0.0, 0.0, 0.0);
     color = QVector4D(0.5,0.5,0.5,1.0);
     vShaderPath = ":/shaders/dmvshader.glsl";
@@ -33,7 +33,7 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
  * Author: Aditya
  * Created:26_02_2019
 */
-_SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale){
+_SceneEntity::_SceneEntity(QVector3D pos, glm::vec3 rot, float scale){
     postion = pos;
     rotation = rot;
     this->scale = scale;
@@ -97,10 +97,10 @@ QVector3D _SceneEntity::getPostion() const{
  * sets/gets the rotation for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setRotation(QVector3D rot){
+void _SceneEntity::setRotation(glm::vec3 rot){
     rotation = rot;
 }
-QVector3D _SceneEntity::getRotation() const{
+glm::vec3 _SceneEntity::getRotation() const{
     return rotation;
 }
 /*
@@ -109,11 +109,11 @@ QVector3D _SceneEntity::getRotation() const{
  * scene entity.
  * Created:16_05_2019
 */
-void _SceneEntity::setPivot(QVector3D pivot){
+void _SceneEntity::setPivot(glm::vec3 pivot){
     this->pivot = pivot;
     isPivotSet = true;
 }
-QVector3D _SceneEntity::getPivot() const{
+glm::vec3 _SceneEntity::getPivot() const{
     return pivot;
 }
 //return if the pivot is set or not
