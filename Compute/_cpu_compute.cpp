@@ -72,24 +72,43 @@ void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, c
     if(init)
     {
         for (int i = 0; i < 100; ++i) {
-
             texture_cyl_voxels[i]=255;
         }
         init = false;
     }
 
+    //
+    for (int i = 0; i < 100; ++i) {
+
+    int id = (i+rotation_step)%100;
+    double cosine = glm::cos(CV_PI*rotation_step/100);
+    glm::tmat3x3<double> translate1={1,0,-stage_center.x,0,1,0,0,0,1},scale={1/cosine,0,0,0,1,0,0,0,1},translate2={1,0,(input_img.cols/2),0,1,0,0,0,1},final;
+
+    final = translate1*scale*translate2;
+    cv::Mat M = cv::Mat(2, 3, CV_64FC1,&final);
+
     threshold(input_img, texture_thres, 100, 255,cv::THRESH_BINARY_INV );
+
+    cv::warpAffine( texture_thres,texture_cyl_voxels[id],M, cv::Size(texture_thres.cols,texture_thres.rows),cv::INTER_LINEAR,cv::BORDER_CONSTANT,cv::Scalar(0));// (src, dst, M, dsize, flags = cv.INTER_LINEAR, borderMode = cv.BORDER_CONSTANT, borderValue = new cv.Scalar())
 
     cvtColor(texture_thres, output_img, cv::COLOR_GRAY2RGBA);
 
     computeRowWiseLeftEdge(texture_thres,texture_edge);
 
-    texture_model_wrap.colRange(rotation_step,rotation_step+1) = texture_edge.colRange(0,1);
-    texture_model_wrap.colRange(((rotation_step+100)%200),((rotation_step+100)%200)+1) = texture_edge.colRange(1,2);
+    texture_edge.colRange(0,1).copyTo(texture_model_wrap(cv::Range(0,texture_model_wrap.rows),cv::Range(rotation_step,rotation_step+1)));
+    texture_edge.colRange(1,2).copyTo(texture_model_wrap(cv::Range(0,texture_model_wrap.rows),cv::Range(((rotation_step+100)%200),((rotation_step+100)%200)+1)));
+
+    qDebug() << "";
+
+//    for (int i=0;i<input_img.rows;i++) {
+
+//    }
 
     //texture_model_wrap.at<int>(350,rotation_step) = 200;
     texture_model_wrap.convertTo(texture_model_wrap_8_bit,CV_8UC1);
-    showImageInterval(texture_model_wrap_8_bit);
+    showImageInterval(texture_cyl_voxels[id]);
+
+    }
     //qDebug() <<"type" << texture_edge.type() << texture_thres.type() << input_img.type();
 
     //showImageInterval(texture_in);
@@ -98,7 +117,7 @@ void _Cpu_Compute::computeVoxelsModel(cv::Mat &input_img, cv::Mat &output_img, c
 void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img)
 {
     //size of output image should be [height , 2]
-    cv::Mat kernal = cv::Mat(1,2,CV_32F),input_img_signed,diff_img;
+    cv::Mat kernal = cv::Mat(1,2,CV_32F),input_img_signed,diff_img,img(input_img.cols,input_img.rows, CV_8UC1);
     kernal.at<float>(0,0)=-1.0;
     kernal.at<float>(0,1)=1.0;
     //kernal = cv::Mat::ones( 3, 3, CV_32F )/ (float)(3*3);
@@ -118,9 +137,12 @@ void _Cpu_Compute::computeRowWiseLeftEdge(cv::Mat& input_img,cv::Mat& output_img
     for (int i=0;i<input_img.rows;i++) {
         img_row = diff_img.rowRange(i, i + 1);
         cv::minMaxLoc(img_row, &min, &max, &min_loc, &max_loc);
-        output_img.at<int>(i,0) = int(max_loc.x);
-        output_img.at<int>(i,1) = int(min_loc.x);
+        output_img.at<int>(i,0) = (input_img.rows/2)-int(max_loc.x);
+        output_img.at<int>(i,1) = int(min_loc.x)-(input_img.rows/2);
+        //img.at<uchar>(i,output_img.at<int>(i,0)) = 255;
     }
+    //showImageInterval(img);
+
 }
 
 
