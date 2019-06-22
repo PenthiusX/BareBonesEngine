@@ -94,6 +94,8 @@ public:
     };
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
+    void setIsSelected(bool isit);
+    bool getIsSelected() const;
     bool getIsPhysicsObject()const;
     bool getIsPhysicsHelper()const;
     _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
@@ -129,6 +131,7 @@ private:
     bool isActive;
     bool isMeshEditable;
     bool isHitByRay;
+    bool isSelected;
     bool isPhysicsObject;
     bool isPhysicsHelper;
     bool isLineMode;

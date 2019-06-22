@@ -57,7 +57,7 @@ private:
     unsigned int pc,hc;//physics and helper object counter
 
     //Helpers
-    _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot;
+    _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot,bg;
     void updateHelpersOnce();
     void updateHelpersLoop();
     //Physics
