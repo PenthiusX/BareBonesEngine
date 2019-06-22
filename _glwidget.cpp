@@ -108,8 +108,10 @@ void _GLWidget::paintGL()//the renderloop
     deltaTime = currentTime - timeSinceLastFrame;//change in time Per frame
     //-------------------------
     //sets cam focus on object with the iD that is selected
-    //    newPosForCam = _Tools::interpolateBetweenPoints(oldPosForCam,scene->findSceneEntity(idmatch).getPostion(),0.005);
-    cam.setFocalPoint(scene->findSceneEntity(idmatch).getPostion());
+    qDebug() << "old" << oldPosForCam;
+    qDebug() << "new" << scene->findSceneEntity(idmatch).getPostion();
+    newPosForCam = _Tools::interpolateBetweenPoints(oldPosForCam,scene->findSceneEntity(idmatch).getPostion(),0.005);
+    cam.setFocalPoint(newPosForCam);
     scene->updateCamera(cam);//sets the specified camera to update in scene with the values pass in form the cam object
     //renders the scene with all the prequists pass into the scene via a  sceneEntity object.
     scene->render();
@@ -142,7 +144,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
         //get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
-//        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
+        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
         idmatch = scene->getSceneEntityHitWithRay().getId();
 
         //sets the left button click on for picking in the scene for use in physics
@@ -173,7 +175,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     if(e->button() == Qt::LeftButton){
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
         idmatch = scene->getSceneEntityHitWithRay().getId();
-//        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
+        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
         //        qDebug() << "LpressRel";
     }
     if(e->button() == Qt::RightButton){
