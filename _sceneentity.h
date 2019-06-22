@@ -18,7 +18,7 @@
 class _SceneEntity
 {
 public:
-    _SceneEntity(QVector3D pos,QVector3D rot , float scale);
+    _SceneEntity(QVector3D pos,glm::vec3 rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
     //
@@ -36,11 +36,11 @@ public:
     bool getIsTransformationAllowed();
     void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
     QVector3D getPostion() const;//get the current position of the relvant object instace
-    void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
-    QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
-    void setPivot(QVector3D pivot);//sets the pivot point to rotate around
+    void setRotation(glm::vec3 rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
+    glm::vec3 getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
+    void setPivot(glm::vec3 pivot);//sets the pivot point to rotate around
     bool getIsPivotSet();
-    QVector3D getPivot() const;
+    glm::vec3 getPivot() const;
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
     float getScale() const;//get the flot value for scale for unifor scaling, can be converted to a vec3 for more explicit scaling on axis
     void setColor(QVector4D col);//sets the collor value that passes into shder of the objects program instance.
@@ -106,8 +106,8 @@ private:
     unsigned int id;
     QString tag;
     QVector3D postion;
-    QVector3D rotation;
-    QVector3D pivot;
+    glm::vec3 rotation;
+    glm::vec3 pivot;
     float scale;
     QVector4D color;
     unsigned int orderInIndex;

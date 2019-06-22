@@ -37,14 +37,14 @@ public:
     void setupTexture();//takes a hardcoded imagedata and binds it to object
     void setupTexture(QString texfile); //initializes texture from file
     //
-    void setModelMatrix(QVector3D position, float scale, QVector3D rotation);//set the model matrix
+    void setModelMatrix(QVector3D position, float scale, glm::vec3 rotation);//set the model matrix
     void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
     //
     void setPosition(QVector3D pos);//resets the positon to the value that is required
     void translate(QVector3D pos);//update the current positon with the value that is set
-    void setRotation(QVector3D rot);
-    void setRotationAroundPivot(QVector3D rot,QVector3D pivot);
+    void setRotation(glm::vec3 rot);
+    void setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot);
     void setscale(float scale);
     void lookAt(QVector3D ptl);
     //

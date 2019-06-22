@@ -188,7 +188,7 @@ void _Renderer::setTexture(QString pathtoTexture)
 * Used by: the _glWidget class initialiseGl() or paintGl().
 * Created: 25_02_2019
 */
-void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation)
+void _Renderer::setModelMatrix(QVector3D position,float scale,glm::vec3 rotation)
 {
     glm_model4x4 = glm::mat4(1.0f);
     translationMatrix = glm::mat4(1.f);
@@ -196,7 +196,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,QVector3D rotation
     scalingMatrix = glm::mat4(1.f);
 
     scalingMatrix = glm::scale(scalingMatrix, glm::vec3(scale, scale, scale));//scale equally on all sides
-    glm::vec3 EulerAngles(rotation.x(),rotation.y(),rotation.z());
+    glm::vec3 EulerAngles(rotation.x,rotation.y,rotation.z);
     glm::quat quat = glm::quat(EulerAngles);
     rotationMatrix = glm::mat4_cast(quat);
     translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
@@ -305,7 +305,7 @@ void _Renderer::translate(QVector3D pos)
  * Used by: _glwidgetClass on mousemovement
  * Created: 1_03_2019
 */
-void _Renderer::setRotation(QVector3D rot)
+void _Renderer::setRotation(glm::vec3 rot)
 {
     if(sceneEntity.getIsTransformationAllowed())
     {
@@ -314,18 +314,14 @@ void _Renderer::setRotation(QVector3D rot)
             sceneEntity.setRotation(rot);
             if(sceneEntity.getIsTransformationLocal())
             {
-                glm::vec3 eulerAngles(sceneEntity.getRotation().x(),
-                                      sceneEntity.getRotation().y(),
-                                      sceneEntity.getRotation().z());
+                glm::vec3 eulerAngles(sceneEntity.getRotation());
                 glm::quat quat = glm::quat(eulerAngles);
                 glm_model4x4 *= glm::mat4_cast(quat);
             }
             else if(!sceneEntity.getIsTransformationLocal())
             {
                 //        rotationMatrix = glm::mat4x4(1.f);
-                glm::vec3 eulerAngles(sceneEntity.getRotation().x(),
-                                      sceneEntity.getRotation().y(),
-                                      sceneEntity.getRotation().z());
+                glm::vec3 eulerAngles(sceneEntity.getRotation());
                 glm::quat quat = glm::quat(eulerAngles);
                 rotationMatrix = glm::mat4_cast(quat);
                 //rotate at center
@@ -345,29 +341,25 @@ void _Renderer::setRotation(QVector3D rot)
  * Used by: _glwidgetClass on Mousemovement
  * Created: 16_05_2019
 */
-void _Renderer::setRotationAroundPivot(QVector3D rot, QVector3D pivot)
+void _Renderer::setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot)
 {
     if(sceneEntity.getIsTransformationAllowed())
     {
         sceneEntity.setRotation(rot);
         if(sceneEntity.getIsTransformationLocal())
         {//still buggy
-            setPosition(pivot);
-            glm::vec3 EulerAngles(sceneEntity.getRotation().x(),
-                                  sceneEntity.getRotation().y(),
-                                  sceneEntity.getRotation().z());
+            setPosition(QVector3D(pivot.x,pivot.y,pivot.z));
+            glm::vec3 EulerAngles(sceneEntity.getRotation());
             glm::quat quat = glm::quat(EulerAngles);
             glm_model4x4 *= glm::mat4_cast(quat);
         }
         if(!sceneEntity.getIsTransformationLocal())
         {
             pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
-            pivotTmat[3][0] = pivot.x();
-            pivotTmat[3][1] = pivot.y();
-            pivotTmat[3][2] = pivot.z();
-            glm::vec3 EulerAngles(sceneEntity.getRotation().x(),
-                                  sceneEntity.getRotation().y(),
-                                  sceneEntity.getRotation().z());
+            pivotTmat[3][0] = pivot.x;
+            pivotTmat[3][1] = pivot.y;
+            pivotTmat[3][2] = pivot.z;
+            glm::vec3 EulerAngles(sceneEntity.getRotation());
             glm::quat quat = glm::quat(EulerAngles);
             rotationMatrix = glm::mat4_cast(quat);
             glm_model4x4 = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
