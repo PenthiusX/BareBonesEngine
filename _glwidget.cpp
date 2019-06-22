@@ -44,43 +44,13 @@ _GLWidget::~_GLWidget()
 */
 void _GLWidget::initializeGL()
 {
-    //Code to be excluded only for Test purposes
-    //Hard coded vertices and indices
-    std::vector<float> vertsV = {
-        1.0,   1.0,  0.0f,	// top right
-        1.0f, -1.0f, 0.0f,  // bottom right
-        -1.0f, -1.0f, 0.0f, // bottom left
-        -1.0f,  1.0f, 0.0f  // top left
-    };
-    std::vector<unsigned int> indiceV = {0, 1, 3,
-                                         1, 2, 3 };
-
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
-
-    //Presets the camera properties
+    //-------------Camera--------------
     cam.setEyePosition(QVector3D(0.0, 0.0, 10.0));
     cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
-
-    //PreLoad ScenenEnties with desired properties.
-    //implemented 12_06_2018
-    _AssetLoader quad;
-    _ModelInfo m;
-    m.setName("quad");
-    m.setVertexArray(vertsV);
-    m.setIndexArray(indiceV);
-    quad.setModelInfo(m);
-    //Essential rear background object
-    bg.setId(777);
-    bg.setTag("background");
-    bg.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
-    bg.setPosition(QVector3D(0.0, 0.0, 0.0));
-    bg.setRotation(QVector3D(0.0, 0.0, 0.0));
-    bg.setScale(1.0);
-    bg.setModelData(quad);
     //------------Scene Objects--------
     s.setId(3);
     s.setTag("clickSurface");
@@ -93,11 +63,10 @@ void _GLWidget::initializeGL()
     s.setScale(1.0f);
     s.setModelData(":/models/hipolyore.obj");
     //Add stuff preloaded Scene Entities to scene;
-    //--------Essentials------
+    //--------Essentials---------------
     scene->addCamera(cam);//camera essential
-    scene->addSceneObject(bg); //add the backGround quad first for it to render last
-    scene->addAllHelperTypesInScene();
-    //-----Scene Objects------
+    scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
+    //-----Scene Objects---------
     scene->addSceneObject(s);
 }
 /*
@@ -173,7 +142,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
         //get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
-        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
+//        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
         idmatch = scene->getSceneEntityHitWithRay().getId();
 
         //sets the left button click on for picking in the scene for use in physics
@@ -204,8 +173,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     if(e->button() == Qt::LeftButton){
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
         idmatch = scene->getSceneEntityHitWithRay().getId();
-        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
-        idmatch = scene->getSceneEntityHitWithRay().getId();
+//        oldPosForCam = scene->findSceneEntity(idmatch).getPostion();
         //        qDebug() << "LpressRel";
     }
     if(e->button() == Qt::RightButton){

@@ -373,12 +373,23 @@ void _SceneEntity::setIsHitByRay(bool isHitByRay){
     this->isHitByRay = isHitByRay;
 }
 /*
+ * Created: 22_06_2019
+*/
+bool _SceneEntity::getIsSelected() const{
+    return isSelected;
+}
+void _SceneEntity::setIsSelected(bool isit){
+    isSelected = isit;
+}
+/*
  * Created:3_06_2015
 */
 bool _SceneEntity::getIsPhysicsObject() const {
     return isPhysicsObject;
 }
-
+/*
+ * Created: 15_06_2019
+*/
 bool _SceneEntity::getIsPhysicsHelper() const
 {
     return isPhysicsHelper;
