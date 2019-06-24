@@ -25,7 +25,7 @@ public:
     //
     std::vector<_Renderer*> getSceneObjects();
     void addSceneObject(_SceneEntity s);
-    void removeSceneObject(unsigned int index);
+    void removeSceneObject(uint index);
     void removeSceneObject(_SceneEntity s);
     //
     void addCamera(_Camera c);
@@ -37,7 +37,7 @@ public:
     //Helpers
     void addAllHelperTypesInScene();
     //
-    _SceneEntity findSceneEntity(unsigned int iD);
+    _SceneEntity findSceneEntity(uint iD);
     _SceneEntity findSceneEntity(QString tag);
     //
     _SceneEntity getSceneEntityHitWithRay();
@@ -54,14 +54,14 @@ private:
     //Physics
     std::vector<_Physics> physVector;
     _SceneEntity rayHitSceneEntity;
-    unsigned int pc,hc;//physics and helper object counter
+    uint pc,hc;//physics and helper object counter
 
     //Helpers
     _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot,bg;
     void updateHelpersOnce();
     void updateHelpersLoop();
     //Physics
-    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
+    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,uint index);//updates the Physcis
     void updateAllPhysicsObjectsLoop();
     void updateAllPhysicsObjectsOnce();
 };

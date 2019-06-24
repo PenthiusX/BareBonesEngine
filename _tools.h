@@ -39,7 +39,7 @@ public:
     static void printFrameRate();
 private:
 //    static QElapsedTimer timer;
-//    static unsigned int frameCounter;
+//    static uint frameCounter;
 };
 
 

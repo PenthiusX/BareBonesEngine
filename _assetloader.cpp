@@ -28,7 +28,7 @@ _AssetLoader::~_AssetLoader(){}
 
 void _AssetLoader::setModelInfo(_ModelInfo minfo){
     modelInfo = minfo;
-//    modelInfo.calcCentroidFromMinMax();
+    //    modelInfo.calcCentroidFromMinMax();
     calcMinMaxExtents();
 }
 _ModelInfo _AssetLoader::getModelInfo(){
@@ -50,8 +50,8 @@ void _AssetLoader::objLoader(QString pathToFile)
     std::string temp = "0000000";
     std::string temp2 = "0000000";
 
-    unsigned int start = objData.find("v ");
-    unsigned int finish = objData.find("s ");
+    uint start = objData.find("v ");
+    uint finish = objData.find("s ");
 
     std::string av = objData.substr(start ,finish - start);
     std::stringstream ssv;
@@ -90,7 +90,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     std::string ai = objData.substr(objData.find("f ") + 1);
     std::stringstream ss;
     ss << ai;
-    unsigned int foundi;
+    uint foundi;
     while (!ss.eof())
     {
         ss >> temp2;
@@ -108,13 +108,24 @@ void _AssetLoader::objLoader(QString pathToFile)
     modelInfo.setMinExtents(vertMin);
     modelInfo.setCentroid(calcCentroidFromMinMax());
     modelInfo.setIsLoaded(true);
+
+    qInfo()<<"--------------MODEL INFO-------------------------------";
+    qInfo()<< "Path" << modelInfo.getPath();
+    qInfo()<< "VertexArray" << modelInfo.getVertexArray().size();
+    qInfo()<< "IndexArray" << modelInfo.getIndexArray().size();
+    qInfo()<< "MaxExtents" << modelInfo.getMaxExtent().x << modelInfo.getMaxExtent().y << modelInfo.getMaxExtent().z;
+    qInfo()<< "MinExtents" << modelInfo.getMinExtent().x << modelInfo.getMinExtent().y << modelInfo.getMinExtent().z;
+    qInfo()<< "Centroid" << modelInfo.getCentroid().x << modelInfo.getCentroid().y << modelInfo.getCentroid().z;
+    qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
+    qInfo()<<"--------------------------------------------------------";
+    qInfo()<<"--------------------------------------------------------";
 }
 
 /* Not in use---future implementation for VAO based optimisation.
- * Preprocess all models into memory
- * will reduce ovehead on runtime.
- * Created: 31_05_2019
-*/
+          * Preprocess all models into memory
+          * will reduce ovehead on runtime.
+          * Created: 31_05_2019
+         */
 void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 {
     foreach(const QString &imageName, QDir(":/"+folderName).entryList())
@@ -131,12 +142,12 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 }
 
 /*
- * Created: 12_06_2019
-*/
+          * Created: 12_06_2019
+         */
 void _AssetLoader::calcMinMaxExtents()
 {
-    std::vector<float> v = modelInfo.getVerticexArray();
-    for(unsigned int i = 0 ; i < v.size() ; i += 3)
+    std::vector<float> v = modelInfo.getVertexArray();
+    for(uint i = 0 ; i < v.size() ; i += 3)
     {
         if(v[i] >= vertMax.x)
             vertMax.x=(v[i]);

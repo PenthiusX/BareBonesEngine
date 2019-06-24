@@ -18,24 +18,24 @@
 class _SceneEntity
 {
 public:
-    _SceneEntity(QVector3D pos,glm::vec3 rot , float scale);
+    _SceneEntity(glm::vec3 pos, glm::vec3 rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
     //
     void setIsActive(bool isIt);
     bool getIsActive();
     //
-    void setId(unsigned int id);//sets the iD either externaly or internally generated
-    unsigned int getId() const;
+    void setId(uint id);//sets the iD either externaly or internally generated
+    uint getId() const;
     void setTag(QString tag);//sets a name based identifier for the object
     QString getTag() const;
-    void setOrderInIndex(unsigned int i);
-    unsigned int getIndexPosInScene() const;
+    void setOrderInIndex(uint i);
+    uint getIndexPosInScene() const;
     //
     void setIsTransformationAllowed(bool isit);
     bool getIsTransformationAllowed();
-    void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
-    QVector3D getPostion() const;//get the current position of the relvant object instace
+    void setPosition(glm::vec3 pos);//sets the position for the object in the Model matrix via the _renderer class instance.
+    glm::vec3 getPostion() const;//get the current position of the relvant object instace
     void setRotation(glm::vec3 rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
     glm::vec3 getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
     void setPivot(glm::vec3 pivot);//sets the pivot point to rotate around
@@ -103,17 +103,17 @@ public:
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,_SceneEntity::scenePhysicsObjects helper);
 
 private:
-    unsigned int id;
+    uint id;
     QString tag;
-    QVector3D postion;
+    glm::vec3 postion;
     glm::vec3 rotation;
     glm::vec3 pivot;
     float scale;
     QVector4D color;
-    unsigned int orderInIndex;
+    uint orderInIndex;
     //
     std::vector<float> vertexData;
-    std::vector<unsigned int> indexData;
+    std::vector<uint> indexData;
     std::vector<int> uvData;
     std::vector<float> normalData;
     //
@@ -122,7 +122,7 @@ private:
     QString texturePath;
     //
     void setVertexData(std::vector<float> vertices);//sets the Vertex data.
-    void setIndexData(std::vector<unsigned int> indices);//sets the Index data.
+    void setIndexData(std::vector<uint> indices);//sets the Index data.
     void setuvData(std::vector<int> uvCoords);//sets the UV data.
     void setnormalData(std::vector<float> normalData);//sets the normal data.
     //

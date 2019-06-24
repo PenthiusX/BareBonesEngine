@@ -47,7 +47,7 @@ public:
     void setSceneEntity(_SceneEntity s);
     _SceneEntity getSceneEntity();
     //
-    void genTriesforCollision(std::vector<float>vert,std::vector<unsigned int> index);
+    void genTriesforCollision(std::vector<float>vert,std::vector<uint> index);
     void genNormalsForTries( std::vector<_Phy_Triangle> triV);
     //
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update

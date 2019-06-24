@@ -5,7 +5,7 @@
 
 //Commonly used Functions
 QElapsedTimer timer;
-unsigned int frameCounter;
+uint frameCounter;
 _Tools::_Tools()
 {
     timer.start();

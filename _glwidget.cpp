@@ -48,20 +48,20 @@ void _GLWidget::initializeGL()
     scene = new _Scene();
     //-------------Camera--------------
     cam.setEyePosition(QVector3D(0.0, 0.0, 10.0));
-    cam.setFocalPoint(QVector3D(0.0, 0.0, 0.0));
+    cam.setFocalPoint(glm::vec3(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
     //------------Scene Objects--------
     s.setId(3);
     s.setTag("clickSurface");
-    s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    s.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(true);
-    s.setPosition(QVector3D(0.0,0.0, 0.0));
+    s.setPosition(glm::vec3(0.0,0.0, 0.0));
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
-    s.setScale(1.0f);
-    s.setModelData(":/models/hipolyore.obj");
+    s.setScale(0.2f);
+    s.setModelData(":/models/stickman.obj");
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
@@ -125,6 +125,15 @@ void _GLWidget::paintGL()//the renderloop
   ██ ▄▄ ▄█▀▄ ▐█▐▐▌ ▐█.▪▐▀▀▄  ▄█▀▄ ██▪  ██▪  ▄▀▀▀█▄
   ▐███▌▐█▌.▐▌██▐█▌ ▐█▌·▐█•█▌▐█▌.▐▌▐█▌▐▌▐█▌▐▌▐█▄▪▐█
   ·▀▀▀  ▀█▄▀▪▀▀ █▪ ▀▀▀ .▀  ▀ ▀█▄▀▪.▀▀▀ .▀▀▀  ▀▀▀▀
+
+
+*
+* Controls: WASD to move ,
+* C to switch focut to  camera or model. R to reset to default with respect to focus
+* Click on Model to change focus
+* Press and Hold C to move camera
+* Press and Hold Ctrl to rotate object
+
 */
 /*
 * Function: mousePressEvent(QMouseEvent *e)
@@ -247,10 +256,6 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 * runns anytime a key is presses and returns which key through the
 * event pointer of QKeyEvent object.
 * Created: 25_02_2019
-*
-* Controls: WASD to move ,
-* C to switch focut to  camera or model. R to reset to default with respect to focus
-* Q to switch between models(models need to have a sequntial ID for this to work properly)
 */
 void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final controlls set.
 {
@@ -284,7 +289,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         if(isCamFocus)
             cam.setEyePosition(QVector3D(0.0, 0.0, 7.0));
         else{
-            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setPosition(QVector3D(0.0f, 0.0, 0.0));
+            scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setPosition(glm::vec3(0.0f, 0.0, 0.0));
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setRotation(glm::vec3(0.0f, 0.0, 0.0));
             scene->getSceneObjects()[scene->findSceneEntity(idmatch).getIndexPosInScene()]->setscale(1.0f);
             rotRads = QVector2D(0.0f,0.0f);
@@ -323,9 +328,8 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransformationLocal(false);
-        //        onPress->setPhysicsObject(_SceneEntity::Mesh);
         onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
-        onPress->setPosition(QVector3D(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+        onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
         onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");

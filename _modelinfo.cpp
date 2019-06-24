@@ -33,7 +33,7 @@ QString _ModelInfo::getName() const{
 QString _ModelInfo::getPath() const{
     return this->path;
 }
-std::vector<float> _ModelInfo::getVerticexArray() const{
+std::vector<float> _ModelInfo::getVertexArray() const{
     return this->vertexArray;
 }
 std::vector<unsigned int> _ModelInfo::getIndexArray() const{

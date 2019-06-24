@@ -1,6 +1,7 @@
 #ifndef _CAMERA_H
 #define _CAMERA_H
 #include <QVector3D>
+#include <glm/glm.hpp>
 
 /*
  * Class: _Camera
@@ -19,12 +20,12 @@ public:
     //
     void setEyePosition(QVector3D epos);
     QVector3D getEyePosition()const;
-    void setFocalPoint(QVector3D focalPos);
-    QVector3D getFocalPoint()const;
+    void setFocalPoint(glm::vec3 focalPos);
+    glm::vec3 getFocalPoint()const;
     void setUpVector(QVector3D upVec);
     QVector3D getUpVector()const;
     void setFOV(unsigned fov);
-    unsigned int getFOV()const;
+    uint getFOV()const;
 
     void setFarClipDistance(float fclp);
     void setNearClipDistance(float nclp);
@@ -33,9 +34,9 @@ public:
 
 private:
     QVector3D eyePosition;
-    QVector3D focalPoint;
+    glm::vec3 focalPoint;
     QVector3D upVector;
-    unsigned int fov;
+    uint fov;
     float nearClipDistance;
     float farClipDistance;
 };

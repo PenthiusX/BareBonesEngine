@@ -150,7 +150,7 @@ void _FrameBuffer::setMousePos(QVector2D mPos)
 {
     //mouse y coordinate values are inverse of the the screen coordinate values
     //aligning it here the same way the resolution Height values(from gl_FragCoords) are aligned in the FBOshader.
-    unsigned int alignedMouseheight = resH - (unsigned int)mPos.y();
+    uint alignedMouseheight = resH - (uint)mPos.y();
     mousePos.setX(mPos.x());
     //this allignment is needed for it to be represented acurately in the shade.
     mousePos.setY(alignedMouseheight);

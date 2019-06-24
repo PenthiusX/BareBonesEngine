@@ -12,7 +12,7 @@ void _Physics::setSceneEntity(_SceneEntity s){
     sceneEntity = s;
     //Initialise based on SceneEntity;
     if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
-        sp.center = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
+        sp.center = sceneEntity.getPostion();
         sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent())) ;
         //used for maxextent update
         initialMax = sceneEntity.getModelInfo().getMaxExtent();
@@ -24,7 +24,7 @@ void _Physics::setSceneEntity(_SceneEntity s){
         initialMin = sceneEntity.getModelInfo().getMinExtent();
     }
     else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
-        genTriesforCollision(sceneEntity.getModelInfo().getVerticexArray(),sceneEntity.getModelInfo().getIndexArray());
+        genTriesforCollision(sceneEntity.getModelInfo().getVertexArray(),sceneEntity.getModelInfo().getIndexArray());
         triVectorCopy = triVector;
         //used for maxextent update
         initialMax = sceneEntity.getModelInfo().getMaxExtent();
@@ -274,8 +274,8 @@ void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix){
  * Created: 12_06_2019
 */
 void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
-    glm::vec4 max = glm::vec4(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z(),0.0f) + rotScaleMatrix * initialMax;
-    glm::vec4 min = glm::vec4(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z(),0.0f) + rotScaleMatrix * initialMin;
+    glm::vec4 max = glm::vec4(sceneEntity.getPostion().x,sceneEntity.getPostion().y,sceneEntity.getPostion().z,0.0f) + rotScaleMatrix * initialMax;
+    glm::vec4 min = glm::vec4(sceneEntity.getPostion().x,sceneEntity.getPostion().y,sceneEntity.getPostion().z,0.0f) + rotScaleMatrix * initialMin;
     _ModelInfo m = sceneEntity.getModelInfo();
     m.setMaxExtents(max);
     m.setMinExtents(min);
@@ -294,7 +294,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         //In this case just to keep the extent helpers Updated
         transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
         //set sphere collider dimensions
-        sp.center = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
+        sp.center = sceneEntity.getPostion();
         sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent()));
         //intersection check
         hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
