@@ -24,6 +24,7 @@ public slots:
     void scanGenerateModel();
     void scanGenerateModelEdge();
     void scanGenerateModelVoxels();
+    void scanGenerateModelWrap();
 
 signals:
     void set_image(char* img,unsigned int w,unsigned int h);

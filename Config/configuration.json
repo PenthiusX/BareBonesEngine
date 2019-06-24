@@ -559,7 +559,7 @@
 		"Scan" : {
 			"Caliberation" : {
 				"STAGE_CENTER_X" : 400,
-				"STAGE_CENTER_Y" : 480
+                "STAGE_CENTER_Y" : 425
 			},
 			"Default" : {
 				"ROTATION_STEP" : 200,

@@ -38,7 +38,7 @@ public slots:
     void histogram(char *img, unsigned int iwidth, unsigned int iheight);
     void markLineLaser(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step = 0,glm::vec2 stage_center = glm::vec2(430,466));
     void markStageEdge(char *img, unsigned int iwidth, unsigned int iheight);
-    void generateEdgeModel(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step,glm::vec2 stage_center);
+    void generateEdgeModel(char *img, unsigned int iwidth, unsigned int iheight,int rotation_step = 0,glm::vec2 stage_center = glm::vec2(430,466));
 
     void init();
     void setActiveProcess(const char *slot);
@@ -47,6 +47,7 @@ public slots:
 
     void passThroughFrameLocal(char *img, unsigned int iwidth, unsigned int iheight);
     void markStageEdgeCV(char *img, unsigned int iwidth, unsigned int iheight,std::vector<float> params={0.0,0.0,0.0,0.0,0.0,0.0});
+
 protected:
 
     QOpenGLContext *context = nullptr;

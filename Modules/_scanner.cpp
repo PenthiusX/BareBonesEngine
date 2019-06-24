@@ -117,7 +117,6 @@ void _Scanner::scanGenerateModel()
     bool success = processing->makeCurrent();
     qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
-
     machine->frameUpdateMutex.lock();// display will not be updated by camera frame
 
     for(int t = 0;t<200;t++)
@@ -140,6 +139,42 @@ void _Scanner::scanGenerateModel()
         //filename = QString("processed_image_stage_%1.pgm").arg(t);
         //_Tools::SaveImageToPgm(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), filename);
 
+    }
+
+    glUniform1f(4,4);
+
+    machine->frameUpdateMutex.unlock();
+
+    //delete imagefile;
+}
+
+/* Function : scan_generate_model()
+ * this function scans the stone by rotating stage by 1.8 degrees every step
+ * captures the image and does preprocessing on the image(currently)
+ * this function should generate a 3d model of stone-- afterwards
+*/
+void _Scanner::scanGenerateModelWrap()
+{
+    bool success = processing->makeCurrent();
+    qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
+
+
+    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
+
+    for(int t = 0;t<100;t++)
+    {
+        QString filename = QString("scan_image_stage_%1").arg(t);
+        //move the stage by 80 steps
+        machine->TurnTableMotorDiff(80);
+        //QThread::msleep(100);
+
+        //grab new frame from camera
+        machine->GrabFrame(filename);
+
+        //send the grabbed frame to gui widget for display
+        //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+
+        processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t);
     }
 
     glUniform1f(4,4);
@@ -185,7 +220,6 @@ void _Scanner::scanGenerateModelEdge()
         //For saving processed image
         //filename = QString("processed_image_stage_%1.pgm").arg(t);
         //_Tools::SaveImageToPgm(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), filename);
-
     }
 
     machine->frameUpdateMutex.unlock();
@@ -201,7 +235,7 @@ void _Scanner::scanGenerateModelVoxels()
 
     machine->frameUpdateMutex.lock();// display will not be updated by camera frame
 
-    glm::vec2 stage_center;
+    glm::vec2 stage_center = glm::vec2(425,484);
 
     stage_center.x = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_X");
     stage_center.y = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_Y");
