@@ -53,7 +53,6 @@ private:
     _Camera cam;
 
     //Varible for InputCallbackFunctions
-    uint idmatch;
     double scroolScale;
     QVector2D rotRads;
     bool isCamFocus;

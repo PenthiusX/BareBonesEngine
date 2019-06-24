@@ -54,15 +54,20 @@ private:
     //Physics
     std::vector<_Physics> physVector;
     _SceneEntity rayHitSceneEntity;
-    uint pc,hc;//physics and helper object counter
+    uint hc;//physics and helper object counter
 
     //Helpers
     _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot,bg;
+    uint pivotIndex,mPointerIndex;
+    uint cIndex;
+    uint mxIndex;
+    uint minIndex;
     void updateHelpersOnce();
-    void updateHelpersLoop();
+    void updateHelpersLoop(uint index);
+    void setHelperIndexVars();
     //Physics
-    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,uint index);//updates the Physcis
-    void updateAllPhysicsObjectsLoop();
+    void updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, uint index);//updates the Physcis
+    void updateAllPhysicsObjectsLoop(uint index);
     void updateAllPhysicsObjectsOnce();
 };
 

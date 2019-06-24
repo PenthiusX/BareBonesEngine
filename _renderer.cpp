@@ -241,11 +241,10 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D
 */
 void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar)
 {
-    // Calculate aspect ratio
+   // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     projectionMatrix = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
-
-    //    qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
+   //qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
 }
 /*
  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
@@ -280,7 +279,7 @@ void _Renderer::setPosition(glm::vec3 pos)
     }
 }
 
-void _Renderer::translate(QVector3D pos)
+void _Renderer::translate(glm::vec3 pos)
 {
     if(sceneEntity.getIsTransformationAllowed())
     {
@@ -289,11 +288,11 @@ void _Renderer::translate(QVector3D pos)
         if(sceneEntity.getIsTransformationLocal())
         {
             //        modelMatrix *= translationMatrix;
-            modelMatrix = glm::translate(modelMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+            modelMatrix = glm::translate(modelMatrix,pos);
         }
         else if(!sceneEntity.getIsTransformationLocal())
         {
-            translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+            translationMatrix = glm::translate(translationMatrix,pos);
             modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
         }
         keepSceneEntityUpdated();
