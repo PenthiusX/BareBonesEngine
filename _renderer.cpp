@@ -88,7 +88,7 @@ void _Renderer::setShader(QString vSh, QString fSh)
  * Used by: the _glWidget class initializeGL().
  * Created: 11_02_2019
 */
-void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<unsigned int> indexArray)
+void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<uint> indexArray)
 {
     // Copy the vertex and index data locally for use in the current drawcall.
     vertices = vertexArray;
@@ -119,7 +119,8 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 */
 void _Renderer::setuniformLocations()
 {
-    qDebug() <<"--------"<<sceneEntity.getTag() <<"--------";
+    qInfo() << "---------------UNIFORM INFO------------------------";
+    qDebug() <<"Tag ->"<<sceneEntity.getTag();
     colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture and UVs
     qDebug() << "colorUniform ->" << colorUniform;
     modelUnifrom = shdr->getUniformLocation("model");
@@ -130,7 +131,8 @@ void _Renderer::setuniformLocations()
     qDebug() << "projectionUniform ->" << projectionUniform;
     mousePosUniform = shdr->getUniformLocation("iMouse");
     qDebug() << "mousePosUniform ->" << mousePosUniform;
-    qDebug() <<"-----------------------------------------";
+    qDebug() <<"---------------------------------------------------";
+    qDebug() <<"---------------------------------------------------";
 }
 /*
  * Function: setupTexture()
@@ -168,11 +170,11 @@ void _Renderer::setTexture(char* texBitmap)
         textures[0].setImage(texBitmap);
     qDebug() << "setTexture(char* texBitmap) on entity" << sceneEntity.getTag();
 }
-void _Renderer::setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight)
+void _Renderer::setTexture(char* texBitmap,uint iwidth,uint iheight)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap,iwidth,iheight);
-    qDebug() << "setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight) on entity" << sceneEntity.getTag();
+    qDebug() << "setTexture(char* texBitmap,uint iwidth,uint iheight) on entity" << sceneEntity.getTag();
 }
 void _Renderer::setTexture(QString pathtoTexture)
 {
@@ -188,7 +190,7 @@ void _Renderer::setTexture(QString pathtoTexture)
 * Used by: the _glWidget class initialiseGl() or paintGl().
 * Created: 25_02_2019
 */
-void _Renderer::setModelMatrix(QVector3D position,float scale,glm::vec3 rotation)
+void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation)
 {
     modelMatrix = glm::mat4(1.0f);
     translationMatrix = glm::mat4(1.f);
@@ -199,7 +201,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,glm::vec3 rotation
     glm::vec3 EulerAngles(rotation.x,rotation.y,rotation.z);
     glm::quat quat = glm::quat(EulerAngles);
     rotationMatrix = glm::mat4_cast(quat);
-    translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
+    translationMatrix = glm::translate(translationMatrix,position);
 
     modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
     qDebug() << "setModelMatrix() on entity" << sceneEntity.getTag();
@@ -213,12 +215,12 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,glm::vec3 rotation
 * depending if the camra needs to update its position in  realtime.
 * Created: 25_02_2019
 */
-void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
+void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D upVector)
 {
     viewMatrix = glm::mat4(1.0f);
     viewMatrix = glm::lookAt(
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
-                glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
+                glm::vec3(focalPoint.x, focalPoint.y, focalPoint.z),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
     keepSceneEntityUpdated();
 }
@@ -259,26 +261,25 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
  * Used by: _render class in draw()
  * Created: 1_03_2019
 */
-void _Renderer::setPosition(QVector3D pos)
+void _Renderer::setPosition(glm::vec3 pos)
 {
     if(sceneEntity.getIsTransformationAllowed())
     {
         if(sceneEntity.getIsTransformationLocal())
         {
             modelMatrix = glm::mat4(1.0f);
-            modelMatrix = glm::translate(modelMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
+            modelMatrix = glm::translate(modelMatrix,pos);
         }
         else if(!sceneEntity.getIsTransformationLocal())
         {
             translationMatrix = glm::mat4(1.f);
-            translationMatrix = glm::translate(translationMatrix,glm::vec3( pos.x(),
-                                                                            pos.y(),
-                                                                            pos.z()));
+            translationMatrix = glm::translate(translationMatrix,pos);
             modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
         }
         keepSceneEntityUpdated();
     }
 }
+
 void _Renderer::translate(QVector3D pos)
 {
     if(sceneEntity.getIsTransformationAllowed())
@@ -320,7 +321,7 @@ void _Renderer::setRotation(glm::vec3 rot)
             }
             else if(!sceneEntity.getIsTransformationLocal())
             {
-                //        rotationMatrix = glm::mat4x4(1.f);
+                //rotationMatrix = glm::mat4x4(1.f);
                 glm::vec3 eulerAngles(sceneEntity.getRotation());
                 glm::quat quat = glm::quat(eulerAngles);
                 rotationMatrix = glm::mat4_cast(quat);
@@ -346,16 +347,18 @@ void _Renderer::setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot)
     if(sceneEntity.getIsTransformationAllowed())
     {
         sceneEntity.setRotation(rot);
-        if(sceneEntity.getIsTransformationLocal())
-        {//still buggy
-            setPosition(QVector3D(pivot.x,pivot.y,pivot.z));
+        if(sceneEntity.getIsTransformationLocal()){
+            //still buggy
+            setPosition(pivot);
             glm::vec3 EulerAngles(sceneEntity.getRotation());
             glm::quat quat = glm::quat(EulerAngles);
             modelMatrix *= glm::mat4_cast(quat);
         }
-        if(!sceneEntity.getIsTransformationLocal())
-        {
-            pivotTmat = glm::mat4x4(1.0f);//this works like an ofsetpivot rather than rotae around a point (need to fix)
+        if(!sceneEntity.getIsTransformationLocal()){
+            //this works like an ofset pivot rather than rotae around a point
+            //(Alterante implementation involves multiplying parent rotation matrix with childrens model matrix)#Not implemented
+            pivotTmat = glm::mat4x4(1.0f);
+
             pivotTmat[3][0] = pivot.x;
             pivotTmat[3][1] = pivot.y;
             pivotTmat[3][2] = pivot.z;
@@ -386,38 +389,74 @@ void _Renderer::setscale(float scale)
                                                             sceneEntity.getScale()));
         modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
     }
+    keepSceneEntityUpdated();
 }
 /*
  * Created:18_06_2019
 */
 void _Renderer::lookAt(QVector3D ptl)
 {
-    glm::vec3 obPos = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
-    glm::vec3 tarPo = glm::vec3(ptl.x(),ptl.y(),ptl.z());
+    //    glm::vec3 obPos = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
+    //    glm::vec3 tarPo = glm::vec3(ptl.x(),ptl.y(),ptl.z());
 
-    glm::vec3 delta = tarPo - obPos;//targetPosition-objectPosition
-    glm::vec3 up;
-    glm::vec3 dir(glm::normalize(delta));
+    //    glm::vec3 delta = tarPo - obPos;//targetPosition-objectPosition
+    //    glm::vec3 up;
+    //    glm::vec3 dir(glm::normalize(delta));
 
-    if(abs(dir.x) < 0.00001 && abs(dir.z) < 0.00001){
-        if(dir.y > 0)
-            up = glm::vec3(0.0, 0.0, -1.0); //if direction points in +y
-        else
-            up = glm::vec3(0.0, 0.0, 1.0); //if direction points in -y
-    } else {
-        up = glm::vec3(0.0, 1.0, 0.0); //y-axis is the general up
+    //    if(abs(dir.x) < 0.00001 && abs(dir.z) < 0.00001){
+    //        if(dir.y > 0)
+    //            up = glm::vec3(0.0, 0.0, -1.0); //if direction points in +y
+    //        else
+    //            up = glm::vec3(0.0, 0.0, 1.0); //if direction points in -y
+    //    } else {
+    //        up = glm::vec3(0.0, 1.0, 0.0); //y-axis is the general up
+    //    }
+    //    up = glm::normalize(up);
+    //    glm::vec3 right = glm::normalize(glm::cross(up,dir));
+    //    up = glm::normalize(glm::cross(dir, right));
+
+    //    rotationMatrix *= glm::mat4(right.x, right.y, right.z, 0.0f,
+    //                                up.x, up.y, up.z, 0.0f,
+    //                                dir.x, dir.y, dir.z, 0.0f,
+    //                                obPos.x, obPos.y, obPos.z, 1.0f);
+
+    //    keepSceneEntityUpdated();
+    //    _Tools::Debugmatrix4x4(this->sceneEntity.getModelMatrix());
+
+    RotationBetweenVectors(glm::vec3(ptl.x(),ptl.y(),ptl.z()));
+}
+
+void _Renderer::RotationBetweenVectors(glm::vec3 dest){
+    glm::vec3 start = glm::vec3(sceneEntity.getPostion());
+    start = glm::normalize(start);//this object location
+    dest = glm::normalize(dest);
+
+    float cosTheta = glm::dot(start, dest);
+    glm::vec3 rotationAxis;
+
+    glm::quat axisangle;
+    if (cosTheta < -1 + 0.001f){
+        rotationAxis = glm::cross(glm::vec3(0.0f, 0.0f, 1.0f), start);
+        if (glm::length(rotationAxis) < 0.01 )
+            rotationAxis = glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), start);
+        rotationAxis = glm::normalize(rotationAxis);
+        axisangle = glm::angleAxis(180.0f, rotationAxis);
     }
-    up = glm::normalize(up);
-    glm::vec3 right = glm::normalize(glm::cross(up,dir));
-    up = glm::normalize(glm::cross(dir, right));
 
-    rotationMatrix *= glm::mat4(right.x, right.y, right.z, 0.0f,
-                                up.x, up.y, up.z, 0.0f,
-                                dir.x, dir.y, dir.z, 0.0f,
-                                obPos.x, obPos.y, obPos.z, 1.0f);
+    rotationAxis = glm::cross(start, dest);
 
+    float s = sqrt((1+cosTheta)*2);
+    float invs = 1 / s;
+
+    modelMatrix *= glm::mat4_cast(glm::quat(
+                                      s * 0.5f,
+                                      rotationAxis.x * invs,
+                                      rotationAxis.y * invs,
+                                      rotationAxis.z * invs
+                                      ));
+
+    this->sceneEntity.setModelMatrix(modelMatrix);
     keepSceneEntityUpdated();
-    _Tools::Debugmatrix4x4(this->sceneEntity.getModelMatrix());
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
@@ -436,7 +475,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     //can be converted to using the same VAO for the same set of vertex+index data.
     //will need to move the whole model loading and id geenration to assetLoader class
     //and only pass the relavant ids to VAO at runtime to reduce ovehead.
-    setModelDataInBuffers(sceneEntity.getModelInfo().getVerticexArray(), sceneEntity.getModelInfo().getIndexArray());
+    setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());
     setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
 }
 /*
@@ -459,9 +498,9 @@ void _Renderer::keepSceneEntityUpdated(){
 
     //get the real position values from the modelMatrix
     glm::mat4x4 tmat4 = modelMatrix * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
-    sceneEntity.setPosition(QVector3D(tmat4[3][0],
-                                      tmat4[3][1],
-                                      tmat4[3][2]));
+    sceneEntity.setPosition(glm::vec3(tmat4[3][0],
+            tmat4[3][1],
+            tmat4[3][2]));
     //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 /*
@@ -491,7 +530,7 @@ void _Renderer::_Renderer::draw()
         //Using the shader program in the current context
         shdr->useShaderProgram();
         //Bind Textures
-        for(unsigned int t=0;t<textures.size();t++){
+        for(uint t=0;t<textures.size();t++){
             textures[t].bind();
         }
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
@@ -504,7 +543,7 @@ void _Renderer::_Renderer::draw()
         //Sets the values for the MVP matrix in the vertex shader
         glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
         glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
-        //      glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
+        //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
         //
         setColors();//Setting the uniform for color

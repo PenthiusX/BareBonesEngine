@@ -28,8 +28,8 @@ public:
     void useShaderProgram();
     GLint getUniformLocation(const char *nameOfUniform);
 
-    void setChildShader(QString s,unsigned int typ);
-    void setChildShader(std::vector<QString>, unsigned int typ);
+    void setChildShader(QString s,uint typ);
+    void setChildShader(std::vector<QString>, uint typ);
 
 private:
     //Shader Program
@@ -38,9 +38,9 @@ private:
     // map(dictionary) of shader
     //key : shader typ enum eg. GL_VERTEX_SHADER
     //value : shader ID returned by glCreateShader
-    std::map<unsigned int,unsigned int> child_shaders;
+    std::map<uint,uint> child_shaders;
 
-    unsigned int compileShader(QString src_path,unsigned int typ);
+    uint compileShader(QString src_path,uint typ);
 
 
     _Tools tools;

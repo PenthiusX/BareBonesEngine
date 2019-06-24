@@ -40,10 +40,10 @@ private:
     void removeSceneEntityFromScene();
 
     //Variables
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int EBO;
-    unsigned int shaderProgram;
+    uint VBO;
+    uint VAO;
+    uint EBO;
+    uint shaderProgram;
     QOpenGLContext *context;
 
     std::vector<_Scene*> sceneVector;//Vector of scene for drawing multiple scene Contexts//!!prototype implmentaition not implemented and checked!!!
@@ -53,7 +53,7 @@ private:
     _Camera cam;
 
     //Varible for InputCallbackFunctions
-    unsigned int idmatch;
+    uint idmatch;
     double scroolScale;
     QVector2D rotRads;
     bool isCamFocus;

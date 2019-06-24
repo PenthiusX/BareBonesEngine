@@ -7,7 +7,7 @@
 */
 _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the from axis angle
     rotation = glm::vec3(0.0,0.0,0.0);
-    postion = QVector3D(0.0, 0.0, 0.0);
+    postion = glm::vec3(0.0, 0.0, 0.0);
     color = QVector4D(0.5,0.5,0.5,1.0);
     vShaderPath = ":/shaders/dmvshader.glsl";
     fShaderPath = ":/shaders/dmfshader.glsl";
@@ -33,7 +33,7 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
  * Author: Aditya
  * Created:26_02_2019
 */
-_SceneEntity::_SceneEntity(QVector3D pos, glm::vec3 rot, float scale){
+_SceneEntity::_SceneEntity(glm::vec3 pos, glm::vec3 rot, float scale){
     postion = pos;
     rotation = rot;
     this->scale = scale;
@@ -47,10 +47,10 @@ _SceneEntity::~_SceneEntity(){
  * manupulate the respective object with the relavant ID.
  * Created:26_02_2019
 */
-void _SceneEntity::setId(unsigned int id){
+void _SceneEntity::setId(uint id){
     this->id = id;
 }
-unsigned int _SceneEntity::getId() const{
+uint _SceneEntity::getId() const{
     return id;
 }
 /* Function: setTag(const char *tag)
@@ -67,10 +67,10 @@ QString _SceneEntity::getTag() const{
 /*
  * Created: 10_06_2019
 */
-void _SceneEntity::setOrderInIndex(unsigned int i){
+void _SceneEntity::setOrderInIndex(uint i){
     orderInIndex = i;
 }
-unsigned int _SceneEntity::getIndexPosInScene()const{
+uint _SceneEntity::getIndexPosInScene()const{
     return orderInIndex;
 }
 
@@ -86,10 +86,10 @@ bool _SceneEntity::getIsTransformationAllowed(){
  * sets/gets the position for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setPosition(QVector3D pos){
+void _SceneEntity::setPosition(glm::vec3 pos){
     postion = pos;
 }
-QVector3D _SceneEntity::getPostion() const{
+glm::vec3 _SceneEntity::getPostion() const{
     return postion;
 }
 /*
@@ -261,7 +261,7 @@ bool _SceneEntity::getIsTransformationLocal(){
 */
 void _SceneEntity::setModelData(_AssetLoader aloader)
 {
-    if(aloader.getModelInfo().getVerticexArray().size() > 0 && aloader.getModelInfo().getIndexArray().size() > 0){
+    if(aloader.getModelInfo().getVertexArray().size() > 0 && aloader.getModelInfo().getIndexArray().size() > 0){
         assetLoader = aloader;
         modelInfo = assetLoader.getModelInfo();
         modelInfo.setIsLoaded(true);
@@ -273,7 +273,7 @@ void _SceneEntity::setModelData(_AssetLoader aloader)
 }
 void _SceneEntity::setModelData(_ModelInfo minfo)
 {
-    if(minfo.getVerticexArray().size() > 0 && minfo.getIndexArray().size() > 0){
+    if(minfo.getVertexArray().size() > 0 && minfo.getIndexArray().size() > 0){
         assetLoader.setModelInfo(minfo);
         modelInfo = assetLoader.getModelInfo();
         modelInfo.setIsLoaded(true);
@@ -294,7 +294,7 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
 void _SceneEntity::setModelData(QString path)
 {
     assetLoader.objLoader(path);
-    if(assetLoader.getModelInfo().getVerticexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
+    if(assetLoader.getModelInfo().getVertexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
         modelInfo = assetLoader.getModelInfo();
         modelInfo.setIsLoaded(true);
         isActive = true;

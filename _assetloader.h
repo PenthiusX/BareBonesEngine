@@ -22,7 +22,7 @@ public:
     void setModelInfo(_ModelInfo minfo);
     _ModelInfo getModelInfo();
     //    std::vector<float> getAssetVertices();
-    //    std::vector<unsigned int> getAssetIndices();
+    //    std::vector<uint> getAssetIndices();
     void objLoader(QString pathToFile);
     void loadAllModelsInfoFromFolder(QString folderName);//not in use
 
@@ -30,7 +30,7 @@ private:
     _ModelInfo modelInfo;
     //
     std::vector<float> vertices;
-    std::vector<unsigned int> indices;
+    std::vector<uint> indices;
     std::vector<float> uvs;
     //
     glm::vec4 vertMin;

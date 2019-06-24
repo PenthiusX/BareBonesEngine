@@ -13,15 +13,15 @@ public:
     void setPath(QString path);
     void setIsLoaded(bool isLoaded);
     void setVertexArray(std::vector<float> vertexArray);
-    void setIndexArray(std::vector<unsigned int> indexAarray);
+    void setIndexArray(std::vector<uint> indexAarray);
     void setMaxExtents(glm::vec4 max);
     void setMinExtents(glm::vec4 min);
     void setCentroid(glm::vec4 cent);
     //
     QString getName() const;
     QString getPath() const;
-    std::vector<float> getVerticexArray()const;
-    std::vector<unsigned int> getIndexArray()const;
+    std::vector<float> getVertexArray()const;
+    std::vector<uint> getIndexArray()const;
     glm::vec4 getMaxExtent() const;
     glm::vec4 getMinExtent() const;
     glm::vec4 getCentroid() const;
@@ -35,7 +35,7 @@ private:
     QString name;//the tag
     QString path;//the relative path of the model data file
     std::vector<float> vertexArray;//the actual vertices read from modelFile into memory
-    std::vector<unsigned int> indexAarray;//the actual indeices read from modelFile into memory
+    std::vector<uint> indexAarray;//the actual indeices read from modelFile into memory
     //
     glm::vec4 max;//max extent.
     glm::vec4 min;//min extent.

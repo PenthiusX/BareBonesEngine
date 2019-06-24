@@ -16,13 +16,13 @@ _Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 
 }
 /*
- * Constructor: _Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
+ * Constructor: _Texture(char *img, uint w, uint h,uint colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from char pointer array with given resolution
  * Created: 21_02_2019
  * sets defualt parameters
  * Date:28_03_2019
 */
-_Texture::_Texture(char *img, unsigned int w, unsigned int h,unsigned int colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
+_Texture::_Texture(char *img, uint w, uint h,uint colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     image = img;
     width = w;
@@ -96,7 +96,7 @@ void _Texture::setImage(char* img)
 /* Updates texture from char pointer array with updated given resolution
  * Created: 21_02_2019
 */
-void _Texture::setImage(char* img,unsigned int iwidth,unsigned int iheight)
+void _Texture::setImage(char* img,uint iwidth,uint iheight)
 {
     width = iwidth;
     height = iheight;
@@ -114,7 +114,7 @@ void _Texture::bind()
 /* bind texture default given slot index
  * Created: 21_02_2019
 */
-void _Texture::bind(unsigned int index)
+void _Texture::bind(uint index)
 {
     glActiveTexture(GL_TEXTURE0+index);
     glBindTexture(GL_TEXTURE_2D,m_ID);
@@ -126,7 +126,7 @@ void _Texture::bind(unsigned int index)
  *   access : data access eg. GL_READ_ONLY,GL_WRITE_ONLY,GL_READ_WRITE,
  * Created: 21_02_2019
 */
-void _Texture::bindForCompute(unsigned int index, GLenum format, GLenum access)
+void _Texture::bindForCompute(uint index, GLenum format, GLenum access)
 {
     glBindImageTexture(index, m_ID, 0, GL_FALSE, 0, access,format );
 }
@@ -136,7 +136,7 @@ void _Texture::bindForCompute(unsigned int index, GLenum format, GLenum access)
  *   operation : framebuffer operation eg. GL_FRAMEBUFFER,GL_READ_FRAMEBUFFER,GL_DRAW_FRAMEBUFFER,
  * Created: 21_02_2019
 */
-void _Texture::bindForFramebuffer(unsigned int index, GLenum operation)
+void _Texture::bindForFramebuffer(uint index, GLenum operation)
 {
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glFramebufferTexture2D(operation,GL_COLOR_ATTACHMENT0+index, GL_TEXTURE_2D, m_ID, 0);
@@ -154,7 +154,7 @@ void _Texture::unbind()
  * these parameters will be applied in load function
  * Created: 21_02_2019
 */
-void _Texture::addParameter(unsigned int pname, unsigned int param)
+void _Texture::addParameter(uint pname, uint param)
 {
     parameters[pname] = param;
 }
@@ -170,7 +170,7 @@ void _Texture::load( GLenum format, GLenum datatype)
     if(m_ID==0)
     {
 //        qDebug() << "tex gen b" << m_ID;
-        unsigned int t;
+        uint t;
         glGenTextures(1,&m_ID);
 //        qDebug() << "tex gen" << m_ID;
     }
@@ -185,13 +185,13 @@ void _Texture::load( GLenum format, GLenum datatype)
 }
 
 //return width of loaded texture image
-unsigned int _Texture::getWidth() const
+uint _Texture::getWidth() const
 {
     return width;
 }
 
 //return height of loaded texture image
-unsigned int _Texture::getHeight() const
+uint _Texture::getHeight() const
 {
     return height;
 }

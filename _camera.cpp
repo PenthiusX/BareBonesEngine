@@ -18,7 +18,7 @@ _Camera::_Camera(){
     //default values
     upVector = QVector3D(0.0, 1.0, 0.0);
     eyePosition = QVector3D(0.0, 0.0, 10.0);
-    focalPoint = QVector3D(0.0, 0.0, 0.0);
+    focalPoint = glm::vec3(0.0, 0.0, 0.0);
     nearClipDistance = 0.1;
     farClipDistance = 50.0;
 }
@@ -41,10 +41,10 @@ QVector3D _Camera::getEyePosition() const{
 * sets and returns the point the camera is looking at.
 * Created: 01_03_2019
 */
-void _Camera::setFocalPoint(QVector3D focalPos){
+void _Camera::setFocalPoint(glm::vec3 focalPos){
     focalPoint = focalPos;
 }
-QVector3D _Camera::getFocalPoint() const{
+glm::vec3 _Camera::getFocalPoint() const{
     return focalPoint;
 }
 /*
@@ -66,10 +66,10 @@ QVector3D _Camera::getUpVector() const{
  * field of view setting
  * Created: 08_04_2019
 */
-void _Camera::setFOV(unsigned int fove){
+void _Camera::setFOV(uint fove){
     fov = fove;
 }
-unsigned int _Camera::getFOV() const{
+uint _Camera::getFOV() const{
     return fov;
 }
 /*

@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
     //buttons to scanner slots connections
     connect(ui->scan, SIGNAL(clicked()),scanner,SLOT(scan_generate_model()));
-    connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+    connect(scanner,SIGNAL(set_image(char*,uint,uint)),this,SLOT(update_camera_image(char*,uint ,uint)));
     //start the hardware thread
     hardwareInteractionThread->start();
 }
@@ -71,7 +71,7 @@ MainWindow::~MainWindow()
 /*
  *
 */
-void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
+void MainWindow::update_camera_image(char *img, uint w, uint h)
 {
     //ui->widget->update_camera_image(img,w,h);//---------------Needs work!!!!!
 }
