@@ -18,7 +18,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void update_camera_image(char* img,unsigned int w,unsigned int h);
+    void update_camera_image(char* img,uint w,uint h);
 
 private:
     Ui::MainWindow *ui;

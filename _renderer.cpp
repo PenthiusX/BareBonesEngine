@@ -25,9 +25,9 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     setShader();//will run this shader by default.
     timer.start();
     //
-    glm_projection4x4 = glm::mat4(1.0f);
-    glm_model4x4 = glm::mat4(1.0f);
-    glm_view4x4 = glm::mat4(1.0f);
+    projectionMatrix = glm::mat4(1.0f);
+    modelMatrix = glm::mat4(1.0f);
+    viewMatrix = glm::mat4(1.0f);
     pivotTmat = glm::mat4(1.0f);
     qDebug() << "render initialised ";
 }
@@ -190,7 +190,7 @@ void _Renderer::setTexture(QString pathtoTexture)
 */
 void _Renderer::setModelMatrix(QVector3D position,float scale,glm::vec3 rotation)
 {
-    glm_model4x4 = glm::mat4(1.0f);
+    modelMatrix = glm::mat4(1.0f);
     translationMatrix = glm::mat4(1.f);
     rotationMatrix = glm::mat4(1.f);
     scalingMatrix = glm::mat4(1.f);
@@ -201,7 +201,7 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,glm::vec3 rotation
     rotationMatrix = glm::mat4_cast(quat);
     translationMatrix = glm::translate(translationMatrix,glm::vec3(position.x(), position.y(), position.z()));
 
-    glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+    modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
     qDebug() << "setModelMatrix() on entity" << sceneEntity.getTag();
     keepSceneEntityUpdated();
 }
@@ -215,8 +215,8 @@ void _Renderer::setModelMatrix(QVector3D position,float scale,glm::vec3 rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 {
-    glm_view4x4 = glm::mat4(1.0f);
-    glm_view4x4 = glm::lookAt(
+    viewMatrix = glm::mat4(1.0f);
+    viewMatrix = glm::lookAt(
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
                 glm::vec3(focalPoint.x(), focalPoint.y(), focalPoint.z()),
                 glm::vec3(upVector.x(), upVector.y(), upVector.z()));
@@ -241,9 +241,9 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 {
     // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
-    glm_projection4x4 = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
+    projectionMatrix = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
 
-//    qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
+    //    qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
 }
 /*
  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
@@ -265,8 +265,8 @@ void _Renderer::setPosition(QVector3D pos)
     {
         if(sceneEntity.getIsTransformationLocal())
         {
-            glm_model4x4 = glm::mat4(1.0f);
-            glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+            modelMatrix = glm::mat4(1.0f);
+            modelMatrix = glm::translate(modelMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
         }
         else if(!sceneEntity.getIsTransformationLocal())
         {
@@ -274,7 +274,7 @@ void _Renderer::setPosition(QVector3D pos)
             translationMatrix = glm::translate(translationMatrix,glm::vec3( pos.x(),
                                                                             pos.y(),
                                                                             pos.z()));
-            glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+            modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
         }
         keepSceneEntityUpdated();
     }
@@ -287,13 +287,13 @@ void _Renderer::translate(QVector3D pos)
         setPosition(sceneEntity.getPostion());
         if(sceneEntity.getIsTransformationLocal())
         {
-            //        glm_model4x4 *= translationMatrix;
-            glm_model4x4 = glm::translate(glm_model4x4,glm::vec3(pos.x(), pos.y(), pos.z()));
+            //        modelMatrix *= translationMatrix;
+            modelMatrix = glm::translate(modelMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
         }
         else if(!sceneEntity.getIsTransformationLocal())
         {
             translationMatrix = glm::translate(translationMatrix,glm::vec3(pos.x(), pos.y(), pos.z()));
-            glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+            modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
         }
         keepSceneEntityUpdated();
     }
@@ -316,7 +316,7 @@ void _Renderer::setRotation(glm::vec3 rot)
             {
                 glm::vec3 eulerAngles(sceneEntity.getRotation());
                 glm::quat quat = glm::quat(eulerAngles);
-                glm_model4x4 *= glm::mat4_cast(quat);
+                modelMatrix *= glm::mat4_cast(quat);
             }
             else if(!sceneEntity.getIsTransformationLocal())
             {
@@ -325,7 +325,7 @@ void _Renderer::setRotation(glm::vec3 rot)
                 glm::quat quat = glm::quat(eulerAngles);
                 rotationMatrix = glm::mat4_cast(quat);
                 //rotate at center
-                glm_model4x4 =  translationMatrix * rotationMatrix * scalingMatrix;
+                modelMatrix =  translationMatrix * rotationMatrix * scalingMatrix;
             }
         }
         else if(sceneEntity.getIsPivotSet() == true)
@@ -351,7 +351,7 @@ void _Renderer::setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot)
             setPosition(QVector3D(pivot.x,pivot.y,pivot.z));
             glm::vec3 EulerAngles(sceneEntity.getRotation());
             glm::quat quat = glm::quat(EulerAngles);
-            glm_model4x4 *= glm::mat4_cast(quat);
+            modelMatrix *= glm::mat4_cast(quat);
         }
         if(!sceneEntity.getIsTransformationLocal())
         {
@@ -362,7 +362,7 @@ void _Renderer::setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot)
             glm::vec3 EulerAngles(sceneEntity.getRotation());
             glm::quat quat = glm::quat(EulerAngles);
             rotationMatrix = glm::mat4_cast(quat);
-            glm_model4x4 = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
+            modelMatrix = translationMatrix * rotationMatrix * pivotTmat * scalingMatrix;
         }
         keepSceneEntityUpdated();
     }
@@ -384,7 +384,7 @@ void _Renderer::setscale(float scale)
         scalingMatrix = glm::scale(scalingMatrix, glm::vec3(sceneEntity.getScale(),
                                                             sceneEntity.getScale(),
                                                             sceneEntity.getScale()));
-        glm_model4x4 = translationMatrix * rotationMatrix * scalingMatrix;
+        modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
     }
 }
 /*
@@ -392,14 +392,14 @@ void _Renderer::setscale(float scale)
 */
 void _Renderer::lookAt(QVector3D ptl)
 {
-    glm::vec3 obPos = glm::vec3(ptl.x(),ptl.y(),ptl.z());
-    glm::vec3 tarPo = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
+    glm::vec3 obPos = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
+    glm::vec3 tarPo = glm::vec3(ptl.x(),ptl.y(),ptl.z());
 
     glm::vec3 delta = tarPo - obPos;//targetPosition-objectPosition
     glm::vec3 up;
     glm::vec3 dir(glm::normalize(delta));
 
-    if(abs(dir.x)< 0.00001 && abs(dir.z) < 0.00001){
+    if(abs(dir.x) < 0.00001 && abs(dir.z) < 0.00001){
         if(dir.y > 0)
             up = glm::vec3(0.0, 0.0, -1.0); //if direction points in +y
         else
@@ -407,17 +407,17 @@ void _Renderer::lookAt(QVector3D ptl)
     } else {
         up = glm::vec3(0.0, 1.0, 0.0); //y-axis is the general up
     }
-    up=glm::normalize(up);
+    up = glm::normalize(up);
     glm::vec3 right = glm::normalize(glm::cross(up,dir));
-    up= glm::normalize(glm::cross(dir, right));
+    up = glm::normalize(glm::cross(dir, right));
 
-    glm_model4x4 *= glm::mat4(right.x, right.y, right.z, 0.0f,
-                              up.x, up.y, up.z, 0.0f,
-                              dir.x, dir.y, dir.z, 0.0f,
-                              obPos.x, obPos.y, obPos.z, 1.0f);
+    rotationMatrix *= glm::mat4(right.x, right.y, right.z, 0.0f,
+                                up.x, up.y, up.z, 0.0f,
+                                dir.x, dir.y, dir.z, 0.0f,
+                                obPos.x, obPos.y, obPos.z, 1.0f);
 
     keepSceneEntityUpdated();
-//    _Tools::Debugmatrix4x4(this->sceneEntity.getModelMatrix());
+    _Tools::Debugmatrix4x4(this->sceneEntity.getModelMatrix());
 }
 /*
 * Function: setSceneEntity(_SceneEntity s)
@@ -453,15 +453,15 @@ void _Renderer::keepSceneEntityUpdated(){
     sceneEntity.setTranslationMatrix(translationMatrix);
     sceneEntity.setRotationmatrix(rotationMatrix);
     sceneEntity.setScaleingMatrix(scalingMatrix);
-    sceneEntity.setProjectionMatrix(glm_projection4x4);
-    sceneEntity.setViewMatrix(glm_view4x4);
-    sceneEntity.setModelMatrix(glm_model4x4);
+    sceneEntity.setProjectionMatrix(projectionMatrix);
+    sceneEntity.setViewMatrix(viewMatrix);
+    sceneEntity.setModelMatrix(modelMatrix);
 
     //get the real position values from the modelMatrix
-    glm::mat4x4 tmat4 = glm_model4x4 * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
+    glm::mat4x4 tmat4 = modelMatrix * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
     sceneEntity.setPosition(QVector3D(tmat4[3][0],
-            tmat4[3][1],
-            tmat4[3][2]));
+                                      tmat4[3][1],
+                                      tmat4[3][2]));
     //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
 }
 /*

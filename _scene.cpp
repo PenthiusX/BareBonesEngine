@@ -298,7 +298,7 @@ void _Scene::updateAllPhysicsObjectsLoop()
 void _Scene::updateHelpersOnce()
 {
     glm::vec4 mx,mn,cntrd;
-    for (unsigned int i = 0; i < physVector.size(); i++){
+    for (unsigned int i = 0; i < physVector.size(); i++) {
         if(physVector[i].getSceneEntity().getIsPhysicsHelper() && physVector[i].getSceneEntity().getisHitByRay())
         {
             glm::vec3 p = physVector[i].getRayTriIntersectionPoint();
@@ -309,42 +309,44 @@ void _Scene::updateHelpersOnce()
             mx = physVector[i].getSceneEntity().getModelInfo().getMaxExtent();
             mn = physVector[i].getSceneEntity().getModelInfo().getMinExtent();
             cntrd = physVector[i].getSceneEntity().getModelInfo().getCentroid();
-            //Sets the helps to be active as it will be decativate if object is not selected
-            _SceneEntity s1 = renderObjects[findSceneEntity("cent").getIndexPosInScene()]->getSceneEntity();
-            _SceneEntity s2 = renderObjects[findSceneEntity("max").getIndexPosInScene()]->getSceneEntity();
-            _SceneEntity s3 = renderObjects[findSceneEntity("min").getIndexPosInScene()]->getSceneEntity();
-
-            renderObjects[findSceneEntity("cent").getIndexPosInScene()]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
-
-            renderObjects[findSceneEntity("max").getIndexPosInScene()]->setPosition(QVector3D(mx.x,mx.y,mx.z));
-            //renderObjects[findSceneEntity("max").getIndexPosInScene()]->setscale(sc * 0.05);
-            //renderObjects[findSceneEntity(992).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy lookat
-            renderObjects[findSceneEntity("max").getIndexPosInScene()]->setRotation(glm::vec3(90.0,0.0,0.0));
-
-            renderObjects[findSceneEntity("min").getIndexPosInScene()]->setPosition(QVector3D(mn.x,mn.y,mn.z));
-            //renderObjects[findSceneEntity("min").getIndexPosInScene()]->setscale(sc * 0.05);
-            //renderObjects[findSceneEntity(993).getIndexPosInScene()]->lookAt(cam.getEyePosition());//buggy look at
-            renderObjects[findSceneEntity("min").getIndexPosInScene()]->setRotation(glm::vec3(90.0,0.0,0.0));
         }
     }
+
+    uint cIndex = findSceneEntity("cent").getIndexPosInScene();
+    uint mxIndex = findSceneEntity("max").getIndexPosInScene();
+    uint minIndex = findSceneEntity("min").getIndexPosInScene();
+
+    renderObjects[cIndex]->setPosition(QVector3D(cntrd.x,cntrd.y,cntrd.z));
+
+    renderObjects[mxIndex]->setPosition(QVector3D(mx.x,mx.y,mx.z));
+    //renderObjects[findSceneEntity("max").getIndexPosInScene()]->setscale(sc * 0.05);
+    renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
+    renderObjects[mxIndex]->setRotation(glm::vec3(90.0,0.0,0.0));
+
+    renderObjects[minIndex]->setPosition(QVector3D(mn.x,mn.y,mn.z));
+    //renderObjects[minIndex]->setscale(sc * 0.05);
+    //renderObjects[minIndex]->lookAt(cam.getEyePosition());//buggy look at
+    renderObjects[minIndex]->setRotation(glm::vec3(90.0,0.0,0.0));
 }
 void _Scene::updateHelpersLoop()
 {
+    int pivotIndex = findSceneEntity("pivot").getIndexPosInScene();
     for (unsigned int i = 0; i < renderObjects.size(); i++){
         //Physics and Helper update--
         //update Physics for all the sceneObject with property enabled
         if(renderObjects[i]->getSceneEntity().getIsPhysicsHelper() &&  renderObjects[i]->getSceneEntity().getisHitByRay()){//if the sceneEntity has physics body attached
             // binding the pivot object to focus object
-            _SceneEntity s = renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->getSceneEntity();
+
+            _SceneEntity s = renderObjects[pivotIndex]->getSceneEntity();
             s.setIsActive(true);
-            renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setPosition(renderObjects[i]->getSceneEntity().getPostion());
-            renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setRotation(renderObjects[i]->getSceneEntity().getRotation());
-            renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setSceneEntityInRenderer(s);
+            renderObjects[pivotIndex]->setPosition(renderObjects[i]->getSceneEntity().getPostion());
+            renderObjects[pivotIndex]->setRotation(renderObjects[i]->getSceneEntity().getRotation());
+            renderObjects[pivotIndex]->setSceneEntityInRenderer(s);
         }
         else if(!renderObjects[i]->getSceneEntity().getIsPhysicsHelper() &&  !renderObjects[i]->getSceneEntity().getisHitByRay()){
-            _SceneEntity s = renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->getSceneEntity();
+            _SceneEntity s = renderObjects[pivotIndex]->getSceneEntity();
             s.setIsActive(false);
-            renderObjects[findSceneEntity("pivot").getIndexPosInScene()]->setSceneEntityInRenderer(s);
+            renderObjects[pivotIndex]->setSceneEntityInRenderer(s);
         }
     }
 }
@@ -378,6 +380,7 @@ void _Scene::addAllHelperTypesInScene()
     bg.setTag("background");
     bg.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
+    bg.setPhysicsObject(_SceneEntity::Mesh);
     bg.setPosition(QVector3D(0.0, 0.0, 0.0));
     bg.setRotation(glm::vec3(0.0, 0.0, 0.0));
     bg.setScale(1.0);
