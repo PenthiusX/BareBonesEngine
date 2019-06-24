@@ -65,7 +65,7 @@ public:
     glm::vec4 getrayClip()const;
     glm::vec3 getRayTriIntersectionPoint() const;
     //
-    void updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, _SceneEntity se);
+    void updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes);
 
 private:
 

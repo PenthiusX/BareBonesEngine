@@ -42,7 +42,7 @@ public:
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
     //
     void setPosition(glm::vec3 pos);//resets the positon to the value that is required
-    void translate(QVector3D pos);//update the current positon with the value that is set
+    void translate(glm::vec3 pos);//update the current positon with the value that is set
     void setRotation(glm::vec3 rot);
     void setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot);
     void setscale(float scale);
