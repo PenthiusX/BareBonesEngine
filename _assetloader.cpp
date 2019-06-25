@@ -141,6 +141,28 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
     }
 }
 
+_ModelInfo _AssetLoader::generateQuad()
+{
+    //Code to be excluded only for Test purposes
+    //Hard coded vertices and indices
+    std::vector<float> vertsV = {
+        1.0,   1.0,  0.0f,	// top right
+        1.0f, -1.0f, 0.0f,  // bottom right
+        -1.0f, -1.0f, 0.0f, // bottom left
+        -1.0f,  1.0f, 0.0f  // top left
+    };
+    std::vector<uint> indiceV = {0, 1, 3,
+                                 1, 2, 3 };
+
+    _ModelInfo m;
+    m.setVertexArray(vertsV);
+    m.setIndexArray(indiceV);
+    m.calcMinMaxExtents();
+    m.setName("Quad");
+
+    return m;
+}
+
 /*
           * Created: 12_06_2019
          */

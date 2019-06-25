@@ -26,6 +26,8 @@ public:
     void objLoader(QString pathToFile);
     void loadAllModelsInfoFromFolder(QString folderName);//not in use
 
+    _ModelInfo generateQuad();
+
 private:
     _ModelInfo modelInfo;
     //
@@ -38,8 +40,8 @@ private:
     int posCounter;
     int arrayCounter;
     //Functions
-    void calcMinMaxExtents();
-    glm::vec4 calcCentroidFromMinMax();
+    void calcMinMaxExtents();//Not needed
+    glm::vec4 calcCentroidFromMinMax();//Not needed
 };
 
 #endif // _ASSETLOADER_H

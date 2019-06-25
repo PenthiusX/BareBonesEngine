@@ -44,6 +44,7 @@ public:
     _Physics();
     ~_Physics();
 
+    void initialiseSceneEntity(_SceneEntity s);
     void setSceneEntity(_SceneEntity s);
     _SceneEntity getSceneEntity();
     //
