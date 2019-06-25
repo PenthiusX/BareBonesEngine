@@ -61,7 +61,7 @@ void _GLWidget::initializeGL()
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
-    s.setModelData(":/models/stickman.obj");
+    s.setModelData(":/models/hipolyore.obj");
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential

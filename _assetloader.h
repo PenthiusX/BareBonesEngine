@@ -21,11 +21,8 @@ public:
     ~_AssetLoader();
     void setModelInfo(_ModelInfo minfo);
     _ModelInfo getModelInfo();
-    //    std::vector<float> getAssetVertices();
-    //    std::vector<uint> getAssetIndices();
     void objLoader(QString pathToFile);
     void loadAllModelsInfoFromFolder(QString folderName);//not in use
-
     _ModelInfo generateQuad();
 
 private:
@@ -39,9 +36,6 @@ private:
     glm::vec4 vertMax;
     int posCounter;
     int arrayCounter;
-    //Functions
-    void calcMinMaxExtents();//Not needed
-    glm::vec4 calcCentroidFromMinMax();//Not needed
 };
 
 #endif // _ASSETLOADER_H
