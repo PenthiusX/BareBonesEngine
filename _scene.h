@@ -66,9 +66,9 @@ private:
     void updateHelpersLoop(uint index);
     void setHelperIndexVars();
     //Physics
-    void updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes, uint index);//updates the Physcis
-    void updateAllPhysicsObjectsLoop(uint index);
+    void updateAllPhysicsObjectsLoop();
     void updateAllPhysicsObjectsOnce();
+    uint loopIndex;
 };
 
 #endif // _SCENE_H
