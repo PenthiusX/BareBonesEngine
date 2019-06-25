@@ -53,7 +53,7 @@ void _Scene::addSceneObject(_SceneEntity s)
             //
             if(s.getIsPhysicsObject()){
                 _Physics phys;
-                phys.setSceneEntity(s);
+                phys.initialiseSceneEntity(s);
                 physVector.push_back(phys);
             }
         }
@@ -69,7 +69,7 @@ void _Scene::addSceneObject(_SceneEntity s)
             //
             if(s.getIsPhysicsObject()){
                 _Physics phys;
-                phys.setSceneEntity(s);
+                phys.initialiseSceneEntity(s);
                 physVector.push_back(phys);
             }
         }
@@ -185,8 +185,8 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
         updateHelpersOnce();//Helper Update for visual aid.
     }
     else if(m == Qt::MiddleButton){
-        //        updateAllPhysicsObjectsOnce();//Physics update//should be paralalised.
-        //        updateHelpersOnce();//Helper Update for visual aid.
+        updateAllPhysicsObjectsOnce();//Physics update//should be paralalised.
+        updateHelpersOnce();//Helper Update for visual aid.
     }
 }
 /*
@@ -263,6 +263,7 @@ void _Scene::render()
 void _Scene::updateAllPhysicsObjectsOnce()
 {
     for (uint index = 0; index < physVector.size(); index++){
+        physVector[index].setSceneEntity(renderObjects[physVector[index].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
         //Passing some essentials into the updateLoop for physics
         //updates the physics object instance and runs the main physics updateOperations.
         physVector[index].updatePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
@@ -276,7 +277,7 @@ void _Scene::updateAllPhysicsObjectsOnce()
         renderObjects[pi]->setSceneEntityInRenderer(physVector[index].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
 
         if(renderObjects[pi]->getSceneEntity().getisHitByRay()){
-            rayHitSceneEntity = renderObjects[index]->getSceneEntity();
+            rayHitSceneEntity = renderObjects[pi]->getSceneEntity();
         }
     }
 }
@@ -321,12 +322,10 @@ void _Scene::updateHelpersOnce()
     renderObjects[cIndex]->setPosition(cntrd);
 
     renderObjects[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
-    //renderObjects[mxIndex]->setscale(sc * 0.05);
     renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
     renderObjects[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
 
     renderObjects[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
-    //renderObjects[minIndex]->setscale(sc * 0.05);
     //renderObjects[minIndex]->lookAt(cam.getEyePosition());//buggy look at
     renderObjects[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
 
@@ -338,7 +337,6 @@ void _Scene::updateHelpersLoop(uint index)
 {
     if(renderObjects[index]->getSceneEntity().getIsPhysicsHelper() &&  renderObjects[index]->getSceneEntity().getisHitByRay()){
         // binding the pivot object to focus object
-
         renderObjects[pivotIndex]->setPosition(renderObjects[index]->getSceneEntity().getPostion());
         renderObjects[pivotIndex]->setRotation(renderObjects[index]->getSceneEntity().getRotation());
     }
@@ -357,40 +355,21 @@ void _Scene::setHelperIndexVars()
 */
 void _Scene::addAllHelperTypesInScene()
 {
-    //Code to be excluded only for Test purposes
-    //Hard coded vertices and indices
-    std::vector<float> vertsV = {
-        1.0,   1.0,  0.0f,	// top right
-        1.0f, -1.0f, 0.0f,  // bottom right
-        -1.0f, -1.0f, 0.0f, // bottom left
-        -1.0f,  1.0f, 0.0f  // top left
-    };
-    std::vector<uint> indiceV = {0, 1, 3,
-                                 1, 2, 3 };
-
-    //PreLoad ScenenEnties with desired properties.
-    //implemented 12_06_2018
-    _AssetLoader quad;
-    _ModelInfo m;
-    m.setName("quad");
-    m.setVertexArray(vertsV);
-    m.setIndexArray(indiceV);
-    quad.setModelInfo(m);
-
+    _AssetLoader a;
     //Essential rear background object
     bg.setId(777);
     bg.setTag("background");
     bg.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
     bg.setScale(1.0);
-    bg.setModelData(quad);
+    bg.setModelData(a.generateQuad());
     //
     addSceneObject(bg); //add the backGround quad first for it to render last
     //----------Physics Helpers-------
     sph.setId(1);
     sph.setTag("boundingSphere");
     sph.setIsLineMode(true);
-    sph.setPhysicsObject(_SceneEntity::Sphere);
+    sph.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::NoHelper);
     sph.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
     sph.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     sph.setColor(QVector4D(0.3,0.5,0.0,0.9));
@@ -401,7 +380,7 @@ void _Scene::addAllHelperTypesInScene()
     bb.setId(2);
     bb.setTag("boundingBox");
     bb.setIsLineMode(true);
-    bb.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
+    bb.setPhysicsObject(_SceneEntity::Box,_SceneEntity::NoHelper);
     bb.setIsTransformationLocal(false);
     bb.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     bb.setColor(QVector4D(0.5,1.0,1.0,0.9));

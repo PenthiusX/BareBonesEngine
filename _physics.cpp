@@ -8,7 +8,7 @@ _Physics::_Physics(){
 }
 _Physics::~_Physics(){}
 
-void _Physics::setSceneEntity(_SceneEntity s){
+void _Physics::initialiseSceneEntity(_SceneEntity s){
     sceneEntity = s;
     //Initialise based on SceneEntity;
     if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
@@ -30,6 +30,10 @@ void _Physics::setSceneEntity(_SceneEntity s){
         initialMax = sceneEntity.getModelInfo().getMaxExtent();
         initialMin = sceneEntity.getModelInfo().getMinExtent();
     }
+}
+
+void _Physics::setSceneEntity(_SceneEntity s){
+    this->sceneEntity = s;
 }
 /*
  *
@@ -298,7 +302,9 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent()));
         //intersection check
         hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
-        if(hitSphere(sp.center,sp.radius,camPos))qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId();
+        if(hitSphere(sp.center,sp.radius,camPos)){
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId()<<"Hit Ipos-"<<sceneEntity.getIndexPosInScene();
+        }
     }
     //Box Intersection Test
     else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
@@ -310,7 +316,7 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         //intersection check.
         if(hitBoundingBoxF(bx,camPos,ray_wor)){
             sceneEntity.setIsHitByRay(true);
-            qDebug() <<"HitBox"<<"Hit Id-"<<sceneEntity.getId();
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId()<<"Hit Ipos-"<<sceneEntity.getIndexPosInScene();
         }
         else if(!hitBoundingBoxF(bx,camPos,ray_wor))
             sceneEntity.setIsHitByRay(false);
@@ -324,8 +330,8 @@ void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 scr
         //Intersection check.
         if(rayIntersectsTriangles(triVector,camPos,ray_wor)){
             sceneEntity.setIsHitByRay(true);
-            qDebug() <<"HitMesh"<<"Hit Id-"<<sceneEntity.getId();
-        }else if(!rayIntersectsTriangles(triVector,camPos,ray_wor))
-            sceneEntity.setIsHitByRay(false);
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId()<<"Hit Ipos-"<<sceneEntity.getIndexPosInScene();
+        }else if(!rayIntersectsTriangles(triVector,camPos,ray_wor)){
+            sceneEntity.setIsHitByRay(false);}
     }
 }

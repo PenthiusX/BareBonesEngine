@@ -51,6 +51,7 @@ void _GLWidget::initializeGL()
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
     //------------Scene Objects--------
+    _AssetLoader a;
     s.setId(3);
     s.setTag("clickSurface");
     s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
@@ -60,7 +61,7 @@ void _GLWidget::initializeGL()
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
-    s.setModelData(":/models/hipolyore.obj");
+    s.setModelData(a.generateQuad());
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
@@ -146,10 +147,6 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
     if(e->button() == Qt::LeftButton){
         //get mouse position only on left button click
         mousePressPositionL = QVector2D(e->localPos());
-        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
-        //sets cam focus on object with the iD that is selected
-        cam.setFocalPoint(scene->getSceneEntityHitWithRay().getPostion());
-
         //sets the left button click on for picking in the scene for use in physics
         //        qDebug() << "Lpress";
     }
@@ -177,8 +174,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     globalMPoint = this->mapFromGlobal(QCursor::pos());
     if(e->button() == Qt::LeftButton){
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
-        //sets cam focus on object with the iD that is selected
-        cam.setFocalPoint(scene->getSceneEntityHitWithRay().getPostion());
+        cam.setFocalPoint(scene->getSceneEntityHitWithRay().getPostion()); //sets cam focus on object with the objet that is hitwith ray in scene
         //        qDebug() << "LpressRel";
     }
     if(e->button() == Qt::RightButton){
@@ -186,7 +182,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     }
     if(e->button() == Qt::MiddleButton){
         //        qDebug() << "MpressRel";
-//        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::MiddleButton);//set mose pos in scene for use
+        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::MiddleButton);//set mose pos in scene for use
     }
 }
 /*
@@ -285,9 +281,10 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
         if(isCamFocus)
             cam.setEyePosition(QVector3D(0.0, 0.0, 7.0));
         else{
-            scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->setPosition(glm::vec3(0.0f, 0.0, 0.0));
-            scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->setRotation(glm::vec3(0.0f, 0.0, 0.0));
-            scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->setscale(1.0f);
+            uint ind = scene->getSceneEntityHitWithRay().getIndexPosInScene();
+            scene->getSceneObjects()[ind]->setPosition(glm::vec3(0.0f, 0.0, 0.0));
+            scene->getSceneObjects()[ind]->setRotation(glm::vec3(0.0f, 0.0, 0.0));
+            scene->getSceneObjects()[ind]->setscale(1.0f);
             rotRads = QVector2D(0.0f,0.0f);
         }
     }
@@ -324,7 +321,7 @@ void _GLWidget::addRandomSceneEntitestoScene()
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransformationLocal(false);
-        onPress->setPhysicsObject(s.getPhysicsObjectType());
+        onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
         onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
