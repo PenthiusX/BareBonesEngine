@@ -92,5 +92,8 @@ private:
     void setuniformLocations();
     void keepSceneEntityUpdated();
     void setColors();
+
+//    //test
+//    void DRAWPAINTERTEXT();
 };
 #endif // _RENDERER_H

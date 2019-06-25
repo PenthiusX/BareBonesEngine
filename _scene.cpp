@@ -267,6 +267,7 @@ void _Scene::updateAllPhysicsObjectsOnce()
 {
     for (uint index = 0; index < physVector.size(); index++){
         physVector[index].setSceneEntity(renderObjects[physVector[index].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
+
         //Passing some essentials into the updateLoop for physics
         //updates the physics object instance and runs the main physics updateOperations.
         physVector[index].updatePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
@@ -349,7 +350,7 @@ void _Scene::updateHelpersOnce()
 
     renderObjects[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
     renderObjects[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
-//    renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
+    renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
 
     renderObjects[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
     renderObjects[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));

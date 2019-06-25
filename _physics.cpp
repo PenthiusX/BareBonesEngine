@@ -58,11 +58,12 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
         }
     }
     if(index.size() > 0){
-        //Exception handeling: Forces improper models with extra
-        //vertices that are not forming tries to invoke and out of
-        //bounds error in this collection algorith.
+        //Exception handeling: for improper models with extra
+        //vertices that are not forming tries.
+        //Improper models invoke an out of bounds error.
         unsigned int setOfTries = index.size()/3;
-        for(int i = 0 ; i < setOfTries * 3 ; i += 3){
+        //
+        for(int i = 0 ; i < setOfTries * 3 ; i+= 3){
             _Phy_Triangle tri;
             tri.pointA = pv[index[i]];
             tri.pointB = pv[index[i+1]];
@@ -290,7 +291,6 @@ void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
  * Update everything Internally goes in the _scene update loop
 */
 void _Physics::updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes){
-
     setMousePointerRay(mousePos,sceneEntity.getProjectionMatrix(),sceneEntity.getViewMatrix(),screenRes);
     //Sphere Intersection Test
     if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
