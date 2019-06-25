@@ -17,6 +17,7 @@ _Scene::_Scene()
 {
     isCamera = false;
     fboObject = new _FrameBuffer();
+    loopIndex = 0;
 }
 _Scene::~_Scene()
 {
@@ -233,13 +234,15 @@ void _Scene::render()
     //Frame to render is below
     for (uint i = 0; i < renderObjects.size(); i++)
     {
+        //Physics+Helpers
+        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject()){
+            //"SLOW FUNCTIONS AVOID IN LOOP"
+            //updateAllPhysicsObjectsLoop();//Physics should be paralalised.//Not ideal to implement in UpdateLoop
+            //updateHelpersLoop(i);//Helper update for visualAid.
+        }
         //Frame update----
         //Render all objects that are active.
         renderObjects[i]->draw();//calls the draw function unique to each renderObject.
-
-        //Physics+Helpers
-        //updateAllPhysicsObjectsLoop(i);//Physics Loop//should be paralalised.//Nothing happening here yet
-        //updateHelpersLoop(i);//Helper update for visualAid.!!!Very slow ass function in loop no idea why Yet!!!!
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below
@@ -281,12 +284,35 @@ void _Scene::updateAllPhysicsObjectsOnce()
         }
     }
 }
-void _Scene::updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,uint index){
-
-}
-void _Scene::updateAllPhysicsObjectsLoop(uint index)
+/*
+ * Function: updatePhysicsForAllObjectsLoop()
+ * update the physcs variables realtime and is relativel optmised to run in a loop.
+ * is called in the _scene class's render() function.
+ * Created: 22_05_2019
+ */
+void _Scene::updateAllPhysicsObjectsLoop()
 {
-    //Nothing yet
+    if(physVector.size() > 0){
+        physVector[loopIndex].setSceneEntity(renderObjects[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
+        //Passing some essentials into the updateLoop for physics
+        //updates the physics object instance and runs the main physics updateOperations.
+        physVector[loopIndex].updatePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
+                                            glm::vec3(cam.getEyePosition().x(),//Camera Position
+                                                      cam.getEyePosition().y(),
+                                                      cam.getEyePosition().z()),
+                                            glm::vec2(resW,resH));
+
+        //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
+        uint pi = physVector[loopIndex].getSceneEntity().getIndexPosInScene();
+        renderObjects[pi]->setSceneEntityInRenderer(physVector[loopIndex].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
+
+        if(renderObjects[pi]->getSceneEntity().getisHitByRay()){
+            rayHitSceneEntity = renderObjects[pi]->getSceneEntity();
+        }
+        loopIndex++;
+        if(loopIndex >= physVector.size())
+            loopIndex = 0;
+    }
 }
 
 /*
@@ -322,12 +348,12 @@ void _Scene::updateHelpersOnce()
     renderObjects[cIndex]->setPosition(cntrd);
 
     renderObjects[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
-    renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
     renderObjects[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+//    renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
 
     renderObjects[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
-    //renderObjects[minIndex]->lookAt(cam.getEyePosition());//buggy look at
     renderObjects[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+    //renderObjects[minIndex]->lookAt(cam.getEyePosition());//buggy look at
 
     renderObjects[pivotIndex]->setPosition(pos);
     renderObjects[pivotIndex]->setRotation(rot);
@@ -392,7 +418,6 @@ void _Scene::addAllHelperTypesInScene()
     //
     addSceneObject(sph);
     addSceneObject(bb);
-
     //----------Orentation Helpers---------------
     pivot.setId(888);
     pivot.setTag("pivot");
