@@ -341,7 +341,9 @@ void _Scene::updateHelpersLoop(uint index)
         renderObjects[pivotIndex]->setRotation(renderObjects[index]->getSceneEntity().getRotation());
     }
 }
-
+/*
+ * Created:22_06_2019
+*/
 void _Scene::setHelperIndexVars()
 {
     pivotIndex = findSceneEntity("pivot").getIndexPosInScene();
