@@ -28,8 +28,8 @@ _AssetLoader::~_AssetLoader(){}
 
 void _AssetLoader::setModelInfo(_ModelInfo minfo){
     modelInfo = minfo;
-    //    modelInfo.calcCentroidFromMinMax();
-    calcMinMaxExtents();
+    if(modelInfo.getVertexArray().size() > 0 && modelInfo.getIndexArray().size() > 0)
+        modelInfo.setIsLoaded(true);
 }
 _ModelInfo _AssetLoader::getModelInfo(){
     return modelInfo;
@@ -42,7 +42,7 @@ _ModelInfo _AssetLoader::getModelInfo(){
 */
 void _AssetLoader::objLoader(QString pathToFile)
 {
-    qDebug() << "Loading Model" << pathToFile <<  "vertices.";
+    qInfo() << "Loading Model" << pathToFile <<  "vertices.";
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
     const char* p = qba;
 
@@ -86,7 +86,7 @@ void _AssetLoader::objLoader(QString pathToFile)
         }
     }
 
-    qDebug() << "Loading Model" << pathToFile <<  "indices.";
+    qInfo() << "Loading Model" << pathToFile <<  "indices.";
     std::string ai = objData.substr(objData.find("f ") + 1);
     std::stringstream ss;
     ss << ai;
@@ -106,7 +106,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     modelInfo.setIndexArray(indices);
     modelInfo.setMaxExtents(vertMax);
     modelInfo.setMinExtents(vertMin);
-    modelInfo.setCentroid(calcCentroidFromMinMax());
+    modelInfo.calcCentroidFromMinMax();
     modelInfo.setIsLoaded(true);
 
     qInfo()<<"--------------MODEL INFO-------------------------------";
@@ -122,10 +122,10 @@ void _AssetLoader::objLoader(QString pathToFile)
 }
 
 /* Not in use---future implementation for VAO based optimisation.
-          * Preprocess all models into memory
-          * will reduce ovehead on runtime.
-          * Created: 31_05_2019
-         */
+* Preprocess all models into memory
+* will reduce ovehead on runtime.
+* Created: 31_05_2019
+*/
 void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 {
     foreach(const QString &imageName, QDir(":/"+folderName).entryList())
@@ -140,7 +140,9 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
         indices.clear();
     }
 }
-
+/*
+ * Created:25_06_2019
+*/
 _ModelInfo _AssetLoader::generateQuad()
 {
     //Code to be excluded only for Test purposes
@@ -162,46 +164,3 @@ _ModelInfo _AssetLoader::generateQuad()
 
     return m;
 }
-
-/*
-          * Created: 12_06_2019
-         */
-void _AssetLoader::calcMinMaxExtents()
-{
-    std::vector<float> v = modelInfo.getVertexArray();
-    for(uint i = 0 ; i < v.size() ; i += 3)
-    {
-        if(v[i] >= vertMax.x)
-            vertMax.x=(v[i]);
-        if(v[i + 1] >= vertMax.y)
-            vertMax.y=(v[i + 1]);
-        if(v[i + 2] >= vertMax.z)
-            vertMax.z=(v[i + 2]);
-        vertMax.w = 0.0f;
-        //maxEntent
-        if(v[i] <= vertMin.x)
-            vertMin.x=(v[i]);
-        if(v[i + 1] <= vertMin.y)
-            vertMin.y=(v[i + 1]);
-        if(v[i + 2] <= vertMin.z)
-            vertMin.z=(v[i + 2]);
-        vertMin.w = 0.0f;
-    }
-    modelInfo.setMinExtents(vertMin);
-    modelInfo.setMaxExtents(vertMax);
-    modelInfo.setCentroid(calcCentroidFromMinMax());
-}
-/*
- * Created: 12_06_2019
- */
-glm::vec4 _AssetLoader::calcCentroidFromMinMax()
-{
-    glm::vec4 centroid;
-    centroid.x = (vertMax.x + vertMin.x)*0.5f;
-    centroid.y = (vertMax.y + vertMin.y)*0.5f;
-    centroid.z = (vertMax.z + vertMin.z)*0.5f;
-    centroid.w = 0.0f;
-    return centroid;
-}
-
-
