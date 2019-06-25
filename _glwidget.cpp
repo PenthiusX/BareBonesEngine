@@ -54,7 +54,7 @@ void _GLWidget::initializeGL()
     _AssetLoader a;
     s.setId(3);
     s.setTag("clickSurface");
-    s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(true);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
@@ -182,7 +182,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     }
     if(e->button() == Qt::MiddleButton){
         //        qDebug() << "MpressRel";
-        scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::MiddleButton);//set mose pos in scene for use
+        scene->setMousePositionInScene(mousePressPositionL,Qt::MiddleButton);//set mose pos in scene for use
     }
 }
 /*
@@ -199,12 +199,12 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     //selet button is pressed when updating mousevalues
     if(e->buttons() == Qt::LeftButton){
         mousePositionL = QVector2D(e->localPos());
-        //        qDebug() << "LpressMv";
+        //qDebug() << "LpressMv";
     }
     if(e->buttons() == Qt::RightButton){
         mousePositionR = QVector2D(e->localPos());
         scene->setMousePositionInScene(mousePositionR,Qt::RightButton);//sets the mouse position in the scene
-        //        qDebug() << "RpressMv";
+        //qDebug() << "RpressMv";
     }
     if(e->buttons() == Qt::MiddleButton){
         mousePositionM = QVector2D(e->localPos());
@@ -218,7 +218,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             double damp = 0.01;//to decrese the magnitude of the value coming in from the mousepos
             rotRads  += QVector2D(globalMPoint) - mosPos;
             scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->setRotation(glm::vec3(rotRads.y() * damp, rotRads.x() * damp, 0.f));
-            //        qDebug() << "MpressMv";
+            //qDebug() << "MpressMv";
         }
     }
 }
