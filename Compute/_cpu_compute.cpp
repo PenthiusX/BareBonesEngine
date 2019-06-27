@@ -1,5 +1,8 @@
 #include "_cpu_compute.h"
 #include <QDebug>
+#include <_tools.h>
+
+#define PI 3.1415926535897932384626433832795
 
 _Cpu_Compute::_Cpu_Compute(QObject *parent) : QObject(parent)
 {
@@ -411,4 +414,71 @@ char *_Cpu_Compute::frameGray2RGB(char *img, unsigned int iwidth, unsigned int i
     cv::cvtColor(_frameOriginal, _frameProcessed, cv::COLOR_GRAY2RGBA);
 
     return (char*)_frameProcessed.data;
+}
+
+void _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int iwidth, unsigned int iheight,QString filePath)
+{
+    std::vector<float> vertsG;
+    std::vector<unsigned int> indiceG;
+
+    unsigned int index[4] = {0,0,0,0};
+
+    glm::ivec2 resolution = glm::ivec2(iwidth,iheight);//wrap texture size
+
+    for (unsigned int h = 0; h < resolution.y; h++) {
+        for (unsigned int w = 0; w < resolution.x; w++) {
+
+            glm::vec2 pixel_cord = glm::vec2(w,h);
+
+            //glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
+
+            int index = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+            //texture_positions
+            float r = wrap_frame[index];
+            float theta = 2 * PI * float(w) /resolution.x;
+
+
+            vertsG.push_back(r*cos(theta));//x = s
+            vertsG.push_back(r*sin(theta));//y = t
+            vertsG.push_back(h);//z = 0.0
+        }
+    }
+
+    glm::ivec2 step_size = glm::ivec2(1,1);
+
+    glm::vec3 origin = glm::vec3(0,0,resolution.y/2);
+
+    float volume = 0.0;
+    for (unsigned int h = 0; h < resolution.y; h+=step_size.y) {
+        for (unsigned int w = 0; w < resolution.x; w+=step_size.x) {
+
+            glm::vec2 pixel_cord = glm::vec2(w,h);
+
+            //indexes of neibhouring vertexes
+            index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,0),resolution);
+            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
+            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
+
+//            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
+//            {
+
+
+            if((pixel_cord.y < resolution.y))
+            {
+                //indexs of fisrt triangle in quad
+                indiceG.push_back(index[0]);
+                indiceG.push_back(index[1]);
+                indiceG.push_back(index[2]);
+
+                //indexs of second triangle in quad
+                indiceG.push_back(index[0]);
+                indiceG.push_back(index[2]);
+                indiceG.push_back(index[3]);
+            }
+        }
+    }
+
+    _Tools::SaveObjModel(vertsG,indiceG,filePath);
+
 }

@@ -408,7 +408,15 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
     //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
     //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
-    emit generatedModelTextureOut((char*)gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+
+    int* texture_model_wrap_data = gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER);
+
+    if(rotation_step == 199)
+    {
+        cpu_compute->generateModelMesh(texture_model_wrap_data,texture_model_wrap.getWidth(),texture_model_wrap.getHeight(),"dislocated_clay.obj");
+    }
+
+    emit generatedModelTextureOut((char*)texture_model_wrap_data,texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
 
     //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
 
@@ -438,11 +446,11 @@ void _Processing::generateVoxelsModel(char *img, unsigned int iwidth, unsigned i
     //texture.unbind();
     init = false;
 
-    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,400);
 
     }
     if(rotation_step == 0)
-        gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+        gpu_compute->compute_clear_32_i_texture(texture_model_wrap,400);
     //Do the Processing
 
     //send the image to gpu texture

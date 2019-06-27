@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <_texture.h>
 #include <_shader.h>
+#include <Compute/_cpu_compute.h>
 
 /*
  * Scanner Class
@@ -103,6 +104,10 @@ void _Scanner::scanImages()
 
     }
 
+    cv::Mat texture_in = cv::Mat(machine->camera->getHeight(), machine->camera->getWidth(), CV_8UC1, machine->camera->get_frame());
+
+    cv::imwrite(QString("scan_image_stage_%1.png").arg(199).toStdString(),texture_in);
+
     machine->frameUpdateMutex.unlock();
 }
 
@@ -161,7 +166,7 @@ void _Scanner::scanGenerateModelWrap()
 
     machine->frameUpdateMutex.lock();// display will not be updated by camera frame
 
-    for(int t = 0;t<100;t++)
+    for(int t = 0;t<200;t++)
     {
         QString filename = QString("scan_image_stage_%1").arg(t);
         //move the stage by 80 steps

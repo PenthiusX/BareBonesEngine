@@ -31,31 +31,13 @@ void main()
 
        int value = getImagePixel(inputImage,ivec2(side,image_pixel_cord.y));
 
-
-
        if(side == 0)
        {
-//       if(value < (image_resolution.x-10))
-//           {
-               float r_max = (float(stage_center.x - value)/cosine);
-               if(abs(r_max) < 50)
-               {
-                   int r = int(ceil(r_max));
+           float r_max = (float(stage_center.x - value)/cosine);
 
-                   //imageAtomicMin(resultImage,image_pixel_cord,r);
-                   setImagePixel(resultImage,image_pixel_cord,100);
-               }
+           int r = int(ceil(r_max));
 
-//           }
-//           else
-//           {
-//               //imageAtomicMin(resultImage,image_pixel_cord,0);
-//           }
+           //setImagePixel(resultImage,image_pixel_cord,r);
+           imageAtomicMin(resultImage,image_pixel_cord,r);
        }
-//       else
-//       {
-//           setImagePixel(resultImage,image_pixel_cord,200);
-//       }
-
-
 }

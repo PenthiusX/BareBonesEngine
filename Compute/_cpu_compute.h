@@ -27,6 +27,7 @@ public:
     glm::vec3 compute_stage_angle(cv::Mat &input_img, cv::Mat &output_img,std::vector<float> params={0.0,0.0,0.0,0.0,0.0,0.0});
     cv::Point2f find_line_intersection(cv::Vec4i line1, cv::Vec4i line2);
     glm::vec3 compute_stage_angle_gradient(cv::Mat &input_img, cv::Mat &output_img, std::vector<float> params);
+    void generateModelMesh(int *wrap_frame, unsigned int iwidth, unsigned int iheight,QString filePath);
 signals:
     void imageOut(QImage img);
 protected:
