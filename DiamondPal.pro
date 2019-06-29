@@ -27,6 +27,7 @@ HEADERS  += mainwindow.h \
             _framebuffer.h \
             _physics.h \
             _tools.h \
+            _modelinfo.h \
             IO/_hwdcamera.h \
             IO/_hardwareserial.h \
             IO/_machine.h \
@@ -63,6 +64,7 @@ SOURCES += main.cpp\
            _framebuffer.cpp \
            _physics.cpp \
            _tools.cpp \
+           _modelinfo.cpp \
            IO/_hwdcamera.cpp \
            IO/_hardwareserial.cpp \
            IO/_machine.cpp \

@@ -16,15 +16,13 @@
 */
 _Camera::_Camera(){
     //default values
-    this->upVector = QVector3D(0.0, 1.0, 0.0);
-    this->eyePosition = QVector3D(0.0, 0.0, -10.0);
-    this->focalPoint = QVector3D(0.0, 0.0, 0.0);
-    this->nearClipDistance = 0.1;
-    this->farClipDistance = 50.0;
+    upVector = QVector3D(0.0, 1.0, 0.0);
+    eyePosition = QVector3D(0.0, 0.0, 10.0);
+    focalPoint = glm::vec3(0.0, 0.0, 0.0);
+    nearClipDistance = 0.1;
+    farClipDistance = 50.0;
 }
-_Camera::~_Camera(){
-
-}
+_Camera::~_Camera(){}
 /*
 * Function: set/get Eye postition(QVector3D epos)
 * sets and gets the postion for the camera object 
@@ -32,26 +30,22 @@ _Camera::~_Camera(){
 * into the viewMatrix.
 * Created: 01_03_2019
 */
-void _Camera::setEyePosition(QVector3D epos)
-{
-    this->eyePosition = epos;
+void _Camera::setEyePosition(QVector3D epos){
+    eyePosition = epos;
 }
-QVector3D _Camera::getEyePosition() const
-{
-    return this->eyePosition;
+QVector3D _Camera::getEyePosition() const{
+    return eyePosition;
 }
 /*
 * Function: set/get FocalPoint()
 * sets and returns the point the camera is looking at.
 * Created: 01_03_2019
 */
-void _Camera::setFocalPoint(QVector3D focalPos)
-{
-    this->focalPoint = focalPos;
+void _Camera::setFocalPoint(glm::vec3 focalPos){
+    focalPoint = focalPos;
 }
-QVector3D _Camera::getFocalPoint() const
-{
-    return this->focalPoint;
+glm::vec3 _Camera::getFocalPoint() const{
+    return focalPoint;
 }
 /*
 * Function: set/get UpVector()
@@ -59,13 +53,11 @@ QVector3D _Camera::getFocalPoint() const
 * the direction in which the camera orents itself.
 * Created: 01_03_2019
 */
-void _Camera::setUpVector(QVector3D upVec)
-{
-    this->upVector = upVec;
+void _Camera::setUpVector(QVector3D upVec){
+    upVector = upVec;
 }
-QVector3D _Camera::getUpVector() const
-{
-    return this->upVector;
+QVector3D _Camera::getUpVector() const{
+    return upVector;
 }
 
 /*
@@ -74,29 +66,24 @@ QVector3D _Camera::getUpVector() const
  * field of view setting
  * Created: 08_04_2019
 */
-void _Camera::setFOV(unsigned int fove)
-{
-    this->fov = fove;
+void _Camera::setFOV(uint fove){
+    fov = fove;
 }
-unsigned int _Camera::getFOV() const
-{
-    return this->fov;
+uint _Camera::getFOV() const{
+    return fov;
 }
-
-void _Camera::setFarClipDistance(float fclp)
-{
-    this->farClipDistance = fclp;
+/*
+* Created: 08_04_2019
+*/
+void _Camera::setFarClipDistance(float fclp){
+    farClipDistance = fclp;
 }
-void _Camera::setNearClipDistance(float nclp)
-{
-    this->nearClipDistance = nclp;
+void _Camera::setNearClipDistance(float nclp){
+    nearClipDistance = nclp;
 }
-
-float _Camera::getNearClipDistance() const
-{
-    return this->nearClipDistance;
+float _Camera::getNearClipDistance() const{
+    return nearClipDistance;
 }
-float _Camera::getFarClipDistance() const
-{
-    return this->farClipDistance;
+float _Camera::getFarClipDistance() const{
+    return farClipDistance;
 }

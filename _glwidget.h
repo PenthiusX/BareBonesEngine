@@ -3,6 +3,7 @@
 
 #include <QOpenGLWidget>
 #include <QMouseEvent>
+#include <QTimer>
 #include "_scene.h"
 #include "_physics.h"
 
@@ -22,15 +23,15 @@ public:
     explicit _GLWidget(QWidget *parent = 0);
     ~_GLWidget();
 
-void setXRotation(int angle);
-void setYRotation(int angle);
-void setZRotation(int angle);
-void rotateGeneratedmodel(float angle, glm::vec3 axis, bool with_stage);
+    void setXRotation(int angle);
+    void setYRotation(int angle);
+    void setZRotation(int angle);
+    void rotateGeneratedmodel(float angle, glm::vec3 axis, bool with_stage);
 
 public slots:
-void update_background_image(char *img, unsigned int w, unsigned int h);
-void showGeneratedModel(char *img, unsigned int w, unsigned int h);
-void rotateGeneratedModel(float angle);
+    void update_background_image(char *img, unsigned int w, unsigned int h);
+    void showGeneratedModel(char *img, unsigned int w, unsigned int h);
+    void rotateGeneratedModel(float angle);
 
 protected:
     void initializeGL() Q_DECL_OVERRIDE;
@@ -42,40 +43,51 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *e) override;
     virtual void wheelEvent(QWheelEvent *e) override;
     virtual void  keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
+
+    void applyStuffToallEntites(bool isit);
 
 private:
     void addRandomSceneEntitestoScene();
     void removeSceneEntityFromScene();
-    void applyStuffToallEntites(bool isit);
 
     //Variables
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int EBO;
-    unsigned int shaderProgram;
+    uint VBO;
+    uint VAO;
+    uint EBO;
+    uint shaderProgram;
     QOpenGLContext *context;
 
     std::vector<_Scene*> sceneVector;//Vector of scene for drawing multiple scene Contexts//!!prototype implmentaition not implemented and checked!!!
     _Scene *scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
-    _SceneEntity s, s1,s2,mpoint,*onPress;//custom Objects
-    _SceneEntity background_quad,pivot;//default sceneobjects
+
     _SceneEntity generated_model;//sau
+    _SceneEntity s,*onPress;//custom Objects
+
     _AssetLoader assetLoader;
     _Camera cam;
 
     //Varible for InputCallbackFunctions
-    unsigned int idmatch;
     double scroolScale;
     QVector2D rotRads;
     bool isCamFocus;
-//    bool ist = false;
-    QVector2D mousePressPositionL,mousePressPositionR;
-    QVector2D mousePositionL,mousePositionR;
 
-//Resolution variables
-int width;
-int height;
-bool initialised=false;
+//    //Resolution variables
+//    int width;
+//    int height;
+//    bool initialised=false;
+
+    bool isCTRL;
+    QVector2D mousePressPositionL,mousePressPositionR,mousePressPositionM;
+    QPoint globalMPoint;
+    QVector2D mousePositionL,mousePositionR,mousePositionM;
+    QVector3D oldPosForCam,newPosForCam;
+    //
+    QElapsedTimer qTimer;
+    float deltaTime;
+    float currentTime;
+    float timeSinceLastFrame;
+
 };
 
 #endif // _GLWIDGET_H

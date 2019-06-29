@@ -8,6 +8,8 @@
 #include "_sceneentity.h"
 #include <vector>
 
+#include <thread>         // std::thread
+
 /*
  * Class: _Scene
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -23,7 +25,7 @@ public:
     //
     std::vector<_Renderer*> getSceneObjects();
     void addSceneObject(_SceneEntity s);
-    void removeSceneObject(unsigned int index);
+    void removeSceneObject(uint index);
     void removeSceneObject(_SceneEntity s);
     //
     void addCamera(_Camera c);
@@ -32,14 +34,13 @@ public:
     void render();
     //
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo
+    //Helpers
+    void addAllHelperTypesInScene();
     //
-    void updatePhysics(glm::vec2 mousePos,glm::vec3 camPos,glm::vec2 screenRes,_SceneEntity s,unsigned int index);//updates the Physcis
-    void updateMouseRay(glm::vec2 mousePos,glm::vec2 screenRes,_SceneEntity s);
-    void upDateRayCollisonTest(glm::vec3 camPos,_SceneEntity s,unsigned int index);
+    _SceneEntity findSceneEntity(uint iD);
+    _SceneEntity findSceneEntity(QString tag);
     //
-    _SceneEntity findSceneEntity(unsigned int iD);
-    _SceneEntity findSceneEntity(std::string tag);
-
+    _SceneEntity getSceneEntityHitWithRay();
 
 private:
     std::vector<_SceneEntity> sceneEntityVector;
@@ -52,6 +53,22 @@ private:
     int resW,resH;
     //Physics
     std::vector<_Physics> physVector;
+    _SceneEntity rayHitSceneEntity;
+    uint hc;//physics and helper object counter
+
+    //Helpers
+    _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot,bg;
+    uint pivotIndex,mPointerIndex;
+    uint cIndex;
+    uint mxIndex;
+    uint minIndex;
+    void updateHelpersOnce();
+    void updateHelpersLoop(uint index);
+    void setHelperIndexVars();
+    //Physics
+    void updateAllPhysicsObjectsLoop();
+    void updateAllPhysicsObjectsOnce();
+    uint loopIndex;
 };
 
 #endif // _SCENE_H

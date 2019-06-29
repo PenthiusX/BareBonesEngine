@@ -28,25 +28,26 @@ public:
 
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
-    void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<unsigned int> indexArray);//take vertex and index data and binds it to object buffer
+    void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
     //
     void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object
-    void setTexture(char* texBitmap,unsigned int iwidth,unsigned int iheight);//takes am image and binds it to object
+    void setTexture(char* texBitmap,uint iwidth,uint iheight);//takes am image and binds it to object
     //
     void setupTexture(char* img,unsigned int width,unsigned int height,GLenum format);//takes a hardcoded imagedata and binds it to object
     void setupTexture(QString texfile); //initializes texture from file
     bool isTexturePresent();
     //
-    void setModelMatrix(QVector3D position, float scale, QVector3D rotation);//set the model matrix
-    void setCamViewMatrix(QVector3D eyePos, QVector3D focalPoint, QVector3D upVector);//sets the Camera matrix
+    void setModelMatrix(glm::vec3 position, float scale, glm::vec3 rotation);//set the model matrix
+    void setCamViewMatrix(QVector3D eyePos, glm::vec3 focalPoint, QVector3D upVector);//sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
     //
-    void setPosition(QVector3D pos);//resets the positon to the value that is required
-    void translate(QVector3D pos);//update the current positon with the value that is set
-    void setRotation(QVector3D rot);
-    void setRotationAroundPivot(QVector3D rot,QVector3D pivot);
+    void setPosition(glm::vec3 pos);//resets the positon to the value that is required
+    void translate(glm::vec3 pos);//update the current positon with the value that is set
+    void setRotation(glm::vec3 rot);
+    void setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot);
     void setscale(float scale);
+    void lookAt(QVector3D ptl);
     //
     void initSceneEntityInRenderer(_SceneEntity s_);
     void setSceneEntityInRenderer(_SceneEntity s);
@@ -54,12 +55,13 @@ public:
     _SceneEntity getSceneEntity() const;
     void draw();//Draws/paints everything bound in the scene
 
+    void RotationBetweenVectors(glm::vec3 dest);//prototype
 
 private:
     QVector4D actualColor;
-    unsigned int VBO;//vertex buffer object
-    unsigned int VAO;//attribute buffer object
-    unsigned int EBO;//index buffer object
+    uint VBO;//vertex buffer object
+    uint VAO;//attribute buffer object
+    uint EBO;//index buffer object
     //Shader class object sets the shaders and passes the program to the current context
     _Shader* shdr;
     GLint colorUniform;
@@ -70,30 +72,30 @@ private:
     GLint mousePosUniform;
     //Frambuffer variables
     GLuint frameBuffer1;
-    unsigned int fbtexture,textureColorbuffer,rbo;
-    unsigned int quadVAO,quadVBO;
+    uint fbtexture,textureColorbuffer,rbo;
+    uint quadVAO,quadVBO;
     _Shader *fboShader;
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
-    glm::mat4 glm_model4x4;
+    glm::mat4 modelMatrix;
     glm::mat4 rotationMatrix,translationMatrix,scalingMatrix;
     glm::mat4 pivotTmat;
-    glm::mat4 glm_projection4x4;
-    glm::mat4 glm_view4x4;
+    glm::mat4 projectionMatrix;
+    glm::mat4 viewMatrix;
     //Holds the vertex and index data
     std::vector<float> vertices;//not allocated yet
-    std::vector<unsigned int> indices;//not allocated yet
+    std::vector<uint> indices;//not allocated yet
     //
     std::vector<_Texture> textures;//Texture array for tetures in use for the respective renderer object
     //
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
     //
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
-    //
-    bool isTranfomationLocal;//Sets the flag to determine if tranformations need to be set on a local or world pivot
-    bool isFramebufferActive;
     //Stores the uniform location allocated in the shader
     void setuniformLocations();
     void keepSceneEntityUpdated();
     void setColors();
+
+//    //test
+//    void DRAWPAINTERTEXT();
 };
 #endif // _RENDERER_H

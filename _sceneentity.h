@@ -18,30 +18,32 @@
 class _SceneEntity
 {
 public:
-    _SceneEntity(QVector3D pos,QVector3D rot , float scale);
+    _SceneEntity(glm::vec3 pos, glm::vec3 rot , float scale);
     _SceneEntity();
     ~_SceneEntity();
-
+    //
     void setIsActive(bool isIt);
     bool getIsActive();
     //
-    void setId(unsigned int id);//sets the iD either externaly or internally generated
-    unsigned int getId() const;
-    void setTag(const char* tag);//sets a name based identifier for the object
-    const char* getTag() const;
-    void setOrderInIndex(unsigned int i);
-    unsigned int getIndexPosInScene() const;
+    void setId(uint id);//sets the iD either externaly or internally generated
+    uint getId() const;
+    void setTag(QString tag);//sets a name based identifier for the object
+    QString getTag() const;
+    void setOrderInIndex(uint i);
+    uint getIndexPosInScene() const;
     //
-    void setPosition(QVector3D pos);//sets the position for the object in the Model matrix via the _renderer class instance.
-    QVector3D getPostion() const;//get the current position of the relvant object instace
-    void setRotation(QVector3D rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
-    QVector3D getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
-    void setPivot(QVector3D pivot);//sets the pivot point to rotate around
+    void setIsTransformationAllowed(bool isit);
+    bool getIsTransformationAllowed();
+    void setPosition(glm::vec3 pos);//sets the position for the object in the Model matrix via the _renderer class instance.
+    glm::vec3 getPostion() const;//get the current position of the relvant object instace
+    void setRotation(glm::vec3 rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
+    glm::vec3 getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
+    void setPivot(glm::vec3 pivot);//sets the pivot point to rotate around
     bool getIsPivotSet();
-    QVector3D getPivot() const;
+    glm::vec3 getPivot() const;
     void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
-    float getScale() const;
-    void setColor(QVector4D col);
+    float getScale() const;//get the flot value for scale for unifor scaling, can be converted to a vec3 for more explicit scaling on axis
+    void setColor(QVector4D col);//sets the collor value that passes into shder of the objects program instance.
     QVector4D getColor() const;
     //
     void setTranslationMatrix(glm::mat4x4 tmat);
@@ -58,7 +60,11 @@ public:
     void setViewMatrix(glm::mat4x4 view);
     glm::mat4x4 getViewMatrix()const;
     //
-    void setModelData(std::vector<float> vertices,std::vector<unsigned int> indices);//set the model data explicityl with defined vertices and indices
+    void setModelInfo(_ModelInfo minfo);
+    _ModelInfo getModelInfo()const;
+    //
+    void setModelData(_AssetLoader aloader);//set the modelInfo object in sceneEntity
+    void setModelData(_ModelInfo minfo);//set the modelInfo object in sceneEntity
     void setModelData(QString path);//takes the relative path via a qrc file path
     //
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
@@ -67,19 +73,18 @@ public:
     //
     QString getVertexShaderPath() const;//returns the vertexshader path
     QString getFragmentShaderPath() const;//returns the fragment shader path
-    //
-    std::vector<float> getVertexData() const;// get  the array of verterticess for refrence
-    std::vector<unsigned int> getIndexData() const;// get the array of indices for refrence
-    std::vector<int> getUvData() const;// get the array of UVs for refrence
-    std::vector<float> getNormalData() const;// get the Array of normals for refrence
-    //
+
+    //flag for enabling mesh editing
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
+    //flag for setting if glLineMode
     void setIsLineMode(bool isit);
     bool getIsLineMode();
-    //type of transformations
-    void setIsTransfomationLocal(bool isLoc);
-    bool getIsTransfomationLocal();
+    void setIsLineNoCullMode(bool isit);
+    bool getIsLineNoCullMode();
+    //flag for type of transformations
+    void setIsTransformationLocal(bool isLoc);
+    bool getIsTransformationLocal();
     //Physics
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
@@ -89,23 +94,28 @@ public:
         Sphere = 0,
         Box = 1,
         Mesh = 2,
+        Helper = 3,
+        NoHelper = 4
     };
+    void setIsSelected(bool isit);
+    bool getIsSelected() const;
+    bool getIsPhysicsHelper()const;
     _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
+    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,_SceneEntity::scenePhysicsObjects helper);
 
 private:
-
-    unsigned int id;
-    const char* tag;
-    QVector3D postion;
-    QVector3D rotation;
-    QVector3D pivot;
+    uint id;
+    QString tag;
+    glm::vec3 postion;
+    glm::vec3 rotation;
+    glm::vec3 pivot;
     float scale;
     QVector4D color;
-    unsigned int orderInIndex;
+    uint orderInIndex;
     //
     std::vector<float> vertexData;
-    std::vector<unsigned int> indexData;
+    std::vector<uint> indexData;
     std::vector<int> uvData;
     std::vector<float> normalData;
     //
@@ -114,27 +124,31 @@ private:
     QString texturePath;
     //
     void setVertexData(std::vector<float> vertices);//sets the Vertex data.
-    void setIndexData(std::vector<unsigned int> indices);//sets the Index data.
+    void setIndexData(std::vector<uint> indices);//sets the Index data.
     void setuvData(std::vector<int> uvCoords);//sets the UV data.
     void setnormalData(std::vector<float> normalData);//sets the normal data.
     //
-    bool isTransfomationLocal;
+    bool isTransformationLocal;
     bool isPivotSet;
     bool isActive;
     bool isMeshEditable;
     bool isHitByRay;
+    bool isSelected;
     bool isPhysicsObject;
+    bool isPhysicsHelper;
     bool isLineMode;
+    bool isLineNoCullMode;
+    bool isTransformationAllowed;
     //
-    glm::mat4x4 TranslationMatrix;
-    glm::mat4x4 RotationMatrix;
-    glm::mat4x4 ScaleMatirx;
-    glm::mat4x4 ModelMatrix;
-    glm::mat4x4 ProjectionMatrix;
-    glm::mat4x4 ViewMatrix;
+    glm::mat4x4 translationMatrix;
+    glm::mat4x4 rotationMatrix;
+    glm::mat4x4 scaleMatirx;
+    glm::mat4x4 modelMatrix;
+    glm::mat4x4 projectionMatrix;
+    glm::mat4x4 viewMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
-    _AssetLoader::Model_Info modelInfo;
+    _ModelInfo modelInfo;
     //
     _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
 };

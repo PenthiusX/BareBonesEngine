@@ -22,11 +22,12 @@ public:
 signals:
 
 public slots:
-    void update_camera_image(char* img,unsigned int w,unsigned int h);  
+
+    void update_camera_image(char* img,uint w,uint h);
     void openSettingsDialog();
     void setConfigSettings();
     void msgBox(QString windowname, QString info);
-    void showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight);
+    void showGeneratedModel(char *img, uint iwidth, uint iheight);
 
 private:
     Ui::MainWindow *ui;

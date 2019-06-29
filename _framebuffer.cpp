@@ -12,13 +12,11 @@ _FrameBuffer::_FrameBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentCont
 {
     fboShader = new _Shader();
 }
-
 _FrameBuffer::~_FrameBuffer()
 {
     fboShader = nullptr;
     delete fboShader;
 }
-
 /* Function: setupQuad()
  * this function sets up a basic quad to render the frabbuffer texture to
  * we put it in front of the camera for postprocessing implementations.
@@ -47,7 +45,6 @@ void _FrameBuffer::setupQuad()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float))) ;
 }
-
 /*
  * Function: setupFramebufferObjects(int resWidth, int resHeight)
  * this function sets up the the buffers for framebuffer to Texture rendering
@@ -55,8 +52,8 @@ void _FrameBuffer::setupQuad()
 */
 void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
 {
-    this->resH = resHeight;
-    this->resW = resWidth;
+    resH = resHeight;
+    resW = resWidth;
 
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -81,7 +78,6 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
     //reset to the default framebuffer 0
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-
 /*
  * Function: initialise()
  * this function calls to all function needed on initialisation
@@ -99,10 +95,9 @@ void _FrameBuffer::initialise()
     qDebug() << "Frambuffer initailised";
     setupQuad();
     qDebug() << "Quad setup complete";
-    this->mousePosUniform = fboShader->getUniformLocation("iMouse");
+    mousePosUniform = fboShader->getUniformLocation("iMouse");
     qDebug() << "mousePosUniform->" << mousePosUniform << "FBO";
 }
-
 /*
  * Function: setFrame()
  * this function set the Frame for the frameBuffer
@@ -116,7 +111,6 @@ void _FrameBuffer::setUpdatedFrame()
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
 }
-
 /*
  * Function: renderFrameOnQuad()
  * this function will render the frame generated via setFrame, and render it on the Quad
@@ -130,7 +124,7 @@ void _FrameBuffer::renderFrameOnQuad()
     glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
 
-    glBindTexture(GL_TEXTURE_2D,this->textureColorbuffer);//bind the texture created above
+    glBindTexture(GL_TEXTURE_2D,textureColorbuffer);//bind the texture created above
     fboShader->useShaderProgram();//pass the texture to this fboShader
 
     glBindVertexArray(quadVAO);//bind VAO for quad
@@ -149,14 +143,18 @@ void _FrameBuffer::renderFrameOn()
     //implentation pending
 }
 /*
+<<<<<<< HEAD
  *
+=======
+ * Created: 30_04_2019
+>>>>>>> development-mousePicking
 */
 void _FrameBuffer::setMousePos(QVector2D mPos)
 {
     //mouse y coordinate values are inverse of the the screen coordinate values
     //aligning it here the same way the resolution Height values(from gl_FragCoords) are aligned in the FBOshader.
-    unsigned int alignedMouseheight = this->resH - (unsigned int)mPos.y();
-    this->mousePos.setX(mPos.x());
+    uint alignedMouseheight = resH - (uint)mPos.y();
+    mousePos.setX(mPos.x());
     //this allignment is needed for it to be represented acurately in the shade.
-    this->mousePos.setY(alignedMouseheight);
+    mousePos.setY(alignedMouseheight);
 }

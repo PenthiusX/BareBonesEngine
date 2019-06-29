@@ -22,18 +22,18 @@ _Shader::_Shader() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 _Shader::~_Shader(){}
 /*
  * Function: getShaderProgram() retrun the shaderprogram
- * unsigned int variable.
+ * uint variable.
  * Is being used by the _renderer class
  * Created: 14_02_2019
 */
 uint _Shader::getShaderProgram()
 {
-   return this->shaderProgram;
+    return shaderProgram;
 }
 /*
  * Function: setFragmentShader(QString f) copiles and,
  * binds the fragment shader passed in form a Qstring,
- * and returns an unsigned int.
+ * and returns an uint.
  * Is being used by the _renderer class
  * Created: 14_02_2019
 */
@@ -45,7 +45,7 @@ void _Shader::setFragmentShader(QString f)
 /*
  * Function: setVertexShader(QString v) copiles and
  * binds the vertex shader passed in from a Qstring parameter,
- * and returns an unsigned int;
+ * and returns an uint;
  * Is being used by the _renderer class
  * Created: 14_02_2019
 */
@@ -62,38 +62,30 @@ void _Shader::setVertexShader(QString v)
 void _Shader::attachShaders()
 {
     //check for child shaders
-    if(child_shaders.size()!=0)
-    {
+    if(child_shaders.size()!=0){
         //create Shader Program
-        this->shaderProgram = glCreateProgram();
+        shaderProgram = glCreateProgram();
 
         //attatch child shaders to program
-        for (auto const& child_shader : child_shaders)
-        {
-            glAttachShader(shaderProgram, child_shader.second);//second specifies value at key in map(dictionary)
-        }
-        glLinkProgram(shaderProgram);
+        for (auto const& child_shader : child_shaders){
+            glAttachShader(shaderProgram, child_shader.second);}//second specifies value at key in map(dictionary)
 
+        glLinkProgram(shaderProgram);
         //check for link error
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-        if(!success)
-        {
+        if(!success){
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            qDebug() << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog ;
-            //QMessageBox::information(0, "program error", infoLog);
-        }
-
+            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;}
         //delete shader
         for (auto const& child_shader : child_shaders)
         {
-            glDeleteShader( child_shader.second);
+            glDeleteShader(child_shader.second);
+            glDetachShader(shaderProgram,child_shader.second);
         }
     }
-    else//if no child shaders attatched
-    {
+    else{//if no child shaders attatched
         std::cerr << "ERROR::SHADERCLASS::NO_CHILD_SHADERS_ATTATCHED." << std::endl;
-        exit(0);
-    }
+        exit(0);}
 }
 /*
  * Function: attachShaders(QString v,QString f),
@@ -120,8 +112,10 @@ void _Shader::setGeometryShader(QString geoS)
     auto geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
     glShaderSource(geometryShader, 1, &shader_src, nullptr);
     glCompileShader(geometryShader);
-    glAttachShader(this->shaderProgram, geometryShader);
-    glLinkProgram(this->shaderProgram);
+    glAttachShader(shaderProgram, geometryShader);
+    glLinkProgram(shaderProgram);
+    glDeleteShader(geometryShader);
+    glDetachShader(shaderProgram,geometryShader);
 }
 
 QString _Shader::shader_parser(QString shader_file,glm::ivec3 workgroup_size)
@@ -167,17 +161,17 @@ QString _Shader::shader_parser(QString shader_file,glm::ivec3 workgroup_size)
 */
 uint _Shader::getUniformLocation(const char* nameOfUniform)
 {
-    return (uint)glGetUniformLocation(this->shaderProgram, nameOfUniform);
+    return  glGetUniformLocation(shaderProgram, nameOfUniform);
 }
-
 /*
  *
 */
-void _Shader::setChildShader(QString s, unsigned int typ)
+void _Shader::setChildShader(QString s, uint typ)
 {
-    unsigned int shader = compileShader(tools.ReadStringFromQrc(s),typ);
+    uint shader = compileShader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
+
 
 /* Function : setChildShader(QString s, unsigned int typ)
  * vertex , fragment , geometry etc are child shaders of shader program object
@@ -191,8 +185,9 @@ void _Shader::setChildShader(QString s, unsigned int typ, glm::ivec3 workgroup_s
     unsigned int shader = compileShader(shader_src,typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-
-void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ)
+/*
+ */
+void _Shader::setChildShader(std::vector<QString> shader_parts, uint typ)
 {
     QString combined_src;
     for (auto const& shader_part : shader_parts)
@@ -200,10 +195,9 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ
         combined_src = combined_src + tools.ReadStringFromQrc(shader_part);//second specifies value at key in map(dictionary)
     }
     //tools.ReadStringFromQrc(s);
-    unsigned int shader = compileShader(combined_src,typ);
+    uint shader = compileShader(combined_src,typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
-
 /*
  * Function: useShaderProgram() Needs to be called before draw
  * everyloop for multiple
@@ -213,7 +207,7 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, unsigned int typ
  */
 void _Shader::useShaderProgram()
 {
-    glUseProgram(this->shaderProgram);
+    glUseProgram(shaderProgram);
 }
 
 /*
@@ -221,9 +215,9 @@ void _Shader::useShaderProgram()
  * everyloop for multiple
  * Created: 26_02_2019
  */
-unsigned int _Shader::compileShader(QString src, unsigned int typ)
+uint _Shader::compileShader(QString src, uint typ)
 {
-    unsigned int shader;
+    uint shader;
     QByteArray source_utf = src.toLocal8Bit(); // get shader source from qrc file
     const char *shader_src = source_utf.data(); //convert to const char*
 
@@ -241,7 +235,6 @@ unsigned int _Shader::compileShader(QString src, unsigned int typ)
     }
     return shader;
 }
-
 /*
 >>>>>>> development-mousepicking
 void _Shader::setComputeShader(QString compShader)

@@ -3,6 +3,9 @@
 #include <vector>
 #include <qstring.h>
 #include <qvector3d.h>
+#include <glm/glm.hpp>
+
+#include "_modelinfo.h"
 /*
  * Class: _AssetLoader
  * class sets values needed by the viewMatrix
@@ -11,41 +14,28 @@
  * Author: Aditya
 */
 
-
 class _AssetLoader
 {
 public:
     _AssetLoader();
     ~_AssetLoader();
-
-    //not being used
-    typedef struct Model_Info{
-        QString name;
-        QString path;
-        std::vector<float> vertexArray;
-        std::vector<unsigned int> indexAarray;
-        QVector3D max;
-        QVector3D min;
-    }_Model_Info;
-   _AssetLoader::_Model_Info getModelInfo();
-
-    std::vector<float> getAssetVertices();
-    std::vector<unsigned int> getAssetIndices();
-
+    void setModelInfo(_ModelInfo minfo);
+    _ModelInfo getModelInfo();
     void objLoader(QString pathToFile);
-    void loadAllModelsInfoFromFolder(QString folderName);
+    void loadAllModelsInfoFromFolder(QString folderName);//not in use
+    _ModelInfo generateQuad();
 
 private:
-    std::vector<float> vertices;
-    std::vector<unsigned int> indices;
-    std::vector<float> uvs;
-
-    _AssetLoader::_Model_Info minfo;
-
-    QVector3D vertMin;
-    QVector3D vertMax;
-
+    _ModelInfo modelInfo;
     //
+    std::vector<float> vertices;
+    std::vector<uint> indices;
+    std::vector<float> uvs;
+    //
+    glm::vec4 vertMin;
+    glm::vec4 vertMax;
+    int posCounter;
+    int arrayCounter;
 };
 
 #endif // _ASSETLOADER_H

@@ -22,6 +22,13 @@
  * throughout the project.
  * Created: 26_02_2019
  * Author: Saurabh , Aditya
+<<<<<<< HEAD
+=======
+ *
+ * (Note!: This whole class needs to be restructured Math implementations could be move out to a seperate class depending how this scales.
+ * This can be used as a test base to test out structs and datastructure which can then be later implemented
+ * as a sperate class).
+>>>>>>> development-mousePicking
 */
 
 class _Tools
@@ -30,8 +37,8 @@ public:
     _Tools();
     static QString ReadStringFromQrc(QString Filename);
     static QVector2D retunrnMaxPoint(QVector2D mousepos);
-    static QVector3D translateToPoint(QVector3D pointLocation,float stepDistance);
     static void Debugmatrix4x4(glm::mat4x4 mat4);
+
     static float getRandomNumberfromRange(float min , float max);
     static void SaveImageToPgm(char *img, unsigned int rttWidth, unsigned int rttHeight, QString filename);
     static QJsonObject ReadJsonFromQrc(QString Filename);
@@ -51,6 +58,12 @@ public:
     static int indexFromPixelCordinates(glm::vec2 pixel_cord, glm::ivec2 resolution);
     static glm::ivec3 vertIndexesFromElementIndex(int i);
     static glm::vec3 vertsFromIndex(glm::ivec3 indexes);
+
+    static float getRandomNumberfromRangeF(float min , float max);
+    static QVector3D interpolateBetweenPoints(QVector3D p1, QVector3D p2,float factor);
+    //Debug use
+    static void printFrameRate();
+private:
 
 };
 

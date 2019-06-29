@@ -5,21 +5,28 @@
  * Takes the values for diffrent aspects of a renderable model.
  * Author: Aditya
 */
-_SceneEntity::_SceneEntity()
-{	//sets the rotation value at init and uses the from axis angle
-    this->rotation = QVector3D(0.0,0.0,0.0);
-    this->postion = QVector3D(0.0, 0.0, 0.0);
-    this->color = QVector4D(1.0, 1.0, 1.0,1.0);
-    this->scale = 1.0;
-    this->orderInIndex = 0;
-    this->isActive = true;
-    this->isTransfomationLocal = false;
-    this->isPivotSet = false;
-    this->isPhysicsObject = false;
-    this->isHitByRay = false;
-    this->isMeshEditable = false;
-    this->tag = new char();
+
+_SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the from axis angle
+    rotation = glm::vec3(0.0,0.0,0.0);
+    postion = glm::vec3(0.0, 0.0, 0.0);
+    color = QVector4D(0.5,0.5,0.5,1.0);
+    vShaderPath = ":/shaders/dmvshader.glsl";
+    fShaderPath = ":/shaders/dmfshader.glsl";
+    scale = 1.0;
+    orderInIndex = 0;
+    isActive = true;
+    isTransformationLocal = false;
+    isPivotSet = false;
+    isPhysicsObject = false;
+    isHitByRay = false;
+    isMeshEditable = false;
+    isPhysicsHelper = false;
+    tag = new char();
     isLineMode = false;
+    isLineNoCullMode = false;
+    isTransformationAllowed = true;
+
+    modelInfo.setIsLoaded(false);
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -27,17 +34,13 @@ _SceneEntity::_SceneEntity()
  * Author: Aditya
  * Created:26_02_2019
 */
-_SceneEntity::_SceneEntity(QVector3D pos, QVector3D rot, float scale)
-{
-    this->postion = pos;
-    this->rotation = rot;
+_SceneEntity::_SceneEntity(glm::vec3 pos, glm::vec3 rot, float scale){
+    postion = pos;
+    rotation = rot;
     this->scale = scale;
 }
 _SceneEntity::~_SceneEntity(){
-    tag = nullptr;
-    delete tag;
 }
-
 /*
  * Function: setId(int id) & getId()
  * sets/gets the id for the current object.
@@ -45,132 +48,113 @@ _SceneEntity::~_SceneEntity(){
  * manupulate the respective object with the relavant ID.
  * Created:26_02_2019
 */
-void _SceneEntity::setId(unsigned int id)
-{
+void _SceneEntity::setId(uint id){
     this->id = id;
 }
-unsigned int _SceneEntity::getId() const
-{
-    return this->id;
+uint _SceneEntity::getId() const{
+    return id;
 }
-
 /* Function: setTag(const char *tag)
  * sets/gets the tag for the scene object
  * Tag is a string name uniqe identifier for the
  * object,similar to iD.
 */
-void _SceneEntity::setTag(const char *tag)
-{
+void _SceneEntity::setTag(QString tag){
     this->tag = tag;
 }
-const char *_SceneEntity::getTag() const
-{
-    return this->tag;
+QString _SceneEntity::getTag() const{
+    return tag;
 }
 /*
- *
  * Created: 10_06_2019
 */
-void _SceneEntity::setOrderInIndex(unsigned int i)
-{
-    this->orderInIndex = i;
+void _SceneEntity::setOrderInIndex(uint i){
+    orderInIndex = i;
 }
-unsigned int _SceneEntity::getIndexPosInScene()const
-{
-    return this->orderInIndex;
+uint _SceneEntity::getIndexPosInScene()const{
+    return orderInIndex;
 }
 
+void _SceneEntity::setIsTransformationAllowed(bool isit){
+    isTransformationAllowed = isit;
+}
+
+bool _SceneEntity::getIsTransformationAllowed(){
+    return isTransformationAllowed;
+}
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
  * sets/gets the position for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setPosition(QVector3D pos)
-{
-    this->postion = pos;
+void _SceneEntity::setPosition(glm::vec3 pos){
+    postion = pos;
 }
-QVector3D _SceneEntity::getPostion() const
-{
-    return this->postion;
+glm::vec3 _SceneEntity::getPostion() const{
+    return postion;
 }
-
 /*
  * Function: setRotation(QQuaternion rot) & getRotation()
  * sets/gets the rotation for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setRotation(QVector3D rot)
-{
-    this->rotation = rot;
+void _SceneEntity::setRotation(glm::vec3 rot){
+    rotation = rot;
 }
-QVector3D _SceneEntity::getRotation() const
-{
-    return this->rotation;
+glm::vec3 _SceneEntity::getRotation() const{
+    return rotation;
 }
-
 /*
  * Function: set/getPivot
  * sets gets the pivot position for the
  * scene entity.
  * Created:16_05_2019
 */
-void _SceneEntity::setPivot(QVector3D pivot)
-{
+void _SceneEntity::setPivot(glm::vec3 pivot){
     this->pivot = pivot;
     isPivotSet = true;
 }
-QVector3D _SceneEntity::getPivot() const
-{
-    return this->pivot;
+glm::vec3 _SceneEntity::getPivot() const{
+    return pivot;
 }
 //return if the pivot is set or not
-bool _SceneEntity::getIsPivotSet()
-{
-    return this->isPivotSet;
+bool _SceneEntity::getIsPivotSet(){
+    return isPivotSet;
 }
-
 /*
  * Function: setScale(float scale) & getScale()
  * sets/gets the scale for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setScale(float scale)
-{
+void _SceneEntity::setScale(float scale){
     this->scale = scale;
 }
-float _SceneEntity::getScale() const
-{
-    return this->scale;
+float _SceneEntity::getScale() const{
+    return scale;
 }
-
 /*
  * Function: set/getColor
  * sts gets the color variable of the
  * sceneObject
  * Created: 21_05_2019
 */
-void _SceneEntity::setColor(QVector4D col)
-{
-    this->color = col;
+void _SceneEntity::setColor(QVector4D col){
+    color = col;
 }
-QVector4D _SceneEntity::getColor() const
-{
-    return this->color;
+QVector4D _SceneEntity::getColor() const{
+    return color;
 }
-
 /*
  * Function: set/get translationMatrix()
  * that stores the traslation part of the modelMatrix
  * locally
  * Created: 20_05_2019
 */
-void _SceneEntity::setTranslationMatrix(glm::mat4x4 tmat)
-{
-    this->TranslationMatrix = tmat;
+void _SceneEntity::setTranslationMatrix(glm::mat4x4 tmat){
+    translationMatrix = tmat;
 }
-glm::mat4x4 _SceneEntity::getTranslationMatrix() const
-{
-    return this->TranslationMatrix;
+glm::mat4x4 _SceneEntity::getTranslationMatrix() const{
+    return translationMatrix;
 }
 /*
  * Function: set/get Rotationmatrix()
@@ -178,13 +162,11 @@ glm::mat4x4 _SceneEntity::getTranslationMatrix() const
  * locally
  * Created: 20_05_2019
 */
-void _SceneEntity::setRotationmatrix(glm::mat4x4 rmat)
-{
-    this->RotationMatrix = rmat;
+void _SceneEntity::setRotationmatrix(glm::mat4x4 rmat){
+    rotationMatrix = rmat;
 }
-glm::mat4x4 _SceneEntity::getRotationmatrix() const
-{
-    return this->RotationMatrix;
+glm::mat4x4 _SceneEntity::getRotationmatrix() const{
+    return rotationMatrix;
 }
 /*
  * Function: set/get ScaleingMatrix()
@@ -192,166 +174,117 @@ glm::mat4x4 _SceneEntity::getRotationmatrix() const
  * locally
  * Created: 20_05_2019
 */
-void _SceneEntity::setScaleingMatrix(glm::mat4x4 smat)
-{
-    this->ScaleMatirx = smat;
+void _SceneEntity::setScaleingMatrix(glm::mat4x4 smat){
+    scaleMatirx = smat;
 }
-glm::mat4x4 _SceneEntity::getScaleingMatrix() const
-{
-    return this->ScaleMatirx;
+glm::mat4x4 _SceneEntity::getScaleingMatrix() const{
+    return scaleMatirx;
+}
+void _SceneEntity::setModelMatrix(glm::mat4x4 mmat){
+    modelMatrix = mmat;
+}
+glm::mat4x4 _SceneEntity::getModelMatrix() const{
+    return modelMatrix;
+}
+/*
+ * Created:3_06_2019
+*/
+void _SceneEntity::setProjectionMatrix(glm::mat4x4 proj){
+    projectionMatrix = proj;
+}
+glm::mat4x4 _SceneEntity::getProjectionMatrix() const{
+    return projectionMatrix;
+}
+/*
+ * Created:3_06_2019
+*/
+void _SceneEntity::setViewMatrix(glm::mat4x4 view){
+    viewMatrix = view;
+}
+glm::mat4x4 _SceneEntity::getViewMatrix() const{
+    return viewMatrix;
+}
+/*
+ * Created:13_06_2019
+*/
+void _SceneEntity::setModelInfo(_ModelInfo minfo){
+    modelInfo = minfo;
+}
+_ModelInfo _SceneEntity::getModelInfo() const{
+    return modelInfo;
+}
+void _SceneEntity::setIsActive(bool isIt){
+    isActive = isIt;
+}
+bool _SceneEntity::getIsActive(){
+    return isActive;
+}
+/*
+ * Created:15_05_2019
+*/
+void _SceneEntity::setIsMeshEditable(bool isit){
+    isMeshEditable = isit;
+}
+bool _SceneEntity::getIsMeshEditable(){
+    return isMeshEditable;
+}
+/*
+ * Created:15_05_2019
+*/
+void _SceneEntity::setIsLineMode(bool isit){
+    isLineMode = isit;
+}
+bool _SceneEntity::getIsLineMode(){
+    return isLineMode;
 }
 
-void _SceneEntity::setModelMatrix(glm::mat4x4 mmat)
-{
-    this->ModelMatrix = mmat;
+void _SceneEntity::setIsLineNoCullMode(bool isit){
+    isLineNoCullMode = isit;
 }
-glm::mat4x4 _SceneEntity::getModelMatrix() const
+bool _SceneEntity::getIsLineNoCullMode()
 {
-    return this->ModelMatrix;
-}
-/*
- *
-*/
-void _SceneEntity::setProjectionMatrix(glm::mat4x4 proj)
-{
-    this->ProjectionMatrix = proj;
-}
-glm::mat4x4 _SceneEntity::getProjectionMatrix() const
-{
-    return this->ProjectionMatrix;
+    return isLineNoCullMode;
 }
 /*
- *
-*/
-void _SceneEntity::setViewMatrix(glm::mat4x4 view)
-{
-    this->ViewMatrix = view;
-}
-glm::mat4x4 _SceneEntity::getViewMatrix() const
-{
-    return this->ViewMatrix;
-}
-/*
- * Function: setVertexData(std::vector<float> vertices) & getvertexData()
- * sets/gets the vertexData for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setVertexData(std::vector<float> vertices)
-{
-    this->vertexData = vertices;
-}
-std::vector<float> _SceneEntity::getVertexData() const
-{
-    return this->vertexData;
-}
-
-/*
- * Function: setIndexData(std::vector<unsigned int> indices) & getIndexData()
- * sets/gets the indexData for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setIndexData(std::vector<unsigned int> indices)
-{
-    this->indexData = indices;
-}
-std::vector<unsigned int> _SceneEntity::getIndexData() const
-{
-    return this->indexData;
-}
-/*
- * Function: setuvData(std::vector<unsigned int> uvCoords) & getUvData()
- * sets/gets the uvcooords for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setuvData(std::vector<int> uvCoords)
-{
-    this->uvData = uvCoords;
-}
-std::vector<int> _SceneEntity::getUvData()const
-{
-    return this->uvData;
-}
-
-/*
- * Function: setnormalData(std::vector<float> normalData) & getNormalData()
- * sets/gets the normaldata for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setnormalData(std::vector<float> normalData)
-{
-    this->normalData = normalData;
-}
-std::vector<float> _SceneEntity::getNormalData()const
-{
-    return this->normalData;
-}
-/*
- *
-*/
-void _SceneEntity::setIsActive(bool isIt)
-{
-    this->isActive = isIt;
-}
-bool _SceneEntity::getIsActive()
-{
-    return this->isActive;
-}
-/*
- *
-*/
-void _SceneEntity::setIsMeshEditable(bool isit)
-{
-    this->isMeshEditable = isit;
-}
-bool _SceneEntity::getIsMeshEditable()
-{
-    return this->isMeshEditable;
-}
-/*
- *
-*/
-void _SceneEntity::setIsLineMode(bool isit)
-{
-    this->isLineMode = isit;
-}
-bool _SceneEntity::getIsLineMode()
-{
-    return this->isLineMode;
-}
-
-/*
- *Function:isTransfomationLocal()
+ *Function:isTransformationLocal()
  * sets gets the isTranformationlocal boolean object
  * that flags if this scene object need to tranform on local axis
  * or global axis
 */
-void _SceneEntity::setIsTransfomationLocal(bool isLoc)
-{
-    this->isTransfomationLocal = isLoc;
+void _SceneEntity::setIsTransformationLocal(bool isLoc){
+    isTransformationLocal = isLoc;
 }
-bool _SceneEntity::getIsTransfomationLocal()
+bool _SceneEntity::getIsTransformationLocal(){
+    return isTransformationLocal;
+}
+/*
+ *Created:11_06_2017
+*/
+void _SceneEntity::setModelData(_AssetLoader aloader)
 {
-    return this->isTransfomationLocal;
+    if(aloader.getModelInfo().getVertexArray().size() > 0 && aloader.getModelInfo().getIndexArray().size() > 0){
+        assetLoader = aloader;
+        modelInfo = assetLoader.getModelInfo();
+        modelInfo.setIsLoaded(true);
+    }
+    else{
+        qInfo() << "_Error::model data not sufficent,please check input";
+        isActive = false;
+    }
+}
+void _SceneEntity::setModelData(_ModelInfo minfo)
+{
+    if(minfo.getVertexArray().size() > 0 && minfo.getIndexArray().size() > 0){
+        assetLoader.setModelInfo(minfo);
+        modelInfo = assetLoader.getModelInfo();
+        modelInfo.setIsLoaded(true);
+    }
+    else{
+        qInfo() << "_Error::Model data not sufficent,please check input";
+        isActive = false;
+    }
 }
 
-/*
- * Function: setModelData(std::vector<float> vertices, std::vector<unsigned int> indices)
- * sets the vertex and index data in one function, for the current object.
- * Created:26_02_2019
-*/
-void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned int> indices)
-{
-    if(vertices.size() > 0 && indices.size() > 0)
-    {
-        this->vertexData = vertices;
-        this->indexData = indices;
-        this->isActive = true;
-    }
-    else {
-        qInfo() << "model data not sufficent,please check input";
-        this->isActive = false;
-    }
-}
 /*
  * Function: setModelData(Qstring path)
  * sets the vertex and index data in one function, for the current object.
@@ -361,61 +294,51 @@ void _SceneEntity::setModelData(std::vector<float> vertices,std::vector<unsigned
  */
 void _SceneEntity::setModelData(QString path)
 {
-    this->assetLoader.objLoader(path);
-    if(assetLoader.getAssetVertices().size() > 0 && assetLoader.getAssetIndices().size() > 0){
-        this->vertexData = assetLoader.getAssetVertices();
-        this->indexData = assetLoader.getAssetIndices();
-        this->isActive = true;
+    assetLoader.objLoader(path);
+    if(assetLoader.getModelInfo().getVertexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
+        modelInfo = assetLoader.getModelInfo();
+        modelInfo.setIsLoaded(true);
+        isActive = true;
     }
-    else {
-        qInfo() << "no model data in file, please check the path to file";
-        this->isActive = false;
+    else{
+        qInfo() << "_Error::No model data in file, please check the path to file!!!!!!";
+        isActive = false;
     }
-
-    this->modelInfo = assetLoader.getModelInfo();
 }
 /*
  * Function: setShaderPath(QString vSh, QString fSh)
  * sets the path  for the shadert to be loaded ,for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setShader(QString vSh, QString fSh)
-{
-    this->vShaderPath = vSh;
-    this->fShaderPath = fSh;
+void _SceneEntity::setShader(QString vSh, QString fSh){
+    vShaderPath = vSh;
+    fShaderPath = fSh;
 }
-
 /* Function:gets/sets texture path getTexturePath().
  * returns the path of the texture that is applied to the sceneObject.
  * Date: 26_02_2019
 */
-QString _SceneEntity::getTexturePath() const
-{
-    return this->texturePath;
+QString _SceneEntity::getTexturePath() const{
+    return texturePath;
 }
-void _SceneEntity::setTexturePath(QString texPath)
-{
-    this->texturePath = texPath;
+void _SceneEntity::setTexturePath(QString texPath){
+    texturePath = texPath;
 }
-
 /*
 * Function: getVertexShaderPath()
 * returns the Vertex shader path set in the object via set shader Path
- * Created:26_02_2019
+* Created:26_02_2019
 */
-QString _SceneEntity::getVertexShaderPath() const
-{
-    return this->vShaderPath;
+QString _SceneEntity::getVertexShaderPath() const{
+    return vShaderPath;
 }
-
 /*
 * Function: getFragmentShaderPath()
 * returns the fragment shader path set in the object via set shader Path
 * Created:26_02_2019
 */
-QString _SceneEntity::getFragmentShaderPath() const
-{
-    return this->fShaderPath;
+QString _SceneEntity::getFragmentShaderPath() const{
+    return fShaderPath;
 }
 /*
  * Function: setPhysicsObject(_Physics::PhysicsObjects penum)
@@ -423,10 +346,20 @@ QString _SceneEntity::getFragmentShaderPath() const
  * kind of collision obbject is attached to the sceneEntity
  * Created: 22_05_2019
 */
-void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum)
+void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum){
+    isPhysicsObject = true;
+    isPhysicsHelper = false;
+    phyObjtype = penum;
+}
+void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, scenePhysicsObjects helper)
 {
-    this->isPhysicsObject = true;
-    this->phyObjtype = penum;
+    if(helper = _SceneEntity::Helper){
+        isPhysicsHelper = true;}
+    else if(helper = _SceneEntity::NoHelper){
+        isPhysicsHelper = false;}
+
+    isPhysicsObject = true;
+    phyObjtype = penum;
 }
 /*
  * Funtion: getisHitRay()
@@ -435,20 +368,33 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum)
  * Created: 22_05_2019
 */
 bool _SceneEntity::getisHitByRay(){
-    return this->isHitByRay;
+    return isHitByRay;
 }
-
-void _SceneEntity::setIsHitByRay(bool isHitByRay)
-{
+void _SceneEntity::setIsHitByRay(bool isHitByRay){
     this->isHitByRay = isHitByRay;
 }
-
-bool _SceneEntity::getIsPhysicsObject() const
-{
-    return this->isPhysicsObject;
+/*
+ * Created: 22_06_2019
+*/
+bool _SceneEntity::getIsSelected() const{
+    return isSelected;
 }
-
-_SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType()
+void _SceneEntity::setIsSelected(bool isit){
+    isSelected = isit;
+}
+/*
+ * Created:3_06_2015
+*/
+bool _SceneEntity::getIsPhysicsObject() const {
+    return isPhysicsObject;
+}
+/*
+ * Created: 15_06_2019
+*/
+bool _SceneEntity::getIsPhysicsHelper() const
 {
-    return this->phyObjtype;
+    return isPhysicsHelper;
+}
+_SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType(){
+    return phyObjtype;
 }

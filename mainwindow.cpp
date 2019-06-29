@@ -118,7 +118,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //buttons to marker slots connections
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
-
     connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
     connect(processing,SIGNAL(generatedModelTextureOut(char*,unsigned int,unsigned int)),this,SLOT(showGeneratedModel(char*,unsigned int ,unsigned int)));
@@ -126,7 +125,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
     //connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     //connect(marker,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
-
     //start the hardware thread
     hardwareInteractionThread->start();
 
@@ -147,7 +145,7 @@ MainWindow::~MainWindow()
 /*
  *
 */
-void MainWindow::update_camera_image(char *img, unsigned int w, unsigned int h)
+void MainWindow::update_camera_image(char *img, uint w, uint h)
 {
 
     ui->widget->update_background_image(img,w,h);//------------------------Needs work!!!!!
