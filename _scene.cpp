@@ -389,7 +389,7 @@ void _Scene::addAllHelperTypesInScene()
     bg.setId(777);
     bg.setTag("background");
     bg.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
+    //bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
     bg.setScale(1.0);
     bg.setModelData(a.generateQuad());
     //
@@ -461,4 +461,23 @@ void _Scene::addAllHelperTypesInScene()
     addSceneObject(max);
 
     setHelperIndexVars();
+}
+
+void _Scene::updateBackgroundImage(char *img, unsigned int w, unsigned int h)
+{
+    for (unsigned int i = 0; i < this->getSceneObjects().size(); i++)
+    {
+
+        if (renderObjects[i]->getSceneEntity().getId() == bg.getId())
+        {
+            if(renderObjects[i]->isTexturePresent()){
+                //updating predefined texture
+                renderObjects[i]->setTexture(img,w,h);
+            }
+            else {
+                //setting up new 8 bit grayscale GL_RGBA texture for first time
+                renderObjects[i]->setupTexture(img,w,h,GL_RGBA);
+            }
+        }
+    }
 }

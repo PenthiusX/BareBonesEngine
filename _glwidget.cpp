@@ -429,48 +429,17 @@ void _GLWidget::removeSceneEntityFromScene(){
 */
 void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h)
 {
-//    static _Renderer *render_object = nullptr;
-//    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-//    {
-//        render_object = scene->getSceneObjects()[i];
+    //make context active
+    makeCurrent();
 
-//        if (render_object->getSceneEntity().getId() == background_quad.getId())
-//        {
-//            if(render_object->isTexturePresent())
-//            {
-//                //updating predefined texture
-//                //                render_object->setTexture(img,w,h);
-//            }
-//            else
-//            {
-//                //setting up new 8 bit grayscale GL_RGBA texture for first time
-//                //                render_object->setupTexture(img,w,h,GL_RGBA);
-//            }
-//            doneCurrent();
-//        }
-//    }
+    scene->updateBackgroundImage(img,w,h);
+
+    doneCurrent();
 }
 
 void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
 {
-    static _Renderer *render_object = nullptr;
-    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-    {
-        render_object = scene->getSceneObjects()[i];
 
-        if (render_object->getSceneEntity().getId() == generated_model.getId())
-        {
-            if(render_object->isTexturePresent()){
-                //updating predefined texture
-                //                render_object->setTexture(img,w,h);
-            }
-            else {
-                //setting up new 8 bit grayscale GL_RGBA texture for first time
-                //                render_object->setupTexture(img,w,h,GL_RGBA);
-            }
-
-        }
-    }
 }
 
 void _GLWidget::rotateGeneratedModel(float angle)

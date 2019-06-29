@@ -36,9 +36,11 @@ public:
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo
     //Helpers
     void addAllHelperTypesInScene();
+    void updateBackgroundImage(char *img, unsigned int w, unsigned int h);
     //
     _SceneEntity findSceneEntity(uint iD);
     _SceneEntity findSceneEntity(QString tag);
+
     //
     _SceneEntity getSceneEntityHitWithRay();
 
