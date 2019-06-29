@@ -20,7 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionApplication_Settings,SIGNAL(triggered()),this,SLOT(openSettingsDialog()));
     _CaliberationSection::setApplicationSettings(application_settings);
     processing->setApplicationSettings(application_settings);
+
     qRegisterMetaType<ActionType>("ActionType");
+    qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
+    qRegisterMetaType<_Tools::ModelData>("_Tools::ModelData");
 
     //machine,marker,scanner should be in same thread -
     hardwareInteractionThread = new QThread;
@@ -84,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    });
 
     connect(machine, &_Machine::stageAngleChanged,ui->widget,&_GLWidget::rotateGeneratedModel);
+    connect(processing, &_Processing::generatedModelDataOut,ui->widget,&_GLWidget::setGeneratedModelData);
 
     connect(ui->stage_left, &QPushButton::clicked,[this]() {
         QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 400));
@@ -113,7 +117,7 @@ MainWindow::MainWindow(QWidget *parent) :
         QMetaObject::invokeMethod(machine, "Vaccum",  Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_STORE_VALUE_TOGGLE));
     });
 
-    qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
+
 
     connect(ui->live_camera_button, &QPushButton::toggled,[this]() {
         if(ui->live_camera_button->isChecked())

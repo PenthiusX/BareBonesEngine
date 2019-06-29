@@ -340,46 +340,41 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
     //texture.unbind();
     init = false;
 
-    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,4000);
+    gpu_compute->compute_clear_32_i_texture(texture_model_wrap,1000);
 
     }
+    //if(rotation_step == 0)
+        //gpu_compute->compute_clear_32_i_texture(texture_model_wrap,400);
     //Do the Processing
 
     //send the image to gpu texture
     texture_in.setImage(img,iwidth,iheight);
 
-    //compute operation(edge detecton currently)
-    //gpu_compute->compute_row_wise_mean(texture,texture_out);
-    //gpu_compute->compute_threshold(texture_in,texture_thres);
-    //gpu_compute->compute_guassian_blur_5_5(texture_in,texture_thres);
-    //gpu_compute->compute_sobel_edge(texture_thres,texture_sobel_mag_,texture_sobel_theta_);
-    //gpu_compute->compute_canny_edge(texture_in,texture_edge);
-    //gpu_compute->compute_gradient_to_descrete_color(texture_in,texture_out);
-    //gpu_compute->compute_copy_8_to_32(texture,texture_outt);
-    //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
-    //gpu_compute->compute_sobel_edge(texture_in,texture_edge);
-    //gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
-    //gpu_compute->compute_threshold(texture_edge,texture_thres,60);
-    //glm::vec3 angle_x_y = gpu_compute->compute_stage_angle(texture_in,texture_out);
-    //gpu_compute->compute_copy_red_to_rgba(texture_edge,texture_out);
     gpu_compute->computeEdgeModel(texture_in,texture_out,texture_model_wrap,texture_model_wrap_8_bit,rotation_step,stage_center);
-    //gpu_compute->compute_mark_column_index(texture_in,texture_out);
-    //gpu_compute->compute_mark_column_index(texture_outt,texture_out);
-    //gpu_compute->compute_register_mesh_from_line_laser(texture_outt);
-
-    //gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
-
-    //get image from gpu texture
-    //send signal to update display texture
-
 
     //histogram(gpu_compute->get_texture_image_framebuffer(texture_edge),iwidth,iheight);
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out,GL_RGBA),iwidth,iheight);
     //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap,GL_RED),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
-    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+    //emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+
+    int* texture_model_wrap_data = gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER);
+
+    if(rotation_step == 199)
+    {
+        emit generatedModelDataOut(cpu_compute->generateModelMesh(texture_model_wrap_data,texture_model_wrap.getWidth(),texture_model_wrap.getHeight()));
+    }
+
+    //emit generatedModelTextureOut((char*)texture_model_wrap_data,texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
 
     //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
 
+}
+
+_Tools::ModelData _Processing::generateModelFromGPUTexture(_Texture texture_model_wrap)
+{
+    int* texture_model_wrap_data = gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER);
+
+    return cpu_compute->generateModelMesh(texture_model_wrap_data,texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
 }
 
 /* function: makeCurrent

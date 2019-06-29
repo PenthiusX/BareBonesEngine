@@ -3,6 +3,7 @@
 #include <_texture.h>
 #include <_shader.h>
 #include <Compute/_cpu_compute.h>
+#include <Compute/_gpu_compute.h>
 
 /*
  * Scanner Class
@@ -66,7 +67,7 @@ void _Scanner::init()
     bool success = processing->makeCurrent();
     //qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
 
-    gpu_compute = new _GPU_Compute;
+    cpu_compute = new _Cpu_Compute;
 
     initializeOpenGLFunctions();
 
@@ -176,8 +177,6 @@ void _Scanner::scanGenerateModelWrap()
 
         processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
     }
-
-    glUniform1f(4,4);
 
     machine->frameUpdateMutex.unlock();
 

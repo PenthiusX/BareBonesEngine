@@ -63,7 +63,7 @@ void _GLWidget::initializeGL()
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
-    s.setModelData(":/models/hipolyore.obj");
+    s.setModelData(":/models/generated.obj");
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
@@ -440,6 +440,16 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
 void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
 {
 
+}
+
+void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
+{
+    qDebug() << "setting model";
+
+    scene->removeSceneObject(s);
+    s.setScale(1);
+    s.setModelData(":/models/cube.obj");
+    scene->addSceneObject(s);
 }
 
 void _GLWidget::rotateGeneratedModel(float angle)
