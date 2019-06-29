@@ -344,6 +344,8 @@ void _Scene::updateHelpersOnce()
 
             pos = physVector[i].getSceneEntity().getPostion();
             rot = physVector[i].getSceneEntity().getRotation();
+
+
         }
     }
     renderObjects[cIndex]->setPosition(cntrd);

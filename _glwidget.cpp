@@ -68,65 +68,8 @@ void _GLWidget::initializeGL()
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
-    //-----Scene Objects---------
+    //--------Scene Objects------------
     scene->addSceneObject(s);
-
-    //    generated_model.setId(666);//keep the id it will be required while updating texture
-    //    generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");
-    //    generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
-    //    generated_model.setRotation(QVector3D(0.0, 0.0, 0.0));
-    //    generated_model.setIsTransfomationLocal(false);
-    //    generated_model.setScale(0.524);
-
-    //    std::vector<float> vertsG;
-    //    std::vector<unsigned int> indiceG;
-
-    //    glm::ivec2 resolution = glm::ivec2(200,576);//wrap texture size
-    //    unsigned int index[4] = {0,0,0,0};
-
-    //    for (unsigned int h = 0; h < resolution.y; h++){
-    //        for (unsigned int w = 0; w < resolution.x; w++){
-
-    //            glm::vec2 pixel_cord = glm::vec2(w,h);
-    //            glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
-
-    //            //texture_positions
-    //            vertsG.push_back(texture_cord.x);//x = s
-    //            vertsG.push_back(texture_cord.y);//y = t
-    //            vertsG.push_back(0.0);//z = 0.0
-    //        }
-    //    }
-
-    //    glm::ivec2 step_size = glm::ivec2(2,8);
-
-    //    for (unsigned int h = 0; h < resolution.y; h+=step_size.y){
-    //        for (unsigned int w = 0; w < resolution.x; w+=step_size.x){
-
-    //            glm::vec2 pixel_cord = glm::vec2(w,h);
-
-    //            //indexes of neibhouring vertexes
-    //            index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
-    //            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,0),resolution);
-    //            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
-    //            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
-
-    //            if((pixel_cord.y < resolution.y))
-    //            {
-    //                //indexs of fisrt triangle in quad
-    //                indiceG.push_back(index[0]);
-    //                indiceG.push_back(index[1]);
-    //                indiceG.push_back(index[2]);
-
-    //                //indexs of second triangle in quad
-    //                indiceG.push_back(index[0]);
-    //                indiceG.push_back(index[2]);
-    //                indiceG.push_back(index[3]);
-    //            }
-    //        }
-    //    }
-
-    //    generated_model.setModelData(vertsG,indiceG);
-    //    scene->addSceneObject(generated_model);
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -182,15 +125,6 @@ void _GLWidget::paintGL()//the renderloop
   ██ ▄▄ ▄█▀▄ ▐█▐▐▌ ▐█.▪▐▀▀▄  ▄█▀▄ ██▪  ██▪  ▄▀▀▀█▄
   ▐███▌▐█▌.▐▌██▐█▌ ▐█▌·▐█•█▌▐█▌.▐▌▐█▌▐▌▐█▌▐▌▐█▄▪▐█
   ·▀▀▀  ▀█▄▀▪▀▀ █▪ ▀▀▀ .▀  ▀ ▀█▄▀▪.▀▀▀ .▀▀▀  ▀▀▀▀
-
-
-<<<<<<< HEAD
-//   ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·
-//  ▐█ ▌▪▪     •█▌▐█•██  ▀▄ █·▪     ██•  ██•  ▐█ ▀.
-//  ██ ▄▄ ▄█▀▄ ▐█▐▐▌ ▐█.▪▐▀▀▄  ▄█▀▄ ██▪  ██▪  ▄▀▀▀█▄
-//  ▐███▌▐█▌.▐▌██▐█▌ ▐█▌·▐█•█▌▐█▌.▐▌▐█▌▐▌▐█▌▐▌▐█▄▪▐█
-//  ·▀▀▀  ▀█▄▀▪▀▀ █▪ ▀▀▀ .▀  ▀ ▀█▄▀▪.▀▀▀ .▀▀▀  ▀▀▀▀
-=======
 *
 * Controls: WASD to move ,
 * C to switch focut to  camera or model. R to reset to default with respect to focus
@@ -417,7 +351,6 @@ void _GLWidget::removeSceneEntityFromScene(){
             scene->removeSceneObject(scene->getSceneObjects().size()-1);
 }
 
-
 /* Function : update_background_image(char *img, unsigned int w, unsigned int h)
  * upadtes the texture when new camera image is grabbed or saved image is to be displayed
  * to upadte the texture image 8 bit grayscale image is required hence do not set the texure
@@ -427,80 +360,14 @@ void _GLWidget::removeSceneEntityFromScene(){
  * created: 11_04_2019
  * Contributor : Saurabh
 */
-void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h)
-{
-//    static _Renderer *render_object = nullptr;
-//    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-//    {
-//        render_object = scene->getSceneObjects()[i];
-
-//        if (render_object->getSceneEntity().getId() == background_quad.getId())
-//        {
-//            if(render_object->isTexturePresent())
-//            {
-//                //updating predefined texture
-//                //                render_object->setTexture(img,w,h);
-//            }
-//            else
-//            {
-//                //setting up new 8 bit grayscale GL_RGBA texture for first time
-//                //                render_object->setupTexture(img,w,h,GL_RGBA);
-//            }
-//            doneCurrent();
-//        }
-//    }
+void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h){
 }
-
-void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
-{
-    static _Renderer *render_object = nullptr;
-    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-    {
-        render_object = scene->getSceneObjects()[i];
-
-        if (render_object->getSceneEntity().getId() == generated_model.getId())
-        {
-            if(render_object->isTexturePresent()){
-                //updating predefined texture
-                //                render_object->setTexture(img,w,h);
-            }
-            else {
-                //setting up new 8 bit grayscale GL_RGBA texture for first time
-                //                render_object->setupTexture(img,w,h,GL_RGBA);
-            }
-
-        }
-    }
+void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h){
 }
-
-void _GLWidget::rotateGeneratedModel(float angle)
-{
+void _GLWidget::rotateGeneratedModel(float angle){
     rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
 }
-
-void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
-{
-    static _Renderer *render_object = nullptr;
-
-//    if(initialised)
-//    {
-//        for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
-//        {
-//            render_object = scene->getSceneObjects()[i];
-
-//            if (render_object->getSceneEntity().getId() == generated_model.getId())
-//            {
-//                if(with_stage)
-//                {
-//                    //rotate generatedModel with stage
-//                }
-//                else
-//                {
-//                    //rotate generatedModel
-//                }
-//            }
-//        }
-//    }
+void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage){
 }
 
 //Press L to activate.
