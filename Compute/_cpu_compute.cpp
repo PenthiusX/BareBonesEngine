@@ -105,3 +105,30 @@ _Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int 
     _Tools::SaveObjModel(vertsG,indiceG,"centered_clay.obj");
     return _Tools::ModelData{vertsG,indiceG};
 }
+void _Cpu_Compute::checkCollision(std::vector<float>& stone_verts, std::vector<float> vertsD, std::vector<unsigned int>& indiceD)
+{
+    std::vector<glm::vec4> triangle_equations;
+
+    bool inside=true;
+
+    for (int v = 0; v < indiceD.size()/3; v++) {
+        std::vector<glm::vec3> tri_points = _Tools::getTriangleFromElementsIndex(vertsD,indiceD,v);
+        glm::vec3 normal = glm::cross( tri_points[1]-tri_points[0], tri_points[2]-tri_points[0]);
+        float distance = glm::dot( normal, tri_points[0] ); //P is a point in the plane, like a, b or c
+        glm::vec4 eqn(normal,-distance);
+        if(distance<0)
+            eqn*=-1;
+        triangle_equations.push_back(eqn);
+    }
+
+    for (int v = 0; v < stone_verts.size()/3; v++) {
+        glm::vec4 point(_Tools::getPointFromIndex(stone_verts,v),1.0);
+
+        bool point_inside=true;
+        for (auto eqn : triangle_equations) {
+            float distance = glm::dot( eqn, point);
+            point_inside &= (distance < 0);
+        }
+        inside &= point_inside;
+    }
+}

@@ -535,3 +535,9 @@ void _GLWidget::applyStuffToallEntites(bool isit)
         qDebug() << "setting is active to" << isit <<"for" << scene->getSceneObjects()[i]->getSceneEntity().getTag();
     }
 }
+
+void _GLWidget::emitModelsForPlanning()
+{
+    glm::mat4x4 relative_transform =
+    emit  planningModelsOut({s.getModelInfo().getVertexArray(),s.getModelInfo().getIndexArray()},{s1.getModelInfo().getVertexArray(),s1.getModelInfo().getIndexArray()},);
+}

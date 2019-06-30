@@ -18,6 +18,7 @@
 
 class _GLWidget :  public QOpenGLWidget
 {
+    Q_OBJECT
 public:
     _GLWidget();
     explicit _GLWidget(QWidget *parent = 0);
@@ -28,12 +29,17 @@ public:
     void setZRotation(int angle);
     void rotateGeneratedmodel(float angle, glm::vec3 axis, bool with_stage);
 
+signals:
+    void planningModelsOut(_Tools::ModelData stone_model,_Tools::ModelData diamond_model,glm::mat4x4 relative_transform);
+
 public slots:
     void update_background_image(char *img, unsigned int w, unsigned int h);
     void showGeneratedModel(char *img, unsigned int w, unsigned int h);
     void setGeneratedModelData(_Tools::ModelData);
     void rotateGeneratedModel(float angle);
+    void updatePlanningModels();
 
+    void emitModelsForPlanning();
 protected:
     void initializeGL() Q_DECL_OVERRIDE;
     void resizeGL(int w, int h)Q_DECL_OVERRIDE;

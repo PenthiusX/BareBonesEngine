@@ -15,6 +15,7 @@ TEMPLATE = app
 
 
 HEADERS  += mainwindow.h \
+            Modules/_planner.h \
             UI/_caliberationsection.h \
             _glwidget.h \
             _renderer.h \
@@ -51,6 +52,7 @@ HEADERS  += mainwindow.h \
             UI/_stagecaliberationsection.h
 
 SOURCES += main.cpp\
+           Modules/_planner.cpp \
            UI/_caliberationsection.cpp \
            mainwindow.cpp \
            _glwidget.cpp \

@@ -7,6 +7,7 @@
 #include <Modules/_scanner.h>
 #include <Modules/_processing.h>
 #include <QFile>
+#include <Modules/_planner.h>
 
 namespace Ui {
 class MainWindow;
@@ -36,6 +37,7 @@ private:
     _Machine *machine=nullptr;
     _Marker *marker=nullptr;
     _Scanner *scanner=nullptr;
+    _Planner *planner=nullptr;
     _Processing *processing=nullptr;
 
 

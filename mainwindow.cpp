@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<ActionType>("ActionType");
     qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
     qRegisterMetaType<_Tools::ModelData>("_Tools::ModelData");
+    qRegisterMetaType<glm::mat4x4>("glm::mat4x4");
 
     //machine,marker,scanner should be in same thread -
     hardwareInteractionThread = new QThread;
@@ -43,6 +44,9 @@ MainWindow::MainWindow(QWidget *parent) :
     scanner = new _Scanner(machine,processing);
     scanner->moveToThread(hardwareInteractionThread);
 
+    planner = new _Planner();
+    planner->moveToThread(hardwareInteractionThread);
+
     //
     qDebug() << "created hardware objects in thread :" << QThread::currentThread();
 
@@ -51,10 +55,12 @@ MainWindow::MainWindow(QWidget *parent) :
         scanner->deleteLater();
         marker->deleteLater();
         processing->deleteLater();
+        planner->deleteLater();
     });    //initialize machine which will create hardware objects in new thread
     connect(hardwareInteractionThread,SIGNAL(started()),machine,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),processing,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),scanner,SLOT(init()));
+    connect(hardwareInteractionThread,SIGNAL(started()),planner,SLOT(init()));
 
     /* button connections
      *  slot function implemented in child object of MainWindow and used by lambda functions
@@ -88,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(machine, &_Machine::stageAngleChanged,ui->widget,&_GLWidget::rotateGeneratedModel);
     connect(processing, &_Processing::generatedModelDataOut,ui->widget,&_GLWidget::setGeneratedModelData);
+    connect(ui->widget, &_GLWidget::planningModelsOut,planner,&_Planner::startPlanning);
 
     connect(ui->stage_left, &QPushButton::clicked,[this]() {
         QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 400));
