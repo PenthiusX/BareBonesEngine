@@ -181,6 +181,7 @@ void _Processing::init()
         qDebug()<< "max_compute_workgroup_invocations" << max_compute_workgroup_invocations;
 
     }
+    //emit generatedModelDataOut({std::vector<float>{0.0},std::vector<unsigned int>{0}});
     colorFrame2 = new char[256*256];
 }
 
@@ -364,7 +365,7 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
         emit generatedModelDataOut(cpu_compute->generateModelMesh(texture_model_wrap_data,texture_model_wrap.getWidth(),texture_model_wrap.getHeight()));
     }
 
-    //emit generatedModelTextureOut((char*)texture_model_wrap_data,texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
+    emit generatedModelTextureOut((char*)texture_model_wrap_data,texture_model_wrap_8_bit.getWidth(),texture_model_wrap_8_bit.getHeight());
 
     //emit stageCenterAngleOut(angle_x_y.x,angle_x_y.y,angle_x_y.z);
 

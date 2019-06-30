@@ -56,7 +56,7 @@ void _GLWidget::initializeGL()
     _AssetLoader a;
     s.setId(3);
     s.setTag("clickSurface");
-    s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
+    s.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(true);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
@@ -71,62 +71,65 @@ void _GLWidget::initializeGL()
     //-----Scene Objects---------
     scene->addSceneObject(s);
 
-    //    generated_model.setId(666);//keep the id it will be required while updating texture
-    //    generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");
-    //    generated_model.setPosition(QVector3D(0.125, -1.045, 0.0));
-    //    generated_model.setRotation(QVector3D(0.0, 0.0, 0.0));
-    //    generated_model.setIsTransfomationLocal(false);
-    //    generated_model.setScale(0.524);
+//        generated_model.setId(666);//keep the id it will be required while updating texture
+//        generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");
+//        generated_model.setPosition(glm::vec3(0.125, -1.045, 0.0));
+//        generated_model.setRotation(glm::vec3(0.0, 0.0, 0.0));
+//        //generated_model.setIsTransfomationLocal(false);
+//        generated_model.setScale(0.524);
 
-    //    std::vector<float> vertsG;
-    //    std::vector<unsigned int> indiceG;
+//        std::vector<float> vertsG;
+//        std::vector<unsigned int> indiceG;
 
-    //    glm::ivec2 resolution = glm::ivec2(200,576);//wrap texture size
-    //    unsigned int index[4] = {0,0,0,0};
+//        glm::ivec2 resolution = glm::ivec2(200,576);//wrap texture size
+//        unsigned int index[4] = {0,0,0,0};
 
-    //    for (unsigned int h = 0; h < resolution.y; h++){
-    //        for (unsigned int w = 0; w < resolution.x; w++){
+//        for (unsigned int h = 0; h < resolution.y; h++){
+//            for (unsigned int w = 0; w < resolution.x; w++){
 
-    //            glm::vec2 pixel_cord = glm::vec2(w,h);
-    //            glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
+//                glm::vec2 pixel_cord = glm::vec2(w,h);
+//                glm::vec2 texture_cord = glm::vec2((pixel_cord.x +0.5)/resolution.x,(pixel_cord.y +0.5)/resolution.y);
 
-    //            //texture_positions
-    //            vertsG.push_back(texture_cord.x);//x = s
-    //            vertsG.push_back(texture_cord.y);//y = t
-    //            vertsG.push_back(0.0);//z = 0.0
-    //        }
-    //    }
+//                //texture_positions
+//                vertsG.push_back(texture_cord.x);//x = s
+//                vertsG.push_back(texture_cord.y);//y = t
+//                vertsG.push_back(0.0);//z = 0.0
+//            }
+//        }
 
-    //    glm::ivec2 step_size = glm::ivec2(2,8);
+//        glm::ivec2 step_size = glm::ivec2(2,8);
 
-    //    for (unsigned int h = 0; h < resolution.y; h+=step_size.y){
-    //        for (unsigned int w = 0; w < resolution.x; w+=step_size.x){
+//        for (unsigned int h = 0; h < resolution.y; h+=step_size.y){
+//            for (unsigned int w = 0; w < resolution.x; w+=step_size.x){
 
-    //            glm::vec2 pixel_cord = glm::vec2(w,h);
+//                glm::vec2 pixel_cord = glm::vec2(w,h);
 
-    //            //indexes of neibhouring vertexes
-    //            index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
-    //            index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,0),resolution);
-    //            index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
-    //            index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
+//                //indexes of neibhouring vertexes
+//                index[0] = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+//                index[1] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,0),resolution);
+//                index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
+//                index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
 
-    //            if((pixel_cord.y < resolution.y))
-    //            {
-    //                //indexs of fisrt triangle in quad
-    //                indiceG.push_back(index[0]);
-    //                indiceG.push_back(index[1]);
-    //                indiceG.push_back(index[2]);
+//                if((pixel_cord.y < resolution.y))
+//                {
+//                    //indexs of fisrt triangle in quad
+//                    indiceG.push_back(index[0]);
+//                    indiceG.push_back(index[1]);
+//                    indiceG.push_back(index[2]);
 
-    //                //indexs of second triangle in quad
-    //                indiceG.push_back(index[0]);
-    //                indiceG.push_back(index[2]);
-    //                indiceG.push_back(index[3]);
-    //            }
-    //        }
-    //    }
-
-    //    generated_model.setModelData(vertsG,indiceG);
-    //    scene->addSceneObject(generated_model);
+//                    //indexs of second triangle in quad
+//                    indiceG.push_back(index[0]);
+//                    indiceG.push_back(index[2]);
+//                    indiceG.push_back(index[3]);
+//                }
+//            }
+//        }
+//        qDebug() << "sjfg" << vertsG.size() << " dbgfbdgis" <<indiceG.size();
+//        _ModelInfo m ;
+//        m.setVertexArray(vertsG);
+//        m.setIndexArray(indiceG);
+//        generated_model.setModelData(m);
+//        scene->addSceneObject(generated_model);
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -439,17 +442,48 @@ void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int 
 
 void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
 {
+    static _Renderer *render_object = nullptr;
+    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+    {
+        render_object = scene->getSceneObjects()[i];
 
+        if (render_object->getSceneEntity().getId() == generated_model.getId())
+        {
+            //make context active
+            makeCurrent();
+
+            if(render_object->isTexturePresent()){
+                //updating predefined texture
+                //render_object->setTexture(img,w,h);
+            }
+            else {
+                //setting up new 8 bit grayscale GL_RGBA texture for first time
+                //render_object->setupTexture(img,w,h,GL_RED_INTEGER,GL_INT,GL_R32I);
+                //render_object->setupTexture(img,w,h,GL_RGBA);
+            }
+            doneCurrent();
+        }
+    }
 }
 
 void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
 {
-    qDebug() << "setting model";
+    qDebug() << "setting model---------------------------------------------------------------";
+    makeCurrent();
+    onPress = new _SceneEntity();
+    onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    //onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+    //onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+    onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),0.5));
+    onPress->setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
+    onPress->setScale(1.0);
+    onPress->setModelData(":/models/hipolyore.obj");//dont need to reparse modelfile
+    onPress->setIsLineMode(true);
+    scene->addSceneObject(*onPress);
+    doneCurrent();
+    qInfo()<< "created" << 0 <<"th object" << "id" << onPress->getId();
+    delete onPress;
 
-    scene->removeSceneObject(s);
-    s.setScale(1);
-    s.setModelData(":/models/cube.obj");
-    scene->addSceneObject(s);
 }
 
 void _GLWidget::rotateGeneratedModel(float angle)
