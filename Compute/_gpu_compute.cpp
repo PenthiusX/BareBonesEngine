@@ -1260,9 +1260,9 @@ void _GPU_Compute::computeEdgeModel(_Texture& input_img,_Texture& output_img,_Te
 
     //compute_clear_8_ui_texture(texture_out_8_bit,100);
 
-    create_region_image_mask(texture_out_mask,glm::ivec4(-1,68,texture_out_mask.getWidth(),460));
+    create_region_image_mask(texture_out_mask,glm::ivec4(-1,64,texture_out_mask.getWidth(),stage_center.y));
 
-    //computeMaskImageRR(texture_out_8_bit,texture_out_mask,texture_out_8_bit);
+    computeMaskImageR32IR(texture_model_wrap,texture_out_mask,texture_model_wrap);
 
     //compute_guassian_blur_5_5(texture_out_8_bit,texture_out_8_bit);
 

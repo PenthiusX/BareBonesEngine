@@ -475,7 +475,7 @@ void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
     onPress = new _SceneEntity();
     onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     //onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
-    //onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+    //onPress->setRotation(glm::vec3(PI/2,0.0,));
     onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),0.5));
     onPress->setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
     onPress->setScale(0.002);

@@ -14,25 +14,25 @@ std::vector<int> _Cpu_Compute::compute_k_means(std::array<unsigned int, 256> arr
     std::vector<int> k_means={20,230},distance_from_means={0,0},sigma_distance={0,0},sigma_number={0,0};
     std::vector<float> change={0,0};
     do{
-    for (int i = 0; i < 256; ++i) {
+        for (int i = 0; i < 256; ++i) {
+            for (int k = 0; k < k_means.size(); ++k) {
+                distance_from_means[k] = glm::abs(k_means[k]-i);
+            }
+            if(distance_from_means[0] < distance_from_means[1])
+            {
+                sigma_distance[0]+=arr[i]*i;
+                sigma_number[0]+=arr[i];
+            }
+            else {
+                sigma_distance[1]+=arr[i]*i;
+                sigma_number[1]+=arr[i];
+            }
+        }
         for (int k = 0; k < k_means.size(); ++k) {
-            distance_from_means[k] = glm::abs(k_means[k]-i);
+            if(sigma_number[k]!=0) change[k]= factor*(float(sigma_distance[k]/sigma_number[k])-k_means[k]);
+            else change[k] = 0;
+            k_means[k]=k_means[k]+change[k];
         }
-        if(distance_from_means[0] < distance_from_means[1])
-        {
-            sigma_distance[0]+=arr[i]*i;
-            sigma_number[0]+=arr[i];
-        }
-        else {
-            sigma_distance[1]+=arr[i]*i;
-            sigma_number[1]+=arr[i];
-        }
-    }
-    for (int k = 0; k < k_means.size(); ++k) {
-        if(sigma_number[k]!=0) change[k]= factor*(float(sigma_distance[k]/sigma_number[k])-k_means[k]);
-        else change[k] = 0;
-        k_means[k]=k_means[k]+change[k];
-    }
     }while((glm::abs(change[0])+glm::abs(change[1]))>0.5);
 
     return k_means;
@@ -48,6 +48,17 @@ _Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int 
 
     glm::ivec2 resolution = glm::ivec2(iwidth,iheight);//wrap texture size
 
+    //    for (unsigned int h = 0; h < resolution.y; h++) {
+    //        for (unsigned int w = 0; w < resolution.x; w++) {
+
+    //            glm::vec2 pixel_cord = glm::vec2(w,h);
+
+    //            int index = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
+    //            //texture_positions
+    //        }
+    //    }
+
+
     for (unsigned int h = 0; h < resolution.y; h++) {
         for (unsigned int w = 0; w < resolution.x; w++) {
 
@@ -60,9 +71,18 @@ _Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int 
             float r = wrap_frame[index];
             float theta = 2 * PI * float(w) /resolution.x;
 
-            vertsG.push_back(r*cos(theta));//x = s
-            vertsG.push_back(r*sin(theta));//y = t
-            vertsG.push_back(h-(resolution.y/2));//z = 0.0
+            float x=r*cos(theta) ,y=r*sin(theta) ,z = h-(resolution.y*0.5);
+
+//            if((x>200))
+//            {
+//                x=0;
+//            }
+//            else if( (y>200))
+//                y =0;
+
+            vertsG.push_back(-x);//x = s
+            vertsG.push_back(-z);//y = t
+            vertsG.push_back(y);//z = 0.0
         }
     }
 
@@ -82,8 +102,8 @@ _Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int 
             index[2] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(step_size.x,step_size.y),resolution);
             index[3] = _Tools::indexFromPixelCordinates(pixel_cord+glm::vec2(0,step_size.y),resolution);
 
-//            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
-//            {
+            //            if((pixel_cord.y < resolution.y) && (pixel_cord.y > 80))
+            //            {
 
 
             if((pixel_cord.y < resolution.y))

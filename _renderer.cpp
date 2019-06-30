@@ -480,7 +480,8 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     sceneEntity = s;
     actualColor = sceneEntity.getColor();
     setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
-    setupTexture(sceneEntity.getTexturePath());
+    if(s.getTexturePath()!="")//set texture only if it is mentioned in the scenentity
+            setupTexture(s.getTexturePath());
     //setModelDataInBuffers() happens for every object,and is sufficent for the usecases // !!!Comment for structural change!!!!
     //can be converted to using the same VAO for the same set of vertex+index data.
     //will need to move the whole model loading and id geenration to assetLoader class

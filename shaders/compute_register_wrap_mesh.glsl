@@ -38,7 +38,7 @@ void main()
            int r = int(ceil(r_max));
 
 
-           setImagePixel(resultImage,image_pixel_cord,100);
-           //imageAtomicMin(resultImage,image_pixel_cord,r);
+           //setImagePixel(resultImage,image_pixel_cord,100);
+           imageAtomicMin(resultImage,image_pixel_cord,r);
        }
 }
