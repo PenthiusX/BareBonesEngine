@@ -4,6 +4,9 @@
 #include <QMetaMethod>
 #include <array>
 #include <Compute/_cpu_compute.h>
+#include <_tools.h>
+
+#define PI 3.1415926535897932384626433832795
 
 /* Processing class
  * used for image prcessing operations
@@ -158,6 +161,8 @@ void _Processing::init()
 
         //this object will handle all compute operations
         gpu_compute = new _GPU_Compute();//should be created when context is active
+        cpu_compute = new _Cpu_Compute();//should be created when context is active
+
 
         //checking if gl context is working
 
@@ -181,7 +186,6 @@ void _Processing::init()
         qDebug()<< "max_compute_workgroup_invocations" << max_compute_workgroup_invocations;
 
     }
-    //emit generatedModelDataOut({std::vector<float>{0.0},std::vector<unsigned int>{0}});
     colorFrame2 = new char[256*256];
 }
 
@@ -225,9 +229,9 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     //compute operation(edge detecton currently)
     //gpu_compute->compute_row_wise_mean(texture,texture_out);
     //gpu_compute->compute_threshold(texture,texture_outt);
-//        gpu_compute->compute_sobel_edge(texture_outt,texture_out);
-//        gpu_compute->compute_copy_8_to_32(texture,texture_outt);
-//        gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
+//  gpu_compute->compute_sobel_edge(texture_outt,texture_out);
+//  gpu_compute->compute_copy_8_to_32(texture,texture_outt);
+//  gpu_compute->compute_copy_32_to_8(texture_outt,texture_out);
     //gpu_compute->compute_canny_edge(texture_outt,texture_out);
 
     gpu_compute->compute_row_wise_arg_max(texture,texture_outt);
@@ -238,7 +242,7 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
 
     gpu_compute->compute_retrive_lower_2_bytes(texture_outt,texture_outt);
 
-    gpu_compute->compute_subtract_value_from_column(texture_outt,texture_outt,stage_center.x);
+    gpu_compute->compute_subtract_column_from_value(texture_outt,texture_outt,stage_center.x);
 
     gpu_compute->compute_copy_column_from_to(texture_outt,texture_model_wrap,0,rotation_step);
 
@@ -259,7 +263,7 @@ void _Processing::markLineLaser(char *img, unsigned int iwidth, unsigned int ihe
     gpu_compute->compute_guassian_blur_5_5(texture_model_wrap_8_bit,texture_model_wrap_8_bit);
 
     emit outputImage(gpu_compute->get_texture_image_framebuffer(texture_out),iwidth,iheight);
-    emit generatedModelTextureOut(gpu_compute->getTextureModelFramebuffer(texture_model_wrap_8_bit,GL_RGBA),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
+    emit generatedModelTextureOut((char*)gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,0),texture_model_wrap.getWidth(),texture_model_wrap.getHeight());
 
 }
 

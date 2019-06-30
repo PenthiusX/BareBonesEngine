@@ -152,8 +152,8 @@ void _Renderer::setupTexture(QString texfile)
 {
     QImage img = QImage(texfile);
     _Texture texture(img);
-    texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
+    textures[textures.size()-1].load(GL_RGBA,GL_UNSIGNED_BYTE);
     qDebug() << "setupTexture(QString texfile) on entity" << sceneEntity.getTag();
 }
 /*
