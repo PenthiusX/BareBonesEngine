@@ -33,10 +33,14 @@ void main()
 
        if(side == 0)
        {
-           float r_max = (float(stage_center.x - value)/cosine);
+           float line_bound = float(stage_center.x - value);
+
+           if(line_bound < 0)
+               line_bound = 0;
+
+           float r_max = (line_bound/cosine);
 
            int r = int(ceil(r_max));
-
 
            //setImagePixel(resultImage,image_pixel_cord,100);
            imageAtomicMin(resultImage,image_pixel_cord,r);

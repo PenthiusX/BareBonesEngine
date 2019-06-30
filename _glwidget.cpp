@@ -69,7 +69,7 @@ void _GLWidget::initializeGL()
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects---------
-    scene->addSceneObject(s);
+    //scene->addSceneObject(s);
 
         generated_model.setId(666);//keep the id it will be required while updating texture
         generated_model.setShader(":/shaders/generated_model_vertex_edge.glsl", ":/shaders/generated_model_fragment.glsl");
@@ -131,7 +131,7 @@ void _GLWidget::initializeGL()
         m.setIndexArray(indiceG);
         generated_model.setModelData(m);
         //generated_model.setModelData(":/models/hipolyore.obj");
-        scene->addSceneObject(generated_model);
+        //scene->addSceneObject(generated_model);
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -471,19 +471,21 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
 void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
 {
     qDebug() << "setting model---------------------------------------------------------------";
+
     makeCurrent();
     onPress = new _SceneEntity();
+    onPress->setId(scene->getSceneObjects().size());
     onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     //onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
     //onPress->setRotation(glm::vec3(PI/2,0.0,));
-    onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),0.5));
-    onPress->setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
+    onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),0.4));
+    //onPress->setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
+    onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     onPress->setScale(0.002);
     _ModelInfo m;
     m.setVertexArray(model_data.vertices);
     m.setIndexArray(model_data.indices);
     onPress->setModelData(m);//dont need to reparse modelfile
-    onPress->setIsLineMode(true);
     scene->addSceneObject(*onPress);
     doneCurrent();
     qInfo()<< "created" << 0 <<"th object" << "id" << onPress->getId();

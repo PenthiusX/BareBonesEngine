@@ -48,17 +48,6 @@ _Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int 
 
     glm::ivec2 resolution = glm::ivec2(iwidth,iheight);//wrap texture size
 
-    //    for (unsigned int h = 0; h < resolution.y; h++) {
-    //        for (unsigned int w = 0; w < resolution.x; w++) {
-
-    //            glm::vec2 pixel_cord = glm::vec2(w,h);
-
-    //            int index = _Tools::indexFromPixelCordinates(pixel_cord,resolution);
-    //            //texture_positions
-    //        }
-    //    }
-
-
     for (unsigned int h = 0; h < resolution.y; h++) {
         for (unsigned int w = 0; w < resolution.x; w++) {
 
@@ -72,13 +61,6 @@ _Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int 
             float theta = 2 * PI * float(w) /resolution.x;
 
             float x=r*cos(theta) ,y=r*sin(theta) ,z = h-(resolution.y*0.5);
-
-//            if((x>200))
-//            {
-//                x=0;
-//            }
-//            else if( (y>200))
-//                y =0;
 
             vertsG.push_back(-x);//x = s
             vertsG.push_back(-z);//y = t
