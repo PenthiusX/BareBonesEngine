@@ -107,6 +107,8 @@ public:
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,_SceneEntity::scenePhysicsObjects helper);
 
+public slots:
+    float getAspectImage() const;
 private:
     uint id;
     QString tag;
@@ -114,6 +116,7 @@ private:
     glm::vec3 rotation;
     glm::vec3 pivot;
     float scale;
+    float aspectImage = 768.0/576.0;
     QVector4D color;
     uint orderInIndex;
     //

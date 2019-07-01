@@ -186,6 +186,11 @@ void _SceneEntity::setModelMatrix(glm::mat4x4 mmat){
 glm::mat4x4 _SceneEntity::getModelMatrix() const{
     return modelMatrix;
 }
+
+float _SceneEntity::getAspectImage() const{
+    return aspectImage;
+}
+
 /*
  * Created:3_06_2019
 */

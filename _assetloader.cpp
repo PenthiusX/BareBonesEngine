@@ -147,6 +147,7 @@ _ModelInfo _AssetLoader::generateQuad()
 {
     //Code to be excluded only for Test purposes
     //Hard coded vertices and indices
+
     std::vector<float> vertsV = {
         1.0,   1.0,  0.0f,	// top right
         1.0f, -1.0f, 0.0f,  // bottom right

@@ -18,6 +18,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
     glEnable(GL_BLEND);//for transparency in alpha values
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -131,6 +132,8 @@ void _Renderer::setuniformLocations()
     qDebug() << "projectionUniform ->" << projectionUniform;
     mousePosUniform = shdr->getUniformLocation("iMouse");
     qDebug() << "mousePosUniform ->" << mousePosUniform;
+    aspectUnifrom = shdr->getUniformLocation("aspect");
+    qDebug() << "aspectUniform ->" << aspectUnifrom;
     qDebug() <<"---------------------------------------------------";
     qDebug() <<"---------------------------------------------------";
 }
@@ -556,6 +559,8 @@ void _Renderer::_Renderer::draw()
         glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
         //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
+        float aspect = sceneEntity.getAspectImage();
+        glUniformMatrix4fv(aspectUnifrom,1,GL_FALSE,&aspect);
         //
         setColors();//Setting the uniform for color
         //
@@ -588,7 +593,7 @@ void _Renderer::setColors()
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
     if( sceneEntity.getisHitByRay())
-        sceneEntity.setColor(actualColor * 0.5);
-    else
         sceneEntity.setColor(actualColor);
+    else
+        sceneEntity.setColor(actualColor * 0.8);
 }

@@ -476,12 +476,12 @@ void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
     onPress = new _SceneEntity();
     onPress->setId(scene->getSceneObjects().size());
     onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
-    //onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+    onPress->setPosition(glm::vec3(0.184,0.0,0.0));
     //onPress->setRotation(glm::vec3(PI/2,0.0,));
-    onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),0.4));
+    onPress->setColor(QVector4D(0.8,0.5,0.5,0.6));
     //onPress->setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
     onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    onPress->setScale(0.002);
+    onPress->setScale(0.0035);
     _ModelInfo m;
     m.setVertexArray(model_data.vertices);
     m.setIndexArray(model_data.indices);
@@ -496,6 +496,11 @@ void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
 void _GLWidget::rotateGeneratedModel(float angle)
 {
     rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
+}
+
+void _GLWidget::updatePlanningModels()
+{
+
 }
 
 void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage)
@@ -538,6 +543,6 @@ void _GLWidget::applyStuffToallEntites(bool isit)
 
 void _GLWidget::emitModelsForPlanning()
 {
-    glm::mat4x4 relative_transform =
-    emit  planningModelsOut({s.getModelInfo().getVertexArray(),s.getModelInfo().getIndexArray()},{s1.getModelInfo().getVertexArray(),s1.getModelInfo().getIndexArray()},);
+//    glm::mat4x4 relative_transform =
+//    emit  planningModelsOut({s.getModelInfo().getVertexArray(),s.getModelInfo().getIndexArray()},{s1.getModelInfo().getVertexArray(),s1.getModelInfo().getIndexArray()},);
 }

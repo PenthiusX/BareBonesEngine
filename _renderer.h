@@ -67,6 +67,7 @@ private:
     GLint colorUniform;
     GLint mvpUniform;
     GLint modelUnifrom;
+    GLint aspectUnifrom;
     GLint viewUniform;
     GLint projectionUniform;
     GLint mousePosUniform;
