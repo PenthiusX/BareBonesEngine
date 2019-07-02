@@ -71,35 +71,35 @@ bool _ScanCaliberationSection::setupConnections()
             qDebug() << application_settings->toJson();
             QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
             QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
-            QMetaObject::invokeMethod(scanner, "scanGenerateModel", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(scanner, "scan", Qt::QueuedConnection,Q_ARG(_Scanner::ScanType, _Scanner::ScanLaserLine));
         });
 
         connect(ui->scan_button, &QPushButton::clicked,[this]() {
             qDebug() << application_settings->toJson();
             QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
             QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
-            QMetaObject::invokeMethod(scanner, "scanImages", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(scanner, "scan", Qt::QueuedConnection,Q_ARG(_Scanner::ScanType, _Scanner::ScanImagesOnly));
         });
 
         connect(ui->scan_edge_buttons, &QPushButton::clicked,[this]() {
             qDebug() << application_settings->toJson();
             QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
             QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
-            QMetaObject::invokeMethod(scanner, "scanGenerateModelEdge", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(scanner, "scan", Qt::QueuedConnection,Q_ARG(_Scanner::ScanType, _Scanner::ScanModelEdgeCV));
         });
 
         connect(ui->scan_voxels_button, &QPushButton::clicked,[this]() {
             qDebug() << application_settings->toJson();
             QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
             QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
-            QMetaObject::invokeMethod(scanner, "scanGenerateModelVoxels", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(scanner, "scan", Qt::QueuedConnection,Q_ARG(_Scanner::ScanType, _Scanner::ScanModelEdgeCVVoxels));
         });
 
         connect(ui->scan_wrap_gpu_button, &QPushButton::clicked,[this]() {
             qDebug() << application_settings->toJson();
             QString dir = application_settings->getChildEntity("Paths").getStringEntity("SCAN_STORE_PATH");
             QMetaObject::invokeMethod(machine, "setImageDir", Qt::QueuedConnection,Q_ARG(QString, dir));
-            QMetaObject::invokeMethod(scanner, "scanGenerateModelWrap", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(scanner, "scan", Qt::QueuedConnection,Q_ARG(_Scanner::ScanType, _Scanner::ScanModelWrapGPU));
         });
 
         connect(ui->line_laser_slider_box,SIGNAL(valueChanged(int)),machine,SLOT(LineLaser(int)));

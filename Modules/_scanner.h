@@ -14,16 +14,24 @@
 class _Scanner : public QObject , protected QOpenGLExtraFunctions
 {
     Q_OBJECT
+
 public:
     explicit _Scanner(QObject *parent = nullptr);
     explicit _Scanner(_Machine* global_machine,_Processing* proc,QObject *parent = nullptr);
 
+    enum ScanType
+    {
+        ScanImagesOnly,
+        ScanLaserLine,
+        ScanModelWrapGPU,
+        ScanModelEdgeCV,
+        ScanModelWrapCVGPU,
+        ScanModelEdgeCVVoxels
+    };
+
 public slots:
     void init();
-    void scanImages();
-    void scanGenerateModel();
-    void scanGenerateModelEdge();
-    void scanGenerateModelWrap();
+    void scan(_Scanner::ScanType scan_type = ScanImagesOnly);
 signals:
     void set_image(char* img,unsigned int w,unsigned int h);
 

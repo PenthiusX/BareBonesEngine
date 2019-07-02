@@ -75,99 +75,34 @@ void _Scanner::init()
 }
 
 
-/* Function : scan_save_images()
- * this function only saves the images captured by camera
+/* Function : scan(_Scanner::ScanType scan_type)
+ * this function scans the stone by rotating stage by 360/n degrees every step
+ * where n :number_of_rotation_steps_per_scan_epoch
  */
-void _Scanner::scanImages()
+void _Scanner::scan(_Scanner::ScanType scan_type)
 {
-    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
 
-    for(int t = 0;t<200;t++)
-    {
-        QString filename = QString("scan_image_stage_%1").arg(t);
+    machine->frameUpdateMutex.lock();// display will not be updated by camera frame directly
 
-        //move the stage by 80 steps
-        machine->TurnTableMotorDiff(80);
-
-        //grab new frame from camera
-        machine->GrabFrame(filename);
-
-        //send the grabbed frame to gui widget for display
-        //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
-
-        processing->passThroughFrame(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
-
-    }
-
-    machine->frameUpdateMutex.unlock();
-}
-
-
-/* Function : scan_generate_model()
- * this function scans the stone by rotating stage by 1.8 degrees every step
- * captures the image and does preprocessing on the image(currently)
- * this function should generate a 3d model of stone-- afterwards
-*/
-void _Scanner::scanGenerateModel()
-{
-    bool success = processing->makeCurrent();
-    qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
-
-
-    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
-
-    for(int t = 0;t<200;t++)
-    {
-        QString filename = QString("scan_image_stage_%1").arg(t);
-        //move the stage by 80 steps
-        machine->TurnTableMotorDiff(80);
-        //QThread::msleep(100);
-
-        //grab new frame from camera
-        machine->GrabFrame(filename);
-
-        //send the grabbed frame to gui widget for display
-        //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
-
-        processing->markLineLaser(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t);
-
-
-        //For saving processed image
-        //filename = QString("processed_image_stage_%1.pgm").arg(t);
-        //_Tools::SaveImageToPgm(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), filename);
-
-    }
-
-    glUniform1f(4,4);
-
-    machine->frameUpdateMutex.unlock();
-
-    //delete imagefile;
-}
-
-/* Function : scan_generate_model()
- * this function scans the stone by rotating stage by 1.8 degrees every step
- * captures the image and does preprocessing on the image(currently)
- * this function should generate a 3d model of stone-- afterwards
-*/
-void _Scanner::scanGenerateModelWrap()
-{
-    bool success = processing->makeCurrent();
-    qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
-
+    //read scan defaults from config
+    int number_of_rotation_steps_per_scan_epoch = machine->config["Hardware"]["Scan"]["Default"].getFloatEntity("ROTATION_STEP"); //200
+    int number_of_stepper_steps_per_rotaion = machine->config["Hardware"]["Controls"]["StageMotor"]["Data"]["Default"].getFloatEntity("STEPS_PER_ROTAION");//16000
     glm::vec2 stage_center;
-
     stage_center.x = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_X");
     stage_center.y = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_Y");
 
-    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
 
-    for(int t = 0;t<200;t++)
+    //set default parameters for scanning
+    //machine->LineLaser(0,_DEFAULT_FROM_CONFIG);
+    //machine->BackLight(0,_DEFAULT);//toggle force off
+
+    //scan loop
+    for(int t = 0;t<number_of_rotation_steps_per_scan_epoch;t++)
     {
         QString filename = QString("scan_image_stage_%1").arg(t);
-        //move the stage by 80 steps
-        machine->TurnTableMotorDiff(80);
-        //QThread::msleep(100);
+
+        //move the stage by calculated steps
+        machine->TurnTableMotorDiff(number_of_stepper_steps_per_rotaion/number_of_rotation_steps_per_scan_epoch);
 
         //grab new frame from camera
         machine->GrabFrame(filename);
@@ -175,54 +110,50 @@ void _Scanner::scanGenerateModelWrap()
         //send the grabbed frame to gui widget for display
         //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
 
-        processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
+
+        //process the frame according to scan type
+        switch (scan_type) {
+        case ScanImagesOnly:
+        {
+            //pass frame as it is by converting from gray to rgba
+            processing->passThroughFrame(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
+            break;
+        }
+        case ScanLaserLine:
+        {
+            //scan line laser for concave mapping
+            processing->markLineLaser(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t);
+            break;
+        }
+        case ScanModelWrapGPU:
+        {
+            //gpu compute scan wrap mesh
+            processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
+            break;
+        }
+        case ScanModelWrapCVGPU:
+        {
+            //
+            //processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
+            break;
+        }
+        case ScanModelEdgeCV:
+        {
+            //
+            //processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
+            break;
+        }
+        case ScanModelEdgeCVVoxels:
+        {
+            //
+            //processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
+            break;
+        }
+        }
+
     }
 
     machine->frameUpdateMutex.unlock();
 
-    //delete imagefile;
-}
-
-/* Function : scan_generate_model()
- * this function scans the stone by rotating stage by 1.8 degrees every step
- * captures the image and does preprocessing on the image(currently)
- * this function should generate a 3d model of stone-- afterwards
-*/
-void _Scanner::scanGenerateModelEdge()
-{
-    bool success = processing->makeCurrent();
-    qDebug() << "making context current in thread" << QThread::currentThread()<< "success:" << success;
-
-
-    machine->frameUpdateMutex.lock();// display will not be updated by camera frame
-
-    glm::vec2 stage_center;
-
-    stage_center.x = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_X");
-    stage_center.y = machine->config["Hardware"]["Scan"]["Caliberation"].getFloatEntity("STAGE_CENTER_Y");
-
-    for(int t = 0;t<200;t++)
-    {
-        QString filename = QString("scan_image_stage_%1").arg(t);
-        //move the stage by 80 steps
-        machine->TurnTableMotorDiff(80);
-        //QThread::msleep(50);
-
-        //grab new frame from camera
-        machine->GrabFrame(filename);
-
-        //send the grabbed frame to gui widget for display
-        //emit set_image(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight());
-
-        processing->generateEdgeModel(machine->camera->get_frame(),machine->camera->getWidth(),machine->camera->getHeight(),t,stage_center);
-
-        //For saving processed image
-        //filename = QString("processed_image_stage_%1.pgm").arg(t);
-        //_Tools::SaveImageToPgm(colours, 1, machine->camera->getWidth()*machine->camera->getHeight(), filename);
-    }
-
-    machine->frameUpdateMutex.unlock();
-
-    //delete imagefile;
 }
 

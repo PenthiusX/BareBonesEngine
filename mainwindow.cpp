@@ -13,17 +13,19 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-
-    setConfigSettings();
-
-    connect(ui->actionApplication_Settings,SIGNAL(triggered()),this,SLOT(openSettingsDialog()));
-    _CaliberationSection::setApplicationSettings(application_settings);
-    processing->setApplicationSettings(application_settings);
 
     qRegisterMetaType<ActionType>("ActionType");
     qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
     qRegisterMetaType<_Tools::ModelData>("_Tools::ModelData");
+    qRegisterMetaType<_Scanner::ScanType>("_Scanner::ScanType");
+
+    ui->setupUi(this);
+
+    setConfigSettings();
+
+    connect(ui->actionApplication_Settings,&QAction::triggered,this,&MainWindow::openSettingsDialog);
+    _CaliberationSection::setApplicationSettings(application_settings);
+    processing->setApplicationSettings(application_settings);
 
     //machine,marker,scanner should be in same thread -
     hardwareInteractionThread = new QThread;
@@ -52,9 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
         marker->deleteLater();
         processing->deleteLater();
     });    //initialize machine which will create hardware objects in new thread
-    connect(hardwareInteractionThread,SIGNAL(started()),machine,SLOT(init()));
-    connect(hardwareInteractionThread,SIGNAL(started()),processing,SLOT(init()));
-    connect(hardwareInteractionThread,SIGNAL(started()),scanner,SLOT(init()));
+    connect(hardwareInteractionThread,&QThread::started,machine,&_Machine::init);
+    connect(hardwareInteractionThread,&QThread::started,processing,&_Processing::init);
+    connect(hardwareInteractionThread,&QThread::started,scanner,&_Scanner::init);
 
     /* button connections
      *  slot function implemented in child object of MainWindow and used by lambda functions
@@ -137,11 +139,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
 
-    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(updateCameraImage(char*,unsigned int ,unsigned int)));
-    connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
-    connect(processing,SIGNAL(generatedModelTextureOut(char*,unsigned int,unsigned int)),this,SLOT(showGeneratedModel(char*,unsigned int ,unsigned int)));
+    connect(machine,&_Machine::guiFrameOut,this,&MainWindow::updateCameraImage);
+    connect(machine,&_Machine::cameraFrameRecieved,processing,&_Processing::inputImage);
+    connect(processing,&_Processing::generatedModelTextureOut,this,&MainWindow::showGeneratedModel);
 
-    connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
+    connect(processing,&_Processing::outputImage,machine,&_Machine::updateFrameColor);
     //connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     //connect(marker,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
 
@@ -149,7 +151,7 @@ MainWindow::MainWindow(QWidget *parent) :
     hardwareInteractionThread->start();
 
     //gui is shown when machine is initialised
-    connect(machine,SIGNAL(initMachine()),this,SLOT(show()));
+    connect(machine,&_Machine::initMachine,this,&MainWindow::show);
 
     QMetaObject::invokeMethod(machine, "LineLaser", Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_DEFAULT_FROM_CONFIG));
 }

@@ -438,7 +438,8 @@
 					},
 					"Default" : {
 						"MAX" : 0,
-						"MIN" : 0
+						"MIN" : 0,
+						"STEPS_PER_ROTAION" : 16000
 					}
 				}
 			},
