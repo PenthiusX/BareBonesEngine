@@ -558,22 +558,6 @@ void _Machine::GrabFrame(QString filename)
     camera->grab_frame(filename);
 }
 
-void _Machine::updateFrameGrayscale(char* img,unsigned int iwidth,unsigned int iheight)
-{
-    for (int index = 0; index < (iwidth*iheight); index++) {
-        colorFrame[index*4] = img[index];
-        colorFrame[index*4+1] = img[index];
-        colorFrame[index*4+2] = img[index];
-        colorFrame[index*4+3] = 255;
-    }
-    emit guiFrameOut(colorFrame,iwidth,iheight);
-}
-
-void _Machine::updateFrameColor(char* img,unsigned int iwidth,unsigned int iheight)
-{
-    emit guiFrameOut(img,iwidth,iheight);
-}
-
 bool _Machine::isInitialised() const
 {
     return initialised;

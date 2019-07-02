@@ -139,11 +139,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
 
-    connect(machine,&_Machine::guiFrameOut,this,&MainWindow::updateCameraImage);
+    connect(processing,&_Processing::outputImage,this,&MainWindow::updateCameraImage);
     connect(machine,&_Machine::cameraFrameRecieved,processing,&_Processing::inputImage);
     connect(processing,&_Processing::generatedModelTextureOut,this,&MainWindow::showGeneratedModel);
 
-    connect(processing,&_Processing::outputImage,machine,&_Machine::updateFrameColor);
     //connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     //connect(marker,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
 

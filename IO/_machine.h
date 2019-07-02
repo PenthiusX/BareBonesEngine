@@ -54,7 +54,6 @@ public:
 
 signals:
     void serialReturned(QString responce);
-    void guiFrameOut(char *img,unsigned int w,unsigned h);//goes from machine to ui(gl_widget) for displaying
     void cameraFrameRecieved(char *img,unsigned int w,unsigned h);
     void initMachine();
     void stageAngleChanged(float angle);
@@ -86,7 +85,6 @@ public slots:
     void setContrast(         int value,ActionType action = _DEFAULT);
     void setOffset(           int value,ActionType action = _DEFAULT);
 
-    void updateFrameColor(char *img, unsigned int iwidth, unsigned int iheight);
     void setApplicationSettings(_ConfigControlEntity *app_sett);
 
 public:
@@ -103,7 +101,6 @@ public:
     _ConfigControlEntity *application_settings=nullptr;
 
 protected slots:
-    void updateFrameGrayscale(char *img, unsigned int iwidth, unsigned int iheight);
     void updateImageCamera();
 };
 

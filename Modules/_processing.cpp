@@ -186,7 +186,9 @@ void _Processing::init()
         qDebug()<< "max_compute_workgroup_invocations" << max_compute_workgroup_invocations;
 
     }
+
     colorFrame2 = new char[256*256];
+    setActiveProcess(SLOT(passThroughFrame(char* ,unsigned int,unsigned int)));
 }
 
 /* process : markLineLaser
