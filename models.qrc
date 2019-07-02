@@ -1,21 +1,22 @@
 <RCC>
     <qresource prefix="/">
-		   <file>models/cube.obj</file>
-           <file>models/torus.obj</file>
-           <file>models/cone.obj</file>
-           <file>models/monkey.obj</file>
-           <file>models/sphere.obj</file>
-           <file>models/sphere1.obj</file>
-           <file>models/stickman.obj</file>  
-		   <file>models/hipolyore.obj</file>           		   
-           <file>models/car.obj</file>
-           <file>models/pivot.obj</file>
-		   <file>models/helpers/min.obj</file>
-		   <file>models/helpers/max.obj</file>
-		   <file>models/diamonds/otbaquette.obj</file>
-		   <file>models/diamonds/otcushion.obj</file>
-		   <file>models/diamonds/otdiamond.obj</file>
-		   <file>models/diamonds/otoctagon.obj</file>
-		   <file>models/diamonds/otpear.obj</file>
+        <file>models/cube.obj</file>
+        <file>models/torus.obj</file>
+        <file>models/cone.obj</file>
+        <file>models/monkey.obj</file>
+        <file>models/sphere.obj</file>
+        <file>models/sphere1.obj</file>
+        <file>models/stickman.obj</file>
+        <file>models/hipolyore.obj</file>
+        <file>models/car.obj</file>
+        <file>models/pivot.obj</file>
+        <file>models/helpers/min.obj</file>
+        <file>models/helpers/max.obj</file>
+        <file>models/diamonds/otbaquette.obj</file>
+        <file>models/diamonds/otcushion.obj</file>
+        <file>models/diamonds/otdiamond.obj</file>
+        <file>models/diamonds/otoctagon.obj</file>
+        <file>models/diamonds/otpear.obj</file>
+        <file>models/generated.obj</file>
     </qresource>
 </RCC>

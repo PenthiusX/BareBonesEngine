@@ -29,8 +29,9 @@ public:
     void rotateGeneratedmodel(float angle, glm::vec3 axis, bool with_stage);
 
 public slots:
-    void update_background_image(char *img, unsigned int w, unsigned int h);
+    void updateBackgroundImage(char *img, unsigned int w, unsigned int h);
     void showGeneratedModel(char *img, unsigned int w, unsigned int h);
+    void setGeneratedModelData(_Tools::ModelData);
     void rotateGeneratedModel(float angle);
 
 protected:

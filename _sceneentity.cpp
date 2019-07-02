@@ -213,6 +213,12 @@ void _SceneEntity::setModelInfo(_ModelInfo minfo){
 _ModelInfo _SceneEntity::getModelInfo() const{
     return modelInfo;
 }
+
+void _SceneEntity::setModelData(_Tools::ModelData model_data)
+{
+    this->vertexData=model_data.vertices;
+    this->indexData=model_data.indices;
+}
 void _SceneEntity::setIsActive(bool isIt){
     isActive = isIt;
 }

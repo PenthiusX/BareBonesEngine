@@ -34,7 +34,7 @@ public:
     void setTexture(char* texBitmap);//takes am image and binds it to object
     void setTexture(char* texBitmap,uint iwidth,uint iheight);//takes am image and binds it to object
     //
-    void setupTexture(char* img,unsigned int width,unsigned int height,GLenum format);//takes a hardcoded imagedata and binds it to object
+    void setupTexture(char *img, unsigned int width, unsigned int height, GLenum format = GL_RGBA,GLenum data_type=GL_UNSIGNED_BYTE,GLenum internal_format=GL_RGBA);//takes am image and binds it to object
     void setupTexture(QString texfile); //initializes texture from file
     bool isTexturePresent();
     //

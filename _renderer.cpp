@@ -135,24 +135,25 @@ void _Renderer::setuniformLocations()
     qDebug() <<"---------------------------------------------------";
 }
 /*
- * Function: setupTexture()
+ * Function: setupTexture(char* img,unsigned int width,unsigned int height,GLenum format=GL_RED)
+ * Created: 28_3_2019
+ * Contributor : saurabh
  * creates new texture and adds into list(vector) of textures
- * set a default 8bit single color texture of size 1360 x 1024
- * Created: 2_3_2019
-*/
-void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GLenum format)
+ * current context should be active while calling these functions
+ * use makeCurrent() to make context current
+ * set a 8bit single color texture of size width x height
+ */
+void _Renderer::setupTexture(char* img,unsigned int width,unsigned int height,GLenum format,GLenum data_type,GLenum internal_format)
 {
-    _Texture texture(img,width,height);
-    texture.load(format,GL_UNSIGNED_BYTE);
-    textures.push_back(texture);
-    qDebug() << "setupTexture() on entity" << sceneEntity.getTag();
+    textures.push_back(_Texture(img,width,height,format,data_type,internal_format));
+    textures[textures.size()-1].load();
 }
 void _Renderer::setupTexture(QString texfile)
 {
     QImage img = QImage(texfile);
     _Texture texture(img);
-    texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
+    textures[textures.size()-1].load(GL_RGBA,GL_UNSIGNED_BYTE);
     qDebug() << "setupTexture(QString texfile) on entity" << sceneEntity.getTag();
 }
 /*
@@ -479,7 +480,8 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     sceneEntity = s;
     actualColor = sceneEntity.getColor();
     setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
-    setupTexture(sceneEntity.getTexturePath());
+    if(s.getTexturePath()!="")//set texture only if it is mentioned in the scenentity
+            setupTexture(s.getTexturePath());
     //setModelDataInBuffers() happens for every object,and is sufficent for the usecases // !!!Comment for structural change!!!!
     //can be converted to using the same VAO for the same set of vertex+index data.
     //will need to move the whole model loading and id geenration to assetLoader class

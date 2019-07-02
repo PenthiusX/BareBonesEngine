@@ -14,7 +14,6 @@
 #include <QJsonObject>
 
 
-#include "_sceneentity.h"
 /*
  * Class: _Tools
  * This class holds funtions that have no specific
@@ -35,6 +34,15 @@ class _Tools
 {
 public:
     _Tools();
+
+    //this struct holds model mesh data
+    struct ModelData
+    {
+        std::vector<float> vertices;
+        std::vector<unsigned int> indices;
+        //add level of detail variables if necessary
+    };
+
     static QString ReadStringFromQrc(QString Filename);
     static QVector2D retunrnMaxPoint(QVector2D mousepos);
     static void Debugmatrix4x4(glm::mat4x4 mat4);
@@ -63,6 +71,9 @@ public:
     static QVector3D interpolateBetweenPoints(QVector3D p1, QVector3D p2,float factor);
     //Debug use
     static void printFrameRate();
+    static void SaveObjModel(std::vector<float> vertsG, std::vector<unsigned int> indiceG, QString filename);
+    static glm::vec3 getPointFromIndex(std::vector<float> &vertsG, unsigned int index);
+    static std::vector<glm::vec3> getTriangleFromElementsIndex(std::vector<float> &vertsG, std::vector<unsigned int> &indiceG, unsigned int index);
 private:
 
 };

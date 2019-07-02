@@ -56,20 +56,21 @@ void _GLWidget::initializeGL()
     _AssetLoader a;
     s.setId(3);
     s.setTag("clickSurface");
-    s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
+    s.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(true);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
-    s.setModelData(":/models/hipolyore.obj");
+    s.setModelData(":/models/generated.obj");
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //--------Scene Objects------------
     scene->addSceneObject(s);
+
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -360,14 +361,74 @@ void _GLWidget::removeSceneEntityFromScene(){
  * created: 11_04_2019
  * Contributor : Saurabh
 */
-void _GLWidget::update_background_image(char *img, unsigned int w, unsigned int h){
+
+void _GLWidget::updateBackgroundImage(char *img, unsigned int w, unsigned int h)
+{
+    //make context active
+    makeCurrent();
+
+    scene->updateBackgroundImage(img,w,h);
+
+    doneCurrent();
 }
-void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h){
+
+void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
+{
+    static _Renderer *render_object = nullptr;
+    for (unsigned int i = 0; i < scene->getSceneObjects().size(); i++)
+    {
+        render_object = scene->getSceneObjects()[i];
+
+        if (render_object->getSceneEntity().getId() == generated_model.getId())
+        {
+            //make context active
+            makeCurrent();
+
+            if(render_object->isTexturePresent()){
+                //updating predefined texture
+                render_object->setTexture(img,w,h);
+            }
+            else {
+                //setting up new 8 bit grayscale GL_RGBA texture for first time
+                render_object->setupTexture(img,w,h,GL_RED_INTEGER,GL_INT,GL_R32I);
+                //render_object->setupTexture(img,w,h,GL_RGBA);
+            }
+            doneCurrent();
+        }
+    }
 }
-void _GLWidget::rotateGeneratedModel(float angle){
+
+void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
+{
+    qDebug() << "setting model---------------------------------------------------------------";
+
+    makeCurrent();
+    onPress = new _SceneEntity();
+    onPress->setId(scene->getSceneObjects().size());
+    onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    //onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
+    //onPress->setRotation(glm::vec3(PI/2,0.0,));
+    onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),0.4));
+    //onPress->setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
+    onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    onPress->setScale(0.002);
+    _ModelInfo m;
+    m.setVertexArray(model_data.vertices);
+    m.setIndexArray(model_data.indices);
+    onPress->setModelData(m);//dont need to reparse modelfile
+    scene->addSceneObject(*onPress);
+    doneCurrent();
+    qInfo()<< "created" << 0 <<"th object" << "id" << onPress->getId();
+    delete onPress;
+
+}
+
+void _GLWidget::rotateGeneratedModel(float angle)
+{
     rotateGeneratedmodel(angle, glm::vec3(0.0f, 1.0f, 0.0f),true);
 }
 void _GLWidget::rotateGeneratedmodel(float angle,glm::vec3 axis,bool with_stage){
+
 }
 
 //Press L to activate.

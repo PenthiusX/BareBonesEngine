@@ -8,6 +8,8 @@
 #include <QOpenGLContext>
 #include <QWidget>
 #include <Compute/_gpu_compute.h>
+#include <Compute/_cpu_compute.h>
+
 //22_04_2019
 class _Processing : public QObject , protected QOpenGLExtraFunctions
 {
@@ -18,14 +20,17 @@ public:
     bool makeCurrent();
     void doneCurrent();
     _GPU_Compute *gpu_compute = nullptr;
+    _Cpu_Compute *cpu_compute = nullptr;
 
     void setApplicationSettings(_ConfigControlEntity *app_sett);
 
+    _Tools::ModelData generateModelFromGPUTexture(_Texture texture_model_wrap);
 signals:
     void outputImage(char *img, unsigned int iwidth, unsigned int iheight);
     void outputImage2(char *img, unsigned int iwidth, unsigned int iheight);
     void inputImageRecived(char *img, unsigned int iwidth, unsigned int iheight);
     void generatedModelTextureOut(char *img, unsigned int iwidth, unsigned int iheight);
+    void generatedModelDataOut(_Tools::ModelData model_data);
     void stageCenterAngleOut(float center_x,float center_y,float angle);
 
 

@@ -8,7 +8,6 @@
 #include <IO/_configcontrolentity.h>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <UI/_caliberationsection.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,24 +20,29 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionApplication_Settings,SIGNAL(triggered()),this,SLOT(openSettingsDialog()));
     _CaliberationSection::setApplicationSettings(application_settings);
     processing->setApplicationSettings(application_settings);
+
     qRegisterMetaType<ActionType>("ActionType");
+    qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
+    qRegisterMetaType<_Tools::ModelData>("_Tools::ModelData");
 
     //machine,marker,scanner should be in same thread -
     hardwareInteractionThread = new QThread;
 
     //setup hardware interacting obejcts
     //machine to be intialised first
+
     machine = new _Machine(application_settings->getChildEntity("Paths").getStringEntity("MACHINE_CONFIG_FILE"));
     machine->moveToThread(hardwareInteractionThread);
-    //
+
     processing = new _Processing();
     processing->moveToThread(hardwareInteractionThread);
-    //
+
     marker = new _Marker(machine);
     marker->moveToThread(hardwareInteractionThread);
-    //
+
     scanner = new _Scanner(machine,processing);
     scanner->moveToThread(hardwareInteractionThread);
+
     //
     qDebug() << "created hardware objects in thread :" << QThread::currentThread();
 
@@ -51,11 +55,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(hardwareInteractionThread,SIGNAL(started()),machine,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),processing,SLOT(init()));
     connect(hardwareInteractionThread,SIGNAL(started()),scanner,SLOT(init()));
-    /*
-     * button connections
+
+    /* button connections
      *  slot function implemented in child object of MainWindow and used by lambda functions
      *  https://medium.com/genymobile/how-c-lambda-expressions-can-improve-your-qt-code-8cd524f4ed9f#8138
-    */
+     * */
+
+    //buttons to machine slots connections
+    //since the machine object is working in differant thread we have to use invokeMethod function
+
+    //clickable buttons
+
     //set the global static objects which will be required for operations
     _CaliberationSection::setMachine(machine);
     _CaliberationSection::setScanner(scanner);
@@ -63,13 +73,21 @@ MainWindow::MainWindow(QWidget *parent) :
     _CaliberationSection::setMarker(marker);
 
     connect(machine,SIGNAL(initMachine()),ui->machine_type_section,SLOT(init()));
+
     //
     connect(ui->light_calibration_button, SIGNAL(clicked()),ui->light_caliberation_section,SLOT(init()));
     connect(ui->machine_selection_button, SIGNAL(clicked()),ui->machine_type_section,SLOT(init()));
     connect(ui->scan_calibration_button, SIGNAL(clicked()),ui->scan_caliberation_section,SLOT(init()));
     connect(ui->stage_calibration_button, SIGNAL(clicked()),ui->stage_caliberation_section,SLOT(init()));
 
+    //connect(machine,SIGNAL(stageAngleChanged()),ui->widget,SLOT(rotateGeneratedModel()));
+
+//    connect(machine, &_Machine::stageAngleChanged,[this]() {
+//        ui->widget->rotateGeneratedModel()
+//    });
+
     connect(machine, &_Machine::stageAngleChanged,ui->widget,&_GLWidget::rotateGeneratedModel);
+    connect(processing, &_Processing::generatedModelDataOut,ui->widget,&_GLWidget::setGeneratedModelData);
 
     connect(ui->stage_left, &QPushButton::clicked,[this]() {
         QMetaObject::invokeMethod(machine, "callCommandFunction", Qt::QueuedConnection,Q_ARG(QString, "StageMotor"),Q_ARG(int, 400));
@@ -99,7 +117,7 @@ MainWindow::MainWindow(QWidget *parent) :
         QMetaObject::invokeMethod(machine, "Vaccum",  Qt::QueuedConnection,Q_ARG(int, 0),Q_ARG(ActionType,_STORE_VALUE_TOGGLE));
     });
 
-    qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
+
 
     connect(ui->live_camera_button, &QPushButton::toggled,[this]() {
         if(ui->live_camera_button->isChecked())
@@ -118,13 +136,15 @@ MainWindow::MainWindow(QWidget *parent) :
     //buttons to marker slots connections
     connect(ui->motors_setup,SIGNAL(clicked()),marker,SLOT(motors_setup()));
     connect(ui->mark_sine_wave,SIGNAL(clicked()),marker,SLOT(mark_sine_wave()));
-    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+
+    connect(machine,SIGNAL(guiFrameOut(char*,unsigned int,unsigned int)),this,SLOT(updateCameraImage(char*,unsigned int ,unsigned int)));
     connect(machine,SIGNAL(cameraFrameRecieved(char*,unsigned int,unsigned int)),processing,SLOT(inputImage(char*,unsigned int ,unsigned int)));
     connect(processing,SIGNAL(generatedModelTextureOut(char*,unsigned int,unsigned int)),this,SLOT(showGeneratedModel(char*,unsigned int ,unsigned int)));
 
     connect(processing,SIGNAL(outputImage(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
     //connect(scanner,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
     //connect(marker,SIGNAL(set_image(char*,unsigned int,unsigned int)),this,SLOT(update_camera_image(char*,unsigned int ,unsigned int)));
+
     //start the hardware thread
     hardwareInteractionThread->start();
 
@@ -145,10 +165,9 @@ MainWindow::~MainWindow()
 /*
  *
 */
-void MainWindow::update_camera_image(char *img, uint w, uint h)
+void MainWindow::updateCameraImage(char *img, unsigned int w, unsigned int h)
 {
-
-    ui->widget->update_background_image(img,w,h);//------------------------Needs work!!!!!
+  ui->widget->updateBackgroundImage(img,w,h);//------------------------Needs work!!!!!
 }
 
 /*
@@ -199,8 +218,8 @@ void MainWindow::msgBox(QString windowname,QString info)
     QMessageBox::information(0, windowname, info);
 }
 
-
 void MainWindow::showGeneratedModel(char *img, unsigned int iwidth, unsigned int iheight)
 {
     ui->widget->showGeneratedModel(img,iwidth,iheight);
 }
+

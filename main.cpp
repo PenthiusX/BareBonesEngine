@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     //gui is shown when machine is initialised
-    w.show();
+    //w.show();
 
     return a.exec();
 }

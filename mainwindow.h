@@ -23,7 +23,7 @@ signals:
 
 public slots:
 
-    void update_camera_image(char* img,uint w,uint h);
+    void updateCameraImage(char* img,uint w,uint h);
     void openSettingsDialog();
     void setConfigSettings();
     void msgBox(QString windowname, QString info);

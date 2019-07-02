@@ -31,24 +31,18 @@ void main()
 
        int value = getImagePixel(inputImage,ivec2(side,image_pixel_cord.y));
 
-
        if(side == 0)
        {
-           if(value != (image_resolution.x-1))
-           {
-               float r_max = (float(stage_center.x - value)/cosine);
-               int r = int(ceil(r_max));
+           float line_bound = float(stage_center.x - value);
 
-               imageAtomicMin(resultImage,image_pixel_cord,r);
-               //setImagePixel(resultImage,image_pixel_cord,r);
-           }
-           else
-           {
-               imageAtomicMin(resultImage,image_pixel_cord,0);
+           if(line_bound < 0)
+               line_bound = 0;
 
-           }
+           float r_max = (line_bound/cosine);
 
+           int r = int(ceil(r_max));
+
+           //setImagePixel(resultImage,image_pixel_cord,100);
+           imageAtomicMin(resultImage,image_pixel_cord,r);
        }
-
-
 }

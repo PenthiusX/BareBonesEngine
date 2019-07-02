@@ -7,7 +7,7 @@
 #include <QOffscreenSurface>
 #include <QOpenGLContext>
 #include <QWidget>
-#include <Compute/_gpu_compute.h>
+#include <Compute/_cpu_compute.h>
 #include <Modules/_processing.h>
 
 
@@ -23,7 +23,7 @@ public slots:
     void scanImages();
     void scanGenerateModel();
     void scanGenerateModelEdge();
-
+    void scanGenerateModelWrap();
 signals:
     void set_image(char* img,unsigned int w,unsigned int h);
 
@@ -32,7 +32,7 @@ public:
     _Machine *machine;
     QOpenGLContext *context = nullptr;
     QOffscreenSurface *surface = nullptr;
-    _GPU_Compute *gpu_compute = nullptr;
+    _Cpu_Compute *cpu_compute = nullptr;
     _Processing *processing=nullptr;
 
 };
