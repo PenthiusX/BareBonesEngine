@@ -69,7 +69,7 @@ void _GLWidget::initializeGL()
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //--------Scene Objects------------
-    scene->addSceneObject(s);
+    //scene->addSceneObject(s);
 
 }
 /*
@@ -398,7 +398,7 @@ void _GLWidget::showGeneratedModel(char *img, unsigned int w, unsigned int h)
     }
 }
 
-void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
+void _GLWidget::setGeneratedModelData(_ModelInfo model_data)
 {
     qDebug() << "setting model---------------------------------------------------------------";
 
@@ -412,10 +412,7 @@ void _GLWidget::setGeneratedModelData(_Tools::ModelData model_data)
     //onPress->setShader(":/shaders/basicvshader.glsl", ":/shaders/basicfshader.glsl");
     onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     onPress->setScale(0.002);
-    _ModelInfo m;
-    m.setVertexArray(model_data.vertices);
-    m.setIndexArray(model_data.indices);
-    onPress->setModelData(m);//dont need to reparse modelfile
+    onPress->setModelData(model_data);//dont need to reparse modelfile
     scene->addSceneObject(*onPress);
     doneCurrent();
     qInfo()<< "created" << 0 <<"th object" << "id" << onPress->getId();

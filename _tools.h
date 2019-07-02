@@ -36,12 +36,6 @@ public:
     _Tools();
 
     //this struct holds model mesh data
-    struct ModelData
-    {
-        std::vector<float> vertices;
-        std::vector<unsigned int> indices;
-        //add level of detail variables if necessary
-    };
 
     static QString ReadStringFromQrc(QString Filename);
     static QVector2D retunrnMaxPoint(QVector2D mousepos);

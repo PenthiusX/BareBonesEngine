@@ -377,7 +377,7 @@ void _Processing::generateEdgeModel(char *img, unsigned int iwidth, unsigned int
 
 }
 
-_Tools::ModelData _Processing::generateModelFromGPUTexture(_Texture texture_model_wrap)
+_ModelInfo _Processing::generateModelFromGPUTexture(_Texture texture_model_wrap)
 {
     int* texture_model_wrap_data = gpu_compute->getTextureModelFramebuffer32I(texture_model_wrap,GL_RED_INTEGER);
 

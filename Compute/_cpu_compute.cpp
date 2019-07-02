@@ -39,7 +39,7 @@ std::vector<int> _Cpu_Compute::compute_k_means(std::array<unsigned int, 256> arr
 }
 
 
-_Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int iwidth, unsigned int iheight)
+_ModelInfo _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int iwidth, unsigned int iheight)
 {
     std::vector<float> vertsG;
     std::vector<unsigned int> indiceG;
@@ -103,5 +103,9 @@ _Tools::ModelData _Cpu_Compute::generateModelMesh(int *wrap_frame, unsigned int 
         }
     }
     _Tools::SaveObjModel(vertsG,indiceG,"centered_clay.obj");
-    return _Tools::ModelData{vertsG,indiceG};
+
+    _ModelInfo m;
+    m.setVertexArray(vertsG);
+    m.setIndexArray(indiceG);
+    return m;
 }

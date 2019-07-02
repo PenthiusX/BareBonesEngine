@@ -4,6 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <_tools.h>
+#include <_modelinfo.h>
 
 class _Cpu_Compute
 {
@@ -11,7 +12,7 @@ class _Cpu_Compute
 public:
     _Cpu_Compute();
     static std::vector<int> compute_k_means(std::array<unsigned int, 256> arr);
-    _Tools::ModelData generateModelMesh(int *wrap_frame, unsigned int iwidth, unsigned int iheight);
+    _ModelInfo generateModelMesh(int *wrap_frame, unsigned int iwidth, unsigned int iheight);
 };
 
 #endif // _CPU_COMPUTE_H

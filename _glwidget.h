@@ -31,7 +31,7 @@ public:
 public slots:
     void updateBackgroundImage(char *img, unsigned int w, unsigned int h);
     void showGeneratedModel(char *img, unsigned int w, unsigned int h);
-    void setGeneratedModelData(_Tools::ModelData);
+    void setGeneratedModelData(_ModelInfo model_data);
     void rotateGeneratedModel(float angle);
 
 protected:

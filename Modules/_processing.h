@@ -24,13 +24,13 @@ public:
 
     void setApplicationSettings(_ConfigControlEntity *app_sett);
 
-    _Tools::ModelData generateModelFromGPUTexture(_Texture texture_model_wrap);
+    _ModelInfo generateModelFromGPUTexture(_Texture texture_model_wrap);
 signals:
     void outputImage(char *img, unsigned int iwidth, unsigned int iheight);
     void outputImage2(char *img, unsigned int iwidth, unsigned int iheight);
     void inputImageRecived(char *img, unsigned int iwidth, unsigned int iheight);
     void generatedModelTextureOut(char *img, unsigned int iwidth, unsigned int iheight);
-    void generatedModelDataOut(_Tools::ModelData model_data);
+    void generatedModelDataOut(_ModelInfo model_data);
     void stageCenterAngleOut(float center_x,float center_y,float angle);
 
 

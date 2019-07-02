@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qRegisterMetaType<ActionType>("ActionType");
     qRegisterMetaType<const char*>("const char*");//for Q_ARG to understand the char* datatype
-    qRegisterMetaType<_Tools::ModelData>("_Tools::ModelData");
+    qRegisterMetaType<_ModelInfo>("_ModelInfo");
     qRegisterMetaType<_Scanner::ScanType>("_Scanner::ScanType");
 
     ui->setupUi(this);

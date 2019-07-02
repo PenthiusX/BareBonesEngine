@@ -70,8 +70,6 @@ void _Scanner::init()
     cpu_compute = new _Cpu_Compute;
 
     initializeOpenGLFunctions();
-
-    connect(this,SIGNAL(set_image(char*,unsigned int,unsigned int)),machine,SLOT(updateFrameColor(char*,unsigned int ,unsigned int)));
 }
 
 

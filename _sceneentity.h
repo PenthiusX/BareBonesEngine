@@ -65,7 +65,6 @@ public:
     void setModelInfo(_ModelInfo minfo);
     _ModelInfo getModelInfo()const;
     //
-    void setModelData(_Tools::ModelData model_data);
     void setModelData(_AssetLoader aloader);//set the modelInfo object in sceneEntity
     void setModelData(_ModelInfo minfo);//set the modelInfo object in sceneEntity
     void setModelData(QString path);//takes the relative path via a qrc file path

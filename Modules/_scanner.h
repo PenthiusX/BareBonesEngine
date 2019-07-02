@@ -32,8 +32,6 @@ public:
 public slots:
     void init();
     void scan(_Scanner::ScanType scan_type = ScanImagesOnly);
-signals:
-    void set_image(char* img,unsigned int w,unsigned int h);
 
 
 public:
