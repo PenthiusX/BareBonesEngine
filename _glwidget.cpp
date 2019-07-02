@@ -62,8 +62,22 @@ void _GLWidget::initializeGL()
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
     s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
-    s.setScale(2.0f);
-    s.setModelData(":/models/generated.obj");
+    s.setScale(1.0);
+    s.setModelData(":/models/hipolyore.obj");
+
+    d.setId(4);
+    d.setTag("clickSurface");
+    //d.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
+    d.setIsTransformationLocal(false);
+    d.setIsLineNoCullMode(true);
+    d.setPosition(glm::vec3(0.0,0.0, -4.0));
+    d.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    d.setColor(QVector4D(0.0,0.8,0.0,0.9));
+    d.setScale(2.6f);
+    d.setModelData(":/models/hipolyore.obj");
+
+    //scene->addSceneObject(d);
+
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
@@ -543,6 +557,6 @@ void _GLWidget::applyStuffToallEntites(bool isit)
 
 void _GLWidget::emitModelsForPlanning()
 {
-//    glm::mat4x4 relative_transform =
-//    emit  planningModelsOut({s.getModelInfo().getVertexArray(),s.getModelInfo().getIndexArray()},{s1.getModelInfo().getVertexArray(),s1.getModelInfo().getIndexArray()},);
+    glm::mat4x4 relative_transform = s.getModelMatrix()* glm::inverse(d.getModelMatrix());
+    emit  planningModelsOut({s.getModelInfo().getVertexArray(),s.getModelInfo().getIndexArray()},{d.getModelInfo().getVertexArray(),d.getModelInfo().getIndexArray()},relative_transform);
 }

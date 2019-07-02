@@ -69,7 +69,7 @@ private:
     _Scene *scene;//Scene include renderer , camera and sceneentity classes, so no need to reinclude header
 
     _SceneEntity generated_model;//sau
-    _SceneEntity s,*onPress;//custom Objects
+    _SceneEntity s,*onPress,d;//custom Objects
 
     _AssetLoader assetLoader;
     _Camera cam;

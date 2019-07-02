@@ -18,5 +18,7 @@
         <file>models/diamonds/otoctagon.obj</file>
         <file>models/diamonds/otpear.obj</file>
         <file>models/generated.obj</file>
+        <file>models/diamond.obj</file>
+        <file>models/stone.obj</file>
     </qresource>
 </RCC>
