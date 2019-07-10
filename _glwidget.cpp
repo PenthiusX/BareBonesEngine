@@ -70,7 +70,6 @@ void _GLWidget::initializeGL()
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //--------Scene Objects------------
     //scene->addSceneObject(s);
-
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
