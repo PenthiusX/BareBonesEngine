@@ -416,7 +416,6 @@ void _GLWidget::setGeneratedModelData(_ModelInfo model_data)
     doneCurrent();
     qInfo()<< "created" << 0 <<"th object" << "id" << onPress->getId();
     delete onPress;
-
 }
 
 void _GLWidget::rotateGeneratedModel(float angle)
