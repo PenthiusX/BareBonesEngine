@@ -11,7 +11,7 @@
 #include "mainwindow.h"
 #include "_glwidget.h"
 
-//#include <thread>
+#include <thread>
 
 
 /* Debug Use For application output
@@ -23,24 +23,24 @@ qCritical() << "C++ Style Critical Error Message";
 // qFatal does not have a C++ style method.
 */
 
-//void functionTtest(int i,QString s){
-//    qDebug() << "tfunction" << i << s;
-//}
+void functionTtest(int i,QString s){
+    qDebug() << "tfunction" << i << s;
+}
 
-//void treadTest(){
+void treadTest(){
 
-//    std::thread t1(functionTtest ,2,"whaut whut" );
-//    t1.join();
+    std::thread t1(functionTtest ,2,"whaut whut" );
+    t1.detach();
 
-//    qDebug() << "fFunction";
+    qDebug() << "fFunction";
 
 //    if(t1.joinable())
 //        t1.join();
-//}
+}
 
 int main(int argc, char *argv[])
 {
-//    treadTest();
+    treadTest();
 
     QGLFormat glFormat;
     glFormat.setVersion( 4, 3);

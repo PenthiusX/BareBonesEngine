@@ -39,7 +39,7 @@ _Processing::_Processing(QObject *parent) : QObject(parent) , QOpenGLExtraFuncti
 
     if(!context->isValid())
     {
-        qDebug() << "GL context not Valid";
+//        qDebug() << "GL context not Valid";
     }
 
     surface = new QOffscreenSurface();

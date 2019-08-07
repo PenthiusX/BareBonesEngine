@@ -1,4 +1,4 @@
-#ifndef _SCENEENTITY_H
+ #ifndef _SCENEENTITY_H
 #define _SCENEENTITY_H
 
 #include <qquaternion.h>

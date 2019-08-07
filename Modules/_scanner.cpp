@@ -43,7 +43,7 @@ _Scanner::_Scanner(_Machine *global_machine,_Processing* proc,QObject *parent) :
     }
 
     if(!context->isValid()){
-        qDebug() << "GL context not Valid";
+//        qDebug() << "GL context not Valid";
     }
 
     surface = new QOffscreenSurface();
