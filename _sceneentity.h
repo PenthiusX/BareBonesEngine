@@ -25,9 +25,9 @@ public:
     void setIsActive(bool isIt);
     bool getIsActive();
     //
-    void setId(uint id);//sets the iD either externaly or internally generated
+    void setId(uint id);//set a unique iD either externaly or internally generated
     uint getId() const;
-    void setTag(QString tag);//sets a name based identifier for the object
+    void setTag(QString tag);//set unique string based identifier for the object
     QString getTag() const;
     void setOrderInIndex(uint i);
     uint getIndexPosInScene() const;
@@ -94,6 +94,8 @@ public:
     };
     bool getisHitByRay();
     void setIsHitByRay(bool isHitByRay);
+    bool getIsHitByTri();
+    void setIsHitByTri(bool isHitByTri);
     void setIsSelected(bool isit);
     bool getIsSelected() const;
     bool getIsPhysicsObject()const;
@@ -131,6 +133,7 @@ private:
     bool isActive;
     bool isMeshEditable;
     bool isHitByRay;
+    bool isHitByTri;
     bool isSelected;
     bool isPhysicsObject;
     bool isPhysicsHelper;

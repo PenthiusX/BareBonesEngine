@@ -108,7 +108,6 @@ void _AssetLoader::objLoader(QString pathToFile)
     modelInfo.setMinExtents(vertMin);
     modelInfo.calcCentroidFromMinMax();
     modelInfo.setIsLoaded(true);
-
     qInfo()<<"--------------MODEL INFO-------------------------------";
     qInfo()<< "Path" << modelInfo.getPath();
     qInfo()<< "VertexArray" << modelInfo.getVertexArray().size();
@@ -135,7 +134,7 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
         objLoader(":/"+ folderName +"/" + imageName);
         modelInfo.setVertexArray(vertices);
         modelInfo.setIndexArray(indices);
-        //      modelInfoArray.push_back(minfo);
+        //modelInfoArray.push_back(minfo);
         vertices.clear();
         indices.clear();
     }
@@ -161,6 +160,46 @@ _ModelInfo _AssetLoader::generateQuad()
     m.setIndexArray(indiceV);
     m.calcMinMaxExtents();
     m.setName("Quad");
+
+    return m;
+}
+
+_ModelInfo _AssetLoader::generateTri()
+{
+    //Code to be excluded only for Test purposes
+    //Hard coded vertices and indices
+    std::vector<float> vertsV = {
+        1.0,   1.0,  0.0f,	// top right
+        1.0f, -1.0f, 0.0f,  // bottom right
+        -1.0f, -1.0f, 0.0f, // bottom left
+    };
+    std::vector<uint> indiceV = {0, 1, 2};
+
+    _ModelInfo m;
+    m.setVertexArray(vertsV);
+    m.setIndexArray(indiceV);
+    m.calcMinMaxExtents();
+    m.setName("Tri");
+
+    return m;
+}
+
+_ModelInfo _AssetLoader::generateTri(glm::vec3 p1,glm::vec3 p2,glm::vec3 p3)
+{
+    //Code to be excluded only for Test purposes
+    //Hard coded vertices and indices
+    std::vector<float> vertsV = {
+        p1.x,   p1.y,  p1.z,
+        p2.x,   p2.y,  p2.z,
+        p3.x,   p3.y,  p3.z,
+    };
+    std::vector<uint> indiceV = {0, 1, 2};
+
+    _ModelInfo m;
+    m.setVertexArray(vertsV);
+    m.setIndexArray(indiceV);
+    m.calcMinMaxExtents();
+    m.setName("Tri");
 
     return m;
 }

@@ -5,7 +5,6 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include "_scene.h"
-#include "_physics.h"
 
 /*
  * Class: _GLWidget
@@ -36,7 +35,7 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
-    void addRandomSceneEntitestoScene();
+    void addRandomSceneEntitestoScene(uint count);
     void removeSceneEntityFromScene();
 
     //Variables

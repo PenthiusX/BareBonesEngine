@@ -98,7 +98,3 @@ glm::vec4 _ModelInfo::calcCentroidFromMinMax(glm::vec3 min, glm::vec3 max){
     cent = centroid;
     return centroid;
 }
-
-
-
-

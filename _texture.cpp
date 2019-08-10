@@ -90,7 +90,6 @@ void _Texture::setImage(char* img)
     qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
-
 }
 
 /* Updates texture from char pointer array with updated given resolution

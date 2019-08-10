@@ -36,7 +36,8 @@ public:
     static float getRandomNumberfromRangeF(float min , float max);
     static QVector3D interpolateBetweenPoints(QVector3D p1, QVector3D p2,float factor);
     //Debug use
-    static void printFrameRate();
+    static bool printFrameRate();
+    static bool setIntervals(float intervalgap);
 private:
 //    static QElapsedTimer timer;
 //    static uint frameCounter;

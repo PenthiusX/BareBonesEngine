@@ -2,7 +2,7 @@
 #define _SHADER_H
 #include <QString>
 #include <QOpenGLExtraFunctions>
-#include <_tools.h>
+#include "_tools.h"
 /*
  * Shader class:
  * Holds functonality to bind shader to a shaderprogram

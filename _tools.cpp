@@ -4,7 +4,7 @@
 
 
 //Commonly used Functions
-QElapsedTimer timer;
+QElapsedTimer timer,intervalTimer;
 uint frameCounter;
 _Tools::_Tools()
 {
@@ -65,19 +65,40 @@ void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
 /*
  *
 */
-void _Tools::printFrameRate()
+bool _Tools::printFrameRate()
 {
     frameCounter++;
     int t = timer.elapsed()/1000;
     int interval = 1;
     if(t > interval)
     {
+        qInfo() << "---------------------------";
         qInfo() <<"Framerate:"<< frameCounter / interval;
         frameCounter = 0;
         timer.restart();
+        return true;
+    }
+    else {
+        return false;
     }
 }
-
+/*
+ * returns true after fixes intervals
+ */
+bool _Tools::setIntervals(float intervalgap)
+{
+    double t = intervalTimer.elapsed()* 0.001;
+    float interval = intervalgap;
+    if(t > interval){
+        intervalTimer.restart();
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+/*
+ */
 float _Tools::getRandomNumberfromRangeF(float min, float max)
 {
 //    std::srand(2);
