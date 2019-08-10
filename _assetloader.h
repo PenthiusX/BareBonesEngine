@@ -24,6 +24,8 @@ public:
     void objLoader(QString pathToFile);
     void loadAllModelsInfoFromFolder(QString folderName);//not in use
     _ModelInfo generateQuad();
+    _ModelInfo generateTri();
+    _ModelInfo generateTri(glm::vec3 p1,glm::vec3 p2,glm::vec3 p3);
 
 private:
     _ModelInfo modelInfo;

@@ -236,7 +236,6 @@ void _SceneEntity::setIsLineMode(bool isit){
 bool _SceneEntity::getIsLineMode(){
     return isLineMode;
 }
-
 void _SceneEntity::setIsLineNoCullMode(bool isit){
     isLineNoCullMode = isit;
 }
@@ -283,7 +282,6 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
         isActive = false;
     }
 }
-
 /*
  * Function: setModelData(Qstring path)
  * sets the vertex and index data in one function, for the current object.
@@ -309,7 +307,7 @@ void _SceneEntity::setModelData(QString path)
  * sets the path  for the shadert to be loaded ,for the current object.
  * Created:26_02_2019
 */
-void _SceneEntity::setShader(QString vSh, QString fSh){
+void _SceneEntity::setShader(QString vSh, QString fSh) {
     vShaderPath = vSh;
     fShaderPath = fSh;
 }
@@ -320,7 +318,7 @@ void _SceneEntity::setShader(QString vSh, QString fSh){
 QString _SceneEntity::getTexturePath() const{
     return texturePath;
 }
-void _SceneEntity::setTexturePath(QString texPath){
+void _SceneEntity::setTexturePath(QString texPath) {
     texturePath = texPath;
 }
 /*
@@ -366,19 +364,32 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, sce
  * hit by the mousPointRay or not
  * Created: 22_05_2019
 */
-bool _SceneEntity::getisHitByRay(){
+bool _SceneEntity::getisHitByRay() {
     return isHitByRay;
 }
-void _SceneEntity::setIsHitByRay(bool isHitByRay){
+void _SceneEntity::setIsHitByRay(bool isHitByRay) {
     this->isHitByRay = isHitByRay;
+}
+/*
+ * Function: getIsHitByTri()
+ * return on even when the object
+ * collided with anotehr MeshOBject
+ * in a Tri on Tri collision scenario
+ *Created:06_08_2019
+*/
+bool _SceneEntity::getIsHitByTri() {
+    return isHitByTri;
+}
+void _SceneEntity::setIsHitByTri(bool isHitByTri) {
+    this->isHitByTri = isHitByTri;
 }
 /*
  * Created: 22_06_2019
 */
-bool _SceneEntity::getIsSelected() const{
+bool _SceneEntity::getIsSelected() const {
     return isSelected;
 }
-void _SceneEntity::setIsSelected(bool isit){
+void _SceneEntity::setIsSelected(bool isit) {
     isSelected = isit;
 }
 /*
@@ -390,8 +401,7 @@ bool _SceneEntity::getIsPhysicsObject() const {
 /*
  * Created: 15_06_2019
 */
-bool _SceneEntity::getIsPhysicsHelper() const
-{
+bool _SceneEntity::getIsPhysicsHelper() const {
     return isPhysicsHelper;
 }
 _SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType(){

@@ -43,43 +43,39 @@ class _Physics
 public:
     _Physics();
     ~_Physics();
-
+    //
     void initialiseSceneEntity(_SceneEntity s);
     void setSceneEntity(_SceneEntity s);
     _SceneEntity getSceneEntity();
     //
     void genTriesforCollision(std::vector<float>vert,std::vector<uint> index);
-    void genNormalsForTries( std::vector<_Phy_Triangle> triV);
+    void genNormalsForTries(std::vector<_Phy_Triangle> triV);
+    std::vector<_Phy_Triangle> getPhysTries()const;
     //
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
     float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
     bool hitBoundingBox(Phy_Box b, glm::vec3 rayOrigin, glm::vec3 rDirection);
     //
-    Phy_Plane constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1,glm::vec3 V2);
-    Phy_Plane constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2);
-    Phy_Plane constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 Normal);
+    _Phy_Plane constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1,glm::vec3 V2);
+    _Phy_Plane constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2);
+    _Phy_Plane constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 Normal);
     //
-    glm::vec3 getRayWorld()const;
-    glm::vec4 getrayEye()const;
-    glm::vec3 getrayNormalizedDeviceCoordinates()const;
-    glm::vec4 getrayClip()const;
     glm::vec3 getRayTriIntersectionPoint() const;
     //
-    void updatePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes);
+    void updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes);
+    bool updateObjObjPhysics(std::vector<_Physics> _physicsObjArray);
 
 private:
-
     std::vector<_Phy_Triangle> triVector,triVectorCopy;
     //
-    Phy_Sphere sp;
-    Phy_Triangle tri;
-    Phy_Plane pl;
+    _Phy_Sphere sp;
+    _Phy_Triangle tri;
+    _Phy_Plane pl;
     _Phy_Box bx;
     //
     glm::vec4 rayEye;
     glm::vec3 ray_wor;
-    glm::vec3 rayNormalizedDeviceCoordinates;
     glm::vec4 rayClip;
     //
     int resW,resH;
@@ -94,6 +90,8 @@ private:
     bool rayIntersectsTriangles(std::vector<_Phy_Triangle> tries, glm::vec3 rayOrigin, glm::vec3 rayVector);
     void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
     void transFormBoxExtents(glm::mat4x4 rotScaleMatrix);
+    bool triangleTriangleIntersectionTest(_Physics objA, _Physics objB);
+    bool sphereSphereIntersectionTest();
 };
 
 #endif // _PHYSICS_H

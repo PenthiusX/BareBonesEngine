@@ -32,14 +32,17 @@ public:
     void updateCamera(_Camera c);
     void onResize(int w,int h);
     void render();
+    void fixedUpdate(float intervalTime);
     //
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo
     //Helpers
     void addAllHelperTypesInScene();
-    //
     _SceneEntity findSceneEntity(uint iD);
     _SceneEntity findSceneEntity(QString tag);
-    //
+    uint getTotalVertexCount();
+    uint getTotalTriangleCount();
+    uint getSceneObjectCount();
+    //Physics
     _SceneEntity getSceneEntityHitWithRay();
 
 private:
@@ -51,24 +54,29 @@ private:
     bool isCamera;
     QVector2D mousePositionR,mousePositionL;
     int resW,resH;
-    //Physics
-    std::vector<_Physics> physVector;
-    _SceneEntity rayHitSceneEntity;
-    uint hc;//physics and helper object counter
-
     //Helpers
     _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot,bg;
     uint pivotIndex,mPointerIndex;
     uint cIndex;
     uint mxIndex;
     uint minIndex;
+    uint noOfVerticesInScene;
+    uint noOfTrianglesInScene;
+    uint noOfUniquesObjectsInScene;
     void updateHelpersOnce();
     void updateHelpersLoop(uint index);
     void setHelperIndexVars();
     //Physics
+    std::vector<_Physics> physVector;
+    _SceneEntity rayHitSceneEntity,triCollidedSceneEntity;
+    uint hc;//physics and helper object counter
+    uint loopIndex;
     void updateAllPhysicsObjectsLoop();
     void updateAllPhysicsObjectsOnce();
-    uint loopIndex;
+    //Thread
+    std::thread pu;
+    std::thread ph;
+
 };
 
 #endif // _SCENE_H

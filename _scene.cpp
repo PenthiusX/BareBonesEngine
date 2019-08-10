@@ -1,5 +1,6 @@
 #include "_scene.h"
 #include "_tools.h"
+#include <future>
 
 /*
  * Class: _Scene()
@@ -13,14 +14,12 @@
 /*
  * Constructor: _Scene class
 */
-_Scene::_Scene()
-{
+_Scene::_Scene(){
     isCamera = false;
     fboObject = new _FrameBuffer();
     loopIndex = 0;
 }
-_Scene::~_Scene()
-{
+_Scene::~_Scene(){
     renderObjects.clear();
     delete r;
 }
@@ -38,8 +37,7 @@ _Scene::~_Scene()
 * this is being called by the _GlWidget class.
 * Created:26_02_2019
 */
-void _Scene::addSceneObject(_SceneEntity s)
-{
+void _Scene::addSceneObject(_SceneEntity s){
     // Only sets the scene object if the camera has been set already and scene object is active
     if (s.getIsActive() == true){
         if (isCamera){
@@ -75,8 +73,13 @@ void _Scene::addSceneObject(_SceneEntity s)
             }
         }
     }
-    else
-        qDebug() << "scene object has not been set Properly";
+    noOfVerticesInScene = 0;
+    noOfUniquesObjectsInScene = 0;
+    noOfUniquesObjectsInScene = renderObjects.size() - 6;
+    for(uint i = 0; i<renderObjects.size(); i++){
+        this->noOfVerticesInScene += renderObjects[i]->getSceneEntity().getModelInfo().getVertexArray().size();
+    }
+    noOfTrianglesInScene = noOfVerticesInScene * 0.333333333333;
 }
 /*
    ▄▄ • ▄▄▄ .▄▄▄▄▄   .▄▄ · ▄▄▄ .▄▄▄▄▄
@@ -136,6 +139,7 @@ _SceneEntity _Scene::findSceneEntity(uint iD){
     }
     return empty;
 }
+
 _SceneEntity _Scene::findSceneEntity(QString tag){
     _SceneEntity empty;
     for(int f = 0 ; f < renderObjects.size(); f++){
@@ -143,6 +147,18 @@ _SceneEntity _Scene::findSceneEntity(QString tag){
             return renderObjects[f]->getSceneEntity();
     }
     return empty;
+}
+
+uint _Scene::getTotalVertexCount(){
+    return noOfVerticesInScene;
+}
+
+uint _Scene::getTotalTriangleCount(){
+    return noOfTrianglesInScene;
+}
+
+uint _Scene::getSceneObjectCount(){
+    return noOfUniquesObjectsInScene;
 }
 /* Function:getSceneEntityHitWithRay()
  * returns the SceneEntity that is hitBy the mousePointer ray.
@@ -181,13 +197,18 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     }
     else if(m == Qt::LeftButton){
         mousePositionL = mousePos;
-        //Physics+Helpers update on Left MouseClick only
-        updateAllPhysicsObjectsOnce();//Physics update//should be paralalised.
-        updateHelpersOnce();//Helper Update for visual aid.
+        //Physics+Helpers update on detached threads
+        pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
+        ph = std::thread(&_Scene::updateHelpersOnce,this);
+        if(pu.joinable()){pu.detach();}
+        if(ph.joinable()){ph.detach();}
     }
     else if(m == Qt::MiddleButton){
-        updateAllPhysicsObjectsOnce();//Physics update//should be paralalised.
-        updateHelpersOnce();//Helper Update for visual aid.
+        //Physics+Helpers update on detached threads
+        pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
+        ph = std::thread(&_Scene::updateHelpersOnce,this);
+        if(pu.joinable()){pu.detach();}
+        if(ph.joinable()){ph.detach();}
     }
 }
 /*
@@ -195,7 +216,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
   ▄█▀▄ ▐█▐▐▌    ▐▀▀▄ ▐▀▀▪▄▄▀▀▀█▄▐█·▄█▀▀▀•▐▀▀▪▄
  ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
-  ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
+  ▀█▄▀ ▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
 /*
  * Function: onResize(int w,int h)
@@ -206,7 +227,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
 void _Scene::onResize(int w,int h){
     resW = w;
     resH = h;
-    for (uint i = 0; i < renderObjects.size(); i++)
+    for(uint i = 0; i < renderObjects.size(); i++)
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     //FBO init and updateTexture on Resize
     fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
@@ -226,35 +247,40 @@ void _Scene::onResize(int w,int h){
  * this is being called by the _GlWidget class.
  * Created:26_02_2019
 */
-void _Scene::render()
-{
+void _Scene::render(){
     //sets the Frame for the framebufferObject.
     fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
     //--------------------------------------
     //Frame to render is below
     for (uint i = 0; i < renderObjects.size(); i++)
     {
-        //Physics+Helpers
-        if(renderObjects[i]->getSceneEntity().getIsPhysicsObject()){
-            //"SLOW FUNCTIONS AVOID IN LOOP"
-            //updateAllPhysicsObjectsLoop();//Physics should be paralalised.//Not ideal to implement in UpdateLoop
-            //updateHelpersLoop(i);//Helper update for visualAid.
-        }
-        //Frame update----
-        //Render all objects that are active.
-        renderObjects[i]->draw();//calls the draw function unique to each renderObject.
+        //Frame update
+        renderObjects[i]->draw();////Render all objects that are active.Calls the draw function unique to each renderObject.
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
     fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
+/*
+ * Function:fixedUpdate()
+ * this function updated at setintervals based on a clock timer.
+ * Created:5_08_2019
+ */
+void _Scene::fixedUpdate(float intervalTime)
+{
+  if(_Tools::setIntervals(intervalTime))//everything runs inside this if statement.
+  {
+   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
+   if(tUp.joinable()){tUp.detach();}
+  }
+}
 
 /*
  ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·
 ▐█ ▄███▪▐█▐█▪██▌▐█ ▀. ██ ▐█ ▌▪▐█ ▀.
- ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄▄▄▀▀▀█▄
-▐█▪·•██▌▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
+ ██▀·██▀▐█▐█▌▐█▪▄▀▀▀█▄▐█·██ ▄ ▄▀▀▀█▄
+▐█ ·•██▌▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
 .▀   ▀▀▀ ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
 */
 /*
@@ -262,60 +288,66 @@ void _Scene::render()
  * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
  * Created: 22_05_2019
- */
-void _Scene::updateAllPhysicsObjectsOnce()
-{
-    for (uint index = 0; index < physVector.size(); index++){
-        physVector[index].setSceneEntity(renderObjects[physVector[index].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
-
-        //Passing some essentials into the updateLoop for physics
-        //updates the physics object instance and runs the main physics updateOperations.
-        physVector[index].updatePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-                                        glm::vec3(cam.getEyePosition().x(),//Camera Position
-                                                  cam.getEyePosition().y(),
-                                                  cam.getEyePosition().z()),
-                                        glm::vec2(resW,resH));
-
-        //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
-        uint pi = physVector[index].getSceneEntity().getIndexPosInScene();
-        renderObjects[pi]->setSceneEntityInRenderer(physVector[index].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
-
-        if(renderObjects[pi]->getSceneEntity().getisHitByRay()){
-            rayHitSceneEntity = renderObjects[pi]->getSceneEntity();
-        }
-    }
-}
-/*
- * Function: updatePhysicsForAllObjectsLoop()
- * update the physcs variables realtime and is relativel optmised to run in a loop.
- * is called in the _scene class's render() function.
- * Created: 22_05_2019
- */
-void _Scene::updateAllPhysicsObjectsLoop()
-{
+*/
+void _Scene::updateAllPhysicsObjectsOnce(){
     if(physVector.size() > 0){
-        physVector[loopIndex].setSceneEntity(renderObjects[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
-        //Passing some essentials into the updateLoop for physics
-        //updates the physics object instance and runs the main physics updateOperations.
-        physVector[loopIndex].updatePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
+        for (uint index = 0; index < physVector.size(); index++){
+            physVector[index].setSceneEntity(renderObjects[physVector[index].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
+
+            //Passing some essentials into the updateLoop for physics
+            //updates the physics object instance and runs the main physics updateOperations.
+            physVector[index].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
                                             glm::vec3(cam.getEyePosition().x(),//Camera Position
                                                       cam.getEyePosition().y(),
                                                       cam.getEyePosition().z()),
                                             glm::vec2(resW,resH));
 
-        //updates the status of scneEntity variable that get changed inside the Physis calss on Collision Events.
-        uint pi = physVector[loopIndex].getSceneEntity().getIndexPosInScene();
-        renderObjects[pi]->setSceneEntityInRenderer(physVector[loopIndex].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
+            //updates the status of scneEntity variable that get changed inside the Physis class on Collision Events.
+            //style of implmentation can vary, its essentally updates the sceEntityObjet in the rendered if it is
+            //getting collided with ray, So SceneEntity is the sharedVariable across classes Physics and Renderer
+            uint pi = physVector[index].getSceneEntity().getIndexPosInScene();
+            renderObjects[pi]->setSceneEntityInRenderer(physVector[index].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
 
-        if(renderObjects[pi]->getSceneEntity().getisHitByRay()){
-            rayHitSceneEntity = renderObjects[pi]->getSceneEntity();
+            if(renderObjects[pi]->getSceneEntity().getisHitByRay()){
+                rayHitSceneEntity = renderObjects[pi]->getSceneEntity();
+            }
         }
+    }
+}
+
+/*
+ * Function: updatePhysicsForAllObjectsLoop()
+ * update the physcs variables realtime and is relativel optmised to run in a loop.
+ * is called in the _scene class's fixedUpdate() function.
+ * Created: 22_05_2019
+ */
+void _Scene::updateAllPhysicsObjectsLoop()
+{    if(physVector.size() > 0){
+        physVector[loopIndex].setSceneEntity(renderObjects[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
+        //Passing some essentials into the updateLoop for physics
+        //updates the physics object instance and runs the main physics updateOperations.
+        physVector[loopIndex].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
+                                            glm::vec3(cam.getEyePosition().x(),//Camera Position
+                                                      cam.getEyePosition().y(),
+                                                      cam.getEyePosition().z()),
+                                            glm::vec2(resW,resH));
+
+       //TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
+        bool is = false;
+        is = physVector[loopIndex].updateObjObjPhysics(physVector);
+         _SceneEntity ss = physVector[loopIndex].getSceneEntity();
+        ss.setIsHitByTri(is);
+        renderObjects[ss.getIndexPosInScene()]->setSceneEntityInRenderer(ss);
+        if(renderObjects[ss.getIndexPosInScene()]->getSceneEntity().getIsHitByTri()){
+            triCollidedSceneEntity = renderObjects[ss.getIndexPosInScene()]->getSceneEntity();//sets the sceneEntity that has been set by ray.
+        }
+        qDebug() << is;
+        //--------------------------------------------
         loopIndex++;
         if(loopIndex >= physVector.size())
             loopIndex = 0;
     }
 }
-
 /*
    ▄ .▄▄▄▄ .▄▄▌   ▄▄▄·▄▄▄ .▄▄▄  .▄▄ ·
   ██▪▐█▀▄.▀·██•  ▐█ ▄█▀▄.▀·▀▄ █·▐█ ▀.
@@ -326,42 +358,42 @@ void _Scene::updateAllPhysicsObjectsLoop()
 /*
  * Created:22_06_2019
  */
-void _Scene::updateHelpersOnce()
-{
-    glm::vec4 mx,mn,cntrd;
-    glm::vec3 rot,pos;
-    for (uint i = 0; i < physVector.size(); i++){
-        if(physVector[i].getSceneEntity().getIsPhysicsHelper() && physVector[i].getSceneEntity().getisHitByRay())
-        {
-            glm::vec3 p = physVector[i].getRayTriIntersectionPoint();
-            renderObjects[mPointerIndex]->setPosition(p);
-            //sc = physVector[i].getSceneEntity().getScale();
+void _Scene::updateHelpersOnce(){
+    if(mxIndex > 0,minIndex > 0,pivotIndex > 0){
+        glm::vec4 mx,mn,cntrd;
+        glm::vec3 rot,pos;
+        for (uint i = 0; i < physVector.size(); i++){
+            if(physVector[i].getSceneEntity().getIsPhysicsHelper() && physVector[i].getSceneEntity().getisHitByRay()){
+                glm::vec3 p = physVector[i].getRayTriIntersectionPoint();
+                renderObjects[mPointerIndex]->setPosition(p);
+                //sc = physVector[i].getSceneEntity().getScale();
 
-            //Temporary Helpers for Max min extents
-            mx = physVector[i].getSceneEntity().getModelInfo().getMaxExtent();
-            mn = physVector[i].getSceneEntity().getModelInfo().getMinExtent();
-            cntrd = physVector[i].getSceneEntity().getModelInfo().getCentroid();
+                //Temporary Helpers for Max min extents
+                mx = physVector[i].getSceneEntity().getModelInfo().getMaxExtent();
+                mn = physVector[i].getSceneEntity().getModelInfo().getMinExtent();
+                cntrd = physVector[i].getSceneEntity().getModelInfo().getCentroid();
 
-            pos = physVector[i].getSceneEntity().getPostion();
-            rot = physVector[i].getSceneEntity().getRotation();
+                pos = physVector[i].getSceneEntity().getPostion();
+                rot = physVector[i].getSceneEntity().getRotation();
+            }
         }
+        renderObjects[cIndex]->setPosition(cntrd);
+
+        renderObjects[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
+        renderObjects[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
+
+        renderObjects[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
+        renderObjects[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //renderObjects[minIndex]->lookAt(cam.getEyePosition());//buggy look at
+
+        renderObjects[pivotIndex]->setPosition(pos);
+        renderObjects[pivotIndex]->setRotation(rot);
     }
-    renderObjects[cIndex]->setPosition(cntrd);
-
-    renderObjects[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
-    renderObjects[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
-    renderObjects[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
-
-    renderObjects[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
-    renderObjects[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
-    //renderObjects[minIndex]->lookAt(cam.getEyePosition());//buggy look at
-
-    renderObjects[pivotIndex]->setPosition(pos);
-    renderObjects[pivotIndex]->setRotation(rot);
 }
+
 //Not in use
-void _Scene::updateHelpersLoop(uint index)
-{
+void _Scene::updateHelpersLoop(uint index){
     if(renderObjects[index]->getSceneEntity().getIsPhysicsHelper() &&  renderObjects[index]->getSceneEntity().getisHitByRay()){
         // binding the pivot object to focus object
         renderObjects[pivotIndex]->setPosition(renderObjects[index]->getSceneEntity().getPostion());
@@ -371,8 +403,7 @@ void _Scene::updateHelpersLoop(uint index)
 /*
  * Created:22_06_2019
 */
-void _Scene::setHelperIndexVars()
-{
+void _Scene::setHelperIndexVars(){
     pivotIndex = findSceneEntity("pivot").getIndexPosInScene();
     cIndex = findSceneEntity("cent").getIndexPosInScene();
     mxIndex = findSceneEntity("max").getIndexPosInScene();
@@ -382,8 +413,7 @@ void _Scene::setHelperIndexVars()
 /*
  * Created:22_06_2019
 */
-void _Scene::addAllHelperTypesInScene()
-{
+void _Scene::addAllHelperTypesInScene(){
     _AssetLoader a;
     //Essential rear background object
     bg.setId(777);
@@ -454,11 +484,11 @@ void _Scene::addAllHelperTypesInScene()
     min.setScale(0.1f);
     min.setModelData(":/models/helpers/min.obj");
     //
-    addSceneObject(pivot);
     addSceneObject(mpnt);
     addSceneObject(cnet);
     addSceneObject(min);
     addSceneObject(max);
-
+    addSceneObject(pivot);
+    //
     setHelperIndexVars();
 }

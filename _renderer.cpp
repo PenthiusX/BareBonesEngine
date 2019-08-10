@@ -241,10 +241,10 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D
 */
 void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar)
 {
-   // Calculate aspect ratio
+    // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     projectionMatrix = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
-   //qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
+    //qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
 }
 /*
  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
@@ -393,7 +393,7 @@ void _Renderer::setscale(float scale)
 /*
  * Created:18_06_2019
 */
-void _Renderer::lookAt(QVector3D ptl)
+void _Renderer::lookAt(QVector3D ptl) //Not Implemented properly yet needs to be fixed after Mesh on Mesh Collision
 {
     //    glm::vec3 obPos = glm::vec3(sceneEntity.getPostion().x(),sceneEntity.getPostion().y(),sceneEntity.getPostion().z());
     //    glm::vec3 tarPo = glm::vec3(ptl.x(),ptl.y(),ptl.z());
@@ -453,7 +453,6 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest){
                                       rotationAxis.y * invs,
                                       rotationAxis.z * invs
                                       ));
-
     this->sceneEntity.setModelMatrix(modelMatrix);
     keepSceneEntityUpdated();
 }
@@ -472,8 +471,8 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     setupTexture(sceneEntity.getTexturePath());
     //setModelDataInBuffers() happens for every object,and is sufficent for the usecases // !!!Comment for structural change!!!!
     //can be converted to using the same VAO for the same set of vertex+index data.
-    //will need to move the whole model loading and id geenration to assetLoader class
-    //and only pass the relavant ids to VAO at runtime to reduce ovehead.
+    //will need to move the whole model loading and id generation to assetLoader class
+    //and only pass the relavant iDs to VAO at runtime to reduce ovehead.
     setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());
     setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
 }
@@ -575,8 +574,12 @@ void _Renderer::setColors()
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
-    if( sceneEntity.getisHitByRay())
+    if(sceneEntity.getisHitByRay())
         sceneEntity.setColor(actualColor * 0.5);
+    else if(sceneEntity.getIsHitByTri()){
+        QVector4D qc = actualColor;
+         qc.setX(actualColor.x() + 1.0f);
+        sceneEntity.setColor(qc);}
     else
         sceneEntity.setColor(actualColor);
 }
