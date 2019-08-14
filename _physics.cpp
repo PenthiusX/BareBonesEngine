@@ -304,6 +304,11 @@ void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
     sceneEntity.setModelInfo(m);
 }
 
+void _Physics::updateSphereExtents(){
+    sp.center = sceneEntity.getPostion();
+    sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent()));
+}
+
 /*
   ▄• ▄▌ ▄▄▄· ·▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
   █▪██▌▐█ ▄█ ██▪ ██ ▐█ ▀█ •██  ▀▄.▀·
@@ -321,8 +326,7 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
         //updates the maxExtents
         transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
         //set sphere collider dimensions
-        sp.center = sceneEntity.getPostion();
-        sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent()));
+        updateSphereExtents();
         //intersection check
         hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
         if(hitSphere(sp.center,sp.radius,camPos)){
@@ -353,7 +357,7 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
             sceneEntity.setIsHitByRay(true);
             qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId()<<"Hit Ipos-"<<sceneEntity.getIndexPosInScene();
         }else if(!rayIntersectsTriangles(triVector,camPos,ray_wor)){
-            sceneEntity.setIsHitByRay(false);}\
+            sceneEntity.setIsHitByRay(false);}
         break;
     }
 }
@@ -370,6 +374,7 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
                 _physicsObjArray[i].getSceneEntity().getPhysicsObjectType() == _SceneEntity::Mesh &&
                 this->sceneEntity.getId() != _physicsObjArray[i].getSceneEntity().getId()){//make sure its not the same object
             return triangleTriangleIntersectionTest(*this,_physicsObjArray[i]);
+            transFormPhysicsTriangles(sceneEntity.getModelMatrix());
         }
         else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere &&
                 _physicsObjArray[i].getSceneEntity().getPhysicsObjectType() == _SceneEntity::Sphere &&
