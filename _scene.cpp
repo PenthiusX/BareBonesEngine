@@ -271,8 +271,8 @@ void _Scene::fixedUpdate(float intervalTime)
 {
   if(_Tools::setIntervals(intervalTime))//everything runs inside this if statement.
   {
-   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
-   if(tUp.joinable()){tUp.detach();}
+//   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
+//   if(tUp.joinable()){tUp.detach();}
   }
 }
 
@@ -332,7 +332,7 @@ void _Scene::updateAllPhysicsObjectsLoop()
                                                       cam.getEyePosition().z()),
                                             glm::vec2(resW,resH));
 
-       //TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
+//       TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
         bool is = false;
         is = physVector[loopIndex].updateObjObjPhysics(physVector);
          _SceneEntity ss = physVector[loopIndex].getSceneEntity();

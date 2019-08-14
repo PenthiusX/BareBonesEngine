@@ -91,7 +91,6 @@ private:
     void transFormPhysicsTriangles(glm::mat4x4 modelMatrix);//updates tranformation related values to the Physics Triangles
     void transFormBoxExtents(glm::mat4x4 rotScaleMatrix);
     bool triangleTriangleIntersectionTest(_Physics objA, _Physics objB);
-    bool sphereSphereIntersectionTest();
 };
 
 #endif // _PHYSICS_H
