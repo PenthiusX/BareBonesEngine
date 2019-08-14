@@ -271,8 +271,8 @@ void _Scene::fixedUpdate(float intervalTime)
 {
   if(_Tools::setIntervals(intervalTime))//everything runs inside this if statement.
   {
-//   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
-//   if(tUp.joinable()){tUp.detach();}
+   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
+   if(tUp.joinable()){tUp.detach();}
   }
 }
 
@@ -323,14 +323,15 @@ void _Scene::updateAllPhysicsObjectsOnce(){
  */
 void _Scene::updateAllPhysicsObjectsLoop()
 {    if(physVector.size() > 0){
-        physVector[loopIndex].setSceneEntity(renderObjects[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
-        //Passing some essentials into the updateLoop for physics
-        //updates the physics object instance and runs the main physics updateOperations.
-        physVector[loopIndex].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-                                            glm::vec3(cam.getEyePosition().x(),//Camera Position
-                                                      cam.getEyePosition().y(),
-                                                      cam.getEyePosition().z()),
-                                            glm::vec2(resW,resH));
+//        physVector[loopIndex].setSceneEntity(renderObjects[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
+//        //Passing some essentials into the updateLoop for physics
+//        //updates the physics object instance and runs the main physics updateOperations.
+//        physVector[loopIndex].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
+//                                            glm::vec3(cam.getEyePosition().x(),//Camera Position
+//                                                      cam.getEyePosition().y(),
+//                                                      cam.getEyePosition().z()),
+//                                            glm::vec2(resW,resH));
+
 
 //       TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
         bool is = false;
@@ -338,9 +339,10 @@ void _Scene::updateAllPhysicsObjectsLoop()
          _SceneEntity ss = physVector[loopIndex].getSceneEntity();
         ss.setIsHitByTri(is);
         renderObjects[ss.getIndexPosInScene()]->setSceneEntityInRenderer(ss);
-        if(renderObjects[ss.getIndexPosInScene()]->getSceneEntity().getIsHitByTri()){
-            triCollidedSceneEntity = renderObjects[ss.getIndexPosInScene()]->getSceneEntity();//sets the sceneEntity that has been set by ray.
-        }
+//        if(renderObjects[ss.getIndexPosInScene()]->getSceneEntity().getIsHitByTri()){
+//            triCollidedSceneEntity = renderObjects[ss.getIndexPosInScene()]->getSceneEntity();//sets the sceneEntity that has been set by ray.
+//        }
+
         qDebug() << is;
         //--------------------------------------------
         loopIndex++;
