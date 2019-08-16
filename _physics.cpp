@@ -347,7 +347,7 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
         else if(!hitBoundingBoxF(bx,camPos,ray_wor))
             sceneEntity.setIsHitByRay(false);
         break;
-     case _SceneEntity::Mesh :
+    case _SceneEntity::Mesh :
         //updates the maxExtents
         transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
         //sets the updated modelMatrix from the sceneEntity.
@@ -373,8 +373,11 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
         if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh &&
                 _physicsObjArray[i].getSceneEntity().getPhysicsObjectType() == _SceneEntity::Mesh &&
                 this->sceneEntity.getId() != _physicsObjArray[i].getSceneEntity().getId()){//make sure its not the same object
-            return triangleTriangleIntersectionTest(*this,_physicsObjArray[i]);
+            //updates the maxExtents
+            transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
+            //sets the updated modelMatrix from the sceneEntity.
             transFormPhysicsTriangles(sceneEntity.getModelMatrix());
+            return triangleTriangleIntersectionTest(*this,_physicsObjArray[i]);
         }
         else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere &&
                 _physicsObjArray[i].getSceneEntity().getPhysicsObjectType() == _SceneEntity::Sphere &&
