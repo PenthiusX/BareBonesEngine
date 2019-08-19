@@ -1,3 +1,4 @@
+
 #include "_scene.h"
 #include "_tools.h"
 #include <future>
@@ -271,8 +272,10 @@ void _Scene::fixedUpdate(float intervalTime)
 {
   if(_Tools::setIntervals(intervalTime))//everything runs inside this if statement.
   {
-   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
-   if(tUp.joinable()){tUp.detach();}
+//   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
+//   if(tUp.joinable()){tUp.detach();}
+
+   updateAllPhysicsObjectsLoop();
   }
 }
 
