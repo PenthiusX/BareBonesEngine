@@ -1,3 +1,11 @@
+/*
+* Physics Class
+*
+* Note:
+* Holds all the phhyscs based functional algorithms.
+*/
+
+
 #include "_physics.h"
 #include <QDebug>
 #include <algorithm>    // std::swap
