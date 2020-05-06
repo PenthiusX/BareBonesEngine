@@ -19,8 +19,6 @@
  * This class holds funtions that have no specific
  * class utility but are standalone tools in maths and physics for use
  * throughout the project.
- * Created: 26_02_2019
- * Author: Saurabh , Aditya
  *
  * (Note!: This whole class needs to be restructured Math implementations could be move out to a seperate class depending how this scales.
  * This can be used as a test base to test out structs and datastructure which can then be later implemented

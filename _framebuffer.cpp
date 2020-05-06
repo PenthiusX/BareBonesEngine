@@ -5,7 +5,6 @@
  * Class: _FrameBuffer
  * Creates an individual instace for the setting and
  * binding of the framebufferObjects
- * Created: 30_04_2019
  * Author: Aditya
 */
 _FrameBuffer::_FrameBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
@@ -20,7 +19,6 @@ _FrameBuffer::~_FrameBuffer()
 /* Function: setupQuad()
  * this function sets up a basic quad to render the frabbuffer texture to
  * we put it in front of the camera for postprocessing implementations.
- * Created: 30_04_2019
 */
 void _FrameBuffer::setupQuad()
 {
@@ -49,7 +47,6 @@ void _FrameBuffer::setupQuad()
 /*
  * Function: setupFramebufferObjects(int resWidth, int resHeight)
  * this function sets up the the buffers for framebuffer to Texture rendering
- * Created: 30_04_2019
 */
 void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
 {
@@ -84,7 +81,6 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
  * this function calls to all function needed on initialisation
  * should be called on resize as well if you need the Framebuffer texture to
  * be the correct respective resolution on resize.
- * Created: 30_04_2019
 */
 void _FrameBuffer::initialise()
 {
@@ -105,7 +101,6 @@ void _FrameBuffer::initialise()
  * all the scene object Related bindings in the draw call like : shaderdata,model,etc
  * come after this so that it reads to frame and updates it in the renderFrame() function
  * which comes after.
- * Created: 30_04_2019
 */
 void _FrameBuffer::setUpdatedFrame()
 {
@@ -116,7 +111,6 @@ void _FrameBuffer::setUpdatedFrame()
  * Function: renderFrameOnQuad()
  * this function will render the frame generated via setFrame, and render it on the Quad
  * that has been set in setupQuad() and rendered below.
- * Created: 30_04_2019
 */
 void _FrameBuffer::renderFrameOnQuad()
 {
@@ -137,14 +131,12 @@ void _FrameBuffer::renderFrameOnQuad()
  * Function: renderFrameOn()
  * this function should help with implementation of the applying a FrameTextuere onto any
  * Object passed into it.
- * Created: 30_04_2019
 */
 void _FrameBuffer::renderFrameOn()
 {
     //implentation pending
 }
 /*
- * Created: 30_04_2019
 */
 void _FrameBuffer::setMousePos(QVector2D mPos)
 {

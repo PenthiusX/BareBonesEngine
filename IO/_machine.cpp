@@ -14,21 +14,13 @@
  *    Camera : Camera object based on type(dc1394,analog,others) and inherted from _Camera class
  *    HardwareSerial : HardwareSerial(serial rs232) object for commands interface between machine and computer
  *
- * Created: 21_02_2019
- * Author:Saurabh
 */
 
 /* Constructor for the Machine class
  * list and select serial ports connected to machine
  * list and select camera connected to machine
- * Created: 21_02_2019
  */
-_Machine::_Machine()
-{
-
-
-
-}
+_Machine::_Machine(){}
 
 // ------------ command functions ----------
 
@@ -47,7 +39,6 @@ _Machine::_Machine()
 /* Rotate Stage Motor by specified steps
  * differential steps from current position
  * number of steps for full rotation: 16000
- * Created: 21_02_2019
  * */
 void _Machine::TurnTableMotorDiff(int steps)
 {
@@ -58,7 +49,6 @@ void _Machine::TurnTableMotorDiff(int steps)
 /* Slide Marking Laser Focus Motor by specified steps
  * differential steps from current position
  * mm per step : unknown
- * Created: 21_02_2019
  * */
 void _Machine::LaserFocusMotorDiff(int steps)
 {
@@ -69,7 +59,6 @@ void _Machine::LaserFocusMotorDiff(int steps)
 /* Slide Marking Laser Height Motor by specified steps
  * differential steps from current position
  * mm per step : unknown
- * Created: 21_02_2019
  * */
 void _Machine::LaserHeightMotorDiff(int steps)
 {
@@ -152,7 +141,6 @@ void _Machine::MarkingLaserDiode(int state)
 
 
 /* setup cammands
- * Created: 21_02_2019
  * */
 void _Machine::set_hardware_serial_defaults()
 {

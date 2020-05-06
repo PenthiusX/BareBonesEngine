@@ -10,7 +10,6 @@
  * Class: _AssetLoader
  * class sets values needed by the viewMatrix
  * for setting of values on Init or realtime
- * Created: 15_03_2019
  * Author: Aditya
 */
 

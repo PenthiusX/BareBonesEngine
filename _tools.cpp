@@ -14,7 +14,6 @@ _Tools::_Tools()
 /*
  * Function:ReadStringFromQrc(QString Filename)
  * returns the string litral for a qrc file path
- * Created: 2_03_2019
 */
 QString _Tools::ReadStringFromQrc(QString Filename)
 {
@@ -38,7 +37,6 @@ QString _Tools::ReadStringFromQrc(QString Filename)
  * this funtion takes in the updated mousposition and
  * returns the max point wrt to the first point passed
  * into this function.
- * Created: 11_04_2019
 */
 QVector2D _Tools::retunrnMaxPoint(QVector2D mousepos)
 {
@@ -105,7 +103,6 @@ float _Tools::getRandomNumberfromRangeF(float min, float max)
     return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
 }
 /*
- * Created: 21_06_2019
 */
 bool isDist = false;
 float dist = 0.f;

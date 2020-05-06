@@ -9,8 +9,7 @@
  * The HardwareSerial class
  * To create an serial port interface for computer-machine communication
  * Extends the QObject class for slots connections to work
- *  * Created: 21_02_2019
- * Author:Saurabh
+ * Author:Aditya
 */
 
 class _HardwareSerial : public QThread

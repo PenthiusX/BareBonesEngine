@@ -8,13 +8,11 @@
  * This class is the Controller is a typical MVC where the
  * View and Controller are being handeled by the QT GUI frameowrk and
  * its wrapper functions for creating Opengl and GUI windowing context.
- * Created: 5_02_2019
- * Author: Aditya,Saurabh
+
 */
 /*
 * Constructor:_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 * sets and passes the context for the Qopengl widget here for use.
-* Created: 5_02_2019
 */
 _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent){
     isCamFocus = false;
@@ -36,7 +34,6 @@ _GLWidget::~_GLWidget(){
 * Function: initializeGL() overrides the
 * same function in the OpopenglFunctions class
 * runs once the opengl context is initialised.
-* Created: 5_02_2019
 */
 void _GLWidget::initializeGL(){
     //needs to be run after the openGl contxt is initialised
@@ -82,7 +79,6 @@ void _GLWidget::initializeGL(){
  * function in OpopenglFunctions class.
  * pasees the current width and height
  * of the layout via - int w and int h
- * Created: 5_02_2019
 */
 void _GLWidget::resizeGL(int w, int h){
     scene->onResize(w, h);
@@ -98,7 +94,6 @@ void _GLWidget::resizeGL(int w, int h){
  * ovveriding thes function in OpopenglFunctions
  * Your proprietory Draw function this run in a loop
  * till the application ends.
- * Created: 5_02_2019
 */
 void _GLWidget::paintGL()//the renderloop
 {
@@ -139,7 +134,6 @@ void _GLWidget::paintGL()//the renderloop
 * Function: mousePressEvent(QMouseEvent *e)
 * this is a overriden function from the QWidget parent
 * runs each time the mouse is pressed.
-* Created: 5_02_2019
 */
 void _GLWidget::mousePressEvent(QMouseEvent *e){
     //convert global cursor pos to localWidgetPositions
@@ -166,7 +160,6 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
 * Function: mouseReleaseEvent(QMouseEvent *e)
 * This is a overriden function from the QWidget parent
 * runs each time the mouse is released.
-* Created: 5_02_2019
 */
 void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -190,7 +183,6 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
 * Function: mouseMoveEvent(QMouseEvent *e)
 * This is a overriden function from the QWidget parent
 * runs each time the mouse is pressed and moved.
-* Created: 5_02_2019
 */
 void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 {
@@ -227,7 +219,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
 * Function: wheelEvent(QWheelEvent *e)
 * This is a overriden function from the QWidget parent
 * runs each time the mouse wheel is scrolled.
-* Created: 5_02_2019
 *
 * Controlls:
 * scrool wheel up to scale object relatively
@@ -252,7 +243,6 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 * Function: keyPressEvent(QKeyEvent * event)
 * runns anytime a key is presses and returns which key through the
 * event pointer of QKeyEvent object.
-* Created: 25_02_2019
 */
 void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final controlls set.
 {

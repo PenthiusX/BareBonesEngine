@@ -5,7 +5,7 @@
 
 /*
  * The Renderer class
- * Created: 8_02_2019
+ *
  * Author: Aditya,Saurabh
 */
 /* Constructor: _Renderer Class
@@ -42,7 +42,7 @@ _Renderer::~_Renderer()
 /*
 * Function: getSceneEntity()
 * returns the current scene entity object.
-* Created:11_02_2019
+
 */
 _SceneEntity _Renderer::getSceneEntity() const
 {
@@ -86,7 +86,6 @@ void _Renderer::setShader(QString vSh, QString fSh)
  * May have extended implementation for inclusion of UV for texture and Normals for
  * lighting.
  * Used by: the _glWidget class initializeGL().
- * Created: 11_02_2019
 */
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<uint> indexArray)
 {
@@ -115,7 +114,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
  * Function: setuniformLocations()
  * sets the unform location uints into there respectively
  * named variables. These variables are used based on definition in shader.
- * Created:11_02_2019
+
 */
 void _Renderer::setuniformLocations()
 {
@@ -138,7 +137,7 @@ void _Renderer::setuniformLocations()
  * Function: setupTexture()
  * creates new texture and adds into list(vector) of textures
  * set a default 8bit single color texture of size 1360 x 1024
- * Created: 2_3_2019
+
  */
 void _Renderer::setupTexture()
 {
@@ -162,7 +161,7 @@ void _Renderer::setupTexture(QString texfile)
  * updates the first texture image from char pointer array
  * resolution of previous image is used
  * current context should be active while calling this function
- * Created: 2_3_2019
+
  */
 void _Renderer::setTexture(char* texBitmap)
 {
@@ -188,7 +187,7 @@ void _Renderer::setTexture(QString pathtoTexture)
 * Sets the values matrices for the model matrix
 * works in implementing translation , rotation and scaling
 * Used by: the _glWidget class initialiseGl() or paintGl().
-* Created: 25_02_2019
+
 */
 void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation)
 {
@@ -213,7 +212,7 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
 * helps set the camera , eye positon , rotation, lookat.
 * Used by: the _glWidget class initialiseGl() or paintGl().
 * depending if the camra needs to update its position in  realtime.
-* Created: 25_02_2019
+
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D upVector)
 {
@@ -237,7 +236,7 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D
 * field of view and the aspect ration bindings. will update itself each time the
 * window is resized.and needs to be called in the resizeGl function.
 * Used by: the _glWidget class resizeGL().
-* Created: 25_02_2019
+
 */
 void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar)
 {
@@ -258,7 +257,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the positions
  * Used by: _render class in draw()
- * Created: 1_03_2019
+
 */
 void _Renderer::setPosition(glm::vec3 pos)
 {
@@ -303,7 +302,7 @@ void _Renderer::translate(glm::vec3 pos)
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the rotation
  * Used by: _glwidgetClass on mousemovement
- * Created: 1_03_2019
+
 */
 void _Renderer::setRotation(glm::vec3 rot)
 {
@@ -339,7 +338,6 @@ void _Renderer::setRotation(glm::vec3 rot)
  * Function: setRotationAroundPivot(QVector3D rot, QVector3D pivot)
  * sets the rotation to be around an defined point
  * Used by: _glwidgetClass on Mousemovement
- * Created: 16_05_2019
 */
 void _Renderer::setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot)
 {
@@ -374,7 +372,7 @@ void _Renderer::setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot)
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the scale
  * Used by: _render class in draw()
- * Created: 1_03_2019
+
 */
 void _Renderer::setscale(float scale)
 {
@@ -391,7 +389,6 @@ void _Renderer::setscale(float scale)
     keepSceneEntityUpdated();
 }
 /*
- * Created:18_06_2019
 */
 void _Renderer::lookAt(QVector3D ptl) //Not Implemented properly yet needs to be fixed after Mesh on Mesh Collision
 {
@@ -461,7 +458,6 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest){
 * Sets the sceen entity object locally and sets the
 * shader ,Model data , projection matrix, texture,
 * and initialises the modelMatrix.
-* Created: 1_03_2019
 */
 void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 {
@@ -477,13 +473,13 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
 }
 /*
- * Created: 1_03_2019
+
 */
 void _Renderer::setSceneEntityInRenderer(_SceneEntity s){
     sceneEntity = s;
 }
 /*
- * Created: 2_03_2019
+ *
 */
 void _Renderer::keepSceneEntityUpdated(){
     //Keeps a copy of the current matrix info in the respective sceneEntity
@@ -513,7 +509,7 @@ void _Renderer::keepSceneEntityUpdated(){
  * This is your proprietory draw function
  * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
  * Used by: the _glWidget class paintGl().
- * Created:11_02_2019
+
 */
 void _Renderer::_Renderer::draw()
 {

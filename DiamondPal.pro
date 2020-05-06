@@ -14,6 +14,7 @@ TEMPLATE = app
 
 HEADERS  += mainwindow.h \
             _glwidget.h \
+    _lights.h \
             _renderer.h \
             _shader.h \
             _sceneentity.h \
@@ -34,6 +35,7 @@ HEADERS  += mainwindow.h \
     _modelinfo.h
 
 SOURCES += main.cpp\
+    _lights.cpp \
             mainwindow.cpp \
             _glwidget.cpp \
             _renderer.cpp \

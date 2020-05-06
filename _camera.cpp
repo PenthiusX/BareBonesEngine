@@ -4,7 +4,6 @@
  * Class: _Camera
  * class sets values needed by the Viewmatrix
  * for setting of values on Init or realtime
- * Created: 01_03_2019
  * Author: Aditya
 */
 
@@ -28,7 +27,6 @@ _Camera::~_Camera(){}
 * sets and gets the postion for the camera object 
 * in opengl space. these values get fed into the renderer 
 * into the viewMatrix.
-* Created: 01_03_2019
 */
 void _Camera::setEyePosition(QVector3D epos){
     eyePosition = epos;
@@ -39,7 +37,6 @@ QVector3D _Camera::getEyePosition() const{
 /*
 * Function: set/get FocalPoint()
 * sets and returns the point the camera is looking at.
-* Created: 01_03_2019
 */
 void _Camera::setFocalPoint(glm::vec3 focalPos){
     focalPoint = focalPos;
@@ -51,7 +48,6 @@ glm::vec3 _Camera::getFocalPoint() const{
 * Function: set/get UpVector()
 * sets the up vector for the camera
 * the direction in which the camera orents itself.
-* Created: 01_03_2019
 */
 void _Camera::setUpVector(QVector3D upVec){
     upVector = upVec;
@@ -64,7 +60,6 @@ QVector3D _Camera::getUpVector() const{
  * Function:get/setFOV
  * gets sets the variable used in
  * field of view setting
- * Created: 08_04_2019
 */
 void _Camera::setFOV(uint fove){
     fov = fove;
@@ -73,7 +68,6 @@ uint _Camera::getFOV() const{
     return fov;
 }
 /*
-* Created: 08_04_2019
 */
 void _Camera::setFarClipDistance(float fclp){
     farClipDistance = fclp;

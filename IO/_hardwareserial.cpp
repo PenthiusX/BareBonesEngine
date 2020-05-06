@@ -10,13 +10,11 @@
  *    ** Yet to create non blocking preemptive object for threaded operation **
  *
  * Extends the QObject class for slots connections to work
- * Created: 21_02_2019
- * Author:Saurabh
+ * Author:Aditya
 */
 
 /* Constructor for the HardwareSerial class
  * set the default settings for serial port
- * Created: 21_02_2019
  */
 _HardwareSerial::_HardwareSerial()
 {
@@ -44,7 +42,6 @@ _HardwareSerial::_HardwareSerial(QString port_name)
 
 /* Destructor
  * closes serial port when object is deleted
- * Created: 21_02_2019
  * */
 _HardwareSerial::~_HardwareSerial()
 {
@@ -53,7 +50,6 @@ _HardwareSerial::~_HardwareSerial()
 }
 
 /* initialize QSerial object with default setttings
- * Created: 21_02_2019
  * */
 void _HardwareSerial::openSerialPort()
 {
@@ -81,7 +77,6 @@ void _HardwareSerial::openSerialPort()
 }
 
 /* releases QSerial object and closes connection
- * Created: 21_02_2019
  * */
 void _HardwareSerial::closeSerialPort()
 {
@@ -102,7 +97,6 @@ QStringList _HardwareSerial::list_serial_ports()
 
 /* non blocking/asychronous data write
  * returns immediately after writing data to send buffer
- * Created: 21_02_2019
  * */
 void _HardwareSerial::writeData(const QString data)
 {
@@ -123,7 +117,6 @@ void _HardwareSerial::writeData(const QString data)
 
 /* blocking/sychronous data write and wait until responce is recieved
  * returns responce as QString after recieving by reading recieve buffer
- * Created: 21_02_2019
  * */
 QString _HardwareSerial::writeDataAndWait(const QString data)
 {
@@ -156,7 +149,6 @@ QString _HardwareSerial::writeDataAndWait(const QString data)
 /*  *** Yet to implement correctly ***
  * blocking/sychronous wait until last responce is recieved
  * write data after waiting is done
- * Created: 21_02_2019
  * */
 void _HardwareSerial::waitAndWriteData(const QString data)
 {
@@ -169,7 +161,6 @@ void _HardwareSerial::run()
 }
 
 /* reads data when signal to read is triggered
- * Created: 21_02_2019
 */
 void _HardwareSerial::readData()
 {

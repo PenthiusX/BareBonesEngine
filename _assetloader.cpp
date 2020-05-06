@@ -10,7 +10,6 @@
 #include "_tools.h"
 /*
 * Constructor/Distructor:
-* Created:15_03_2019
 */
 _AssetLoader::_AssetLoader()
 {
@@ -38,7 +37,6 @@ _ModelInfo _AssetLoader::getModelInfo(){
 * Function:objLoader(QString pathToFile)
 * takes a Qstring path to qrc file and then parses through 
 * a string array to get the approptie onfo to render the model
-* Created:15_03_2019
 */
 void _AssetLoader::objLoader(QString pathToFile)
 {
@@ -123,7 +121,6 @@ void _AssetLoader::objLoader(QString pathToFile)
 /* Not in use---future implementation for VAO based optimisation.
 * Preprocess all models into memory
 * will reduce ovehead on runtime.
-* Created: 31_05_2019
 */
 void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
 {
@@ -140,7 +137,6 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
     }
 }
 /*
- * Created:25_06_2019
 */
 _ModelInfo _AssetLoader::generateQuad()
 {

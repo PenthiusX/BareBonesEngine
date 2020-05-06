@@ -7,7 +7,6 @@
  * Class: _Camera
  * class sets values needed by the Viewmatrix
  * for setting of values on Init or realtime
- * Created: 01_03_2019
  * Author: Aditya
 */
 
