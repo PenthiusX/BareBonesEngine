@@ -8,8 +8,6 @@
  * Class: _FrameBuffer
  * Creates an individual instace for the setting and
  * binding of the framebufferObjects
- * Created: 30_04_2019
- * Author: Aditya
 */
 
 class _FrameBuffer : public QOpenGLExtraFunctions

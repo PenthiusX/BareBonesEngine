@@ -11,9 +11,6 @@
  *  contains these main interfaces :
  *    Camera : Camera object based on type(dc1394,avt,analog,others) and inherted from _Camera class
  *    HardwareSerial : HardwareSerial(serial rs232) object for commands interface between machine and computer
- *
- * Created: 21_02_2019
- * Author:Saurabh
 */
 class _Machine :public QObject
 {

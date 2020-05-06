@@ -11,8 +11,6 @@
  * Class: _Physics
  * Creates an individual instace for the setting and
  * binding of the framebufferObjects
- * Created: 30_04_2019
- * Author: Aditya
 */
 
 typedef struct Phy_Triangle{

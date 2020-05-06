@@ -11,8 +11,7 @@
  * This class is the Controller is a typical MVC where the
  * View and Controller are being handeled by the QT GUI frameowrk and
  * its wrapper functions for creating Opengl and GUI windowing context.
- * Created: 5_02_2019
- * Author: Aditya,Saurabh
+ * Author: Aditya
 */
 
 class _GLWidget :  public QOpenGLWidget

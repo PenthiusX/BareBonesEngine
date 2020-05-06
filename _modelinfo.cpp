@@ -53,7 +53,6 @@ bool _ModelInfo::getIsLoaded() const{
 }
 
 /*
- * Created: 12_06_2019
 */
 void _ModelInfo::calcMinMaxExtents(){
     std::vector<float> v = vertexArray;
@@ -78,7 +77,6 @@ void _ModelInfo::calcMinMaxExtents(){
     cent =  calcCentroidFromMinMax();
 }
 /*
- * Created: 12_06_2019
 */
 glm::vec4 _ModelInfo::calcCentroidFromMinMax(){
     glm::vec4 centroid;

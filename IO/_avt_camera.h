@@ -16,8 +16,7 @@
  * Library inside "Dependancies/win/Lib" for 64 bit windows
  * with upper level functions
  * will be used as backend camera for higher level camera class
- * Created: 02_03_2019
- * Author: Saurabh
+ * Author: Aditya
 */
 class _AVT_Camera :public _HWDCamera
 {

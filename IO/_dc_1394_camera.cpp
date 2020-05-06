@@ -12,7 +12,6 @@
  * will be used as backend camera for higher level camera class
  * requires dependancies libdc1394 ,libraw1394 in linux
  * requires dependancies libdc1394 ,libraw1394, CMU dc1394 in windows
- * Created: 15_02_2019
  * Author: Saurabh
 */
 
@@ -31,7 +30,6 @@ _DC_1394_Camera::~_DC_1394_Camera()
  * parameters :
  *     int v : index of camera to be selested from listed cameras
  * returns 1 if camera selested succesfully else 0
- * Created: 15_02_2019
  */
 int _DC_1394_Camera::init(int v)
 {
@@ -124,7 +122,6 @@ int _DC_1394_Camera::list_cameras()
  * breaks further operation releases camera and exits
  * parameters :
  *     dc1394camera_t *camera : pointer t0 dc1394 library camera object
- * Created: 15_02_2019
  */
 void _DC_1394_Camera::cleanup_and_exit(dc1394camera_t *camera)
 {
@@ -141,7 +138,6 @@ void _DC_1394_Camera::cleanup_and_exit(dc1394camera_t *camera)
  * parameters :
  *     int v : index of camera to be selested from listed cameras
  * returns 1 if camera selested succesfully else 0
- * Created: 15_02_2019
  */
 int _DC_1394_Camera::select_camera(int v)
 {
@@ -181,7 +177,6 @@ int _DC_1394_Camera::select_camera(int v)
 /* This function set initialization defaults for camera
  * eg: mode , color encoding ,iso speed , flags
  * returns 1 if camera selested succesfully else 0
- * Created: 15_02_2019
  */
 int _DC_1394_Camera::camera_setup_defaults()
 {

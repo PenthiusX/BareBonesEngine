@@ -3,8 +3,6 @@
 
 /* Texture Class currently working for single texture per shader
  * documentation and slots functions will be completed later
- * Created: 28_03_2019
- * Author:Saurabh, Aditya
  */
 
 /* Constructor/Distructor:Texture Class constructor
@@ -18,9 +16,7 @@ _Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 /*
  * Constructor: _Texture(char *img, uint w, uint h,uint colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from char pointer array with given resolution
- * Created: 21_02_2019
  * sets defualt parameters
- * Date:28_03_2019
 */
 _Texture::_Texture(char *img, uint w, uint h,uint colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
@@ -35,9 +31,7 @@ _Texture::_Texture(char *img, uint w, uint h,uint colorFormat) : QOpenGLExtraFun
 }
 /* Constructor: _Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from QImage
- * Created: 21_02_2019
  * sets defualt parameters
- * Date:28_03_2019
 */
 _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
@@ -53,7 +47,6 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
 }
 /* Function: setImage(QString pathtoTexture)
  *  Updates texture image from image file path
- * Created: 28_03_2019
 */
 void _Texture::setImage(QString pathtoTexture)
 {
@@ -69,7 +62,6 @@ void _Texture::setImage(QString pathtoTexture)
 
 /* Function:setImage(QImage& img)
  *
- * Created: 21_02_2019
 */
 void _Texture::setImage(QImage& img)
 {
@@ -82,7 +74,6 @@ void _Texture::setImage(QImage& img)
 }
 
 /* Updates texture from char pointer array and resolution of last image
- * Created: 21_02_2019
 */
 void _Texture::setImage(char* img)
 {
@@ -93,7 +84,6 @@ void _Texture::setImage(char* img)
 }
 
 /* Updates texture from char pointer array with updated given resolution
- * Created: 21_02_2019
 */
 void _Texture::setImage(char* img,uint iwidth,uint iheight)
 {
@@ -103,7 +93,6 @@ void _Texture::setImage(char* img,uint iwidth,uint iheight)
 }
 
 /* bind texture to default slot(0)
- * Created: 21_02_2019
 */
 void _Texture::bind()
 {
@@ -111,7 +100,6 @@ void _Texture::bind()
 }
 
 /* bind texture default given slot index
- * Created: 21_02_2019
 */
 void _Texture::bind(uint index)
 {
@@ -123,7 +111,6 @@ void _Texture::bind(uint index)
  *   index : binding index integer specified in shader
  *   format : data format eg. RGBA8,R8
  *   access : data access eg. GL_READ_ONLY,GL_WRITE_ONLY,GL_READ_WRITE,
- * Created: 21_02_2019
 */
 void _Texture::bindForCompute(uint index, GLenum format, GLenum access)
 {
@@ -133,7 +120,6 @@ void _Texture::bindForCompute(uint index, GLenum format, GLenum access)
 /* bind texture for framebuffer target
  *   index : attatchment index integer
  *   operation : framebuffer operation eg. GL_FRAMEBUFFER,GL_READ_FRAMEBUFFER,GL_DRAW_FRAMEBUFFER,
- * Created: 21_02_2019
 */
 void _Texture::bindForFramebuffer(uint index, GLenum operation)
 {
@@ -142,7 +128,6 @@ void _Texture::bindForFramebuffer(uint index, GLenum operation)
 }
 
 /* unbinds the default
- * Created: 21_02_2019
 */
 void _Texture::unbind()
 {
@@ -151,7 +136,6 @@ void _Texture::unbind()
 
 /* add texture parameters manually
  * these parameters will be applied in load function
- * Created: 21_02_2019
 */
 void _Texture::addParameter(uint pname, uint param)
 {
@@ -161,7 +145,6 @@ void _Texture::addParameter(uint pname, uint param)
 /* initializes texture
  * applys parameters
  * loads the image
- * Created: 21_02_2019
 */
 void _Texture::load( GLenum format, GLenum datatype)
 {

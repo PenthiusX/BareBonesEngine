@@ -31,7 +31,7 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
  * Takes the values for diffrent aspects of a renderable model.
  * Author: Aditya
- * Created:26_02_2019
+
 */
 _SceneEntity::_SceneEntity(glm::vec3 pos, glm::vec3 rot, float scale){
     postion = pos;
@@ -45,7 +45,7 @@ _SceneEntity::~_SceneEntity(){
  * sets/gets the id for the current object.
  * ID is only a tag or name, used only to find and
  * manupulate the respective object with the relavant ID.
- * Created:26_02_2019
+
 */
 void _SceneEntity::setId(uint id){
     this->id = id;
@@ -65,7 +65,6 @@ QString _SceneEntity::getTag() const{
     return tag;
 }
 /*
- * Created: 10_06_2019
 */
 void _SceneEntity::setOrderInIndex(uint i){
     orderInIndex = i;
@@ -84,7 +83,7 @@ bool _SceneEntity::getIsTransformationAllowed(){
 /*
  * Function: setPosition(QVector3D pos) & getPostion()
  * sets/gets the position for the current object.
- * Created:26_02_2019
+
 */
 void _SceneEntity::setPosition(glm::vec3 pos){
     postion = pos;
@@ -95,7 +94,7 @@ glm::vec3 _SceneEntity::getPostion() const{
 /*
  * Function: setRotation(QQuaternion rot) & getRotation()
  * sets/gets the rotation for the current object.
- * Created:26_02_2019
+
 */
 void _SceneEntity::setRotation(glm::vec3 rot){
     rotation = rot;
@@ -107,7 +106,6 @@ glm::vec3 _SceneEntity::getRotation() const{
  * Function: set/getPivot
  * sets gets the pivot position for the
  * scene entity.
- * Created:16_05_2019
 */
 void _SceneEntity::setPivot(glm::vec3 pivot){
     this->pivot = pivot;
@@ -123,7 +121,7 @@ bool _SceneEntity::getIsPivotSet(){
 /*
  * Function: setScale(float scale) & getScale()
  * sets/gets the scale for the current object.
- * Created:26_02_2019
+
 */
 void _SceneEntity::setScale(float scale){
     this->scale = scale;
@@ -135,7 +133,6 @@ float _SceneEntity::getScale() const{
  * Function: set/getColor
  * sts gets the color variable of the
  * sceneObject
- * Created: 21_05_2019
 */
 void _SceneEntity::setColor(QVector4D col){
     color = col;
@@ -147,7 +144,6 @@ QVector4D _SceneEntity::getColor() const{
  * Function: set/get translationMatrix()
  * that stores the traslation part of the modelMatrix
  * locally
- * Created: 20_05_2019
 */
 void _SceneEntity::setTranslationMatrix(glm::mat4x4 tmat){
     translationMatrix = tmat;
@@ -159,7 +155,6 @@ glm::mat4x4 _SceneEntity::getTranslationMatrix() const{
  * Function: set/get Rotationmatrix()
  * that stores the rotation part of the modelMatrix
  * locally
- * Created: 20_05_2019
 */
 void _SceneEntity::setRotationmatrix(glm::mat4x4 rmat){
     rotationMatrix = rmat;
@@ -171,7 +166,6 @@ glm::mat4x4 _SceneEntity::getRotationmatrix() const{
  * Function: set/get ScaleingMatrix()
  * that stores the scaling part of the modelMatrix
  * locally
- * Created: 20_05_2019
 */
 void _SceneEntity::setScaleingMatrix(glm::mat4x4 smat){
     scaleMatirx = smat;
@@ -186,7 +180,6 @@ glm::mat4x4 _SceneEntity::getModelMatrix() const{
     return modelMatrix;
 }
 /*
- * Created:3_06_2019
 */
 void _SceneEntity::setProjectionMatrix(glm::mat4x4 proj){
     projectionMatrix = proj;
@@ -195,7 +188,6 @@ glm::mat4x4 _SceneEntity::getProjectionMatrix() const{
     return projectionMatrix;
 }
 /*
- * Created:3_06_2019
 */
 void _SceneEntity::setViewMatrix(glm::mat4x4 view){
     viewMatrix = view;
@@ -204,7 +196,6 @@ glm::mat4x4 _SceneEntity::getViewMatrix() const{
     return viewMatrix;
 }
 /*
- * Created:13_06_2019
 */
 void _SceneEntity::setModelInfo(_ModelInfo minfo){
     modelInfo = minfo;
@@ -219,7 +210,6 @@ bool _SceneEntity::getIsActive(){
     return isActive;
 }
 /*
- * Created:15_05_2019
 */
 void _SceneEntity::setIsMeshEditable(bool isit){
     isMeshEditable = isit;
@@ -228,7 +218,6 @@ bool _SceneEntity::getIsMeshEditable(){
     return isMeshEditable;
 }
 /*
- * Created:15_05_2019
 */
 void _SceneEntity::setIsLineMode(bool isit){
     isLineMode = isit;
@@ -256,7 +245,6 @@ bool _SceneEntity::getIsTransformationLocal(){
     return isTransformationLocal;
 }
 /*
- *Created:11_06_2017
 */
 void _SceneEntity::setModelData(_AssetLoader aloader)
 {
@@ -287,7 +275,7 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
  * sets the vertex and index data in one function, for the current object.
  * takes data as a path and uses the assetloader class to load in the obj data from
  * a path to the obj File.
- * Created:26_02_2019
+
  */
 void _SceneEntity::setModelData(QString path)
 {
@@ -305,7 +293,7 @@ void _SceneEntity::setModelData(QString path)
 /*
  * Function: setShaderPath(QString vSh, QString fSh)
  * sets the path  for the shadert to be loaded ,for the current object.
- * Created:26_02_2019
+
 */
 void _SceneEntity::setShader(QString vSh, QString fSh) {
     vShaderPath = vSh;
@@ -324,7 +312,6 @@ void _SceneEntity::setTexturePath(QString texPath) {
 /*
 * Function: getVertexShaderPath()
 * returns the Vertex shader path set in the object via set shader Path
-* Created:26_02_2019
 */
 QString _SceneEntity::getVertexShaderPath() const{
     return vShaderPath;
@@ -332,7 +319,6 @@ QString _SceneEntity::getVertexShaderPath() const{
 /*
 * Function: getFragmentShaderPath()
 * returns the fragment shader path set in the object via set shader Path
-* Created:26_02_2019
 */
 QString _SceneEntity::getFragmentShaderPath() const{
     return fShaderPath;
@@ -341,7 +327,6 @@ QString _SceneEntity::getFragmentShaderPath() const{
  * Function: setPhysicsObject(_Physics::PhysicsObjects penum)
  * sets the physics object type in the scenEntity. Defines what
  * kind of collision obbject is attached to the sceneEntity
- * Created: 22_05_2019
 */
 void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum){
     isPhysicsObject = true;
@@ -362,7 +347,6 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, sce
  * Funtion: getisHitRay()
  * reutrn is this sceneEntity has been
  * hit by the mousPointRay or not
- * Created: 22_05_2019
 */
 bool _SceneEntity::getisHitByRay() {
     return isHitByRay;
@@ -375,7 +359,6 @@ void _SceneEntity::setIsHitByRay(bool isHitByRay) {
  * return on even when the object
  * collided with anotehr MeshOBject
  * in a Tri on Tri collision scenario
- *Created:06_08_2019
 */
 bool _SceneEntity::getIsHitByTri() {
     return isHitByTri;
@@ -384,7 +367,6 @@ void _SceneEntity::setIsHitByTri(bool isHitByTri) {
     this->isHitByTri = isHitByTri;
 }
 /*
- * Created: 22_06_2019
 */
 bool _SceneEntity::getIsSelected() const {
     return isSelected;
@@ -393,13 +375,11 @@ void _SceneEntity::setIsSelected(bool isit) {
     isSelected = isit;
 }
 /*
- * Created:3_06_2015
 */
 bool _SceneEntity::getIsPhysicsObject() const {
     return isPhysicsObject;
 }
 /*
- * Created: 15_06_2019
 */
 bool _SceneEntity::getIsPhysicsHelper() const {
     return isPhysicsHelper;

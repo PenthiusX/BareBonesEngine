@@ -9,7 +9,7 @@
  * set inside via a sceneentity object. essentially sets values in the scene entity object into the Renderer for drawing
  * Sets up Delegation to the class _Framebuffer,_Render and _Physics to work in one scene instance in cohision.
  * Autor: Aditya Mattoo
- * Created:26_02_2019
+
 */
 
 /*
@@ -36,7 +36,6 @@ _Scene::~_Scene(){
 * binds the propertes set by the scene objectes into the
 * renderer instace for rendering in the scene
 * this is being called by the _GlWidget class.
-* Created:26_02_2019
 */
 void _Scene::addSceneObject(_SceneEntity s){
     // Only sets the scene object if the camera has been set already and scene object is active
@@ -93,7 +92,7 @@ void _Scene::addSceneObject(_SceneEntity s){
  * Function: getSceneObjects()
  * returns the vector array of sceneObjects.
  * this is being called by the _GlWidget class.
- * Created:26_02_2019
+
 */
 std::vector<_Renderer*> _Scene::getSceneObjects(){
     return renderObjects;
@@ -103,7 +102,7 @@ std::vector<_Renderer*> _Scene::getSceneObjects(){
  * function checks if the cmaera is attached and sets the local
  * camera object with the camera object passed via parameter for use in rendering
  * and setting the view matrix in the renderer
- * Created:26_02_2019
+
 */
 void _Scene::addCamera(_Camera c){
     isCamera = true;
@@ -112,7 +111,7 @@ void _Scene::addCamera(_Camera c){
 /*
  * Function: updateCamera(_Camera c)
  * sets the camera updated values to every render entity matrix
- * Created:26_02_2019
+
 */
 void _Scene::updateCamera(_Camera c){
     cam = c;
@@ -130,7 +129,7 @@ void _Scene::updateCamera(_Camera c){
 *They need to be run only once to find the object.
 */
 /*
- * Created: 10_06_2019
+
 */
 _SceneEntity _Scene::findSceneEntity(uint iD){
     _SceneEntity empty;
@@ -163,14 +162,14 @@ uint _Scene::getSceneObjectCount(){
 }
 /* Function:getSceneEntityHitWithRay()
  * returns the SceneEntity that is hitBy the mousePointer ray.
- * Created: 10_06_2019
+
 */
 _SceneEntity _Scene::getSceneEntityHitWithRay(){
     return rayHitSceneEntity;
 }
 
 /*
- * Created: 5_06_2019
+
  */
 void _Scene::removeSceneObject(uint index){
     renderObjects.erase(renderObjects.begin()+index);
@@ -190,7 +189,7 @@ void _Scene::removeSceneObject(_SceneEntity s){
   ▀▀  █▪▀▀▀ ▀█▄▀▪ ▀▀▀  ▀▀▀▀  ▀▀▀     ▀▀▀  ▀▀  ▀▀▀  ▀▀ █▪  ▀▀▀
 */
 /*
- * Created: 3_05_2019
+
 */
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     if(m == Qt::RightButton){
@@ -223,7 +222,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
  * Function: onResize(int w,int h)
  * gets called on resize and all operations will run when the windows is resized
  * this is being called by the _GlWidget class.
- * Created:26_02_2019
+
 */
 void _Scene::onResize(int w,int h){
     resW = w;
@@ -246,7 +245,7 @@ void _Scene::onResize(int w,int h){
  * This function is render function that will call the glDraw fuinction in
  * the render final draw of all sceneEntity objects attached to scene.
  * this is being called by the _GlWidget class.
- * Created:26_02_2019
+
 */
 void _Scene::render(){
     //sets the Frame for the framebufferObject.
@@ -266,7 +265,6 @@ void _Scene::render(){
 /*
  * Function:fixedUpdate()
  * this function updated at setintervals based on a clock timer.
- * Created:5_08_2019
  */
 void _Scene::fixedUpdate(float intervalTime)
 {
@@ -274,8 +272,7 @@ void _Scene::fixedUpdate(float intervalTime)
   {
 //   std::thread tUp(&_Scene::updateAllPhysicsObjectsLoop,this);
 //   if(tUp.joinable()){tUp.detach();}
-
-   updateAllPhysicsObjectsLoop();
+//   updateAllPhysicsObjectsLoop();
   }
 }
 
@@ -290,7 +287,7 @@ void _Scene::fixedUpdate(float intervalTime)
  * Function: updatePhysicsForAllObjects()
  * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
- * Created: 22_05_2019
+
 */
 void _Scene::updateAllPhysicsObjectsOnce(){
     if(physVector.size() > 0){
@@ -322,7 +319,7 @@ void _Scene::updateAllPhysicsObjectsOnce(){
  * Function: updatePhysicsForAllObjectsLoop()
  * update the physcs variables realtime and is relativel optmised to run in a loop.
  * is called in the _scene class's fixedUpdate() function.
- * Created: 22_05_2019
+
  */
 void _Scene::updateAllPhysicsObjectsLoop()
 {    if(physVector.size() > 0){
@@ -361,7 +358,6 @@ void _Scene::updateAllPhysicsObjectsLoop()
   ▀▀▀ · ▀▀▀ .▀▀▀ .▀    ▀▀▀ .▀  ▀ ▀▀▀▀
 */
 /*
- * Created:22_06_2019
  */
 void _Scene::updateHelpersOnce(){
     if(mxIndex > 0,minIndex > 0,pivotIndex > 0){
@@ -406,7 +402,7 @@ void _Scene::updateHelpersLoop(uint index){
     }
 }
 /*
- * Created:22_06_2019
+
 */
 void _Scene::setHelperIndexVars(){
     pivotIndex = findSceneEntity("pivot").getIndexPosInScene();
@@ -416,7 +412,6 @@ void _Scene::setHelperIndexVars(){
     mPointerIndex = findSceneEntity("mousePointerObject").getIndexPosInScene();
 }
 /*
- * Created:22_06_2019
 */
 void _Scene::addAllHelperTypesInScene(){
     _AssetLoader a;

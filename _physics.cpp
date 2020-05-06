@@ -38,7 +38,6 @@ glm::vec3 _Physics::getRayTriIntersectionPoint() const{
     return outIntersectionPoint;
 }
 /*
- * Created: 19_07_2018
 */
 std::vector<_Phy_Triangle> _Physics::getPhysTries() const{
     return triVector;
@@ -114,7 +113,6 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
 }
 /* Function: setMousePointerRay()
  * takes the mouse position and casts a ray in world space from it.
- * Created:30_05_2019
  */
 void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4, glm::vec2 res){
     resW = (int)res.x;
@@ -136,22 +134,19 @@ void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_
     // don't forget to normalise the vector at some point
     ray_wor = glm::normalize(ray_wor);
 }
-/*
- * Created:03.06.2019 Not in use
+/*Not in use
 */
 _Phy_Plane _Physics::constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1, glm::vec3 V2){
     glm::vec3 normal = glm::normalize(glm::cross(V1 - V0, V2 - V0));
     return constructPlaneFromPointNormal(V0, normal);
 }
-/*
- * Created:03.06.2019 Not in use
+/* Not in use
 */
 _Phy_Plane _Physics::constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, const glm::vec3 V2){
     glm::vec3 normal = glm::cross(V1, V2);
     return constructPlaneFromPointNormal(Pt, normal);
 }
-/*
- * Created:03.06.2019 Not in use
+/*Not in use
 */
 _Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal){
     _Phy_Plane Result;
@@ -172,7 +167,6 @@ _Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 norma
 /*
  * Function: raySphereIntersect()
  * returns yes or no on intersection
- * Created:30_05_2019
  */
 bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin){
     glm::vec3 rayDir = ray_wor;
@@ -187,7 +181,6 @@ bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin){
  * Function: raySphereIntersect()
  * Returns distance from r0 to first intersecion with sphere,
  * or -1.0 if no intersection.
- * Created:30_05_2019
 */
 float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 center, float radius){
     glm::vec3 rayDir = ray_wor;
@@ -202,7 +195,6 @@ float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 center, float 
  * Function: 'Möller–Trumbore' ray triange intersection algorithm
  * checks for instrsection with the ray and traingle and returns a point
  * called in the Physics update for mesh
- * Created:03.06.2019
 */
 bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
                                      glm::vec3 rayVector,
@@ -234,7 +226,7 @@ bool _Physics::rayIntersectsTriangle(glm::vec3 rayOrigin,
         return false;}
 }
 /*
- * Created: 15_06_2019
+ *
  */
 bool _Physics::rayIntersectsTriangles(std::vector<_Phy_Triangle> tries,glm::vec3 rayOrigin,glm::vec3 rayVector){
     if(tries.size() != NULL){
@@ -247,7 +239,7 @@ bool _Physics::rayIntersectsTriangles(std::vector<_Phy_Triangle> tries,glm::vec3
     return false;
 }
 /*
- * Created: 5_06_2019
+ *
 */
 bool hitBoundingBoxF(_Phy_Box b,glm::vec3 orig, glm::vec3 r){
     float tmin = (b.min.x - orig.x) / r.x;
@@ -290,7 +282,7 @@ bool hitBoundingBoxF(_Phy_Box b,glm::vec3 orig, glm::vec3 r){
 /* Function: transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
  * tranforms the physics bodies in sync with the actual object it
  * is bound on.
- * Created: 5_06_2019
+
 */
 void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix){
     for(unsigned int tr = 0 ; tr < triVector.size() ; tr++){
@@ -300,7 +292,6 @@ void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix){
     }
 }
 /*
- * Created: 12_06_2019
 */
 void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
     glm::vec4 max = glm::vec4(sceneEntity.getPostion().x,sceneEntity.getPostion().y,sceneEntity.getPostion().z,0.0f) + rotScaleMatrix * initialMax;
@@ -371,7 +362,6 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
 }
 
 /*
- * Created: 19_07_2018
 */
 bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
     //Scan this Physics object and its triangles with
@@ -411,7 +401,6 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
  *             vertices of triangle 2: U0,U1,U2
  * result    : returns 1 if the triangles intersect, otherwise 0
  *
- * Created: 12_07_2018
  */
 
 #define fabs(x)(float(fabs(x)))        /* implement as is fastest on your machine */
@@ -419,13 +408,12 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
 /* if USEEPSILONTEST is true then we do a check:
    if |dv|<EPSILON then dv=0.0;
    else no check is done (which is less robust)
-   Created: 12_07_2018
+
 */
 #define USEEPSILONTEST TRUE
 #define EPSILON 0.000001
 /*
  * c type macros for faster than glm computations
- * Created: 12_07_2018
 */
 #define cross(dest,v1,v2){                     \
     dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
@@ -441,7 +429,6 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
 
 /*
  * sort so that a<=b
- * Created: 14_07_2018
 */
 #define sort(a,b)       \
     if(a>b)    \
@@ -457,7 +444,6 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
  * this edge to edge test is based on Franlin Antonio's gem:
    "Faster Line Segment Intersection", in Graphics Gems III,
    pp. 199-202
-   Created: 16_07_2018
 */
 #define edgeEdgeTest(V0,U0,U1)                      \
     Bx=U0[i0]-U1[i0];                                   \
@@ -517,7 +503,6 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
     }                                         \
     }
 /*
- * Created: 17_07_2018
  */
 int coPlanarTriTri(float N[3],float V0[3],float V1[3],float V2[3],float U0[3],float U1[3],float U2[3])
 {
@@ -555,7 +540,6 @@ int coPlanarTriTri(float N[3],float V0[3],float V1[3],float V2[3],float U0[3],fl
 }
 
 /*
-Created: 17_07_2018
 */
 #define newComputeIntervals(VV0,VV1,VV2,D0,D1,D2,D0D1,D0D2,A,B,C,X0,X1) \
 { \
@@ -700,7 +684,6 @@ int NoDivTriTriIsect(float V0[3],float V1[3],float V2[3],float U0[3],float U1[3]
     return 1;
 }
 /*
- * Created: 19_07_2018
 */
 bool _Physics::triangleTriangleIntersectionTest(_Physics objA, _Physics objB){
     for(uint i = 0; i < objA.getPhysTries().size(); i++)

@@ -14,8 +14,7 @@
  * Library inside "Dependancies/win/Lib" for 64 bit windows
  * with upper level functions
  * will be used as backend camera for higher level camera class
- * Created: 02_03_2019
- * Author: Saurabh
+ * Author: Aditya
 */
 _AVT_Camera::_AVT_Camera() : _HWDCamera()
 {
@@ -23,7 +22,6 @@ _AVT_Camera::_AVT_Camera() : _HWDCamera()
 }
 
 /* find and return number of cameras connected
- * Created: 02_03_2019
  */
 int _AVT_Camera::list_cameras(){
     // Init module
@@ -43,7 +41,6 @@ int _AVT_Camera::list_cameras(){
  * parameters :
  *     int v : index of camera to be selested from listed cameras
  * returns 1 if camera selested succesfully else 0
- * Created: 02_03_2019
  */
 int _AVT_Camera::select_camera(int v){
     // Connect with node
@@ -62,7 +59,6 @@ int _AVT_Camera::select_camera(int v){
  * parameters :
  *     int v : index of camera to be selested from listed cameras
  * returns 1 if camera selested succesfully else 0
- * Created: 03_02_2019
  */
 int _AVT_Camera::init(int v){
 
@@ -92,14 +88,12 @@ int _AVT_Camera::init(int v){
 }
 
 /* Destructor stops camera
- * Created: 03_02_2019
  */
 _AVT_Camera::~_AVT_Camera(){
  stop_camera();
 }
 
 /* Stop camera and exit module/library
- * Created: 03_02_2019
  */
 int _AVT_Camera::stop_camera(){
 
@@ -120,7 +114,6 @@ return 1;
 
 /* This Function returns pointer to start of image data
  * used to retrieve image grabbed by camera
- * Created: 03_02_2019
  */
 char* _AVT_Camera::get_frame(){
 
@@ -138,7 +131,6 @@ int _AVT_Camera::grab_frame(){
 }
 
 /* Capture frame from camera and store inside given file name
- * Created: 03_02_2019
  */
 int _AVT_Camera::grab_frame(QString filename){
 

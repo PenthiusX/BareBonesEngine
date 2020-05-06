@@ -7,8 +7,6 @@
  * Shader class:
  * Holds functonality to bind shader to a shaderprogram
  * and use it the current opengl Context.
- * Created: 14_02_2019
- * Author: Aditya Mattoo
 */
 class _Shader: protected QOpenGLExtraFunctions
 {
