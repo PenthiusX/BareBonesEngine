@@ -3,6 +3,14 @@
 #include "_tools.h"
 #include <future>
 
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
+
+
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -73,12 +81,21 @@ void _Scene::addSceneObject(_SceneEntity s){
             }
         }
     }
+
+
+//    l->setModelMatrix(glm::vec3(0.0,0.0,0.0),1.0f,glm::vec3(0.0,0.0,0.0));
+//    l->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+//    l->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+//    l->initLightBody();
+
+
     noOfVerticesInScene = 0;
     noOfUniquesObjectsInScene = 0;
     noOfUniquesObjectsInScene = renderObjects.size() - 6;
     for(uint i = 0; i<renderObjects.size(); i++){
         this->noOfVerticesInScene += renderObjects[i]->getSceneEntity().getModelInfo().getVertexArray().size();
     }
+    //sets the no of triangle for debug
     noOfTrianglesInScene = noOfVerticesInScene * 0.333333333333;
 }
 /*
@@ -256,6 +273,7 @@ void _Scene::render(){
     {
         //Frame update
         renderObjects[i]->draw();////Render all objects that are active.Calls the draw function unique to each renderObject.
+//        l->draw();
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below

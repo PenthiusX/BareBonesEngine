@@ -6,7 +6,7 @@
 /*
  * The Renderer class
  *
- * Author: Aditya,Saurabh
+ * Author: Aditya
 */
 /* Constructor: _Renderer Class
  * The "QOpenGLExtraFunctions(QOpenGLContext::currentContext())" is passed by parameter
@@ -187,7 +187,6 @@ void _Renderer::setTexture(QString pathtoTexture)
 * Sets the values matrices for the model matrix
 * works in implementing translation , rotation and scaling
 * Used by: the _glWidget class initialiseGl() or paintGl().
-
 */
 void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation)
 {
@@ -212,7 +211,6 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
 * helps set the camera , eye positon , rotation, lookat.
 * Used by: the _glWidget class initialiseGl() or paintGl().
 * depending if the camra needs to update its position in  realtime.
-
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D upVector)
 {
@@ -236,7 +234,6 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D
 * field of view and the aspect ration bindings. will update itself each time the
 * window is resized.and needs to be called in the resizeGl function.
 * Used by: the _glWidget class resizeGL().
-
 */
 void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar)
 {
@@ -257,7 +254,6 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the positions
  * Used by: _render class in draw()
-
 */
 void _Renderer::setPosition(glm::vec3 pos)
 {
@@ -528,9 +524,11 @@ void _Renderer::_Renderer::draw()
             textures[t].bind();
         }
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
-        if(sceneEntity.getIsMeshEditable()){
+        if(sceneEntity.getIsMeshEditable())
+        {
             glBindBuffer(GL_ARRAY_BUFFER,VBO);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);}
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+        }
         //Bind the VAO of the respective buffer object (needs to be bound everytime)
         glBindVertexArray(VAO);
         //
@@ -540,7 +538,8 @@ void _Renderer::_Renderer::draw()
         //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
         //
-        setColors();//Setting the uniform for color
+        setColors();//Setting the uniform for color if shader allows
+        setLights();//setting the lighting uniforms if shader allows
         //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         glBindVertexArray(0);//Clear the buffer
@@ -548,7 +547,7 @@ void _Renderer::_Renderer::draw()
 }
 /*
  *  Used in the Draw functon
- * Updates the color to the newly defined one;
+ * Updates the color and relative uniforms
  */
 void _Renderer::setColors()
 {
@@ -578,4 +577,13 @@ void _Renderer::setColors()
         sceneEntity.setColor(qc);}
     else
         sceneEntity.setColor(actualColor);
+}
+
+/*
+ *  Used in the Draw functon
+ * Updates the light uniforms on the model
+ */
+void _Renderer::setLights()
+{
+
 }

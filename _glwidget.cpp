@@ -62,11 +62,11 @@ void _GLWidget::initializeGL(){
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects---------
     scene->addSceneObject(s);
-    s.setTag("Tri2");
-    s.setId(1);
-    s.setScale(5);
-    s.setPosition(glm::vec3(0.0,5.0,0.0));
-    scene->addSceneObject(s);
+//    s.setTag("Tri2");
+//    s.setId(1);
+//    s.setScale(5);
+//    s.setPosition(glm::vec3(0.0,5.0,0.0));
+//    scene->addSceneObject(s);
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .

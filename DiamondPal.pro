@@ -14,7 +14,6 @@ TEMPLATE = app
 
 HEADERS  += mainwindow.h \
             _glwidget.h \
-    _lights.h \
             _renderer.h \
             _shader.h \
             _sceneentity.h \
@@ -32,10 +31,11 @@ HEADERS  += mainwindow.h \
            _tools.h \
            _framebuffer.h \
            _physics.h \
-    _modelinfo.h
+           _modelinfo.h \
+            lightTest.h
 
-SOURCES += main.cpp\
-    _lights.cpp \
+SOURCES +=  main.cpp\
+            lightTest.cpp \
             mainwindow.cpp \
             _glwidget.cpp \
             _renderer.cpp \
@@ -55,7 +55,7 @@ SOURCES += main.cpp\
            _tools.cpp \
            _framebuffer.cpp \
            _physics.cpp \
-    _modelinfo.cpp
+           _modelinfo.cpp
 
 FORMS    += mainwindow.ui
 
