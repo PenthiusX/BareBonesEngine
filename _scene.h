@@ -7,8 +7,9 @@
 #include "_physics.h"
 #include "_sceneentity.h"
 #include <vector>
-
 #include <thread>         // std::thread
+
+#include "lightTest.h"
 
 /*
  * Class: _Scene
@@ -75,6 +76,9 @@ private:
     //Thread
     std::thread pu;
     std::thread ph;
+
+
+    LightTest* l;//just a test
 
 };
 

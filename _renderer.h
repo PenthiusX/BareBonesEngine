@@ -90,6 +90,7 @@ private:
     void setuniformLocations();
     void keepSceneEntityUpdated();
     void setColors();
+    void setLights();
 
 //    //test
 //    void DRAWPAINTERTEXT();
