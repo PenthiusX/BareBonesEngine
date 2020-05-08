@@ -30,11 +30,13 @@ private:
     _ModelInfo modelInfo;
     //
     std::vector<float> vertices;
+    std::vector<float>normalVertices;//replaces the vertices array
     std::vector<uint> indices;
     std::vector<float> uvs;
     //
     glm::vec4 vertMin;
     glm::vec4 vertMax;
+    
     int posCounter;
     int arrayCounter;
 };

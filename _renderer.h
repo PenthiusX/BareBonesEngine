@@ -90,6 +90,9 @@ private:
     void setuniformLocations();
     void keepSceneEntityUpdated();
     void setColors();
+
+    glm::vec3 camposForLight;
+    glm::vec3 lightPos;
     void setLights();
 
 //    //test

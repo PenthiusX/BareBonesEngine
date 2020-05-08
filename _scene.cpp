@@ -31,7 +31,6 @@ _Scene::_Scene(){
 _Scene::~_Scene(){
     renderObjects.clear();
     delete r;
-    delete l;
 }
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
@@ -82,13 +81,6 @@ void _Scene::addSceneObject(_SceneEntity s){
             }
         }
     }
-
-      l = new LightTest();
-      l->setModelMatrix(glm::vec3(0.0,0.0,0.0),1.0f,glm::vec3(0.0,0.0,0.0));
-      l->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
-      l->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-      l->initLightBody();
-
 
     noOfVerticesInScene = 0;
     noOfUniquesObjectsInScene = 0;
@@ -274,7 +266,6 @@ void _Scene::render(){
     {
         //Frame update
         renderObjects[i]->draw();////Render all objects that are active.Calls the draw function unique to each renderObject.
-        l->draw();
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below
@@ -437,7 +428,7 @@ void _Scene::addAllHelperTypesInScene(){
     //Essential rear background object
     bg.setId(777);
     bg.setTag("background");
-    bg.setShader(":/shaders/vshader_background.glsl", ":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    bg.setShader(":/shaders/vshader_background.glsl",":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
     bg.setScale(1.0);
     bg.setModelData(a.generateQuad());

@@ -43,32 +43,34 @@ void _GLWidget::initializeGL(){
     cam.setFocalPoint(glm::vec3(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
+    //-------------Lights--------------
+    light1.setId(8008);
+    light1.setTag("light");
+    light1.setModelData(":/models/sphere.obj");
+    light1.setPosition(glm::vec3(2.2f,2.0f, 4.0f));
+    light1.setIsLineNoCullMode(false);
+    light1.setScale(0.50f);
     //------------Scene Objects--------
     _AssetLoader a;
     s.setId(0);
     s.setTag("Tri1");
+    s.setModelData(":/models/sphere.obj");
     s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(true);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
-    // s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//    s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
-    s.setModelData(":/models/sphere.obj");
     //s.setModelData(a.generateQuad());
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects---------
-    scene->addSceneObject(s);
-//    s.setTag("Tri2");
-//    s.setId(1);
-//    s.setScale(5);
-//    s.setPosition(glm::vec3(0.0,5.0,0.0));
-//    scene->addSceneObject(s);
+    scene->addSceneObject(s);//Adds the entity defined obove to scene
+    scene->addSceneObject(light1);
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .

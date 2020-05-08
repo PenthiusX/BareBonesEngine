@@ -1,3 +1,10 @@
+/*
+ *
+ * Author: Aditya
+*/
+
+
+
 #include "_assetloader.h"
 #include <iostream>
 #include <string>
@@ -33,6 +40,13 @@ void _AssetLoader::setModelInfo(_ModelInfo minfo){
 _ModelInfo _AssetLoader::getModelInfo(){
     return modelInfo;
 }
+
+glm::vec3 computeNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c)
+{
+    return normalize(glm::cross(b - a, c - a));
+}
+
+
 /*
 * Function:objLoader(QString pathToFile)
 * takes a Qstring path to qrc file and then parses through 
@@ -84,6 +98,39 @@ void _AssetLoader::objLoader(QString pathToFile)
         }
     }
 
+    //ProceduralNormals-----------
+    std::vector <glm::vec3> normals;
+    uint indexCounter = 0;
+    glm::vec3 normal;
+    bool normalSet = false;
+    for(int v = 0 ; v < vertices.size() ; v++){
+
+        indexCounter++;
+        if(indexCounter == 9){
+            glm::vec3 a = glm::vec3(vertices[v-8],vertices[v-7],vertices[v-6]);
+            glm::vec3 b = glm::vec3(vertices[v-5],vertices[v-4],vertices[v-3]);
+            glm::vec3 c = glm::vec3(vertices[v-2],vertices[v-1],vertices[v]);
+            normals.push_back(computeNormal(a,b,c));
+            indexCounter = 0;
+            normalSet = true;
+        }
+    }
+    indexCounter = 0;
+    uint ncounter = 0;
+    for(int v = 0 ; v < vertices.size() ; v++){
+
+        if(indexCounter == 3){
+            normalVertices.push_back(normals[ncounter].x);
+            normalVertices.push_back(normals[ncounter].y);
+            normalVertices.push_back(normals[ncounter].z);
+            ncounter++;
+            indexCounter = 0;
+        }
+        normalVertices.push_back(vertices[v]);
+         indexCounter++;
+    }
+    //-----------------------------
+
     qInfo() << "Loading Model" << pathToFile <<  "indices.";
     std::string ai = objData.substr(objData.find("f ") + 1);
     std::stringstream ss;
@@ -100,7 +147,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     }
     //sets the ModelInfo data at the end of modelfile parse.
     modelInfo.setPath(pathToFile);
-    modelInfo.setVertexArray(vertices);
+    modelInfo.setVertexArray(normalVertices);
     modelInfo.setIndexArray(indices);
     modelInfo.setMaxExtents(vertMax);
     modelInfo.setMinExtents(vertMin);
