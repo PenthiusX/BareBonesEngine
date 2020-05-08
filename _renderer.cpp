@@ -42,7 +42,6 @@ _Renderer::~_Renderer()
 /*
 * Function: getSceneEntity()
 * returns the current scene entity object.
-
 */
 _SceneEntity _Renderer::getSceneEntity() const
 {
@@ -87,7 +86,7 @@ void _Renderer::setShader(QString vSh, QString fSh)
  * lighting.
  * Used by: the _glWidget class initializeGL().
 */
-void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<uint> indexArray)
+void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<uint> indexArray)//Pass normals
 {
     // Copy the vertex and index data locally for use in the current drawcall.
     vertices = vertexArray;
@@ -104,8 +103,14 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
 
+    // glEnableVertexAttribArray(0);
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr)
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    // normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     setuniformLocations();//sets all uniform locations to respective variables.
     qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
@@ -114,13 +119,12 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
  * Function: setuniformLocations()
  * sets the unform location uints into there respectively
  * named variables. These variables are used based on definition in shader.
-
 */
 void _Renderer::setuniformLocations()
 {
     qInfo() << "---------------UNIFORM INFO------------------------";
     qDebug() <<"Tag ->"<<sceneEntity.getTag();
-    colorUniform = shdr->getUniformLocation("aColor");//will be replaced with texture and UVs
+    colorUniform = shdr->getUniformLocation("aColor");
     qDebug() << "colorUniform ->" << colorUniform;
     modelUnifrom = shdr->getUniformLocation("model");
     qDebug() << "modelUnifrom ->" << modelUnifrom;
@@ -137,7 +141,6 @@ void _Renderer::setuniformLocations()
  * Function: setupTexture()
  * creates new texture and adds into list(vector) of textures
  * set a default 8bit single color texture of size 1360 x 1024
-
  */
 void _Renderer::setupTexture()
 {
@@ -214,6 +217,7 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D upVector)
 {
+    camposForLight = camposForLight;//temp
     viewMatrix = glm::mat4(1.0f);
     viewMatrix = glm::lookAt(
                 glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
@@ -585,5 +589,9 @@ void _Renderer::setColors()
  */
 void _Renderer::setLights()
 {
-
+    lightPos = glm::vec3(2.2f,2.0f, 4.0f);//could be an array of lights
+    glUniform3f(shdr->getUniformLocation("objectColor"),0.5f, 0.5f, 0.5f );
+    glUniform3f(shdr->getUniformLocation("lightColor"),1.0f, 1.0f, 1.0f);
+    glUniform3f(shdr->getUniformLocation("lightPos"),lightPos.x,lightPos.y,lightPos.z);
+    glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);//cam pos is ceneter harcoded , passreal cam value later
 }

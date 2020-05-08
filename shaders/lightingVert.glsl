@@ -9,16 +9,19 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 //
-uniform mat4 mvp;
-//
+uniform vec4 aColor;
 out vec4 ourColor;
+//
+uniform vec2 iMouse;
+out vec2 iMouseO;
 
 void main()
 {
+
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * normal;  
+
+    ourColor = aColor;
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
-    ourColor = aColor;
-
-        FragPos = vec3(model * vec4(position, 1.0f));
-        Normal = mat3(transpose(inverse(model))) * normal;
 }
