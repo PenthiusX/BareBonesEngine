@@ -20,32 +20,32 @@
 */
 class _AVT_Camera :public _HWDCamera
 {
-public:
-    CFGCamera  Camera;
-    UINT32     Result;
-    FGNODEINFO NodeInfo[3];
-    UINT32     NodeCnt;
-    FGFRAME    Frame;
-    FILE* imagefile;
-    char *byteframe = nullptr;
+//public:
+//    CFGCamera  Camera;
+//    UINT32     Result;
+//    FGNODEINFO NodeInfo[3];
+//    UINT32     NodeCnt;
+//    FGFRAME    Frame;
+//    FILE* imagefile;
+//    char *byteframe = nullptr;
 
 
-    _AVT_Camera();
+//    _AVT_Camera();
 
-    int list_cameras();
+//    int list_cameras();
 
-    int select_camera(int v);
-    int init(int v);
-    ~_AVT_Camera();
+//    int select_camera(int v);
+//    int init(int v);
+//    ~_AVT_Camera();
 
-    int stop_camera();
+//    int stop_camera();
 
 
-    char* get_frame();
+//    char* get_frame();
 
-    int grab_frame();
+//    int grab_frame();
 
-    int grab_frame(QString filename);
+//    int grab_frame(QString filename);
 };
 #   endif //PLATFORM_WIN
 

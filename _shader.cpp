@@ -123,6 +123,7 @@ GLint _Shader::getUniformLocation(const char* nameOfUniform)
 */
 void _Shader::setChildShader(QString s, uint typ)
 {
+    std::cout << s.data() ;
     uint shader = compileShader(tools.ReadStringFromQrc(s),typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }

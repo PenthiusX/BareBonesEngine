@@ -18,7 +18,7 @@ void main()
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
     ourColor = aColor;
-	
-	FragPos = vec3(model * vec4(position, 1.0f));
-	Normal = mat3(transpose(inverse(model))) * normal;
+
+        FragPos = vec3(model * vec4(position, 1.0f));
+        Normal = mat3(transpose(inverse(model))) * normal;
 }
