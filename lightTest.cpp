@@ -5,9 +5,9 @@
 
 LightTest::LightTest() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-
+    s = new _Shader();
     lightPos = glm::vec3(1.2f,1.0f, 2.0f);
-
+    glClearColor(0.5,0.5,0.5,1.0);
     float v[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -96,9 +96,6 @@ void LightTest::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
 }
 
 
-
-
-
 void LightTest::initLightBody()
 {
 
@@ -126,8 +123,7 @@ void LightTest::initLightBody()
 
 void LightTest::draw()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);
     glUniform3f(s->getUniformLocation("objectColor"),1.0f, 0.5f, 0.31f );
     glUniform3f(s->getUniformLocation("lightColor"),1.0f, 1.0f, 1.0f);
     glUniform3f(s->getUniformLocation("lightPos"),lightPos.x,lightPos.y,lightPos.z);
@@ -137,7 +133,12 @@ void LightTest::draw()
     glUniformMatrix4fv(s->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     glUniformMatrix4fv(s->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(modelMatrix));
 
+//    glm::vec3 eulerAngles(glm::vec3(0.0,0.2,0.2));
+//    glm::quat quat = glm::quat(eulerAngles);
+//    modelMatrix *= glm::mat4_cast(quat);
+
     // render the cube
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);//Clear the buffer
 }

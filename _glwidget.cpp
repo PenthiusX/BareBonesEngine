@@ -51,7 +51,9 @@ void _GLWidget::initializeGL(){
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(true);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
-    s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    // s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
     s.setModelData(":/models/sphere.obj");

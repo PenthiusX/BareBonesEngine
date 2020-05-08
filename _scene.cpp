@@ -31,6 +31,7 @@ _Scene::_Scene(){
 _Scene::~_Scene(){
     renderObjects.clear();
     delete r;
+    delete l;
 }
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
@@ -82,11 +83,11 @@ void _Scene::addSceneObject(_SceneEntity s){
         }
     }
 
-
-//    l->setModelMatrix(glm::vec3(0.0,0.0,0.0),1.0f,glm::vec3(0.0,0.0,0.0));
-//    l->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
-//    l->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-//    l->initLightBody();
+      l = new LightTest();
+      l->setModelMatrix(glm::vec3(0.0,0.0,0.0),1.0f,glm::vec3(0.0,0.0,0.0));
+      l->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+      l->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+      l->initLightBody();
 
 
     noOfVerticesInScene = 0;
@@ -266,19 +267,19 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render(){
     //sets the Frame for the framebufferObject.
-    fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
+    //fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
     //--------------------------------------
     //Frame to render is below
     for (uint i = 0; i < renderObjects.size(); i++)
     {
         //Frame update
         renderObjects[i]->draw();////Render all objects that are active.Calls the draw function unique to each renderObject.
-//        l->draw();
+        l->draw();
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below
-    fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
-    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
+   // fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
+   // fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 /*
  * Function:fixedUpdate()

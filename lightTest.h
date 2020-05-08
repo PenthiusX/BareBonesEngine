@@ -20,7 +20,7 @@ public:
     LightTest();
     ~LightTest();
 
-    std::vector<float>vertices;
+    std::vector<float>vertices,normals;
 
 
     void setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation);
