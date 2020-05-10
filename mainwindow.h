@@ -2,9 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <IO/_machine.h>
-#include <Modules/_marker.h>
-#include <Modules/_scanner.h>
 
 namespace Ui {
 class MainWindow;
@@ -25,10 +22,6 @@ private:
 
     QThread *hardwareInteractionThread;//all hardware IO operations done inside this thread
 
-    //all the following objects should be moved and work in the hardwareInteractionThread
-    _Machine *machine;
-    _Marker *marker;
-    _Scanner *scanner;
 };
 
 #endif // MAINWINDOW_H

@@ -31,7 +31,7 @@ public:
 
 private:
     //Shader Program
-    uint shaderProgram = 0;
+    uint shaderProgram;
 
     // map(dictionary) of shader
     //key : shader typ enum eg. GL_VERTEX_SHADER

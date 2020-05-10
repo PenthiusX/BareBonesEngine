@@ -8,10 +8,8 @@
  *
  * Author: Aditya
 */
-/* Constructor: _Renderer Class
+/*
  * The "QOpenGLExtraFunctions(QOpenGLContext::currentContext())" is passed by parameter
- * to avoid using initialiseopenglfunction() in the initcallback.
- * Create:11_02_2019
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
@@ -40,7 +38,7 @@ _Renderer::~_Renderer()
     delete shdr;
 }
 /*
-* Function: getSceneEntity()
+*
 * returns the current scene entity object.
 */
 _SceneEntity _Renderer::getSceneEntity() const
@@ -54,8 +52,50 @@ _SceneEntity _Renderer::getSceneEntity() const
   ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
+
 /*
- * Function: setShader(no params)
+* Sets the sceen entity object locally and sets the
+* shader ,Model data , projection matrix, texture,
+* and initialises the modelMatrix.
+*/
+void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
+{
+    sceneEntity = s;
+    actualColor = sceneEntity.getColor();
+    setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
+    setupTexture(sceneEntity.getTexturePath());
+    setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
+
+    //setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(),sceneEntity.getModelInfo().getNormalArray(), sceneEntity.getModelInfo().getIndexArray());
+    setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());
+}
+/*
+ sets a copy of sceneEntity in the renderer
+*/
+void _Renderer::setSceneEntityInRenderer(_SceneEntity s){
+    sceneEntity = s;
+}
+/*
+ *
+*/
+void _Renderer::keepSceneEntityUpdated(){
+    //Keeps a copy of the current matrix info in the respective sceneEntity
+    sceneEntity.setTranslationMatrix(translationMatrix);
+    sceneEntity.setRotationmatrix(rotationMatrix);
+    sceneEntity.setScaleingMatrix(scalingMatrix);
+    sceneEntity.setProjectionMatrix(projectionMatrix);
+    sceneEntity.setViewMatrix(viewMatrix);
+    sceneEntity.setModelMatrix(modelMatrix);
+
+    //get the real position values from the modelMatrix
+    glm::mat4x4 tmat4 = modelMatrix * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
+    sceneEntity.setPosition(glm::vec3(tmat4[3][0],
+            tmat4[3][1],
+            tmat4[3][2]));
+    //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
+}
+
+/*
  * Sets a dafault hard-fed shader
  * on the render object
  * Is being used by the _glWidget class
@@ -67,7 +107,6 @@ void _Renderer::setShader()
     qDebug() << "default Shader attached for entity" << sceneEntity.getTag();
 }
 /*
- * Function: setShader(QString vSh, QString fSh)
  * Takes the path to the relative qrc aided directory
  * to set shader paths externaly on the render object.
  * Is being used by the _glWidget class
@@ -79,7 +118,6 @@ void _Renderer::setShader(QString vSh, QString fSh)
     qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();;
 }
 /*
- * Function: setBuffers(std::vector<float> vertexArray, std::vector<int> indexArray)
  * set Vertex and Index data into
  * the GPU buffers to use for the current model.
  * May have extended implementation for inclusion of UV for texture and Normals for
@@ -103,20 +141,61 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
 
-    // glEnableVertexAttribArray(0);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr)
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+//     glEnableVertexAttribArray(0);
+//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+
+//     position attribute
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     // normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
 
     setuniformLocations();//sets all uniform locations to respective variables.
     qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
 }
+
+
+void _Renderer::setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray)
+{
+    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &EBO);
+    qDebug() << "VBO-" << VBO << "VAO-" << VAO << "EBO-" << EBO;
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+
+    //Dump the data into the Buffer.
+    glBufferData(GL_ARRAY_BUFFER,sizeof (float)* vertexArray.size()+normalsArray.size()/*+sizeof(uv)*/, NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertexArray.size(), vertexArray.data());
+//    glBufferSubData(GL_ARRAY_BUFFER, vertexArray.size(), normalsArray.size(), normalsArray.data());
+//    glBufferSubData(GL_ARRAY_BUFFER, sizeof(position)+sizeof(normal), sizeof(uv), uv);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(uint), &indexArray[0], GL_STATIC_DRAW);
+
+    //Get the location of the attributes from the shader
+    GLuint positionLocation = glGetAttribLocation(shdr->getShaderProgram(),"aPos");
+    GLuint normalLocation = glGetAttribLocation(shdr->getShaderProgram(),"normal");
+    // GLuint uvLocation = glGetAttribLocation(shdr->getShaderProgram(),"texCoord");
+
+    //enable the attribute locations
+    glEnableVertexAttribArray(positionLocation);
+//    glEnableVertexAttribArray(normalLocation);
+    // glEnableVertexAttribArray(uvLocation);
+
+    //Link buffer data to position attribute location
+    glVertexAttribPointer(positionLocation,3,GL_FLOAT,GL_FALSE,3*sizeof(float),0);
+    //Link buffer data to normal attribute location
+//    glVertexAttribPointer(normalLocation,3,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)vertexArray.size());
+    //Link buffer data to texture attribute location
+//   glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, 0, (void*)sizeof(position) + sizeof(normal));
+
+    qDebug() << "setModelDataInBuffers() with normals for entity" << sceneEntity.getTag();
+}
 /*
- * Function: setuniformLocations()
  * sets the unform location uints into there respectively
  * named variables. These variables are used based on definition in shader.
 */
@@ -138,7 +217,6 @@ void _Renderer::setuniformLocations()
     qDebug() <<"---------------------------------------------------";
 }
 /*
- * Function: setupTexture()
  * creates new texture and adds into list(vector) of textures
  * set a default 8bit single color texture of size 1360 x 1024
  */
@@ -150,6 +228,7 @@ void _Renderer::setupTexture()
     textures.push_back(texture);
     qDebug() << "setupTexture() on entity" << sceneEntity.getTag();
 }
+
 void _Renderer::setupTexture(QString texfile)
 {
     QImage img = QImage(texfile);
@@ -159,7 +238,6 @@ void _Renderer::setupTexture(QString texfile)
     qDebug() << "setupTexture(QString texfile) on entity" << sceneEntity.getTag();
 }
 /*
- * Function: setTexture()
  * Contributor : saurabh
  * updates the first texture image from char pointer array
  * resolution of previous image is used
@@ -186,7 +264,6 @@ void _Renderer::setTexture(QString pathtoTexture)
 }
 
 /*
-* Function: setModelMatrix(QVector3D position,float scale,QQuaternion rotation)
 * Sets the values matrices for the model matrix
 * works in implementing translation , rotation and scaling
 * Used by: the _glWidget class initialiseGl() or paintGl().
@@ -209,7 +286,6 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
     keepSceneEntityUpdated();
 }
 /*
-* Function: setCamViewMatrix(QVector3D eyePos,QVector3D focalPoint,QVector3D upVector)
 * sets the camera view for the scene through this matrix
 * helps set the camera , eye positon , rotation, lookat.
 * Used by: the _glWidget class initialiseGl() or paintGl().
@@ -233,7 +309,6 @@ void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D
   ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
 /*
-* Function: setProjectionMatrix(int w, int h)
 * takes thew width and height of the window and sets the relative
 * field of view and the aspect ration bindings. will update itself each time the
 * window is resized.and needs to be called in the resizeGl function.
@@ -254,7 +329,6 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
   ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
 */
 /*
- * Function: setPosition(QVector3D pos)\translate(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the positions
  * Used by: _render class in draw()
@@ -277,7 +351,9 @@ void _Renderer::setPosition(glm::vec3 pos)
         keepSceneEntityUpdated();
     }
 }
-
+/*
+ *
+*/
 void _Renderer::translate(glm::vec3 pos)
 {
     if(sceneEntity.getIsTransformationAllowed())
@@ -298,7 +374,6 @@ void _Renderer::translate(glm::vec3 pos)
     }
 }
 /*
- * Function: setRotation(QVector3D pos)
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the rotation
  * Used by: _glwidgetClass on mousemovement
@@ -335,7 +410,6 @@ void _Renderer::setRotation(glm::vec3 rot)
     }
 }
 /*
- * Function: setRotationAroundPivot(QVector3D rot, QVector3D pivot)
  * sets the rotation to be around an defined point
  * Used by: _glwidgetClass on Mousemovement
 */
@@ -368,11 +442,9 @@ void _Renderer::setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot)
     }
 }
 /*
- * Function: setscale(float scale)
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the scale
  * Used by: _render class in draw()
-
 */
 void _Renderer::setscale(float scale)
 {
@@ -422,7 +494,8 @@ void _Renderer::lookAt(QVector3D ptl) //Not Implemented properly yet needs to be
     RotationBetweenVectors(glm::vec3(ptl.x(),ptl.y(),ptl.z()));
 }
 
-void _Renderer::RotationBetweenVectors(glm::vec3 dest){
+void _Renderer::RotationBetweenVectors(glm::vec3 dest)
+{
     glm::vec3 start = glm::vec3(sceneEntity.getPostion());
     start = glm::normalize(start);//this object location
     dest = glm::normalize(dest);
@@ -453,50 +526,7 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest){
     this->sceneEntity.setModelMatrix(modelMatrix);
     keepSceneEntityUpdated();
 }
-/*
-* Function: setSceneEntity(_SceneEntity s)
-* Sets the sceen entity object locally and sets the
-* shader ,Model data , projection matrix, texture,
-* and initialises the modelMatrix.
-*/
-void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
-{
-    sceneEntity = s;
-    actualColor = sceneEntity.getColor();
-    setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
-    setupTexture(sceneEntity.getTexturePath());
-    //setModelDataInBuffers() happens for every object,and is sufficent for the usecases // !!!Comment for structural change!!!!
-    //can be converted to using the same VAO for the same set of vertex+index data.
-    //will need to move the whole model loading and id generation to assetLoader class
-    //and only pass the relavant iDs to VAO at runtime to reduce ovehead.
-    setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());
-    setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
-}
-/*
 
-*/
-void _Renderer::setSceneEntityInRenderer(_SceneEntity s){
-    sceneEntity = s;
-}
-/*
- *
-*/
-void _Renderer::keepSceneEntityUpdated(){
-    //Keeps a copy of the current matrix info in the respective sceneEntity
-    sceneEntity.setTranslationMatrix(translationMatrix);
-    sceneEntity.setRotationmatrix(rotationMatrix);
-    sceneEntity.setScaleingMatrix(scalingMatrix);
-    sceneEntity.setProjectionMatrix(projectionMatrix);
-    sceneEntity.setViewMatrix(viewMatrix);
-    sceneEntity.setModelMatrix(modelMatrix);
-
-    //get the real position values from the modelMatrix
-    glm::mat4x4 tmat4 = modelMatrix * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
-    sceneEntity.setPosition(glm::vec3(tmat4[3][0],
-            tmat4[3][1],
-            tmat4[3][2]));
-    //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
-}
 /*
   ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌
   ██▪ ██ ▀▄ █·▐█ ▀█ ██· █▌▐█
@@ -505,11 +535,9 @@ void _Renderer::keepSceneEntityUpdated(){
   ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪
 */
 /*
- * Function: draw()
  * This is your proprietory draw function
  * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
  * Used by: the _glWidget class paintGl().
-
 */
 void _Renderer::_Renderer::draw()
 {
@@ -590,7 +618,7 @@ void _Renderer::setColors()
 void _Renderer::setLights()
 {
     lightPos = glm::vec3(2.2f,2.0f, 4.0f);//could be an array of lights
-    glUniform3f(shdr->getUniformLocation("objectColor"),0.5f, 0.5f, 0.5f );
+//    glUniform3f(shdr->getUniformLocation("objectColor"),0.5f, 0.5f, 0.5f );
     glUniform3f(shdr->getUniformLocation("lightColor"),1.0f, 1.0f, 1.0f);
     glUniform3f(shdr->getUniformLocation("lightPos"),lightPos.x,lightPos.y,lightPos.z);
     glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);//cam pos is ceneter harcoded , passreal cam value later

@@ -14,6 +14,7 @@ public:
     void setIsLoaded(bool isLoaded);
     void setVertexArray(std::vector<float> vertexArray);
     void setIndexArray(std::vector<uint> indexAarray);
+    void setNormalArray(std::vector<float>norArray);
     void setMaxExtents(glm::vec4 max);
     void setMinExtents(glm::vec4 min);
     void setCentroid(glm::vec4 cent);
@@ -22,6 +23,7 @@ public:
     QString getPath() const;
     std::vector<float> getVertexArray()const;
     std::vector<uint> getIndexArray()const;
+    std::vector<float> getNormalArray()const;
     glm::vec4 getMaxExtent() const;
     glm::vec4 getMinExtent() const;
     glm::vec4 getCentroid() const;
@@ -34,23 +36,14 @@ public:
 private:
     QString name;//the tag
     QString path;//the relative path of the model data file
-    std::vector<float> vertexArray;//the actual vertices read from modelFile into memory
-    std::vector<uint> indexAarray;//the actual indeices read from modelFile into memory
+    std::vector<float> vertexArray;// vertices read from modelFile into memory
+    std::vector<uint> indexAarray;// indeices read from modelFile into memory
+    std::vector<float> normalArray;// normal array
     //
     glm::vec4 max;//max extent.
     glm::vec4 min;//min extent.
     glm::vec4 cent;//centroid from min & max.
     bool isLoaded;
-    //
-    //!!buffer stuff should be done here and should hold these bindings.!!
-    //uint VAOlocation
-    //uint VBOlocation
-    //uint EBOlocation
-
-    //!!comes later
-    // UVs
-    // Normals
-    // PBR?
 };
 
 #endif // _MODELINFO_H

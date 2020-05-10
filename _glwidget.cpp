@@ -31,7 +31,7 @@ _GLWidget::~_GLWidget(){
   ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌▐█▄▪▐█▐█▄▄▌
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀  ▀▀▀*/
 /*
-* Function: initializeGL() overrides the
+ * initializeGL() overrides the
 * same function in the OpopenglFunctions class
 * runs once the opengl context is initialised.
 */
@@ -47,23 +47,22 @@ void _GLWidget::initializeGL(){
     light1.setId(8008);
     light1.setTag("light");
     light1.setModelData(":/models/sphere.obj");
-    light1.setPosition(glm::vec3(2.2f,2.0f, 4.0f));
+    light1.setPosition(glm::vec3(2.2f,2.0f, 4.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
-    light1.setScale(0.50f);
+    light1.setScale(0.20f);
     //------------Scene Objects--------
     _AssetLoader a;
-    s.setId(0);
-    s.setTag("Tri1");
+    s.setId(8888);
+    s.setTag("LitObject");
     s.setModelData(":/models/sphere.obj");
     s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
-    s.setIsLineNoCullMode(true);
+    s.setIsLineNoCullMode(false);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
 //    s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
-    //s.setModelData(a.generateQuad());
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
@@ -79,7 +78,7 @@ void _GLWidget::initializeGL(){
   ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
    ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀*/
 /*
- * Function: resizeGL(int w, int h) overides the
+    overides the
  * function in OpopenglFunctions class.
  * pasees the current width and height
  * of the layout via - int w and int h
@@ -94,7 +93,6 @@ void _GLWidget::resizeGL(int w, int h){
   ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
    ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀*/
 /*
- * Function: paintGl()
  * ovveriding thes function in OpopenglFunctions
  * Your proprietory Draw function this run in a loop
  * till the application ends.
@@ -135,7 +133,6 @@ void _GLWidget::paintGL()//the renderloop
 * Press and Hold Ctrl to rotate object
 */
 /*
-* Function: mousePressEvent(QMouseEvent *e)
 * this is a overriden function from the QWidget parent
 * runs each time the mouse is pressed.
 */
@@ -161,7 +158,6 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
     }
 }
 /*
-* Function: mouseReleaseEvent(QMouseEvent *e)
 * This is a overriden function from the QWidget parent
 * runs each time the mouse is released.
 */
@@ -184,7 +180,6 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     }
 }
 /*
-* Function: mouseMoveEvent(QMouseEvent *e)
 * This is a overriden function from the QWidget parent
 * runs each time the mouse is pressed and moved.
 */
@@ -220,7 +215,6 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
     }
 }
 /*
-* Function: wheelEvent(QWheelEvent *e)
 * This is a overriden function from the QWidget parent
 * runs each time the mouse wheel is scrolled.
 *
@@ -244,7 +238,6 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 }
 
 /*
-* Function: keyPressEvent(QKeyEvent * event)
 * runns anytime a key is presses and returns which key through the
 * event pointer of QKeyEvent object.
 */

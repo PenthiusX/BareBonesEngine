@@ -16,7 +16,7 @@ _FrameBuffer::~_FrameBuffer()
     fboShader = nullptr;
     delete fboShader;
 }
-/* Function: setupQuad()
+/*
  * this function sets up a basic quad to render the frabbuffer texture to
  * we put it in front of the camera for postprocessing implementations.
 */
@@ -45,7 +45,7 @@ void _FrameBuffer::setupQuad()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
 /*
- * Function: setupFramebufferObjects(int resWidth, int resHeight)
+ *
  * this function sets up the the buffers for framebuffer to Texture rendering
 */
 void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
@@ -77,7 +77,6 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 /*
- * Function: initialise()
  * this function calls to all function needed on initialisation
  * should be called on resize as well if you need the Framebuffer texture to
  * be the correct respective resolution on resize.
@@ -96,7 +95,6 @@ void _FrameBuffer::initialise()
     qDebug() << "mousePosUniform->" << mousePosUniform << "FBO";
 }
 /*
- * Function: setFrame()
  * this function set the Frame for the frameBuffer
  * all the scene object Related bindings in the draw call like : shaderdata,model,etc
  * come after this so that it reads to frame and updates it in the renderFrame() function
@@ -108,7 +106,6 @@ void _FrameBuffer::setUpdatedFrame()
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
 }
 /*
- * Function: renderFrameOnQuad()
  * this function will render the frame generated via setFrame, and render it on the Quad
  * that has been set in setupQuad() and rendered below.
 */
@@ -126,9 +123,9 @@ void _FrameBuffer::renderFrameOnQuad()
     glUniform2f(mousePosUniform,mousePos.x(),mousePos.y());//passing mouse value to fboshader
 
     glDrawArrays(GL_TRIANGLES, 0, 6);//Draw the Quad with the texture
+    glBindVertexArray(0);//Clear the buffer
 }
 /*
- * Function: renderFrameOn()
  * this function should help with implementation of the applying a FrameTextuere onto any
  * Object passed into it.
 */

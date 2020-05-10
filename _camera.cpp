@@ -23,7 +23,6 @@ _Camera::_Camera(){
 }
 _Camera::~_Camera(){}
 /*
-* Function: set/get Eye postition(QVector3D epos)
 * sets and gets the postion for the camera object 
 * in opengl space. these values get fed into the renderer 
 * into the viewMatrix.
@@ -35,7 +34,6 @@ QVector3D _Camera::getEyePosition() const{
     return eyePosition;
 }
 /*
-* Function: set/get FocalPoint()
 * sets and returns the point the camera is looking at.
 */
 void _Camera::setFocalPoint(glm::vec3 focalPos){
@@ -45,7 +43,6 @@ glm::vec3 _Camera::getFocalPoint() const{
     return focalPoint;
 }
 /*
-* Function: set/get UpVector()
 * sets the up vector for the camera
 * the direction in which the camera orents itself.
 */
@@ -57,7 +54,6 @@ QVector3D _Camera::getUpVector() const{
 }
 
 /*
- * Function:get/setFOV
  * gets sets the variable used in
  * field of view setting
 */

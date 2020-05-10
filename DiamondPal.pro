@@ -21,21 +21,12 @@ HEADERS  += mainwindow.h \
             _camera.h \
             _assetloader.h \
             _texture.h\
-           IO/_hwdcamera.h \
-           IO/_hardwareserial.h \
-           IO/_machine.h \
-           IO/_dc_1394_camera.h \
-           IO/_avt_camera.h \
-           Modules/_marker.h \
-           Modules/_scanner.h \
            _tools.h \
            _framebuffer.h \
            _physics.h \
            _modelinfo.h \
-            lightTest.h
 
 SOURCES +=  main.cpp\
-            lightTest.cpp \
             mainwindow.cpp \
             _glwidget.cpp \
             _renderer.cpp \
@@ -45,13 +36,6 @@ SOURCES +=  main.cpp\
             _camera.cpp \
             _assetloader.cpp \
             _texture.cpp\
-           IO/_hwdcamera.cpp \
-           IO/_hardwareserial.cpp \
-           IO/_machine.cpp \
-           IO/_dc_1394_camera.cpp \
-           IO/_avt_camera.cpp \
-           Modules/_marker.cpp \
-           Modules/_scanner.cpp \
            _tools.cpp \
            _framebuffer.cpp \
            _physics.cpp \
@@ -84,6 +68,6 @@ LIBS += -lOpengl32
 }
 
 DISTFILES +=
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
 

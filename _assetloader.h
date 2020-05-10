@@ -13,6 +13,7 @@
  * Author: Aditya
 */
 
+
 class _AssetLoader
 {
 public:
@@ -25,6 +26,8 @@ public:
     _ModelInfo generateQuad();
     _ModelInfo generateTri();
     _ModelInfo generateTri(glm::vec3 p1,glm::vec3 p2,glm::vec3 p3);
+    _ModelInfo generateCubeWithNormals();
+    std::vector<float> calculateNormalsOfVertices(std::vector<float>vertices);
 
 private:
     _ModelInfo modelInfo;
@@ -32,6 +35,7 @@ private:
     std::vector<float> vertices;
     std::vector<float>normalVertices;//replaces the vertices array
     std::vector<uint> indices;
+    std::vector<float> normals;
     std::vector<float> uvs;
     //
     glm::vec4 vertMin;
@@ -39,6 +43,9 @@ private:
     
     int posCounter;
     int arrayCounter;
+
+
+    void LoadObjModel(const char *filename);
 };
 
 #endif // _ASSETLOADER_H

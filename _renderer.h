@@ -27,6 +27,7 @@ public:
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
+    void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
     //
     void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object
