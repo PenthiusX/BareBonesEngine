@@ -1,6 +1,7 @@
 #include "_modelinfo.h"
 
 _ModelInfo::_ModelInfo(){
+
 }
 
 void _ModelInfo::setName(QString name){
@@ -14,6 +15,10 @@ void _ModelInfo::setIsLoaded(bool isLoaded){
 }
 void _ModelInfo::setVertexArray(std::vector<float> vertexArray){
     this->vertexArray = vertexArray;
+}
+void _ModelInfo::setNormalArray(std::vector<float> norArray)
+{
+    this->normalArray = norArray;
 }
 void _ModelInfo::setIndexArray(std::vector<unsigned int> indexAarray){
     this->indexAarray = indexAarray;
@@ -35,6 +40,10 @@ QString _ModelInfo::getPath() const{
 }
 std::vector<float> _ModelInfo::getVertexArray() const{
     return this->vertexArray;
+}
+std::vector<float> _ModelInfo::getNormalArray() const
+{
+    return this->normalArray;
 }
 std::vector<unsigned int> _ModelInfo::getIndexArray() const{
     return this->indexAarray;

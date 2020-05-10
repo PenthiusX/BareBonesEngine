@@ -29,6 +29,7 @@ _AssetLoader::_AssetLoader()
     posCounter = 0;
     arrayCounter = 0;
     modelInfo.setIsLoaded(false);
+
 }
 _AssetLoader::~_AssetLoader(){}
 
@@ -41,14 +42,59 @@ _ModelInfo _AssetLoader::getModelInfo(){
     return modelInfo;
 }
 
+
 glm::vec3 computeNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c)
 {
     return normalize(glm::cross(b - a, c - a));
 }
 
+std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>vertices)
+{
+    std::vector<float> normalVertices;
+    //ProceduralNormals-----------
+    std::vector <glm::vec3> normalsVec3;
+    uint indexCounter = 0;
+    bool normalSet = false;
+    for(int v = 0 ; v < vertices.size() ; v++)
+    {
+        indexCounter++;
+        if(indexCounter == 9){
+            glm::vec3 a = glm::vec3(vertices[v-8],vertices[v-7],vertices[v-6]);
+            glm::vec3 b = glm::vec3(vertices[v-5],vertices[v-4],vertices[v-3]);
+            glm::vec3 c = glm::vec3(vertices[v-2],vertices[v-1],vertices[v]);
+
+            glm::vec3 n = computeNormal(a,b,c);
+            normals.push_back(n.x);
+            normals.push_back(n.y);
+            normals.push_back(n.z);
+            normalsVec3.push_back(n);
+            indexCounter = 0;
+            normalSet = true;
+        }
+    }
+
+      //only for compound arrays with nor
+     indexCounter = 0; //create array of VertexOffsetnormal array
+     uint ncounter = 0;
+     for(int v = 0 ; v < vertices.size() ; v++){
+
+         if(indexCounter == 3){
+             normalVertices.push_back(normalsVec3[ncounter].x);
+             normalVertices.push_back(normalsVec3[ncounter].y);
+             normalVertices.push_back(normalsVec3[ncounter].z);
+             ncounter++;
+             indexCounter = 0;
+         }
+         normalVertices.push_back(vertices[v]);
+          indexCounter++;
+     }
+     //-----------------------------
+     return normalVertices;
+
+//    return normals;
+}
 
 /*
-* Function:objLoader(QString pathToFile)
 * takes a Qstring path to qrc file and then parses through 
 * a string array to get the approptie onfo to render the model
 */
@@ -98,38 +144,6 @@ void _AssetLoader::objLoader(QString pathToFile)
         }
     }
 
-    //ProceduralNormals-----------
-    std::vector <glm::vec3> normals;
-    uint indexCounter = 0;
-    glm::vec3 normal;
-    bool normalSet = false;
-    for(int v = 0 ; v < vertices.size() ; v++){
-
-        indexCounter++;
-        if(indexCounter == 9){
-            glm::vec3 a = glm::vec3(vertices[v-8],vertices[v-7],vertices[v-6]);
-            glm::vec3 b = glm::vec3(vertices[v-5],vertices[v-4],vertices[v-3]);
-            glm::vec3 c = glm::vec3(vertices[v-2],vertices[v-1],vertices[v]);
-            normals.push_back(computeNormal(a,b,c));
-            indexCounter = 0;
-            normalSet = true;
-        }
-    }
-    indexCounter = 0;
-    uint ncounter = 0;
-    for(int v = 0 ; v < vertices.size() ; v++){
-
-        if(indexCounter == 3){
-            normalVertices.push_back(normals[ncounter].x);
-            normalVertices.push_back(normals[ncounter].y);
-            normalVertices.push_back(normals[ncounter].z);
-            ncounter++;
-            indexCounter = 0;
-        }
-        normalVertices.push_back(vertices[v]);
-         indexCounter++;
-    }
-    //-----------------------------
 
     qInfo() << "Loading Model" << pathToFile <<  "indices.";
     std::string ai = objData.substr(objData.find("f ") + 1);
@@ -147,7 +161,8 @@ void _AssetLoader::objLoader(QString pathToFile)
     }
     //sets the ModelInfo data at the end of modelfile parse.
     modelInfo.setPath(pathToFile);
-    modelInfo.setVertexArray(normalVertices);
+    modelInfo.setVertexArray(calculateNormalsOfVertices(vertices));//setting vertexarry with normal info for this use
+//    modelInfo.setNormalArray(calculateNormalsOfVertices(vertices));
     modelInfo.setIndexArray(indices);
     modelInfo.setMaxExtents(vertMax);
     modelInfo.setMinExtents(vertMin);
@@ -165,7 +180,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     qInfo()<<"--------------------------------------------------------";
 }
 
-/* Not in use---future implementation for VAO based optimisation.
+/* Not in use---
 * Preprocess all models into memory
 * will reduce ovehead on runtime.
 */
@@ -245,4 +260,96 @@ _ModelInfo _AssetLoader::generateTri(glm::vec3 p1,glm::vec3 p2,glm::vec3 p3)
     m.setName("Tri");
 
     return m;
+}
+
+_ModelInfo _AssetLoader::generateCubeWithNormals()
+{
+//    std::vector<float> vertices = {
+//        1.000000, 1.000000, 1.000000, 0.000000, -0.00000,1.000000,
+//        -1.00000, 1.00000,  1.00000,  0.00000, -0.0000, 1.00000,
+//        -1.00000,-1.0000,   1.0000,   0.0000, -0.000,1.0000,
+//        1.000000,-1.00000,  1.00000,  0.00000, -0.0000, 1.00000,
+//        1.000000,-1.00000, -1.0000,   0.0000, -1.000,00.0000,
+//        1.000000,-1.00000,  1.00000,  0.00000, -1.0000, 0.00000,
+//        -1.00000,-1.0000,   1.0000,   0.0000, -1.000,00.0000,
+//        -1.00000,-1.0000,  -1.000,    0.000, -1.00, 0.000,
+//        -1.00000,-1.0000,  -1.000,   -1.00, -0.0, 0.00,
+//        -1.00000,-1.0000,   1.0000,  -1.000, -0.00, 0.000,
+//        -1.00000, 1.00000,  1.00000, -1.0000,-0.000, 0.0000,
+//        -1.00000, 1.00000, -1.0000,  -1.000, -0.00, 0.000,
+//        -1.00000, 1.00000, -1.0000,   0.0000, 0.0000, -1.0000,
+//        1.000000, 1.000000,-1.00000,  0.00000, 0.00000,-1.00000,
+//        1.000000,-1.00000, -1.0000,   0.0000, 0.0000, -1.0000,
+//        -1.00000,-1.0000,  -1.000,    0.000, 0.000,0 -1.000,
+//        1.000000, 1.000000,-1.00000,  1.00000, -0.0000, 0.00000,
+//        1.000000, 1.000000, 1.000000, 1.000000, -0.00000,0.000000,
+//        1.000000,-1.00000,  1.00000,  1.00000, -0.0000, 0.00000,
+//        1.000000,-1.00000, -1.0000,   1.0000, -0.000, 0.0000,
+//        -1.00000, 1.00000, -1.0000,   0.0000, 1.0000, 0.00000,
+//        -1.00000, 1.00000,  1.00000,  0.00000, 1.00000,0.000000,
+//        1.000000, 1.000000, 1.000000, 0.000000, 1.000000,.000000 ,
+//        1.000000, 1.000000,-1.00000,  0.00000, 1.00000,0.000000
+//        };
+
+//    std::vector<uint> indiceV = {
+//        4,0, 1, 2, 3,
+//        4,4, 5, 6, 7,
+//        4,8, 9, 10, 11,
+//        4,12, 13, 14, 15,
+//        4,16, 17, 18, 19,
+//        4,20, 21, 22, 23
+//    };
+
+    std::vector<float> vertices = {
+           -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+           -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+           -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+           -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+           -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+           -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+           -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+           -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+           -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+           -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+           -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+           -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+           -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+       };
+
+    _ModelInfo m;
+//     m.setVertexArray(calculateNormalsOfVertices(vertices));
+    m.setVertexArray(vertices);
+//     m.setIndexArray(indiceV);
+    m.calcMinMaxExtents();
+    m.setName("NormalCube");
+
+      return m;
 }

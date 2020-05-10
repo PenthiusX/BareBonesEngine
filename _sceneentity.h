@@ -25,25 +25,25 @@ public:
     void setIsActive(bool isIt);
     bool getIsActive();
     //
-    void setId(uint id);//set a unique iD either externaly or internally generated
+    void setId(uint id);
     uint getId() const;
-    void setTag(QString tag);//set unique string based identifier for the object
+    void setTag(QString tag);
     QString getTag() const;
     void setOrderInIndex(uint i);
     uint getIndexPosInScene() const;
     //
     void setIsTransformationAllowed(bool isit);
     bool getIsTransformationAllowed();
-    void setPosition(glm::vec3 pos);//sets the position for the object in the Model matrix via the _renderer class instance.
-    glm::vec3 getPostion() const;//get the current position of the relvant object instace
-    void setRotation(glm::vec3 rotation);//sets the rotation for the object in the Model matrix via the _renderer class instance.
-    glm::vec3 getRotation() const;//get the Quaternian value of the rottion of the relavant object instance.
-    void setPivot(glm::vec3 pivot);//sets the pivot point to rotate around
+    void setPosition(glm::vec3 pos);
+    glm::vec3 getPostion() const;
+    void setRotation(glm::vec3 rotation);
+    glm::vec3 getRotation() const;
+    void setPivot(glm::vec3 pivot);
     bool getIsPivotSet();
     glm::vec3 getPivot() const;
-    void setScale(float scale);//sets the scale for the object in the Model matrix via the _renderer class instance.
-    float getScale() const;//get the flot value for scale for unifor scaling, can be converted to a vec3 for more explicit scaling on axis
-    void setColor(QVector4D col);//sets the collor value that passes into shder of the objects program instance.
+    void setScale(float scale);
+    float getScale() const;
+    void setColor(QVector4D col);
     QVector4D getColor() const;
     //
     void setTranslationMatrix(glm::mat4x4 tmat);

@@ -111,7 +111,7 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
         qInfo() << "cant generate triangles for collision ModelData incomplete";
     }
 }
-/* Function: setMousePointerRay()
+/*
  * takes the mouse position and casts a ray in world space from it.
  */
 void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4, glm::vec2 res){
@@ -165,7 +165,7 @@ _Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 norma
    ▀▀▀  ▀▀▀  ▀▀▀▀  ▀▀▀  ▀▀▀▀
 */
 /*
- * Function: raySphereIntersect()
+ *
  * returns yes or no on intersection
  */
 bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin){
@@ -178,7 +178,6 @@ bool _Physics::hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin){
     return (discriminant>0);
 }
 /*
- * Function: raySphereIntersect()
  * Returns distance from r0 to first intersecion with sphere,
  * or -1.0 if no intersection.
 */
@@ -192,7 +191,7 @@ float _Physics::raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 center, float 
     return (-b - sqrt((b*b) - 4.0*a*c))/(2.0*a);
 }
 /*
- * Function: 'Möller–Trumbore' ray triange intersection algorithm
+ * 'Möller–Trumbore' ray triange intersection algorithm
  * checks for instrsection with the ray and traingle and returns a point
  * called in the Physics update for mesh
 */
@@ -279,7 +278,7 @@ bool hitBoundingBoxF(_Phy_Box b,glm::vec3 orig, glm::vec3 r){
  ▐███▌▐█▌.▐▌▐█▌▐▌▐█▌▐▌▐█▌██. ██ ▐█▄▄▌▐█•█▌     ▐█▌·▐█•█▌▐█ ▪▐▌██▐█▌▐█▄▪▐███▌.▐█▌.▐▌▐█•█▌██ ██▌▐█▌
  ·▀▀▀  ▀█▄▀▪.▀▀▀ .▀▀▀ ▀▀▀▀▀▀▀▀•  ▀▀▀ .▀  ▀     ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
 */
-/* Function: transFormPhysicsTriangles(glm::mat4x4 modelMatrix)
+/*
  * tranforms the physics bodies in sync with the actual object it
  * is bound on.
 

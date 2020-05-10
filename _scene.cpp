@@ -31,6 +31,7 @@ _Scene::_Scene(){
 _Scene::~_Scene(){
     renderObjects.clear();
     delete r;
+    delete fboObject;
 }
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
@@ -40,7 +41,6 @@ _Scene::~_Scene(){
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
 /*
-* Function: addSceneObject(_SceneEntity s)
 * binds the propertes set by the scene objectes into the
 * renderer instace for rendering in the scene
 * this is being called by the _GlWidget class.
@@ -49,14 +49,14 @@ void _Scene::addSceneObject(_SceneEntity s){
     // Only sets the scene object if the camera has been set already and scene object is active
     if (s.getIsActive() == true){
         if (isCamera){
-            r = new _Renderer();
+            r = new _Renderer();//creates a new renderare object for each sceneEntity that gets added to the scene
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
             r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
-            r->initSceneEntityInRenderer(s);
+            r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
             _SceneEntity s =  r->getSceneEntity();
             s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
-            r->setSceneEntityInRenderer(s);
-            renderObjects.push_back(r);
+            r->setSceneEntityInRenderer(s);//sets a local copy of the sceneEntity in the Renderas well for refrence
+            renderObjects.push_back(r);//add the renderer object to array for batch render
             //
             if(s.getIsPhysicsObject()){
                 _Physics phys;
@@ -99,29 +99,23 @@ void _Scene::addSceneObject(_SceneEntity s){
   ·▀▀▀▀  ▀▀▀  ▀▀▀  •  ▀▀▀▀  ▀▀▀  ▀▀▀
 */
 /*
- * Function: getSceneObjects()
  * returns the vector array of sceneObjects.
  * this is being called by the _GlWidget class.
-
 */
 std::vector<_Renderer*> _Scene::getSceneObjects(){
     return renderObjects;
 }
 /*
- * Function: addCamera(_Camera c)
  * function checks if the cmaera is attached and sets the local
  * camera object with the camera object passed via parameter for use in rendering
  * and setting the view matrix in the renderer
-
 */
 void _Scene::addCamera(_Camera c){
     isCamera = true;
     cam = c;
 }
 /*
- * Function: updateCamera(_Camera c)
  * sets the camera updated values to every render entity matrix
-
 */
 void _Scene::updateCamera(_Camera c){
     cam = c;
@@ -132,7 +126,6 @@ void _Scene::updateCamera(_Camera c){
         }
 }
 /*
- * Functuon: findSceneEntity()
  * return the required Entity from index
 *!!!Non Optimal function avoid using the find Funtions in a loop!!!!!
 *!!!You risk increasing the complexity of the loop from On to O(posinIndex - n)^2!!!
@@ -170,16 +163,14 @@ uint _Scene::getTotalTriangleCount(){
 uint _Scene::getSceneObjectCount(){
     return noOfUniquesObjectsInScene;
 }
-/* Function:getSceneEntityHitWithRay()
+/*
  * returns the SceneEntity that is hitBy the mousePointer ray.
-
 */
 _SceneEntity _Scene::getSceneEntityHitWithRay(){
     return rayHitSceneEntity;
 }
 
 /*
-
  */
 void _Scene::removeSceneObject(uint index){
     renderObjects.erase(renderObjects.begin()+index);
@@ -229,7 +220,6 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
   ▀█▄▀ ▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
 /*
- * Function: onResize(int w,int h)
  * gets called on resize and all operations will run when the windows is resized
  * this is being called by the _GlWidget class.
 
@@ -251,7 +241,6 @@ void _Scene::onResize(int w,int h){
    ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
 */
 /*
- * Function: render()
  * This function is render function that will call the glDraw fuinction in
  * the render final draw of all sceneEntity objects attached to scene.
  * this is being called by the _GlWidget class.
@@ -259,7 +248,7 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render(){
     //sets the Frame for the framebufferObject.
-    //fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
+//    fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
     //--------------------------------------
     //Frame to render is below
     for (uint i = 0; i < renderObjects.size(); i++)
@@ -269,11 +258,11 @@ void _Scene::render(){
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below
-   // fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
-   // fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
+//    fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
+//    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 /*
- * Function:fixedUpdate()
+ *
  * this function updated at setintervals based on a clock timer.
  */
 void _Scene::fixedUpdate(float intervalTime)
@@ -294,7 +283,6 @@ void _Scene::fixedUpdate(float intervalTime)
 .▀   ▀▀▀ ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
 */
 /*
- * Function: updatePhysicsForAllObjects()
  * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
 
@@ -326,7 +314,6 @@ void _Scene::updateAllPhysicsObjectsOnce(){
 }
 
 /*
- * Function: updatePhysicsForAllObjectsLoop()
  * update the physcs variables realtime and is relativel optmised to run in a loop.
  * is called in the _scene class's fixedUpdate() function.
 

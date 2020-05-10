@@ -12,12 +12,12 @@
 */
 _Shader::_Shader() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-
+    shaderProgram = 0;
 }
 /*Distructor*/
 _Shader::~_Shader(){}
 /*
- * Function: getShaderProgram() retrun the shaderprogram
+ * getShaderProgram() retrun the shaderprogram
  * uint variable.
  * Is being used by the _renderer class
 */
@@ -26,7 +26,7 @@ uint _Shader::getShaderProgram()
     return shaderProgram;
 }
 /*
- * Function: setFragmentShader(QString f) copiles and,
+ * setFragmentShader(QString f) copiles and,
  * binds the fragment shader passed in form a Qstring,
  * and returns an uint.
  * Is being used by the _renderer class
@@ -37,7 +37,7 @@ void _Shader::setFragmentShader(QString f)
     setChildShader(f,GL_FRAGMENT_SHADER);
 }
 /*
- * Function: setVertexShader(QString v) copiles and
+ * setVertexShader(QString v) copiles and
  * binds the vertex shader passed in from a Qstring parameter,
  * and returns an uint;
  * Is being used by the _renderer class
@@ -47,7 +47,7 @@ void _Shader::setVertexShader(QString v)
     setChildShader(v,GL_VERTEX_SHADER);
 }
 /*
- * Function: attachShaders(), attaches the shaders to the GLProgram
+ * attachShaders(), attaches the shaders to the GLProgram
  * this will only work if the fragment and vertex shader
  * have been compiled before this function.\
 */
@@ -80,7 +80,7 @@ void _Shader::attachShaders()
         exit(0);}
 }
 /*
- * Function: attachShaders(QString v,QString f),
+ * attachShaders(QString v,QString f),
  * this then binds the
 */
 void _Shader::attachShaders(QString v,QString f)
@@ -90,7 +90,7 @@ void _Shader::attachShaders(QString v,QString f)
     attachShaders();
 }
 /*
- * Function: attachGeometryShader(QString geoS)
+ * attachGeometryShader(QString geoS)
  * takes in a qrc path to the geometry shader for this
  * shaderprogram instance
  **NOT IN USE**
@@ -109,7 +109,7 @@ void _Shader::setGeometryShader(QString geoS)
     glDetachShader(shaderProgram,geometryShader);
 }
 /*
-* Function: getUniformLocation(char* nameOfUniform)
+* getUniformLocation(char* nameOfUniform)
 * returns a uint representing the loaction index of
 * the uniform in the shader takes the name of the uniform
 * as the parameter
@@ -141,7 +141,7 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, uint typ)
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
 /*
- * Function: useShaderProgram() Needs to be called before draw
+ * useShaderProgram() Needs to be called before draw
  * everyloop for multiple
  * sets which shader needs to be used in the
  * current context
@@ -151,7 +151,7 @@ void _Shader::useShaderProgram()
     glUseProgram(shaderProgram);
 }
 /*
- * Function: compileShader()
+ * compileShader()
  * everyloop for multiple
  */
 uint _Shader::compileShader(QString src, uint typ)
