@@ -48,8 +48,7 @@ RESOURCES += \
     textures.qrc \
     models.qrc
 
-INCLUDEPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
-DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
+
 
 linux-g++ { #check if platform is linux
 message(Linux)
@@ -62,10 +61,20 @@ LIBS += -lOpenGL32
 
 win32 { #check if platform is windows
 DEFINES += PLATFORM_WIN=true
-INCLUDEPATH += $$PWD/Dependancies/win/FireGrab/Lib
-DEPENDPATH += $$PWD/Dependancies/win/FireGrab/Lib
+INCLUDEPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
+INCLUDEPATH += $$PWD/Dependancies/win/assimp/include/
+#INCLUDEPATH += $$PWD/Dependancies/win/FireGrab/Lib
+
+DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
+DEPENDPATH += $$PWD/Dependancies/win/assimp/lib/
+#DEPENDPATH += $$PWD/Dependancies/win/FireGrab/Lib
+
 LIBS += -lOpengl32
+
 }
+
+DISTFILES +=
+win32:CONFIG(release, debug|release): LIBS += $$PWD/Dependancies/win/assimp/lib/ -lassimp
 
 DISTFILES +=
 #win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera

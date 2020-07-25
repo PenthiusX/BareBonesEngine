@@ -35,7 +35,7 @@ _GLWidget::~_GLWidget(){
 * same function in the OpopenglFunctions class
 * runs once the opengl context is initialised.
 */
-void _GLWidget::initializeGL(){
+void _GLWidget::initializeGL() {
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
     //-------------Camera--------------
@@ -46,7 +46,7 @@ void _GLWidget::initializeGL(){
     //-------------Lights--------------
     light1.setId(8008);
     light1.setTag("light");
-    light1.setModelData(":/models/sphere.obj");
+    light1.setModelData(":/models/cube.obj");
     light1.setPosition(glm::vec3(2.2f,2.0f, 4.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);
@@ -54,12 +54,12 @@ void _GLWidget::initializeGL(){
     _AssetLoader a;
     s.setId(8888);
     s.setTag("LitObject");
-    s.setModelData(":/models/sphere.obj");
+    s.setModelData(":/models/cube.obj");
     s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
-//    s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//  s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
     s.setScale(2.0f);
@@ -67,7 +67,7 @@ void _GLWidget::initializeGL(){
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
-    //-----Scene Objects---------
+    //-----Scene Objects---------------
     scene->addSceneObject(s);//Adds the entity defined obove to scene
     scene->addSceneObject(light1);
 }

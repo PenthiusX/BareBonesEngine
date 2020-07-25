@@ -15,6 +15,11 @@
 #include <QXmlStreamReader>
 
 #include "_tools.h"
+
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+
 /*
 * Constructor/Distructor:
 */
@@ -30,6 +35,20 @@ _AssetLoader::_AssetLoader()
     arrayCounter = 0;
     modelInfo.setIsLoaded(false);
 
+//    Assimp::Importer importer;
+
+//    const aiScene* scene = importer.ReadFile(":/models/cube.obj",
+//            aiProcess_GenSmoothNormals |
+//            aiProcess_CalcTangentSpace |
+//            aiProcess_Triangulate |
+//            aiProcess_JoinIdenticalVertices |
+//            aiProcess_SortByPType
+//            );
+
+//    if (!scene)
+//    {
+//        qDebug() << "Error loading file: (assimp:) " << importer.GetErrorString();
+//    }
 }
 _AssetLoader::~_AssetLoader(){}
 
@@ -95,7 +114,7 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
 }
 
 /*
-* takes a Qstring path to qrc file and then parses through 
+* takes a Qstring path to qrc file and then parses through
 * a string array to get the approptie onfo to render the model
 */
 void _AssetLoader::objLoader(QString pathToFile)
