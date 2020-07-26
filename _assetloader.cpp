@@ -155,7 +155,8 @@ void _AssetLoader::objLoader(QString pathToFile)
         ss >> temp2;
         if (std::stringstream(temp2) >> foundi)
         {
-            indices.push_back(foundi - 1);
+//            indices.push_back(foundi - 1);
+            indices.push_back(foundi);
         }
         temp2 = "";
     }
