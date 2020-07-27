@@ -20,6 +20,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
 
+
 /*
 * Constructor/Distructor:
 */
@@ -34,8 +35,6 @@ _AssetLoader::_AssetLoader()
     posCounter = 0;
     arrayCounter = 0;
     modelInfo.setIsLoaded(false);
-
-//    Assimp::Importer importer;
 
 //    const aiScene* scene = importer.ReadFile(":/models/cube.obj",
 //            aiProcess_GenSmoothNormals |
