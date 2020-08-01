@@ -1,4 +1,3 @@
-# DiamondPal
-DiamondPal : a software tool to help improve the diamond prospecting industry
-This is not the complete project.
-
+# OpenGLQTEngine
+A From scratch OpeGL engine using core Opengl API. Avoiding QT wrappers
+Qt is only for the windowing and UI support.
