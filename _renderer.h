@@ -12,6 +12,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#if defined(Q_OS_WIN)
+     //#include "_ObjLoader.h"//use external objLoader.
+#endif
+
 //#include <qopengl.h>
 /*
  * Class: _Renderer
@@ -28,6 +32,9 @@ public:
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
+#if defined(Q_OS_WIN)
+    //void setModelDataInBuffers(objl::Loader LoaderObject);
+#endif
     //
     void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object

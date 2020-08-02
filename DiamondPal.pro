@@ -13,6 +13,7 @@ TARGET = DiamondPal
 TEMPLATE = app
 
 HEADERS  += mainwindow.h \
+    _ObjLoader.h \
             _glwidget.h \
             _renderer.h \
             _shader.h \

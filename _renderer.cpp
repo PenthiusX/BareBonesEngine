@@ -3,6 +3,7 @@
 #include <_tools.h>
 #include <qquaternion.h>
 
+
 /*
  * The Renderer class
  *
@@ -195,6 +196,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float>vertexArray,std::vector<
     //Link buffer data to texture attribute location
 //   glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, 0, (void*)sizeof(position) + sizeof(normal));
 
+    setuniformLocations();//sets all uniform locations to respective variables.
     qDebug() << "setModelDataInBuffers() with normals for entity" << sceneEntity.getTag();
 }
 /*

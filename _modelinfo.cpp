@@ -16,6 +16,11 @@ void _ModelInfo::setIsLoaded(bool isLoaded){
 void _ModelInfo::setVertexArray(std::vector<float> vertexArray){
     this->vertexArray = vertexArray;
 }
+
+void _ModelInfo::setVertexInfoArray(std::vector<Vertex> vertexInfoArray)
+{
+    this->vertexInfoArray = vertexInfoArray;
+}
 void _ModelInfo::setNormalArray(std::vector<float> norArray)
 {
     this->normalArray = norArray;
@@ -40,6 +45,11 @@ QString _ModelInfo::getPath() const{
 }
 std::vector<float> _ModelInfo::getVertexArray() const{
     return this->vertexArray;
+}
+
+std::vector<Vertex> _ModelInfo::getVertexInfoArray()
+{
+    return this->vertexInfoArray;
 }
 std::vector<float> _ModelInfo::getNormalArray() const
 {

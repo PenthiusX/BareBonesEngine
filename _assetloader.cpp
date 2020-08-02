@@ -16,10 +16,15 @@
 
 #include "_tools.h"
 
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/Importer.hpp>
+//#include <assimp/scene.h>         |assimp does not work , cannot be compiled with Mingw32 , isse is pending in developmennt witht he assimp team|
+//#include <assimp/postprocess.h>   | https://github.com/assimp/assimp/issues/3044 |
+//#include <assimp/Importer.hpp>
 
+//#include <Qt3DCore/QEntity>
+//#include <Qt3DRender>
+//#include <QEntityPtr>
+
+#include "_ObjLoader.h"
 
 /*
 * Constructor/Distructor:
@@ -73,7 +78,7 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
     std::vector <glm::vec3> normalsVec3;
     uint indexCounter = 0;
     bool normalSet = false;
-    for(int v = 0 ; v < vertices.size() ; v++)
+    for(int v = 0 ; v < (int)vertices.size() ; v++)
     {
         indexCounter++;
         if(indexCounter == 9){
@@ -94,7 +99,7 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
       //only for compound arrays with nor
      indexCounter = 0; //create array of VertexOffsetnormal array
      uint ncounter = 0;
-     for(int v = 0 ; v < vertices.size() ; v++){
+     for(int v = 0 ; v < (int)vertices.size() ; v++){
 
          if(indexCounter == 3){
              normalVertices.push_back(normalsVec3[ncounter].x);
@@ -118,6 +123,9 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
 */
 void _AssetLoader::objLoader(QString pathToFile)
 {
+    extrenalObjLoader("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
+
+
     qInfo() << "Loading Model" << pathToFile <<  "vertices.";
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
     const char* p = qba;
@@ -142,7 +150,7 @@ void _AssetLoader::objLoader(QString pathToFile)
         temp = "";
         //assigning the max and min values for vertices at the same
         //time that they are beiing assigned. reduces time complexity
-        if(posCounter >= 3 && (arrayCounter + 2) < vertices.size()){
+        if(posCounter >= 3 && (arrayCounter + 2) < (int)vertices.size()){
             //minExtent
             posCounter = 0;
             if(vertices[arrayCounter] >= vertMax.x)
@@ -196,6 +204,91 @@ void _AssetLoader::objLoader(QString pathToFile)
     qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
     qInfo()<<"--------------------------------------------------------";
     qInfo()<<"--------------------------------------------------------";
+}
+
+//Loads an Obj format file from the windows file system into memory
+void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
+{
+    objl::Loader Loader;
+        // Load .obj File
+    bool loadout = Loader.LoadFile(externalFilePath);
+
+    // If so continue
+    if (loadout)
+    {
+        // Create/Open e1Out.txt
+        std::ofstream file("e1Out.txt");
+
+        // Go through each loaded mesh and out its contents
+        for (int i = 0; i < (int)Loader.LoadedMeshes.size(); i++)
+        {
+            // Copy one of the loaded meshes to be our current mesh
+            objl::Mesh curMesh = Loader.LoadedMeshes[i];
+
+            // Print Mesh Name
+            qInfo() << "Mesh " << i << ": " << curMesh.MeshName.c_str() << "\n";
+
+            // Print Vertices
+            qInfo() << "Vertices:\n";
+
+            // Go through each vertex and print its number,
+            //  position, normal, and texture coordinate
+            for (int j = 0; j < (int)curMesh.Vertices.size(); j++)
+            {
+//                file << "V" << j << ": " <<
+//                    "P(" << curMesh.Vertices[j].Position.X << ", " << curMesh.Vertices[j].Position.Y << ", " << curMesh.Vertices[j].Position.Z << ") " <<
+//                    "N(" << curMesh.Vertices[j].Normal.X << ", " << curMesh.Vertices[j].Normal.Y << ", " << curMesh.Vertices[j].Normal.Z << ") " <<
+//                    "TC(" << curMesh.Vertices[j].TextureCoordinate.X << ", " << curMesh.Vertices[j].TextureCoordinate.Y << ")\n";
+
+                qInfo()<<"V" << j << ": " << "P(" << curMesh.Vertices[j].Position.X << ", " << curMesh.Vertices[j].Position.Y << ", " << curMesh.Vertices[j].Position.Z << ") " <<
+                                             "N(" << curMesh.Vertices[j].Normal.X << ", " << curMesh.Vertices[j].Normal.Y << ", " << curMesh.Vertices[j].Normal.Z << ") " <<
+                                             "TC(" << curMesh.Vertices[j].TextureCoordinate.X << ", " << curMesh.Vertices[j].TextureCoordinate.Y << ")\n";;
+            }
+
+            // Print Indices
+            qInfo() << "Indices:\n";
+
+            // Go through every 3rd index and print the
+            //	triangle that these indices represent
+            for (int j = 0; j < (int)curMesh.Indices.size(); j += 3)
+            {
+                qInfo() << "T" << j / 3 << ": " << curMesh.Indices[j] << ", " << curMesh.Indices[j + 1] << ", " << curMesh.Indices[j + 2] << "\n";
+            }
+
+            // Print Material
+            qInfo() << "Material: " << curMesh.MeshMaterial.name.c_str() << "\n";
+            qInfo() << "Ambient Color: " << curMesh.MeshMaterial.Ka.X << ", " << curMesh.MeshMaterial.Ka.Y << ", " << curMesh.MeshMaterial.Ka.Z << "\n";
+            qInfo() << "Diffuse Color: " << curMesh.MeshMaterial.Kd.X << ", " << curMesh.MeshMaterial.Kd.Y << ", " << curMesh.MeshMaterial.Kd.Z << "\n";
+            qInfo() << "Specular Color: " << curMesh.MeshMaterial.Ks.X << ", " << curMesh.MeshMaterial.Ks.Y << ", " << curMesh.MeshMaterial.Ks.Z << "\n";
+            qInfo() << "Specular Exponent: " << curMesh.MeshMaterial.Ns << "\n";
+            qInfo() << "Optical Density: " << curMesh.MeshMaterial.Ni << "\n";
+            qInfo() << "Dissolve: " << curMesh.MeshMaterial.d << "\n";
+            qInfo() << "Illumination: " << curMesh.MeshMaterial.illum << "\n";
+            qInfo() << "Ambient Texture Map: " << curMesh.MeshMaterial.map_Ka.c_str() << "\n";
+            qInfo() << "Diffuse Texture Map: " << curMesh.MeshMaterial.map_Kd.c_str() << "\n";
+            qInfo() << "Specular Texture Map: " << curMesh.MeshMaterial.map_Ks.c_str() << "\n";
+            qInfo() << "Alpha Texture Map: " << curMesh.MeshMaterial.map_d.c_str() << "\n";
+            qInfo() << "Bump Map: " << curMesh.MeshMaterial.map_bump.c_str() << "\n";
+
+            // Leave a space to separate from the next mesh
+            file << "\n";
+        }
+
+        // Close File
+        file.close();
+    }
+    // If not output an error
+    else
+    {
+        // Create/Open e1Out.txt
+        std::ofstream file("e1Out.txt");
+
+        // Output Error
+        file << "Failed to Load File. May have failed to find it or it was not an .obj file.\n";
+
+        // Close File
+        file.close();
+    }
 }
 
 /* Not in use---

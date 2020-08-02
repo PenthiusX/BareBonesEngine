@@ -22,6 +22,8 @@ public:
     void setModelInfo(_ModelInfo minfo);
     _ModelInfo getModelInfo();
     void objLoader(QString pathToFile);
+    void extrenalObjLoader(std::string externalFilePath);//an unideal external file loader , not inteded for embeded executables.
+
     void loadAllModelsInfoFromFolder(QString folderName);//not in use
     _ModelInfo generateQuad();
     _ModelInfo generateTri();

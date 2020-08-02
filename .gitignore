@@ -7,6 +7,7 @@
 /release
 /vs
 /.vscode
+/Dependancies
 *.vs
 *.vcxproj
 *.vcxproj.filters
