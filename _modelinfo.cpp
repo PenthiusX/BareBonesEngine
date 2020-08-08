@@ -17,12 +17,10 @@ void _ModelInfo::setVertexArray(std::vector<float> vertexArray){
     this->vertexArray = vertexArray;
 }
 
-void _ModelInfo::setVertexInfoArray(std::vector<Vertex> vertexInfoArray)
-{
+void _ModelInfo::setVertexInfoArray(std::vector<VertexInfo> vertexInfoArray){
     this->vertexInfoArray = vertexInfoArray;
 }
-void _ModelInfo::setNormalArray(std::vector<float> norArray)
-{
+void _ModelInfo::setNormalArray(std::vector<float> norArray){
     this->normalArray = norArray;
 }
 void _ModelInfo::setIndexArray(std::vector<unsigned int> indexAarray){
@@ -47,12 +45,10 @@ std::vector<float> _ModelInfo::getVertexArray() const{
     return this->vertexArray;
 }
 
-std::vector<Vertex> _ModelInfo::getVertexInfoArray()
-{
+std::vector<VertexInfo> _ModelInfo::getVertexInfoArray()const{
     return this->vertexInfoArray;
 }
-std::vector<float> _ModelInfo::getNormalArray() const
-{
+std::vector<float> _ModelInfo::getNormalArray() const{
     return this->normalArray;
 }
 std::vector<unsigned int> _ModelInfo::getIndexArray() const{

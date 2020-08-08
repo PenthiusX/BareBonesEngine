@@ -68,14 +68,3 @@ DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 LIBS += -lOpengl32
 
 }
-
-
-DISTFILES +=
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/win/FireGrab/Lib/ -lFGCamera
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/win/assimp/libs/release/ -lassimp-vc140-mtd
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/win/assimp/libs/debug/ -lassimp-vc140-mtd
-
-INCLUDEPATH += $$PWD/Dependancies/win/assimp/include
-DEPENDPATH += $$PWD/Dependancies/win/assimp/include

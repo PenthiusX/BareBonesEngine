@@ -125,7 +125,6 @@ void _AssetLoader::objLoader(QString pathToFile)
 {
     extrenalObjLoader("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
 
-
     qInfo() << "Loading Model" << pathToFile <<  "vertices.";
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
     const char* p = qba;
@@ -213,6 +212,10 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         // Load .obj File
     bool loadout = Loader.LoadFile(externalFilePath);
 
+    std::vector<VertexInfo> vfa;
+
+    modelInfo.setVertexInfoArray(vfa);
+
     // If so continue
     if (loadout)
     {
@@ -235,14 +238,9 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
             //  position, normal, and texture coordinate
             for (int j = 0; j < (int)curMesh.Vertices.size(); j++)
             {
-//                file << "V" << j << ": " <<
-//                    "P(" << curMesh.Vertices[j].Position.X << ", " << curMesh.Vertices[j].Position.Y << ", " << curMesh.Vertices[j].Position.Z << ") " <<
-//                    "N(" << curMesh.Vertices[j].Normal.X << ", " << curMesh.Vertices[j].Normal.Y << ", " << curMesh.Vertices[j].Normal.Z << ") " <<
-//                    "TC(" << curMesh.Vertices[j].TextureCoordinate.X << ", " << curMesh.Vertices[j].TextureCoordinate.Y << ")\n";
-
                 qInfo()<<"V" << j << ": " << "P(" << curMesh.Vertices[j].Position.X << ", " << curMesh.Vertices[j].Position.Y << ", " << curMesh.Vertices[j].Position.Z << ") " <<
                                              "N(" << curMesh.Vertices[j].Normal.X << ", " << curMesh.Vertices[j].Normal.Y << ", " << curMesh.Vertices[j].Normal.Z << ") " <<
-                                             "TC(" << curMesh.Vertices[j].TextureCoordinate.X << ", " << curMesh.Vertices[j].TextureCoordinate.Y << ")\n";;
+                                             "TC(" << curMesh.Vertices[j].TextureCoordinate.X << ", " << curMesh.Vertices[j].TextureCoordinate.Y << ")\n";
             }
 
             // Print Indices
