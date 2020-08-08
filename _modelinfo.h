@@ -4,7 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-struct VertexInfo {//added Aug.2020
+struct VertexInfo {//added Aug.2020//for a secondary model loading system
     glm::vec3 Position;
     glm::vec3 Normal;
     glm::vec2 TexCoords;
