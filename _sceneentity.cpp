@@ -278,6 +278,8 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
  */
 void _SceneEntity::setModelData(QString path)
 {
+
+    //!!Need to create an exception to handel External and qrc paths
     assetLoader.objLoader(path);
     if(assetLoader.getModelInfo().getVertexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
         modelInfo = assetLoader.getModelInfo();

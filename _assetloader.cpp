@@ -193,6 +193,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     modelInfo.setMinExtents(vertMin);
     modelInfo.calcCentroidFromMinMax();
     modelInfo.setIsLoaded(true);
+
     qInfo()<<"--------------MODEL INFO-------------------------------";
     qInfo()<< "Path" << modelInfo.getPath();
     qInfo()<< "VertexArray" << modelInfo.getVertexArray().size();
@@ -202,7 +203,6 @@ void _AssetLoader::objLoader(QString pathToFile)
     qInfo()<< "Centroid" << modelInfo.getCentroid().x << modelInfo.getCentroid().y << modelInfo.getCentroid().z;
     qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
     qInfo()<<"--------------------------------------------------------";
-    qInfo()<<"--------------------------------------------------------";
 }
 
 //Loads an Obj format file from the windows file system into memory
@@ -211,11 +211,25 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
     objl::Loader Loader;
         // Load .obj File
     bool loadout = Loader.LoadFile(externalFilePath);
-
     std::vector<VertexInfo> vfa;
 
-    modelInfo.setVertexInfoArray(vfa);
+    if(loadout){
+    for(unsigned int i = 0 ; i < Loader.LoadedVertices.size(); i++){
+        VertexInfo v;
+        v.Position = glm::vec3(Loader.LoadedVertices[i].Position.X,Loader.LoadedVertices[i].Position.Y,Loader.LoadedVertices[i].Position.Z);
+        v.Normal = glm::vec3(Loader.LoadedVertices[i].Normal.X,Loader.LoadedVertices[i].Normal.Y,Loader.LoadedVertices[i].Normal.Z);
+        v.TexCoords = glm::vec2(Loader.LoadedVertices[i].TextureCoordinate.X,Loader.LoadedVertices[i].TextureCoordinate.Y);
+        vfa.push_back(v);
+        }
 
+    //Needs to set model info min max .
+        modelInfo.setVertexInfoArray(vfa);
+        modelInfo.setIsLoaded(true);
+    }
+    else{
+        qInfo() << externalFilePath.c_str() << "Did not load";
+    }
+/*
     // If so continue
     if (loadout)
     {
@@ -287,6 +301,7 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         // Close File
         file.close();
     }
+   */
 }
 
 /* Not in use---
