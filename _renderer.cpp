@@ -134,7 +134,6 @@ void _Renderer::setShader(QString vSh, QString fSh)
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<uint> indexArray)//Pass normals
 {
     // Copy the vertex and index data locally for use in the current drawcall.
-    vertices = vertexArray;
     indices = indexArray;
     // Initialization code (done once (unless your object frequently changes))
     glGenBuffers(1, &VBO);
@@ -145,7 +144,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof(float), &vertexArray[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
 
 //     glEnableVertexAttribArray(0);
@@ -163,51 +162,78 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
 }
 
-void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexArray, std::vector<uint> indexArra)
+void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
 {
+    indices = indexArray;
 
+       glGenVertexArrays(1, &VAO);
+       glGenBuffers(1, &VBO);
+       glGenBuffers(1, &EBO);
+
+       glBindVertexArray(VAO);
+       glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+       glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(vertexInfoArray),vertexInfoArray.data(), GL_STATIC_DRAW);
+
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+       glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(unsigned int),indexArray.data(), GL_STATIC_DRAW);
+
+       // vertex positions
+       glEnableVertexAttribArray(0);
+       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertexInfoArray), (void*)0);
+       // vertex normals
+       glEnableVertexAttribArray(1);
+       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertexInfoArray), (void*)offsetof(VertexInfo, Normal));
+       // vertex texture coords
+       glEnableVertexAttribArray(2);
+       glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertexInfoArray), (void*)offsetof(VertexInfo, TexCoords));
+
+       glBindVertexArray(0);
+        setuniformLocations();//sets all uniform locations to respective variables.
 }
 
 
-void _Renderer::setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray)
-{
-    glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-    qDebug() << "VBO-" << VBO << "VAO-" << VAO << "EBO-" << EBO;
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//void _Renderer::setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray)
+//{
+//    glGenBuffers(1, &VBO);
+//    glGenVertexArrays(1, &VAO);
+//    glGenBuffers(1, &EBO);
+//    qDebug() << "VBO-" << VBO << "VAO-" << VAO << "EBO-" << EBO;
+//    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//    glBindVertexArray(VAO);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
 
-    //Dump the data into the Buffer.
-    glBufferData(GL_ARRAY_BUFFER,sizeof (float)* vertexArray.size()+normalsArray.size()/*+sizeof(uv)*/, NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertexArray.size(), vertexArray.data());
-//    glBufferSubData(GL_ARRAY_BUFFER, vertexArray.size(), normalsArray.size(), normalsArray.data());
-//    glBufferSubData(GL_ARRAY_BUFFER, sizeof(position)+sizeof(normal), sizeof(uv), uv);
+//    //Dump the data into the Buffer.
+//    glBufferData(GL_ARRAY_BUFFER,sizeof (float)* vertexArray.size()+normalsArray.size()/*+sizeof(uv)*/, NULL, GL_STATIC_DRAW);
+//    glBufferSubData(GL_ARRAY_BUFFER, 0, vertexArray.size(), vertexArray.data());
+////    glBufferSubData(GL_ARRAY_BUFFER, vertexArray.size(), normalsArray.size(), normalsArray.data());
+////    glBufferSubData(GL_ARRAY_BUFFER, sizeof(position)+sizeof(normal), sizeof(uv), uv);
 
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(uint), &indexArray[0], GL_STATIC_DRAW);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(uint), &indexArray[0], GL_STATIC_DRAW);
 
-    //Get the location of the attributes from the shader
-    GLuint positionLocation = glGetAttribLocation(shdr->getShaderProgram(),"aPos");
-    GLuint normalLocation = glGetAttribLocation(shdr->getShaderProgram(),"normal");
-    // GLuint uvLocation = glGetAttribLocation(shdr->getShaderProgram(),"texCoord");
+//    //Get the location of the attributes from the shader
+//    GLuint positionLocation = glGetAttribLocation(shdr->getShaderProgram(),"aPos");
+//    GLuint normalLocation = glGetAttribLocation(shdr->getShaderProgram(),"normal");
+//    // GLuint uvLocation = glGetAttribLocation(shdr->getShaderProgram(),"texCoord");
 
-    //enable the attribute locations
-    glEnableVertexAttribArray(positionLocation);
-//    glEnableVertexAttribArray(normalLocation);
-    // glEnableVertexAttribArray(uvLocation);
+//    //enable the attribute locations
+//    glEnableVertexAttribArray(positionLocation);
+////    glEnableVertexAttribArray(normalLocation);
+//    // glEnableVertexAttribArray(uvLocation);
 
-    //Link buffer data to position attribute location
-    glVertexAttribPointer(positionLocation,3,GL_FLOAT,GL_FALSE,3*sizeof(float),0);
-    //Link buffer data to normal attribute location
-//    glVertexAttribPointer(normalLocation,3,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)vertexArray.size());
-    //Link buffer data to texture attribute location
-//   glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, 0, (void*)sizeof(position) + sizeof(normal));
+//    //Link buffer data to position attribute location
+//    glVertexAttribPointer(positionLocation,3,GL_FLOAT,GL_FALSE,3*sizeof(float),0);
+//    //Link buffer data to normal attribute location
+////    glVertexAttribPointer(normalLocation,3,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)vertexArray.size());
+//    //Link buffer data to texture attribute location
+////   glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, 0, (void*)sizeof(position) + sizeof(normal));
 
-    setuniformLocations();//sets all uniform locations to respective variables.
-    qDebug() << "setModelDataInBuffers() with normals for entity" << sceneEntity.getTag();
-}
+//    setuniformLocations();//sets all uniform locations to respective variables.
+//    qDebug() << "setModelDataInBuffers() with normals for entity" << sceneEntity.getTag();
+//}
+
+
 /*
  * sets the unform location uints into there respectively
  * named variables. These variables are used based on definition in shader.
@@ -636,3 +662,4 @@ void _Renderer::setLights()
     glUniform3f(shdr->getUniformLocation("lightPos"),lightPos.x,lightPos.y,lightPos.z);
     glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);//cam pos is ceneter harcoded , passreal cam value later
 }
+

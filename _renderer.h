@@ -31,8 +31,8 @@ public:
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
-    void setModelDataInBuffers(std::vector<VertexInfo>vertexArray,std::vector<uint> indexArra);
-    void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
+    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
+   // void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
 #if defined(Q_OS_WIN)
     //void setModelDataInBuffers(objl::Loader LoaderObject);
 #endif
@@ -87,8 +87,7 @@ private:
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
     //Holds the vertex and index data
-    std::vector<float> vertices;//not allocated yet
-    std::vector<uint> indices;//not allocated yet
+    std::vector<uint> indices;
     //
     std::vector<_Texture> textures;//Texture array for tetures in use for the respective renderer object
     //
