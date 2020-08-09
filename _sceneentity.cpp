@@ -278,17 +278,26 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
  */
 void _SceneEntity::setModelData(QString path)
 {
-
     //!!Need to create an exception to handel External and qrc paths
-    assetLoader.objLoader(path);
-    if(assetLoader.getModelInfo().getVertexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
-        modelInfo = assetLoader.getModelInfo();
-        modelInfo.setIsLoaded(true);
-        isActive = true;
+    if(path.at(0) == ":" || path.at(0) == "q" ){
+        assetLoader.objLoader(path);
+        if(assetLoader.getModelInfo().getVertexArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
+            modelInfo = assetLoader.getModelInfo();
+            modelInfo.setIsLoaded(true);
+            isActive = true;
+        }
+        else{
+            qInfo() << "_Error::No model data in file, please check the path to file!!!!!!";
+            isActive = false;
+        }
     }
-    else{
-        qInfo() << "_Error::No model data in file, please check the path to file!!!!!!";
-        isActive = false;
+    else {
+        assetLoader.extrenalObjLoader(path.toStdString());
+        if(assetLoader.getModelInfo().getVertexInfoArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
+            modelInfo = assetLoader.getModelInfo();
+            modelInfo.setIsLoaded(true);
+            isActive = true;
+        }
     }
 }
 /*

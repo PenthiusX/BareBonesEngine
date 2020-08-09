@@ -69,8 +69,12 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     setupTexture(sceneEntity.getTexturePath());
     setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
 
-    //setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(),sceneEntity.getModelInfo().getNormalArray(), sceneEntity.getModelInfo().getIndexArray());
-    setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());
+    if(sceneEntity.getModelInfo().getVertexArray().size() > 1){
+        setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());
+    }
+    else{
+       setModelDataInBuffers(sceneEntity.getModelInfo().getVertexInfoArray(), sceneEntity.getModelInfo().getIndexArray());
+    }
 }
 /*
  sets a copy of sceneEntity in the renderer
@@ -157,6 +161,11 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 
     setuniformLocations();//sets all uniform locations to respective variables.
     qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
+}
+
+void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexArray, std::vector<uint> indexArra)
+{
+
 }
 
 

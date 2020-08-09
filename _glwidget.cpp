@@ -46,7 +46,8 @@ void _GLWidget::initializeGL() {
     //-------------Lights--------------
     light1.setId(8008);
     light1.setTag("light");
-    light1.setModelData(":/models/cube.obj");
+    //light1.setModelData(":/models/cube.obj");
+    light1.setModelData("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
     light1.setPosition(glm::vec3(2.2f,2.0f, 4.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);

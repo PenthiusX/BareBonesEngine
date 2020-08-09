@@ -123,7 +123,7 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
 */
 void _AssetLoader::objLoader(QString pathToFile)
 {
-    extrenalObjLoader("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
+//    extrenalObjLoader("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
 
     qInfo() << "Loading Model" << pathToFile <<  "vertices.";
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
@@ -224,6 +224,7 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
 
     //Needs to set model info min max .
         modelInfo.setVertexInfoArray(vfa);
+        modelInfo.setIndexArray(Loader.LoadedIndices);
         modelInfo.setIsLoaded(true);
     }
     else{
