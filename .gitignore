@@ -8,6 +8,8 @@
 /vs
 /.vscode
 /Dependancies
+/models
+
 *.vs
 *.vcxproj
 *.vcxproj.filters
