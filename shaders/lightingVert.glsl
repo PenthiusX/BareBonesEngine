@@ -10,11 +10,11 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 //
-uniform vec4 aColor;
-out vec4 ourColor;
+uniform vec4 aColor;//in
+out vec4 ourColor;//to fragment
 //
-uniform vec2 iMouse;
-out vec2 iMouseO;
+uniform vec2 iMouse;//in
+out vec2 iMouseO;//to fragment
 
 
 void main()

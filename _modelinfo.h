@@ -1,6 +1,6 @@
 #ifndef _MODELINFO_H
 #define _MODELINFO_H
-#include <Qstring>
+#include <QString>
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -20,7 +20,7 @@ public:
     void setIsLoaded(bool isLoaded);
     void setVertexArray(std::vector<float> vertexArray);
     void setVertexInfoArray(std::vector<VertexInfo> vertexInfoArray);
-    void setIndexArray(std::vector<uint> indexAarray);
+    void setIndexArray(std::vector<unsigned int> indexAarray);
     void setNormalArray(std::vector<float>norArray);
     void setMaxExtents(glm::vec4 max);
     void setMinExtents(glm::vec4 min);

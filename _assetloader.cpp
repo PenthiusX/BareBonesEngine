@@ -226,6 +226,7 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         modelInfo.setVertexInfoArray(vfa);
         modelInfo.setIndexArray(Loader.LoadedIndices);
         modelInfo.setIsLoaded(true);
+        modelInfo.setPath(externalFilePath.c_str());
     }
     else{
         qInfo() << externalFilePath.c_str() << "Did not load";
