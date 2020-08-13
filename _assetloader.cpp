@@ -221,16 +221,31 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         v.TexCoords = glm::vec2(Loader.LoadedVertices[i].TextureCoordinate.X,Loader.LoadedVertices[i].TextureCoordinate.Y);
         vfa.push_back(v);
         }
-
-    //Needs to set model info min max .
-        modelInfo.setVertexInfoArray(vfa);
-        modelInfo.setIndexArray(Loader.LoadedIndices);
-        modelInfo.setIsLoaded(true);
-        modelInfo.setPath(externalFilePath.c_str());
     }
     else{
         qInfo() << externalFilePath.c_str() << "Did not load";
     }
+
+
+//    VertexInfo v;
+//    v.Position = glm::vec3(-1.000000, -0.000000, 0.819778);
+//    vfa.push_back(v);
+//    v.Position = glm::vec3(1.000000, 0.000000, 1.819778);
+//    vfa.push_back(v);
+//    v.Position = glm::vec3(1.000000, 0.000000, -1.819778);
+//    vfa.push_back(v);
+//    v.Position = glm::vec3(-1.000000, 0.000000, -1.819778);
+//    vfa.push_back(v);
+
+//    std::vector<uint> indiceV = {0,1,2,0,2,3};
+
+
+     //Needs to set model info min max .
+     modelInfo.setVertexInfoArray(vfa);
+     modelInfo.setIndexArray(Loader.LoadedIndices);
+     modelInfo.setIsLoaded(true);
+     modelInfo.setPath(externalFilePath.c_str());
+
 /*
     // If so continue
     if (loadout)

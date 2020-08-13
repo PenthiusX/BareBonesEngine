@@ -24,5 +24,9 @@ void main()
 
     ourColor = aColor;
     mat4 mvpx = projection * view * model;
+
+
+    aPos.x += iMouse.x;
+
     gl_Position =  mvpx * vec4(aPos, 1.0);
 }

@@ -159,12 +159,11 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     // normal attribute
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-
 }
 
 void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
 {
-     indices = indexArray;
+      indices = indexArray;
 
        glGenVertexArrays(1, &VAO);
        glGenBuffers(1, &VBO);
@@ -266,8 +265,6 @@ void _Renderer::setTexture(QString pathtoTexture)
 * Used by: the _glWidget class initialiseGl() or paintGl().
 */
 void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation)
-
-
 {
     modelMatrix = glm::mat4(1.0f);
     translationMatrix = glm::mat4(1.f);
