@@ -228,13 +228,13 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
 
 
 //    VertexInfo v;
-//    v.Position = glm::vec3(-1.000000, -0.000000, 0.819778);
+//    v.Position = glm::vec3(-1.000000, -0.000000, 1.0000000);
 //    vfa.push_back(v);
-//    v.Position = glm::vec3(1.000000, 0.000000, 1.819778);
+//    v.Position = glm::vec3(1.000000, 0.000000, 1.000000);
 //    vfa.push_back(v);
-//    v.Position = glm::vec3(1.000000, 0.000000, -1.819778);
+//    v.Position = glm::vec3(1.000000, 0.000000, -1.000000);
 //    vfa.push_back(v);
-//    v.Position = glm::vec3(-1.000000, 0.000000, -1.819778);
+//    v.Position = glm::vec3(-1.000000, 0.000000, -1.000000);
 //    vfa.push_back(v);
 
 //    std::vector<uint> indiceV = {0,1,2,0,2,3};

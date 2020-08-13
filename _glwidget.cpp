@@ -56,7 +56,7 @@ void _GLWidget::initializeGL() {
     s.setId(8888);
     s.setTag("LitObject");
 //    s.setModelData(":/models/cube.obj");
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/skewplane.obj");
+    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkey.obj");
 //    s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
