@@ -14,11 +14,17 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
-    glEnable(GL_BLEND);//for transparency in alpha values
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-    
+//    glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
+//    glEnable(GL_BLEND);//for transparency in alpha values
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
+    // Cull triangles which normal is not towards the camera
+    glEnable(GL_CULL_FACE);
+
+
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -289,12 +295,12 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
 */
 void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D upVector)
 {
-    camposForLight = camposForLight;//temp
+    camposForLight = glm::vec3(eyePos.x(), eyePos.y(), eyePos.z());//temp
     viewMatrix = glm::mat4(1.0f);
     viewMatrix = glm::lookAt(
-                glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
-                glm::vec3(focalPoint.x, focalPoint.y, focalPoint.z),
-                glm::vec3(upVector.x(), upVector.y(), upVector.z()));
+                        glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
+                        glm::vec3(focalPoint.x, focalPoint.y, focalPoint.z),
+                        glm::vec3(upVector.x(), upVector.y(), upVector.z()));
     keepSceneEntityUpdated();
 }
 /*
@@ -613,7 +619,7 @@ void _Renderer::setColors()
  */
 void _Renderer::setLights()
 {
-    lightPos = glm::vec3(2.2f,2.0f, 4.0f);//could be an array of lights
+    lightPos = glm::vec3(-2.2f,4.0f, 0.0f);//could be an array of lights
 //    glUniform3f(shdr->getUniformLocation("objectColor"),0.5f, 0.5f, 0.5f );
     glUniform3f(shdr->getUniformLocation("lightColor"),1.0f, 1.0f, 1.0f);
     glUniform3f(shdr->getUniformLocation("lightPos"),lightPos.x,lightPos.y,lightPos.z);

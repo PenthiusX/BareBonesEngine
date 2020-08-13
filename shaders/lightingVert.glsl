@@ -20,13 +20,9 @@ out vec2 iMouseO;//to fragment
 void main()
 {
     FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = mat3(transpose(inverse(model))) * normal;  //apply model transformation on the normal info
+    Normal = mat3(transpose(inverse(model))) * normal;  //apply the transforms applied on the model position data to update the normal data as well
 
     ourColor = aColor;
     mat4 mvpx = projection * view * model;
-
-
-    aPos.x += iMouse.x;
-
     gl_Position =  mvpx * vec4(aPos, 1.0);
 }

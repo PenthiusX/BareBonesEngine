@@ -48,14 +48,13 @@ _Scene::~_Scene(){
 void _Scene::addSceneObject(_SceneEntity s){
     // Only sets the scene object if the camera has been set already and scene object is active
     if (s.getIsActive() == true){
+        s.setOrderInIndex(renderObjects.size());
         if (isCamera){
+            s.setOrderInIndex(renderObjects.size());
             r = new _Renderer();//creates a new renderare object for each sceneEntity that gets added to the scene
             r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
             r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
-            _SceneEntity s =  r->getSceneEntity();
-            s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
-            r->setSceneEntityInRenderer(s);//sets a local copy of the sceneEntity in the Renderas well for refrence
             renderObjects.push_back(r);//add the renderer object to array for batch render
             //
             if(s.getIsPhysicsObject()){
@@ -69,9 +68,6 @@ void _Scene::addSceneObject(_SceneEntity s){
             r->setCamViewMatrix(QVector3D(0.0, 0.0, -10.0), glm::vec3(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 0.0));//set a default camera value
             r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
             r->initSceneEntityInRenderer(s);
-            _SceneEntity s =  r->getSceneEntity();
-            s.setOrderInIndex(renderObjects.size());//sets the order value of sceneEntiy in scne.
-            r->setSceneEntityInRenderer(s);
             renderObjects.push_back(r);
             //
             if(s.getIsPhysicsObject()){
@@ -248,7 +244,7 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render(){
     //sets the Frame for the framebufferObject.
-//    fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
+    //fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
     //--------------------------------------
     //Frame to render is below
     for (uint i = 0; i < renderObjects.size(); i++)
@@ -258,8 +254,8 @@ void _Scene::render(){
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below
-//    fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
-//    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
+   // fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
+   // fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 /*
  *

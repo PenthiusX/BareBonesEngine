@@ -48,23 +48,23 @@ void _GLWidget::initializeGL() {
     light1.setTag("light");
     light1.setModelData(":/models/cube.obj");
 //    light1.setModelData("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
-    light1.setPosition(glm::vec3(2.2f,2.0f, 4.0f));//hard coded value need to get passed into the shader
+    light1.setPosition(glm::vec3(-2.2f,4.0f, 0.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);
     //------------Scene Objects--------
     _AssetLoader a;
     s.setId(8888);
     s.setTag("LitObject");
-//    s.setModelData(":/models/cube.obj");
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkey.obj");
-//    s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    s.setModelData(":/models/sphere.obj");
+    //s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkeyNormal.obj");
+    s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
 //  s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
     s.setColor(QVector4D(0.0,0.5,0.5,0.9));
-    s.setScale(2.0f);
+    s.setScale(2.2f);
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
     scene->addCamera(cam);//camera essential

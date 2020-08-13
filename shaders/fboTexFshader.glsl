@@ -22,8 +22,7 @@ uniform sampler2D screenTexture;
 
 void main()
 {
-    //shows a cursor on screen
-    vec4 col = vec4(0.0,0.0,0.0,1.0);
+    vec4 col;
 
     //Makes a screen change shaders based on mouse pos
     if(gl_FragCoord.x >= iMouseO.x){
