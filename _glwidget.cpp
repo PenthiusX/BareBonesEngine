@@ -46,7 +46,7 @@ void _GLWidget::initializeGL() {
     //-------------Lights--------------
     light1.setId(8008);
     light1.setTag("light");
-    light1.setModelData(":/models/cube.obj");
+    light1.setModelData(":/models/hipolyore.obj");
     light1.setPhysicsObject(_SceneEntity::Sphere);
     light1.setPosition(glm::vec3(-2.2f,4.0f, 0.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
@@ -55,9 +55,9 @@ void _GLWidget::initializeGL() {
     _AssetLoader a;
     s.setId(8888);
     s.setTag("LitObject");
-    s.setModelData(":/models/sphere.obj");
-    //s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkeyNormal.obj");
-    s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    //s.setModelData(":/models/sphere.obj");
+    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkey.obj");
+    //s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
@@ -311,13 +311,14 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransformationLocal(false);
-        onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+//        onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
         onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
-        onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//      onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        onPress->setShader(":/shaders/lightingVert.glsl", ":/shaders/lightingFrag.glsl");
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
-        onPress->setModelData(s.getModelInfo());//dont need to reparse modelfile
+        onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/cube.obj");//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         qInfo()<< "created" << i <<"th object" << "id" << onPress->getId();
