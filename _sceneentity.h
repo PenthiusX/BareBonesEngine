@@ -1,5 +1,4 @@
-#ifndef _SCENEENTITY_H
-#define _SCENEENTITY_H
+#pragma once
 
 #include <qquaternion.h>
 #include <vector>
@@ -153,5 +152,3 @@ private:
     //
     _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
 };
-
-#endif // _SCENEENTITY_H

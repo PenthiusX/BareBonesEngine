@@ -47,7 +47,7 @@ void _GLWidget::initializeGL() {
     light1.setId(8008);
     light1.setTag("light");
     light1.setModelData(":/models/cube.obj");
-//    light1.setModelData("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
+    light1.setPhysicsObject(_SceneEntity::Sphere);
     light1.setPosition(glm::vec3(-2.2f,4.0f, 0.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);
@@ -252,22 +252,22 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     if (event->text() == "d" || event->text() == "D"){
         if (isCamFocus){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x() + 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
-            scene->updateCamera(cam);
+//            scene->updateCamera(cam);//is being updated in the main loop
         }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.1f, 0.f, 0.0));
     }
     if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() + 0.2, cam.getEyePosition().z()));
-            scene->updateCamera(cam);
+//            scene->updateCamera(cam);
         }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.f, 0.1, 0.0));
     }
     if (event->text() == "w" || event->text() == "W"){
         if (isCamFocus == true){
             cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() - 0.2, cam.getEyePosition().z()));
-            scene->updateCamera(cam);
+//            scene->updateCamera(cam);
         }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.1, 0.0));
     }
-    if (event->text() == "r" || event->text() == "R"){
+    if (event->text() == "r" || event->text() == "R"){//reset
         if(isCamFocus)
             cam.setEyePosition(QVector3D(0.0, 0.0, 7.0));
         else{
@@ -302,7 +302,8 @@ void _GLWidget::keyReleaseEvent(QKeyEvent *event){
   ▀▀  █▪▀▀▀▀▀▀ ▀▀▀▀ ·▀▀▀      ▀█▄▀▪.▀    ▀▀▀ .▀  ▀ ▀  ▀  ▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪ ▀▀▀▀
 */
 //Press P to activate.
-void _GLWidget::addRandomSceneEntitestoScene(uint count){
+void _GLWidget::addRandomSceneEntitestoScene(uint count)
+{
     for(int i = 0 ; i < count ; i++)
     {   //makeCurrent() is needed if you need the openglFunctions to pickup the currentcontext,
         //especially when generating buffer ids or binding varied data on runtime,this is a windowing context (in this case Qtwidget).

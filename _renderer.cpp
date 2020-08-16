@@ -156,10 +156,10 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof(float), &vertexArray[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
 
-//     glEnableVertexAttribArray(0);
-//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+//  glEnableVertexAttribArray(0);
+//  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
-//     position attribute
+//  position attribute
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     // normal attribute
@@ -569,11 +569,10 @@ void _Renderer::_Renderer::draw()
         //Sets the values for the MVP matrix in the vertex shader
         glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
         glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
-        //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
+        //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         //
         setColors();//Setting the uniform for color if shader allows
-        setLights();//setting the lighting uniforms if shader allows
         //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         glBindVertexArray(0);//Clear the buffer
@@ -616,13 +615,16 @@ void _Renderer::setColors()
 /*
  *  Used in the Draw functon
  * Updates the light uniforms on the model
+ * is called in the Scene class in the draw function();
  */
-void _Renderer::setLights()
+void _Renderer::updateLightUniforms(_Light l)
 {
-    lightPos = glm::vec3(-2.2f,4.0f, 0.0f);//could be an array of lights
-//    glUniform3f(shdr->getUniformLocation("objectColor"),0.5f, 0.5f, 0.5f );
-    glUniform3f(shdr->getUniformLocation("lightColor"),1.0f, 1.0f, 1.0f);
-    glUniform3f(shdr->getUniformLocation("lightPos"),lightPos.x,lightPos.y,lightPos.z);
+    glUniform3f(shdr->getUniformLocation("lightColor"),l.getColor().x,l.getColor().y,l.getColor().z);
+    glUniform3f(shdr->getUniformLocation("lightPos"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
+
+    glUniform1f(shdr->getUniformLocation("ambientStrength"),l.getAmbientStr());
+    glUniform1f(shdr->getUniformLocation("specularStrength"),l.getSpecularStr());
+
     glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);//cam pos is ceneter harcoded , passreal cam value later
 }
 

@@ -8,9 +8,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
-
-
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -226,8 +223,8 @@ void _Scene::onResize(int w,int h){
     for(uint i = 0; i < renderObjects.size(); i++)
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     //FBO init and updateTexture on Resize
-    fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
-    fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
+//    fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
+//    fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
 /*
   ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
@@ -245,12 +242,19 @@ void _Scene::onResize(int w,int h){
 void _Scene::render(){
     //sets the Frame for the framebufferObject.
     //fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
-    //--------------------------------------
+    //--------------------------------------c
     //Frame to render is below
     for (uint i = 0; i < renderObjects.size(); i++)
     {
         //Frame update
         renderObjects[i]->draw();////Render all objects that are active.Calls the draw function unique to each renderObject.
+
+       if(renderObjects[i]->getSceneEntity().getTag()=="light"){
+            glm::vec3 sp = renderObjects[i]->getSceneEntity().getPostion();
+            lx = _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(1.,1.,1.,1.),0.1,2.5);
+        }
+        la = lx;
+        renderObjects[i]->updateLightUniforms(la);//update the light uniform if existant.
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below

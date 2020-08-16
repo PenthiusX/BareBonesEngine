@@ -6,6 +6,8 @@
 #include "_framebuffer.h"
 #include "_physics.h"
 #include "_sceneentity.h"
+#include "_light.h"
+
 #include <vector>
 #include <thread>         // std::thread
 
@@ -72,6 +74,9 @@ private:
     uint loopIndex;
     void updateAllPhysicsObjectsLoop();
     void updateAllPhysicsObjectsOnce();
+    //Lights
+//    std::vector<Light> lightsArray;
+    _Light la,lx;
     //Thread
     std::thread pu;
     std::thread ph;

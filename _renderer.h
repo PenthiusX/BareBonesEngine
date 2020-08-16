@@ -4,6 +4,7 @@
 #include "_shader.h"
 #include "_sceneentity.h"
 #include "_texture.h"
+#include "_light.h"
 //
 #include <qopenglextrafunctions.h>
 #include <qelapsedtimer.h>//for timer
@@ -22,6 +23,7 @@
  * To create an abstraction for randering data
  * Extends the _glwidget class, will be included in the _glwidget class
 */
+
 class _Renderer : protected QOpenGLExtraFunctions
 {
 public:
@@ -54,17 +56,18 @@ public:
     void setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot);
     void setscale(float scale);
     void lookAt(QVector3D ptl);
+    void RotationBetweenVectors(glm::vec3 dest);
     //
     void initSceneEntityInRenderer(_SceneEntity s_);
     void setSceneEntityInRenderer(_SceneEntity s);
-    //
     _SceneEntity getSceneEntity() const;
+    //
     void draw();//Draws/paints everything bound in the scene
-
-    void RotationBetweenVectors(glm::vec3 dest);
+    //Lights
+    void updateLightUniforms(_Light l);
 private:
     QVector4D actualColor;
-    uint VBO;//vertex buffer object
+    uint VBO;//vertex buffer objec
     uint VAO;//attribute buffer object
     uint EBO;//index buffer object
     //Shader class object sets the shaders and passes the program to the current context
@@ -100,10 +103,5 @@ private:
     void setColors();
 
     glm::vec3 camposForLight;
-    glm::vec3 lightPos;
-    void setLights();
-
-//    //test
-//    void DRAWPAINTERTEXT();
 };
 #endif // _RENDERER_H
