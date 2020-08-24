@@ -56,8 +56,8 @@ void _GLWidget::initializeGL() {
     s.setId(8888);
     s.setTag("LitObject");
     //s.setModelData(":/models/sphere.obj");
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkeyNormal.obj");
-    s.setTexturePath(":/textures/grl.png");
+    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/sphere_blender.obj");
+    s.setTexturePath(":/textures/testTextureS.png");
     //s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);

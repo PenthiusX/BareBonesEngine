@@ -1,7 +1,7 @@
 #version 330 core
 in vec4 iMouseO;
 
-//Lighting vars
+//Lighting inputs
 in vec3 Normal;
 in vec3 FragPos;
 uniform vec3 viewPos;
@@ -9,8 +9,10 @@ uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform float ambientStrength;
 uniform float specularStrength;
+
 //Final Outcolor to the pixel
 out vec4 FragColor;
+
 //Texturing
 in vec2 TexCoord;
 uniform sampler2D ourTexture;
@@ -18,7 +20,6 @@ uniform sampler2D ourTexture;
 void main()
 {
     // ambient
-    // ambientStrength = 0.1f;
     vec3 ambient = ambientStrength * lightColor;
   	
     // diffuse 
@@ -28,7 +29,6 @@ void main()
     vec3 diffuse = diff * lightColor;
     
     // specular
-    // specularStrength = 2.5;
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), .0), 32);
@@ -36,8 +36,14 @@ void main()
         
     vec3 result = (ambient + diffuse + specular);// * ourColor.xyz;
 
-    FragColor = vec4(result.xyz, 1.0) *  texture2D(ourTexture, TexCoord);
-//  FragColor = vec4(result.xyz, 0.5) + ourColor;
-//  FragColor = ourColor.xyz + vec3(0.0,0.0,0.5);
+
+    //discarding pixels with value below 0.1 in the alpha component.
+    vec4 texColor = texture2D(ourTexture,TexCoord);
+    if(texColor.a < 0.1){
+        discard;
+    }
+
+    //Final color output
+    FragColor = vec4(result.xyz, 1.0) *  texColor;
 }
 
