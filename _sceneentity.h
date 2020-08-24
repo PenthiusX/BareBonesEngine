@@ -76,10 +76,18 @@ public:
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
     //flag for setting if glLineMode
-    void setIsLineMode(bool isit);
+    void setIsLineMode(bool isit);//GlLines
     bool getIsLineMode();
-    void setIsLineNoCullMode(bool isit);
+    void setIsLineNoCullMode(bool isit);//Lines with no backFaceculling
     bool getIsLineNoCullMode();
+    //Enable disable blending
+    void setIsBlending(bool isit);
+    bool getIsBlending();
+    //Enable disable DepthTest
+    void setIsDepthTest(bool isit);
+    bool getIsDepthTest();
+
+
     //flag for type of transformations
     void setIsTransformationLocal(bool isLoc);
     bool getIsTransformationLocal();
@@ -138,6 +146,8 @@ private:
     bool isPhysicsHelper;
     bool isLineMode;
     bool isLineNoCullMode;
+    bool isDepthTest;
+    bool isBlending;
     bool isTransformationAllowed;
     //
     glm::mat4x4 translationMatrix;

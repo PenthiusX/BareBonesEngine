@@ -32,7 +32,6 @@ public:
     void bindForFramebuffer(uint index = 0,GLenum operation = GL_FRAMEBUFFER);//bind texture for framebuffer drawing target
 
     void unbind();
-    void addParameter(uint pname,uint param);//setup texture parameters
 
     //initialized texture loads texture image
     void load(GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
@@ -41,7 +40,6 @@ public:
     uint getHeight() const;
 
 protected:
-    std::map<uint,uint> parameters;
     char* image;
 
     uint m_ID = 0;

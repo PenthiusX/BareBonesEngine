@@ -13,6 +13,8 @@ uniform mat4 projection;
 uniform vec4 aColor;//in
 out vec4 ourColor;//to fragment
 //
+out vec2 TexCoord;
+//
 uniform vec2 iMouse;//in
 out vec2 iMouseO;//to fragment
 
@@ -25,4 +27,8 @@ void main()
     ourColor = aColor;
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
+
+    //TexCoord = uv;
+    //ifBlenderAssets force leftorder coords
+    TexCoord = vec2(uv.x,1.-uv.y);
 }

@@ -14,15 +14,21 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-//    glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
-//    glEnable(GL_BLEND);//for transparency in alpha values
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
+    glEnable(GL_BLEND);//for transparency in alpha values
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
     // Cull triangles which normal is not towards the camera
     glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);//culls the backface saving some raster ops
+    //The poligon winding order in which it is rendered,
+    //glFrontFace(GL_CW);//clockwise
+    glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
+    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
+    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
 
 
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
@@ -233,7 +239,7 @@ void _Renderer::setupTexture()
 
 void _Renderer::setupTexture(QString texfile)
 {
-    QImage img = QImage(texfile);
+    QImage img = QImage(texfile).convertToFormat(QImage::Format_RGBA8888);
     _Texture texture(img);
     texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
@@ -244,7 +250,6 @@ void _Renderer::setupTexture(QString texfile)
  * updates the first texture image from char pointer array
  * resolution of previous image is used
  * current context should be active while calling this function
-
  */
 void _Renderer::setTexture(char* texBitmap)
 {
@@ -549,14 +554,13 @@ void _Renderer::_Renderer::draw()
         glPolygonMode(GL_FRONT,GL_LINE);
     else
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+
     if(sceneEntity.getIsActive())
     {
         //Using the shader program in the current context
         shdr->useShaderProgram();
         //Bind Textures
-        for(uint t=0;t<textures.size();t++){
-            textures[t].bind();
-        }
+        for(uint t=0;t<textures.size();t++){textures[t].bind();}
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
         if(sceneEntity.getIsMeshEditable())
         {
@@ -576,6 +580,7 @@ void _Renderer::_Renderer::draw()
         //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         glBindVertexArray(0);//Clear the buffer
+        for(uint t=0;t<textures.size();t++){textures[t].unbind();}
     }
 }
 /*

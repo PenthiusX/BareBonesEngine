@@ -415,10 +415,11 @@ void _Scene::addAllHelperTypesInScene(){
     //Essential rear background object
     bg.setId(777);
     bg.setTag("background");
-    bg.setShader(":/shaders/vshader_background.glsl",":/shaders/fshader_background.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    bg.setShader(":/shaders/dmvshader.glsl",":/shaders/dmvshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
     bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
-    bg.setScale(1.0);
+    bg.setScale(10.0);
     bg.setModelData(a.generateQuad());
+    bg.setPosition(glm::vec3(5.0,0.0,0.0));
     //
     addSceneObject(bg); //add the backGround quad first for it to render last
     //----------Physics Helpers-------

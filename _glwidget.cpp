@@ -56,14 +56,15 @@ void _GLWidget::initializeGL() {
     s.setId(8888);
     s.setTag("LitObject");
     //s.setModelData(":/models/sphere.obj");
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkey.obj");
+    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/monkeyNormal.obj");
+    s.setTexturePath(":/textures/grl.png");
     //s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
 //  s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s.setColor(QVector4D(0.0,0.5,0.5,0.9));
+    s.setColor(QVector4D(0.0,0.0,0.0,1.0));
     s.setScale(2.2f);
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
@@ -120,6 +121,11 @@ void _GLWidget::paintGL()//the renderloop
     }
     //---------------------------
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
+
+
+    //temp rotation , for debug
+    //need to fix mouse rotation on click for externalobjloader objects
+     scene->getSceneObjects()[scene->findSceneEntity("LitObject").getIndexPosInScene()]->setRotation(glm::vec3(0.0,currentTime * 0.5,0.0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·
@@ -311,7 +317,7 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransformationLocal(false);
-//        onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+//      onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
         onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));

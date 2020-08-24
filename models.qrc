@@ -1,16 +1,19 @@
 <RCC>
     <qresource prefix="/">
-		   <file>models/cube.obj</file>
-           <file>models/torus.obj</file>
-           <file>models/cone.obj</file>
-           <file>models/monkey.obj</file>
-           <file>models/sphere.obj</file>
-           <file>models/sphere1.obj</file>
-           <file>models/stickman.obj</file>  
-		   <file>models/hipolyore.obj</file>           		   
-           <file>models/car.obj</file>
-           <file>models/pivot.obj</file>
-		   <file>models/helpers/min.obj</file>
-		   <file>models/helpers/max.obj</file>
+        <file>models/cube.obj</file>
+        <file>models/torus.obj</file>
+        <file>models/cone.obj</file>
+        <file>models/monkey.obj</file>
+        <file>models/sphere.obj</file>
+        <file>models/stickman.obj</file>
+        <file>models/hipolyore.obj</file>
+        <file>models/car.obj</file>
+        <file>models/pivot.obj</file>
+        <file>models/helpers/min.obj</file>
+        <file>models/helpers/max.obj</file>
+        <file>models/cube_blender.obj</file>
+        <file>models/skewplane_blender.obj</file>
+        <file>models/sphere_blender.obj</file>
+        <file>models/monkeyNormal.obj</file>
     </qresource>
 </RCC>

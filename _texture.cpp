@@ -9,10 +9,7 @@
  * initialize empty texture
  * Date:28_03_2019
 */
-_Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
-{
-
-}
+_Texture::_Texture() : QOpenGLExtraFunctions(QOpenGLContext::currentContext()){}
 /*
  * Constructor: _Texture(char *img, uint w, uint h,uint colorFormat) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from char pointer array with given resolution
@@ -23,11 +20,6 @@ _Texture::_Texture(char *img, uint w, uint h,uint colorFormat) : QOpenGLExtraFun
     image = img;
     width = w;
     height = h;
-
-    //addParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-    //addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
-    addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 /* Constructor: _Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
  * initialize texture from QImage
@@ -39,11 +31,6 @@ _Texture::_Texture(QImage& img) : QOpenGLExtraFunctions(QOpenGLContext::currentC
     image = (char*)img.bits();
     width = img.width();
     height = img.height();
-
-    //    addParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-    //    addParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
-    addParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    addParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 /* Function: setImage(QString pathtoTexture)
  *  Updates texture image from image file path
@@ -56,8 +43,6 @@ void _Texture::setImage(QString pathtoTexture)
     width = img.width();
     height = img.height();
     qDebug() << "setting image" << GL_RED << color_format;
-    glBindTexture(GL_TEXTURE_2D,m_ID);
-    glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
 }
 
 /* Function:setImage(QImage& img)
@@ -134,33 +119,23 @@ void _Texture::unbind()
     glBindTexture(GL_TEXTURE_2D,0);
 }
 
-/* add texture parameters manually
- * these parameters will be applied in load function
-*/
-void _Texture::addParameter(uint pname, uint param)
-{
-    parameters[pname] = param;
-}
-
 /* initializes texture
  * applys parameters
  * loads the image
 */
 void _Texture::load( GLenum format, GLenum datatype)
 {
-//    qDebug() << "tex load";
     if(m_ID==0)
     {
-//        qDebug() << "tex gen b" << m_ID;
-        uint t;
         glGenTextures(1,&m_ID);
-//        qDebug() << "tex gen" << m_ID;
     }
     bind();
-    for (auto const& parameter : parameters)
-    {
-        glTexParameteri(GL_TEXTURE_2D,parameter.first, parameter.second);//second specifies value at key in map(dictionary)
-    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     color_format = format;
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
     //glGenerateMipmap(GL_TEXTURE_2D);

@@ -123,7 +123,6 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
 */
 void _AssetLoader::objLoader(QString pathToFile)
 {
-//    extrenalObjLoader("D:/DiamondPalRepo/DiamondPal/models/cubenormalObj.obj");
 
     qInfo() << "Loading Model" << pathToFile <<  "vertices.";
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
@@ -226,7 +225,6 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         qInfo() << externalFilePath.c_str() << "Did not load";
     }
 
-
 //    VertexInfo v;
 //    v.Position = glm::vec3(-1.000000, -0.000000, 1.0000000);
 //    vfa.push_back(v);
@@ -239,86 +237,11 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
 
 //    std::vector<uint> indiceV = {0,1,2,0,2,3};
 
-
      //Needs to set model info min max .
      modelInfo.setVertexInfoArray(vfa);
      modelInfo.setIndexArray(Loader.LoadedIndices);
      modelInfo.setIsLoaded(true);
      modelInfo.setPath(externalFilePath.c_str());
-
-/*
-    // If so continue
-    if (loadout)
-    {
-        // Create/Open e1Out.txt
-        std::ofstream file("e1Out.txt");
-
-        // Go through each loaded mesh and out its contents
-        for (int i = 0; i < (int)Loader.LoadedMeshes.size(); i++)
-        {
-            // Copy one of the loaded meshes to be our current mesh
-            objl::Mesh curMesh = Loader.LoadedMeshes[i];
-
-            // Print Mesh Name
-            qInfo() << "Mesh " << i << ": " << curMesh.MeshName.c_str() << "\n";
-
-            // Print Vertices
-            qInfo() << "Vertices:\n";
-
-            // Go through each vertex and print its number,
-            //  position, normal, and texture coordinate
-            for (int j = 0; j < (int)curMesh.Vertices.size(); j++)
-            {
-                qInfo()<<"V" << j << ": " << "P(" << curMesh.Vertices[j].Position.X << ", " << curMesh.Vertices[j].Position.Y << ", " << curMesh.Vertices[j].Position.Z << ") " <<
-                                             "N(" << curMesh.Vertices[j].Normal.X << ", " << curMesh.Vertices[j].Normal.Y << ", " << curMesh.Vertices[j].Normal.Z << ") " <<
-                                             "TC(" << curMesh.Vertices[j].TextureCoordinate.X << ", " << curMesh.Vertices[j].TextureCoordinate.Y << ")\n";
-            }
-
-            // Print Indices
-            qInfo() << "Indices:\n";
-
-            // Go through every 3rd index and print the
-            //	triangle that these indices represent
-            for (int j = 0; j < (int)curMesh.Indices.size(); j += 3)
-            {
-                qInfo() << "T" << j / 3 << ": " << curMesh.Indices[j] << ", " << curMesh.Indices[j + 1] << ", " << curMesh.Indices[j + 2] << "\n";
-            }
-
-            // Print Material
-            qInfo() << "Material: " << curMesh.MeshMaterial.name.c_str() << "\n";
-            qInfo() << "Ambient Color: " << curMesh.MeshMaterial.Ka.X << ", " << curMesh.MeshMaterial.Ka.Y << ", " << curMesh.MeshMaterial.Ka.Z << "\n";
-            qInfo() << "Diffuse Color: " << curMesh.MeshMaterial.Kd.X << ", " << curMesh.MeshMaterial.Kd.Y << ", " << curMesh.MeshMaterial.Kd.Z << "\n";
-            qInfo() << "Specular Color: " << curMesh.MeshMaterial.Ks.X << ", " << curMesh.MeshMaterial.Ks.Y << ", " << curMesh.MeshMaterial.Ks.Z << "\n";
-            qInfo() << "Specular Exponent: " << curMesh.MeshMaterial.Ns << "\n";
-            qInfo() << "Optical Density: " << curMesh.MeshMaterial.Ni << "\n";
-            qInfo() << "Dissolve: " << curMesh.MeshMaterial.d << "\n";
-            qInfo() << "Illumination: " << curMesh.MeshMaterial.illum << "\n";
-            qInfo() << "Ambient Texture Map: " << curMesh.MeshMaterial.map_Ka.c_str() << "\n";
-            qInfo() << "Diffuse Texture Map: " << curMesh.MeshMaterial.map_Kd.c_str() << "\n";
-            qInfo() << "Specular Texture Map: " << curMesh.MeshMaterial.map_Ks.c_str() << "\n";
-            qInfo() << "Alpha Texture Map: " << curMesh.MeshMaterial.map_d.c_str() << "\n";
-            qInfo() << "Bump Map: " << curMesh.MeshMaterial.map_bump.c_str() << "\n";
-
-            // Leave a space to separate from the next mesh
-            file << "\n";
-        }
-
-        // Close File
-        file.close();
-    }
-    // If not output an error
-    else
-    {
-        // Create/Open e1Out.txt
-        std::ofstream file("e1Out.txt");
-
-        // Output Error
-        file << "Failed to Load File. May have failed to find it or it was not an .obj file.\n";
-
-        // Close File
-        file.close();
-    }
-   */
 }
 
 /* Not in use---

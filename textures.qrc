@@ -2,7 +2,11 @@
     <qresource prefix="/">
         <file>textures/eye.png</file>
         <file>textures/eye2.png</file>
-		<file>textures/grid.png</file>
-	    <file>textures/grid.jpg</file>
+        <file>textures/grid.png</file>
+        <file>textures/grid.jpg</file>
+        <file>textures/grl.jpg</file>
+        <file>textures/gridJ.jpg</file>
+        <file>textures/grl.png</file>
+        <file>textures/testTextureS.png</file>
     </qresource>
 </RCC>
