@@ -323,8 +323,9 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
 //      onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setShader(":/shaders/lightingVert.glsl", ":/shaders/lightingFrag.glsl");
+        onPress->setTexturePath(":/textures/testTextureS.png");
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
-        onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/cube.obj");//dont need to reparse modelfile
+        onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/cube_blender.obj");//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         qInfo()<< "created" << i <<"th object" << "id" << onPress->getId();

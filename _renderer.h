@@ -64,7 +64,8 @@ public:
     //
     void draw();//Draws/paints everything bound in the scene
     //Lights
-    void updateLightUniforms(_Light l);
+    void updateLightUniforms(_Light l);\
+
 private:
     QVector4D actualColor;
     uint VBO;//vertex buffer objec
@@ -100,7 +101,7 @@ private:
     //Stores the uniform location allocated in the shader
     void setuniformLocations();
     void keepSceneEntityUpdated();
-    void setColors();
+    void updateColorUniforms();
 
     glm::vec3 camposForLight;
 };

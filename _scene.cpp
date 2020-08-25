@@ -251,10 +251,10 @@ void _Scene::render(){
 
        if(renderObjects[i]->getSceneEntity().getTag()=="light"){
             glm::vec3 sp = renderObjects[i]->getSceneEntity().getPostion();
-            lx = _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(1.,1.,1.,1.),0.1,2.5);
+            QVector4D col = renderObjects[i]->getSceneEntity().getColor();
+            lx = _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,2.5);
         }
-        la = lx;
-        renderObjects[i]->updateLightUniforms(la);//update the light uniform if existant.
+        renderObjects[i]->updateLightUniforms(lx);//update the light uniform if existant.
     }
     //-----------------------------------------
     //Frame above is loaded in buffers and rendered on FBOquad below

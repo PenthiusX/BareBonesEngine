@@ -40,10 +40,11 @@ void main()
     //discarding pixels with value below 0.1 in the alpha component.
     vec4 texColor = texture2D(ourTexture,TexCoord);
     if(texColor.a < 0.1){
-        discard;
+        //discard;
+        texColor.a = 0.5;
     }
 
     //Final color output
-    FragColor = vec4(result.xyz, 1.0) *  texColor;
+    FragColor = vec4(result.xyz, texColor.a) *  texColor;
 }
 

@@ -576,7 +576,7 @@ void _Renderer::_Renderer::draw()
         glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
         //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         //
-        setColors();//Setting the uniform for color if shader allows
+        updateColorUniforms();//Setting the uniform for color if shader allows
         //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         glBindVertexArray(0);//Clear the buffer
@@ -587,7 +587,7 @@ void _Renderer::_Renderer::draw()
  *  Used in the Draw functon
  * Updates the color and relative uniforms
  */
-void _Renderer::setColors()
+void _Renderer::updateColorUniforms()
 {
     glUniform4f(colorUniform,sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
     //set sfidex color attributes for defined objects

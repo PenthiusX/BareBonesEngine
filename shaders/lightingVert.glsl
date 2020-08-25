@@ -28,7 +28,8 @@ void main()
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
 
+    //Default uv coerds for model editors that match coordinate order with opengl
     //TexCoord = uv;
-    //ifBlenderAssets force leftorder coords
+    //if BlenderAssets wich have oposite coord order , force flip of the uV coords
     TexCoord = vec2(uv.x,1.-uv.y);
 }
