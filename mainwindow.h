@@ -15,13 +15,9 @@ public:
     ~MainWindow();
 
 public slots:
-    void update_camera_image(char* img,uint w,uint h);
 
 private:
     Ui::MainWindow *ui;
-
-    QThread *hardwareInteractionThread;//all hardware IO operations done inside this thread
-
 };
 
 #endif // MAINWINDOW_H

@@ -56,7 +56,7 @@ void _GLWidget::initializeGL() {
     s.setId(8888);
     s.setTag("LitObject");
     //s.setModelData(":/models/sphere.obj");
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/sphere_blender.obj");
+    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");
     s.setTexturePath(":/textures/testTextureS.png");
     //s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
@@ -325,7 +325,7 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress->setShader(":/shaders/lightingVert.glsl", ":/shaders/lightingFrag.glsl");
         onPress->setTexturePath(":/textures/testTextureS.png");
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
-        onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/cube_blender.obj");//dont need to reparse modelfile
+        onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
         scene->addSceneObject(*onPress);
         qInfo()<< "created" << i <<"th object" << "id" << onPress->getId();
