@@ -11,9 +11,6 @@
         <file>models/pivot.obj</file>
         <file>models/helpers/min.obj</file>
         <file>models/helpers/max.obj</file>
-        <file>models/cube_blender.obj</file>
-        <file>models/skewplane_blender.obj</file>
-        <file>models/sphere_blender.obj</file>
-        <file>models/monkeyNormal.obj</file>
+        <file>models/torus_blender.obj</file>
     </qresource>
 </RCC>
