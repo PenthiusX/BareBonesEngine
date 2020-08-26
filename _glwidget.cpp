@@ -88,6 +88,7 @@ void _GLWidget::initializeGL() {
 */
 void _GLWidget::resizeGL(int w, int h){
     scene->onResize(w, h);
+//    text.onResize(w,h);
 }
 /*
   ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
@@ -121,7 +122,8 @@ void _GLWidget::paintGL()//the renderloop
     }
     //---------------------------
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
-
+    //
+//    text.render(this);
 
     //temp rotation , for debug
     //need to fix mouse rotation on click for externalobjloader objects

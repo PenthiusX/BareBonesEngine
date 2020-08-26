@@ -3,7 +3,6 @@
 #include "_tools.h"
 #include <future>
 
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -175,6 +174,7 @@ void _Scene::removeSceneObject(_SceneEntity s){
             renderObjects.erase(renderObjects.begin()+r);
         }
 }
+
 /*
   • ▌ ▄ ·.       ▄• ▄▌.▄▄ · ▄▄▄ .   ▄▄▄ .▄• ▄▌ ▄▄ .  ▐ ▄  ▄▄▄▄▄
   ·██ ▐███▪▪     █▪ █▌▐█ ▀. ▀▄.▀·   ▀▄.▀·█▪ █▌▀▄.▀· •█▌▐█ •██
@@ -220,8 +220,8 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
 void _Scene::onResize(int w,int h){
     resW = w;
     resH = h;
-    for(uint i = 0; i < renderObjects.size(); i++)
-        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+    for(uint i = 0; i < renderObjects.size(); i++){
+        renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());}
     //FBO init and updateTexture on Resize
 //    fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
 //    fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
@@ -244,21 +244,21 @@ void _Scene::render(){
     //fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
     //--------------------------------------c
     //Frame to render is below
-    for (uint i = 0; i < renderObjects.size(); i++)
+    for (uint i = 0; i < renderObjects.size(); i++)//Rendering Scene Object/Primitives
     {
         //Frame update
-        renderObjects[i]->draw();////Render all objects that are active.Calls the draw function unique to each renderObject.
+        renderObjects[i]->draw();////Render all objects that are active.
 
-       if(renderObjects[i]->getSceneEntity().getTag()=="light"){
-            glm::vec3 sp = renderObjects[i]->getSceneEntity().getPostion();
-            QVector4D col = renderObjects[i]->getSceneEntity().getColor();
-            lx = _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,2.5);
+        if(renderObjects[i]->getSceneEntity().getTag()=="light"){
+            glm::vec3 sp  =  renderObjects[i]->getSceneEntity().getPostion();//sets the light Position
+            QVector4D col =  renderObjects[i]->getSceneEntity().getColor();//light color
+                       lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,2.5);//stores as a _Light container
         }
         renderObjects[i]->updateLightUniforms(lx);//update the light uniform if existant.
     }
     //-----------------------------------------
-    //Frame above is loaded in buffers and rendered on FBOquad below
-   // fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBOquad
+   // Frame above is loaded in buffers and rendered on FBOquad below
+   // fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
    // fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 /*

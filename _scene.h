@@ -7,10 +7,8 @@
 #include "_physics.h"
 #include "_sceneentity.h"
 #include "_light.h"
-
 #include <vector>
 #include <thread>         // std::thread
-
 
 /*
  * Class: _Scene
@@ -77,10 +75,10 @@ private:
     //Lights
 //    std::vector<Light> lightsArray;
     _Light la,lx;
+
     //Thread
     std::thread pu;
     std::thread ph;
-
 };
 
 #endif // _SCENE_H

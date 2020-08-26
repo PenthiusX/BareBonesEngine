@@ -1,10 +1,10 @@
-#ifndef _GLWIDGET_H
-#define _GLWIDGET_H
+#pragma once
 
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 #include <QTimer>
 #include "_scene.h"
+//#include "_text.h"
 
 /*
  * Class: _GLWidget
@@ -64,6 +64,8 @@ private:
     float deltaTime;
     float currentTime;
     float timeSinceLastFrame;
-};
+    //
 
-#endif // _GLWIDGET_H
+    //Text
+//    _Text text;
+};
