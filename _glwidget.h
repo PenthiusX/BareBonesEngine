@@ -4,8 +4,6 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include "_scene.h"
-//#include "_text.h"
-
 /*
  * Class: _GLWidget
  * This class is the Controller is a typical MVC where the
@@ -65,7 +63,4 @@ private:
     float currentTime;
     float timeSinceLastFrame;
     //
-
-    //Text
-//    _Text text;
 };
