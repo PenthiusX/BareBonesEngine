@@ -40,8 +40,8 @@ void main()
     //discarding pixels with value below 0.1 in the alpha component.
     vec4 texColor = texture2D(ourTexture,TexCoord);
     if(texColor.a < 0.1){
-        //discard;
-        texColor.a = 0.5;
+        discard;
+        //texColor.a = 0.5;
     }
 
     //Final color output
