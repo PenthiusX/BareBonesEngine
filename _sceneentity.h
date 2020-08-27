@@ -14,6 +14,21 @@
  * on runtime will also translate to changes of the respective sceneoObject on screen.
  * Author: Aditya
 */
+
+struct GlEnablements{
+public:
+    bool isLineMode;
+    enum cullModes{
+        BackFace = 0,
+        FrontFace = 1,
+        FrontAndBack = 2,
+    };
+    bool isFillMode;
+    bool isBlend;
+    bool isDeptTest;
+    bool isStencil;
+};
+
 class _SceneEntity
 {
 public:
@@ -73,6 +88,8 @@ public:
     QString getFragmentShaderPath() const;//returns the fragment shader path
 
     //flag for enabling mesh editing
+
+
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
     //flag for setting if glLineMode
@@ -80,12 +97,6 @@ public:
     bool getIsLineMode();
     void setIsLineNoCullMode(bool isit);//Lines with no backFaceculling
     bool getIsLineNoCullMode();
-    //Enable disable blending
-    void setIsBlending(bool isit);
-    bool getIsBlending();
-    //Enable disable DepthTest
-    void setIsDepthTest(bool isit);
-    bool getIsDepthTest();
 
 
     //flag for type of transformations

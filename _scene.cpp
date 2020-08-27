@@ -22,6 +22,8 @@
 _Scene::_Scene(){
     isCamera = false;
     fboObject = new _FrameBuffer();
+    fboObject->initialise();
+
     loopIndex = 0;
 }
 _Scene::~_Scene(){
@@ -223,8 +225,7 @@ void _Scene::onResize(int w,int h){
     for(uint i = 0; i < renderObjects.size(); i++){
         renderObjects[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());}
     //FBO init and updateTexture on Resize
-//    fboObject->initialise();//initialised here buecause this is the closest function that runs right after the openglContext is initialised in _glwidgetclass
-//    fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
+    fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
 /*
   ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
@@ -241,7 +242,7 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render(){
     //sets the Frame for the framebufferObject.
-    //fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
+    fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
     //--------------------------------------c
     //Frame to render is below
     for (uint i = 0; i < renderObjects.size(); i++)//Rendering Scene Object/Primitives
@@ -258,8 +259,8 @@ void _Scene::render(){
     }
     //-----------------------------------------
    // Frame above is loaded in buffers and rendered on FBOquad below
-   // fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
-   // fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
+    fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
+    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
 }
 /*
  *

@@ -25,13 +25,13 @@ void _FrameBuffer::setupQuad()
     fboShader->attachShaders(":/shaders/fboTexVshader.glsl", ":/shaders/fboTexFshader.glsl");
     float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
                              // positions   // texCoords
-                             -1.00f,  1.0f,  0.0f, 1.0f,
-                             -1.00f, -1.0f,  0.0f, 0.0f,
-                             1.00f, -1.0f,  1.0f, 0.0f,
+                             -1.0f,  1.0f,  0.0f, 1.0f,
+                             -1.0f, -1.0f,  0.0f, 0.0f,
+                             1.0f, -1.0f,  1.0f, 0.0f,
 
-                             -1.00f,  1.0f,  0.0f, 1.0f,
-                             1.00f, -1.0f,  1.0f, 0.0f,
-                             1.00f,  1.0f,  1.0f, 1.0f
+                             -1.0f,  1.0f,  0.0f, 1.0f,
+                             1.0f, -1.0f,  1.0f, 0.0f,
+                             1.0f,  1.0f,  1.0f, 1.0f
                            };
 
     glGenVertexArrays(1, &quadVAO);
@@ -70,9 +70,17 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, resWidth, resHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject); // now actually attach it
 
+//    glGenRenderbuffers(1, &depthrenderbuffer);
+//    glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resWidth, resHeight);
+//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+
     // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
-        qDebug() << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;}else{qDebug() << "Frambuffer is Initialisation Complete" ;}
+        qDebug() << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    }else{
+        qDebug() << "Frambuffer is Initialisation Complete" ;
+    }
     //reset to the default framebuffer 0
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -104,6 +112,7 @@ void _FrameBuffer::setUpdatedFrame()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
 }
 /*
  * this function will render the frame generated via setFrame, and render it on the Quad
@@ -113,17 +122,18 @@ void _FrameBuffer::renderFrameOnQuad()
 {
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);//always force the FBO quad to have a GL_FILL hint.
     glBindFramebuffer(GL_FRAMEBUFFER, 0);// now bind the default(orignal) frame , draw a quad plane attaching the frambuffer texture on it.
-    glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
+    //glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 
-    glBindTexture(GL_TEXTURE_2D,textureColorbuffer);//bind the texture created above
     fboShader->useShaderProgram();//pass the texture to this fboShader
 
     glBindVertexArray(quadVAO);//bind VAO for quad
+    glBindTexture(GL_TEXTURE_2D,textureColorbuffer);//bind the texture created above
+
     glUniform2f(mousePosUniform,mousePos.x(),mousePos.y());//passing mouse value to fboshader
 
     glDrawArrays(GL_TRIANGLES, 0, 6);//Draw the Quad with the texture
     glBindVertexArray(0);//Clear the buffer
+    //glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
 }
 /*
  * this function should help with implementation of the applying a FrameTextuere onto any

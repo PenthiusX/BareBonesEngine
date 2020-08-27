@@ -20,6 +20,7 @@ private:
     GLuint frameBuffer;
     GLuint textureColorbuffer;
     GLuint renderBufferObject;
+    GLuint depthrenderbuffer;
     GLuint quadVAO,quadVBO;
 
     GLuint mousePosUniform;

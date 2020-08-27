@@ -14,23 +14,6 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    //glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
-    glEnable(GL_BLEND);//for transparency in alpha values
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
-    // Enable depth test
-    glEnable(GL_DEPTH_TEST);
-    // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
-    // Cull triangles which normal is not towards the camera
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);//culls the backface saving some raster ops
-    //The poligon winding order in which it is rendered,
-    //glFrontFace(GL_CW);//clockwise
-    glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
-    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
-    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
-
-
     glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
@@ -541,6 +524,35 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest)
   ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌
   ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪
 */
+
+//Sets the rastersation enablements for Opengl
+//via implecit extension invocations.
+//is called in the RenderLoop
+void _Renderer::setGLEnablements()
+{
+    //glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
+    glEnable(GL_BLEND);//for transparency in alpha values
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
+    // Cull triangles which normal is not towards the camera
+//    glEnable(GL_CULL_FACE);
+//    glCullFace(GL_BACK);//culls the backface saving some raster ops
+    //The poligon winding order in which it is rendered,
+    //glFrontFace(GL_CW);//clockwise
+    glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
+    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
+    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
+
+    if(sceneEntity.getIsLineMode())
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    else if(sceneEntity.getIsLineNoCullMode())
+        glPolygonMode(GL_FRONT,GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+}
 /*
  * This is your proprietory draw function
  * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
@@ -548,12 +560,7 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest)
 */
 void _Renderer::_Renderer::draw()
 {
-    if(sceneEntity.getIsLineMode())
-        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    else if(sceneEntity.getIsLineNoCullMode())
-        glPolygonMode(GL_FRONT,GL_LINE);
-    else
-        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    setGLEnablements();
 
     if(sceneEntity.getIsActive())
     {
