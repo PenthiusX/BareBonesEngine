@@ -67,7 +67,6 @@ int _AVT_Camera::select_camera(int v){
 int _AVT_Camera::init(int v){
 
     byteframe = new char[1392640];
-    qDebug() << "camera frame ptr" << (long int)byteframe;
 
     if(list_cameras()==0) return 0;
 

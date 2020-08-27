@@ -68,7 +68,7 @@ void _GLWidget::initializeGL()
     s.setShader(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
     s.setPosition(QVector3D(1.5,-0.0f, -0.0));
     s.setScale(0.09f);
-    s.setModelData(":/models/stickman.obj");
+    s.setModelData(":/models/cube.obj");
     //
     s1.setId(1);
     s1.setTag("stickman2");

@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "functional": "cpp",
+        "thread": "cpp",
+        "vector": "cpp",
+        "locale": "cpp",
+        "xlocale": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp"
+    }
+}
