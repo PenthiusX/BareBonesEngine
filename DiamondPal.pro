@@ -13,6 +13,7 @@ TARGET = DiamondPal
 TEMPLATE = app
 
 HEADERS  += \
+    _material.h \
     mainwindow.h \
     _ObjLoader.h \
     _glwidget.h \
@@ -31,6 +32,7 @@ HEADERS  += \
     _text.h
 
 SOURCES +=  \
+    _material.cpp \
     main.cpp \
     mainwindow.cpp \
     _light.cpp \

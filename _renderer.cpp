@@ -527,31 +527,84 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest)
 
 //Sets the rastersation enablements for Opengl
 //via implecit extension invocations.
-//is called in the RenderLoop
+//is setting enablements explicitly for each object in its own render callback
+//but can be utilised in the scene class to render entire sets of objs with the same settings
 void _Renderer::setGLEnablements()
 {
-    //glEnable(GL_FRONT_AND_BACK);//shows bot back and front of the model
+//-----------------------------Default Ovveride------------------------------------------------------
+
     glEnable(GL_BLEND);//for transparency in alpha values
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
-    // Enable depth test
     glEnable(GL_DEPTH_TEST);
-    // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
     // Cull triangles which normal is not towards the camera
 //    glEnable(GL_CULL_FACE);
 //    glCullFace(GL_BACK);//culls the backface saving some raster ops
-    //The poligon winding order in which it is rendered,
-    //glFrontFace(GL_CW);//clockwise
-    glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
-    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
-    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
 
-    if(sceneEntity.getIsLineMode())
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+
+//    //The poligon winding order in which it is rendered,
+//    //glFrontFace(GL_CW);//clockwise
+//    glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
+    //!!**NOTE**!!
+//    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
+//    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
+
+//-----------------------------------------------------------------------------------------------------
+    //The obove is needed as default as the settings  might be enabled/disabled in other instances or
+    //entites and causes fast switchign between raster states which causes artifacts in the final render.
+//-------------------------------Controlled Overide----------------------------------------------------
+
+    _SceneEntity::GlEnablements g = sceneEntity.getGLModes();
+    _SceneEntity::GlEnablements::frameBufferModes frameBufferMode;
+    _SceneEntity::GlEnablements::cullModes cullMode;
+    _SceneEntity::GlEnablements::fillModes fillMode;
+
+    frameBufferMode = g.frameBufferMode;
+    switch (frameBufferMode){
+    case _SceneEntity::GlEnablements::Blend:
+        glEnable(GL_BLEND);//for transparency in alpha values
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
+                break;
+    case _SceneEntity::GlEnablements::Depth:
+        glEnable(GL_DEPTH_TEST);// Enable depth test
+        glDepthFunc(GL_LESS);//Accept fragment if it closer to the camera than the former one
+                break;
+    case _SceneEntity::GlEnablements::Stencil:
+                break;
+    case _SceneEntity::GlEnablements::BlendAndDepth:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_DEPTH);
+        glDepthFunc(GL_LESS);
+                break;
+    case _SceneEntity::GlEnablements::BlendAndDepthAndStencil:
+                break;
+    }
+    cullMode = g.cullMode;
+    switch (cullMode) {
+    case _SceneEntity::GlEnablements::BackFace:
+        glEnable(GL_CULL_FACE);// Cull triangles which normal is not towards the camera
+        glCullFace(GL_BACK);//culls the backfaces saving some raster ops
+                break;
+    case  _SceneEntity::GlEnablements::FrontFace:
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);//culls the front faces
+                break;
+    case  _SceneEntity::GlEnablements::FrontAndBack:
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT_AND_BACK);//culls the entire object
+                break;
+    }
+    fillMode = g.fillMode;
+    switch(fillMode){
+    case _SceneEntity::GlEnablements::FrontAndBackLine:
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    else if(sceneEntity.getIsLineNoCullMode())
-        glPolygonMode(GL_FRONT,GL_LINE);
-    else
+        break;
+    case _SceneEntity::GlEnablements::FrontAndBackFill:
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+        break;
+    }
 }
 /*
  * This is your proprietory draw function
@@ -560,7 +613,7 @@ void _Renderer::setGLEnablements()
 */
 void _Renderer::_Renderer::draw()
 {
-    setGLEnablements();
+    setGLEnablements();//function sets openGL Rasterisation modifiers
 
     if(sceneEntity.getIsActive())
     {

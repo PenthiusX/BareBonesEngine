@@ -15,20 +15,6 @@
  * Author: Aditya
 */
 
-struct GlEnablements{
-public:
-    bool isLineMode;
-    enum cullModes{
-        BackFace = 0,
-        FrontFace = 1,
-        FrontAndBack = 2,
-    };
-    bool isFillMode;
-    bool isBlend;
-    bool isDeptTest;
-    bool isStencil;
-};
-
 class _SceneEntity
 {
 public:
@@ -88,16 +74,41 @@ public:
     QString getFragmentShaderPath() const;//returns the fragment shader path
 
     //flag for enabling mesh editing
-
-
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
-    //flag for setting if glLineMode
+
+    //setting for glModes to rnder current object
+    struct GlEnablements{
+        enum cullModes{
+            BackFace,
+            FrontFace,
+            FrontAndBack,
+        };
+        enum frameBufferModes{
+            Blend,
+            Depth,
+            Stencil,
+            BlendAndDepth,
+            BlendAndDepthAndStencil
+        };
+        enum fillModes{
+            FrontLine,
+            FrontFill,
+            FrontAndBackLine,
+            FrontAndBackFill
+        };
+       cullModes cullMode;
+       frameBufferModes frameBufferMode;
+       fillModes fillMode;
+    };
+
+
+    void setGLModes(GlEnablements g);
+    GlEnablements getGLModes();
     void setIsLineMode(bool isit);//GlLines
     bool getIsLineMode();
     void setIsLineNoCullMode(bool isit);//Lines with no backFaceculling
     bool getIsLineNoCullMode();
-
 
     //flag for type of transformations
     void setIsTransformationLocal(bool isLoc);
@@ -172,4 +183,6 @@ private:
     _ModelInfo modelInfo;
     //
     _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
+    //
+    GlEnablements glEnablements;
 };

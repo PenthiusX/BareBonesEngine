@@ -24,8 +24,11 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     isLineMode = false;
     isLineNoCullMode = false;
     isTransformationAllowed = true;
-
     modelInfo.setIsLoaded(false);
+
+    glEnablements.cullMode = GlEnablements::BackFace;
+    glEnablements.fillMode = GlEnablements::FrontAndBackFill;
+    glEnablements.frameBufferMode = GlEnablements::BlendAndDepth;
 }
 /*
  * Constructor: _SceneEntity(QVector3D pos, QQuaternion rot, float scale)
@@ -216,6 +219,16 @@ void _SceneEntity::setIsMeshEditable(bool isit){
 }
 bool _SceneEntity::getIsMeshEditable(){
     return isMeshEditable;
+}
+
+void _SceneEntity::setGLModes(_SceneEntity::GlEnablements g)
+{
+    this->glEnablements = g;
+}
+
+_SceneEntity::GlEnablements _SceneEntity::getGLModes()
+{
+    return this->glEnablements;
 }
 /*
 */
