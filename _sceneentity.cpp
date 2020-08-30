@@ -351,12 +351,12 @@ QString _SceneEntity::getFragmentShaderPath() const{
  * sets the physics object type in the scenEntity. Defines what
  * kind of collision obbject is attached to the sceneEntity
 */
-void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum){
+void _SceneEntity::setPhysicsObject(_SceneEntity::PhysicsBody penum){
     isPhysicsObject = true;
     isPhysicsHelper = false;
     phyObjtype = penum;
 }
-void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, scenePhysicsObjects helper)
+void _SceneEntity::setPhysicsObject(_SceneEntity::PhysicsBody penum, PhysicsBody helper)
 {
     if((helper = _SceneEntity::Helper)){
         isPhysicsHelper = true;}
@@ -417,6 +417,6 @@ bool _SceneEntity::getIsPhysicsObject() const {
 bool _SceneEntity::getIsPhysicsHelper() const {
     return isPhysicsHelper;
 }
-_SceneEntity::scenePhysicsObjects _SceneEntity::getPhysicsObjectType(){
+_SceneEntity::PhysicsBody _SceneEntity::getPhysicsObjectType(){
     return phyObjtype;
 }

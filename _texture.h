@@ -8,6 +8,13 @@
 class _Texture : private QOpenGLExtraFunctions
 {
 public:
+
+    enum Type{
+       Diffuse,
+       Specular,
+       Bump
+    };
+
     //constructors to set texture
     _Texture();
     _Texture(QImage& img); //texture from QImage
@@ -20,21 +27,16 @@ public:
     void setImage(char* img,uint iwidth,uint iheight);//from char pointer array with updated given resolution
     void setImage(QImage &img);//from QImage
 
-    //setShader used if multiple texture bindings require differant slots
-    inline uint setShader(uint prog){ shaderProgram = prog; }
-
     inline uint GetID(){ return m_ID;}
-    //    void setSlotUniformName(QString name);//used if multiple texture bindings require differant slots get slot location of the given uniform name
 
     void bind();//bind texture to default slot(0)
     void bind(uint index);//bind texture default given slot index
-    void bindForCompute(uint index = 0,GLenum format = GL_RGBA8,GLenum access = GL_READ_WRITE); //bind texture for compute shader operation
-    void bindForFramebuffer(uint index = 0,GLenum operation = GL_FRAMEBUFFER);//bind texture for framebuffer drawing target
 
     void unbind();
 
     //initialized texture loads texture image
     void load(GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
+    void load(QImage image,Type t, GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
 
     uint getWidth() const;
     uint getHeight() const;
@@ -43,7 +45,6 @@ protected:
     char* image;
 
     uint m_ID = 0;
-    uint shaderProgram;
     uint color_format = GL_RGBA;
     uint slot;
     uint slot_uniform;

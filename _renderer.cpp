@@ -61,15 +61,14 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     sceneEntity = s;
     actualColor = sceneEntity.getColor();
     setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
-    setupTexture(sceneEntity.getMaterial().getDiffuseTexture());
+    //
+    if(sceneEntity.getMaterial().getDiffuseTexture().size() != 0){setupTexture(sceneEntity.getMaterial().getDiffuseTexture(),_Texture::Type::Diffuse);}
+    //if(sceneEntity.getMaterial().getSpecualrTexture().size() != 0){setupTexture(sceneEntity.getMaterial().getSpecualrTexture(),_Texture::Type::Specular);}
+    //
     setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
 
-    if(sceneEntity.getModelInfo().getVertexArray().size() > 1){
-        setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());
-    }
-    else{
-       setModelDataInBuffers(sceneEntity.getModelInfo().getVertexInfoArray(), sceneEntity.getModelInfo().getIndexArray());
-    }
+    if(sceneEntity.getModelInfo().getVertexArray().size() > 1){setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());}
+    else{setModelDataInBuffers(sceneEntity.getModelInfo().getVertexInfoArray(), sceneEntity.getModelInfo().getIndexArray());}
     setuniformLocations();//sets all uniform locations to respective variables.
     qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
 }
@@ -219,11 +218,11 @@ void _Renderer::setupTexture()
     qDebug() << "setupTexture() on entity" << sceneEntity.getTag();
 }
 
-void _Renderer::setupTexture(QString texfile)
+void _Renderer::setupTexture(QString texfile,_Texture::Type t)
 {
     QImage img = QImage(texfile).convertToFormat(QImage::Format_RGBA8888);
-    _Texture texture(img);
-    texture.load(GL_RGBA,GL_UNSIGNED_BYTE);
+    _Texture texture;
+    texture.load(img,t,GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
     qDebug() << "setupTexture(QString texfile) on entity" << sceneEntity.getTag();
 }
@@ -619,7 +618,9 @@ void _Renderer::_Renderer::draw()
         //Using the shader program in the current context
         shdr->useShaderProgram();
         //Bind Textures
-        for(uint t=0;t<textures.size();t++){textures[t].bind();}
+        for(uint t=0;t<textures.size();t++){
+            textures[t].bind(t);
+        }
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
         if(sceneEntity.getIsMeshEditable())
         {
@@ -635,11 +636,11 @@ void _Renderer::_Renderer::draw()
         glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
         //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         //
-        updateColorUniforms();//Setting the uniform for color if shader allows
-        //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         glBindVertexArray(0);//Clear the buffer
         for(uint t=0;t<textures.size();t++){textures[t].unbind();}
+        //
+        updateColorUniforms();//Setting the uniform for color if shader allows
     }
 }
 /*

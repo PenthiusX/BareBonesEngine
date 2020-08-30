@@ -88,7 +88,7 @@ private:
     void setTexture(char* texBitmap,uint iwidth,uint iheight);//takes am image and binds it to object
     //
     void setupTexture();//takes a hardcoded imagedata and binds it to object
-    void setupTexture(QString texfile); //initializes texture from file
+    void setupTexture(QString texfile,_Texture::Type t); //initializes texture from file
     //
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
     //

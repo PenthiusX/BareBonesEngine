@@ -3,6 +3,8 @@ in vec4 iMouseO;
 
 
 struct Material {
+    sampler2D diffuseTex;
+    sampler2D specularTex;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -32,6 +34,7 @@ out vec4 FragColor;
 //Texturing
 in vec2 TexCoord;
 uniform sampler2D ourTexture;
+uniform sampler2D specularTex;
 
 void main()
 {
@@ -48,10 +51,10 @@ void main()
     vec3 ambient = light.ambient * material.ambient * ambientStrength;
 
     // diffuse
-    vec3 norm = normalize(Normal);
+    vec3 norm  = normalize(Normal);
     vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * (diff * material.diffuse);
+    vec3 diffuse = light.diffuse * diff * material.diffuse;
 
     // specular
     vec3 viewDir = normalize(viewPos - FragPos);

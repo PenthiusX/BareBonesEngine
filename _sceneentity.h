@@ -115,7 +115,7 @@ public:
     void setIsTransformationLocal(bool isLoc);
     bool getIsTransformationLocal();
     //Physics
-    enum scenePhysicsObjects{
+    enum PhysicsBody{
         Sphere = 0,
         Box = 1,
         Mesh = 2,
@@ -130,9 +130,9 @@ public:
     bool getIsSelected() const;
     bool getIsPhysicsObject()const;
     bool getIsPhysicsHelper()const;
-    _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
-    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
-    void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,_SceneEntity::scenePhysicsObjects helper);
+    _SceneEntity::PhysicsBody getPhysicsObjectType();
+    void setPhysicsObject( _SceneEntity::PhysicsBody penum);
+    void setPhysicsObject( _SceneEntity::PhysicsBody penum,_SceneEntity::PhysicsBody helper);
     //Material
     void setMaterial(_Material m);
     _Material getMaterial();
@@ -186,7 +186,7 @@ private:
     _AssetLoader assetLoader;//Asset loading
     _ModelInfo modelInfo;
     //
-    _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
+    _SceneEntity::PhysicsBody phyObjtype;//Physics Type identifier
     //
     GlEnablements glEnablements;//setting for GLRasterisation states .
     //

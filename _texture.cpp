@@ -88,30 +88,13 @@ void _Texture::bind()
 */
 void _Texture::bind(uint index)
 {
-    glActiveTexture(GL_TEXTURE0+index);
+    if(index == 0){glActiveTexture(GL_TEXTURE0);}
+    if(index == 1){glActiveTexture(GL_TEXTURE1);}
+    if(index == 2){glActiveTexture(GL_TEXTURE2);}
+    if(index == 3){glActiveTexture(GL_TEXTURE3);}
+
     glBindTexture(GL_TEXTURE_2D,m_ID);
 }
-
-/* bind texture for compute shader operation
- *   index : binding index integer specified in shader
- *   format : data format eg. RGBA8,R8
- *   access : data access eg. GL_READ_ONLY,GL_WRITE_ONLY,GL_READ_WRITE,
-*/
-void _Texture::bindForCompute(uint index, GLenum format, GLenum access)
-{
-    glBindImageTexture(index, m_ID, 0, GL_FALSE, 0, access,format );
-}
-
-/* bind texture for framebuffer target
- *   index : attatchment index integer
- *   operation : framebuffer operation eg. GL_FRAMEBUFFER,GL_READ_FRAMEBUFFER,GL_DRAW_FRAMEBUFFER,
-*/
-void _Texture::bindForFramebuffer(uint index, GLenum operation)
-{
-    glBindTexture(GL_TEXTURE_2D,m_ID);
-    glFramebufferTexture2D(operation,GL_COLOR_ATTACHMENT0+index, GL_TEXTURE_2D, m_ID, 0);
-}
-
 /* unbinds the default
 */
 void _Texture::unbind()
@@ -138,7 +121,41 @@ void _Texture::load( GLenum format, GLenum datatype)
 
     color_format = format;
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
-    //glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+void _Texture::load(QImage image,Type t, GLenum format, GLenum datatype)
+{
+    char* img = (char*)image.bits();
+    this->image = img;
+    width = image.width();
+    height = image.height();
+    if(m_ID==0)
+    {
+        glGenTextures(1,&m_ID);
+    }
+    if(t == Type::Diffuse){
+        glActiveTexture(GL_TEXTURE0);
+        bind();
+    }
+    if(t == Type::Specular){
+        glActiveTexture(GL_TEXTURE5);
+        bind();
+    }
+    if(t == Type::Bump){
+        glActiveTexture(GL_TEXTURE6);
+        bind();
+    }
+
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    color_format = format;
+    glTexImage2D(GL_TEXTURE_2D, 0, format, image.width(), image.height(), 0, format, datatype, img);
+    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 //return width of loaded texture image
