@@ -40,12 +40,12 @@ _GLWidget::~_GLWidget(){
 void _GLWidget::initializeGL() {
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
-    //-------------Camera--------------
+    //-------------Camera-----------------------------
     cam.setEyePosition(QVector3D(0.0, 0.0, 10.0));
     cam.setFocalPoint(glm::vec3(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
-    //-------------Lights--------------
+    //-------------Lights-----------------------------
     light1.setId(8008);
     light1.setTag("light");
     light1.setModelData(":/models/hipolyore.obj");
@@ -53,16 +53,20 @@ void _GLWidget::initializeGL() {
     light1.setPosition(glm::vec3(-2.2f,4.0f, 0.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);
-    //------------Scene Objects--------
+    //------------Material Params----------------------
     /*_Material*/ m = {};
-    m.setDiffuseTexture(":/textures/testTextureC.png");
+    m.setDiffuseTexture(":/textures/testTextureC.png");//color texture
     m.setShine(32.0);
     m.setAmbient(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setSpecular(glm::vec3(1.0f, 1.0f, 1.0f));
-    //----------------
+    //------GLRaster Ebablements ovveride--------------
+    _SceneEntity::GlEnablements g;
+    g.fillMode = _SceneEntity::GlEnablements::FrontAndBackFill;
+    //-------------------------------------------------
     s.setId(8888);
     s.setTag("LitObject");
+    s.setGLModes(g);
     s.setMaterial(m);
     //s.setModelData(":/models/sphere.obj");
     s.setModelData("D:/DiamondPalRepo/DiamondPal/models/testCube.obj");
@@ -72,13 +76,12 @@ void _GLWidget::initializeGL() {
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
     s.setScale(2.2f);
-    //Add stuff preloaded Scene Entities to scene;
-    //--------Essentials---------------
+    //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
-    //-----Scene Objects---------------
+    //-----Scene Objects--------------------------------
     scene->addSceneObject(s);//Adds the entity defined obove to scene
-    scene->addSceneObject(light1);
+    scene->addSceneObject(light1);//Note: the light object is a regular sceneentity but needs a tag named light for it to be considered a light source in scene.
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
