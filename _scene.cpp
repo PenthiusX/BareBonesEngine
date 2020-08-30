@@ -253,7 +253,8 @@ void _Scene::render(){
         if(renderObjects[i]->getSceneEntity().getTag()=="light"){
             glm::vec3 sp  =  renderObjects[i]->getSceneEntity().getPostion();//sets the light Position
             QVector4D col =  renderObjects[i]->getSceneEntity().getColor();//light color
-                       lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,2.5);//stores as a _Light container
+                                                                        //ambiet , du
+                       lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,1.0,1.0);//stores as a _Light container
         }
         renderObjects[i]->updateLightUniforms(lx);//update the light uniform if existant.
     }
@@ -412,17 +413,6 @@ void _Scene::setHelperIndexVars(){
 /*
 */
 void _Scene::addAllHelperTypesInScene(){
-    _AssetLoader a;
-    //Essential rear background object
-    bg.setId(777);
-    bg.setTag("background");
-    bg.setShader(":/shaders/dmvshader.glsl",":/shaders/dmvshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    bg.setTexturePath(":textures/grid.jpg");//needs a texture compliable shader attached too
-    bg.setScale(10.0);
-    bg.setModelData(a.generateQuad());
-    bg.setPosition(glm::vec3(5.0,0.0,0.0));
-    //
-    addSceneObject(bg); //add the backGround quad first for it to render last
     //----------Physics Helpers-------
     sph.setId(1);
     sph.setTag("boundingSphere");

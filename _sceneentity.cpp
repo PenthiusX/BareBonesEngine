@@ -329,9 +329,9 @@ void _SceneEntity::setShader(QString vSh, QString fSh) {
 QString _SceneEntity::getTexturePath() const{
     return texturePath;
 }
-void _SceneEntity::setTexturePath(QString texPath) {
-    texturePath = texPath;
-}
+//void _SceneEntity::setTexturePath(QString texPath) {
+//    texturePath = texPath;
+//}
 /*
 * getVertexShaderPath()
 * returns the Vertex shader path set in the object via set shader Path

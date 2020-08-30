@@ -68,7 +68,7 @@ public:
     void setModelData(_ModelInfo minfo);//set the modelInfo object in sceneEntity
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
-    void setTexturePath(QString texPath);
+    //void setTexturePath(QString texPath);
     QString getTexturePath() const;
     //
     QString getVertexShaderPath() const;//returns the vertexshader path

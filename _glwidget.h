@@ -63,4 +63,5 @@ private:
     float currentTime;
     float timeSinceLastFrame;
     //
+    _Material m;
 };

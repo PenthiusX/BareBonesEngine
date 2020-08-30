@@ -8,5 +8,6 @@
         <file>textures/gridJ.jpg</file>
         <file>textures/grl.png</file>
         <file>textures/testTextureS.png</file>
+        <file>textures/testTextureC.png</file>
     </qresource>
 </RCC>

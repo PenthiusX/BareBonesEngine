@@ -174,3 +174,18 @@ uint _Shader::compileShader(QString src, uint typ)
     }
     return shader;
 }
+
+//prototype implementation
+template<class T> void setUniformArrayValue(uint shaderProgram,
+                                       const QString& arrayName,
+                                       const QString& varName,
+                                       int index,
+                                       const T& value)
+{
+    const char* name = QString("%1[%2].%3")
+            .arg(arrayName)
+            .arg(index)
+            .arg(varName)
+            .toStdString().c_str();
+   return getUniformLocation(name, value);
+}

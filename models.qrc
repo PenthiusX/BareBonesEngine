@@ -12,5 +12,6 @@
         <file>models/helpers/min.obj</file>
         <file>models/helpers/max.obj</file>
         <file>models/torus_blender.obj</file>
+        <file>models/testCube.obj</file>
     </qresource>
 </RCC>

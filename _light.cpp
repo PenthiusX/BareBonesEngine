@@ -2,11 +2,12 @@
 
 _Light::_Light(){}
 
-_Light::_Light(glm::vec3 position,glm::vec4 color,float ambientStr,float specularStr){
+_Light::_Light(glm::vec3 position,glm::vec4 color,float ambient,float specular,float diffuse){
     this->color = color;
     this->position = position;
-    this->ambientStr = ambientStr;
-    this->specularStr = specularStr;
+    this->ambientStr = ambient;
+    this->specular = specular;
+    this->diffuse = diffuse;
 }
 _Light::~_Light(){}
 glm::vec3 _Light::getPosition(){
@@ -18,8 +19,12 @@ glm::vec4 _Light::getColor(){
 float _Light::getAmbientStr(){
     return this->ambientStr;
 }
-float _Light::getSpecularStr(){
-    return this->specularStr;
+float _Light::getSpecular(){
+    return this->specular;
+}
+
+float _Light::getDiffuse(){
+    return this->diffuse;
 }
 void _Light::setPosition(glm::vec3 pos){
     this->position = pos;
@@ -27,6 +32,9 @@ void _Light::setPosition(glm::vec3 pos){
 void _Light::setAmbientStr(float as){
     this->ambientStr = as;
 }
-void _Light::setSpecularStr(float ss){
-    this->specularStr = ss;
+void _Light::setSpecular(float ss){
+    this->specular = ss;
+}
+void _Light::setDiffuse(float d){
+    this->diffuse = d;
 }

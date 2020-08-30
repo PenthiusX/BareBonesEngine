@@ -688,12 +688,21 @@ void _Renderer::updateMaterial(_Material m)
  */
 void _Renderer::updateLightUniforms(_Light l)//neds a restructure
 {
-    glUniform3f(shdr->getUniformLocation("lightColor"),l.getColor().x,l.getColor().y,l.getColor().z);
-    glUniform3f(shdr->getUniformLocation("lightPos"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
+
+    glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+    glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
+
+    // light properties
+    glUniform3f(shdr->getUniformLocation("light.ambient"), l.getColor().x,l.getColor().y,l.getColor().z); // note that all light colors are set at full intensity
+    glUniform3f(shdr->getUniformLocation("light.diffuse"), l.getDiffuse(),l.getDiffuse(),l.getDiffuse());
+    glUniform3f(shdr->getUniformLocation("light.specular"), l.getSpecular(),l.getSpecular(),l.getSpecular());
+
+    // material properties
+    glUniform3f(shdr->getUniformLocation("material.ambient"), sceneEntity.getMaterial().getAmbient().x,sceneEntity.getMaterial().getAmbient().y,sceneEntity.getMaterial().getAmbient().z);
+    glUniform3f(shdr->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
+    glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
+    glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
 
     glUniform1f(shdr->getUniformLocation("ambientStrength"),l.getAmbientStr());
-    glUniform1f(shdr->getUniformLocation("specularStrength"),l.getSpecularStr());
-
-    glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);//cam pos is ceneter harcoded , passreal cam value later
 }
 

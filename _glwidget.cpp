@@ -54,26 +54,23 @@ void _GLWidget::initializeGL() {
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);
     //------------Scene Objects--------
-    _Material m = {};
-    m.setDiffuseTexture(":/textures/testTextureS.png");
+    /*_Material*/ m = {};
+    m.setDiffuseTexture(":/textures/testTextureC.png");
     m.setShine(32.0);
-    m.setAmbient(glm::vec3(1.0f,0.5f,0.31f));
-    m.setDiffuse(glm::vec3(1.0f, 0.5f, 0.31f));
-    m.setSpecular(glm::vec3(0.5f, 0.5f, 0.5f));
+    m.setAmbient(glm::vec3( 1.0f, 1.0f, 1.0f));
+    m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
+    m.setSpecular(glm::vec3(1.0f, 1.0f, 1.0f));
     //----------------
     s.setId(8888);
     s.setTag("LitObject");
     s.setMaterial(m);
     //s.setModelData(":/models/sphere.obj");
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");
-    s.setTexturePath(":/textures/testTextureS.png");
+    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/testCube.obj");
     //s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
-//  s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    //s.setColor(QVector4D(0.0,0.0,0.0,1.0));
     s.setScale(2.2f);
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
@@ -337,7 +334,7 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
 //      onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setShader(":/shaders/lightingVert.glsl", ":/shaders/lightingFrag.glsl");
-        onPress->setTexturePath(":/textures/testTextureS.png");
+        onPress->setMaterial(m);
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
         onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");//dont need to reparse modelfile
         //onPress->setPhysicsObject(_Physics::Sphere);
