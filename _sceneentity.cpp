@@ -367,6 +367,16 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::scenePhysicsObjects penum, sce
     phyObjtype = penum;
 }
 /*
+*/
+void _SceneEntity::setMaterial(_Material m)
+{
+   this->material = m;
+}
+_Material _SceneEntity::getMaterial()
+{
+    return this->material;
+}
+/*
  * Funtion: getisHitRay()
  * reutrn is this sceneEntity has been
  * hit by the mousPointRay or not

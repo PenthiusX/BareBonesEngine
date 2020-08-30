@@ -5,6 +5,7 @@
 #include "_sceneentity.h"
 #include "_texture.h"
 #include "_light.h"
+#include "_material.h"
 //
 #include <qopenglextrafunctions.h>
 #include <qelapsedtimer.h>//for timer
@@ -25,40 +26,27 @@ class _Renderer : protected QOpenGLExtraFunctions
 public:
     _Renderer();
     ~_Renderer();
-
-    void setGLEnablements();
-    void setShader();//default shatder to load
-    void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
-    void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
-    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
-   // void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
     //
-    void setTexture(QString pathtoTexture);
-    void setTexture(char* texBitmap);//takes am image and binds it to object
-    void setTexture(char* texBitmap,uint iwidth,uint iheight);//takes am image and binds it to object
-    //
-    void setupTexture();//takes a hardcoded imagedata and binds it to object
-    void setupTexture(QString texfile); //initializes texture from file
-    //
-    void setModelMatrix(glm::vec3 position, float scale, glm::vec3 rotation);//set the model matrix
-    void setCamViewMatrix(QVector3D eyePos, glm::vec3 focalPoint, QVector3D upVector);//sets the Camera matrix
-    void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);//sets the projection matrix
-    //
-    void setPosition(glm::vec3 pos);//resets the positon to the value that is required
-    void translate(glm::vec3 pos);//update the current positon with the value that is set
+    void setCamViewMatrix(QVector3D eyePos, glm::vec3 focalPoint, QVector3D upVector);// Sets the Camera matrix
+    void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);// Sets the projection matrix
+    //Transformantions
+    void setPosition(glm::vec3 pos);// Resets the positon to the value that is required
+    void translate(glm::vec3 pos);// Update the current positon with the value that is set
     void setRotation(glm::vec3 rot);
     void setRotationAroundPivot(glm::vec3 rot, glm::vec3 pivot);
     void setscale(float scale);
     void lookAt(QVector3D ptl);
     void RotationBetweenVectors(glm::vec3 dest);
-    //
+    //Scene Entity
     void initSceneEntityInRenderer(_SceneEntity s_);
     void setSceneEntityInRenderer(_SceneEntity s);
     _SceneEntity getSceneEntity() const;
     //
-    void draw();//Draws/paints everything bound in the scene
+    void draw();// Draws paints everything bound in the scene
     //Lights
-    void updateLightUniforms(_Light l);\
+    void updateLightUniforms(_Light l);
+    //Frame Enablements
+    void setGLEnablements();
 
 private:
     QVector4D actualColor;
@@ -67,6 +55,8 @@ private:
     uint EBO;//index buffer object
     //Shader class object sets the shaders and passes the program to the current context
     _Shader* shdr;
+    void setShader();//default shatder to load
+    void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     GLint colorUniform;
     GLint mvpUniform;
     GLint modelUnifrom;
@@ -84,10 +74,21 @@ private:
     glm::mat4 pivotTmat;
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
+    void setModelMatrix(glm::vec3 position, float scale, glm::vec3 rotation);//set the model matrix
+    void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
+    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
+    //void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
+
     //Holds the vertex and index data
     std::vector<uint> indices;
     //
     std::vector<_Texture> textures;//Texture array for tetures in use for the respective renderer object
+    void setTexture(QString pathtoTexture);
+    void setTexture(char* texBitmap);//takes am image and binds it to object
+    void setTexture(char* texBitmap,uint iwidth,uint iheight);//takes am image and binds it to object
+    //
+    void setupTexture();//takes a hardcoded imagedata and binds it to object
+    void setupTexture(QString texfile); //initializes texture from file
     //
     _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
     //
@@ -96,7 +97,8 @@ private:
     void setuniformLocations();
     void keepSceneEntityUpdated();
     void updateColorUniforms();
-
+    void updateMaterial(_Material m);
+    //
     glm::vec3 camposForLight;
 };
 #endif // _RENDERER_H

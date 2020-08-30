@@ -4,6 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "_assetloader.h"
+#include  "_material.h"
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -132,6 +133,9 @@ public:
     _SceneEntity::scenePhysicsObjects getPhysicsObjectType();
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum);
     void setPhysicsObject( _SceneEntity::scenePhysicsObjects penum,_SceneEntity::scenePhysicsObjects helper);
+    //Material
+    void setMaterial(_Material m);
+    _Material getMaterial();
 
 private:
     uint id;
@@ -184,5 +188,7 @@ private:
     //
     _SceneEntity::scenePhysicsObjects phyObjtype;//Physics Type identifier
     //
-    GlEnablements glEnablements;
+    GlEnablements glEnablements;//setting for GLRasterisation states .
+    //
+    _Material material;//Local material state , will be passed into the renderer
 };

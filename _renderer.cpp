@@ -61,7 +61,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     sceneEntity = s;
     actualColor = sceneEntity.getColor();
     setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
-    setupTexture(sceneEntity.getTexturePath());
+    setupTexture(sceneEntity.getMaterial().getDiffuseTexture());
     setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
 
     if(sceneEntity.getModelInfo().getVertexArray().size() > 1){
@@ -70,7 +70,6 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     else{
        setModelDataInBuffers(sceneEntity.getModelInfo().getVertexInfoArray(), sceneEntity.getModelInfo().getIndexArray());
     }
-
     setuniformLocations();//sets all uniform locations to respective variables.
     qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
 }
@@ -531,7 +530,7 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest)
 //but can be utilised in the scene class to render entire sets of objs with the same settings
 void _Renderer::setGLEnablements()
 {
-//-----------------------------Default Ovveride------------------------------------------------------
+//-----------------------------Default Overide------------------------------------------------------
 
     glEnable(GL_BLEND);//for transparency in alpha values
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
@@ -545,7 +544,7 @@ void _Renderer::setGLEnablements()
 
 //    //The poligon winding order in which it is rendered,
 //    //glFrontFace(GL_CW);//clockwise
-//    glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
+    glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
     //!!**NOTE**!!
 //    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
 //    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
@@ -677,12 +676,17 @@ void _Renderer::updateColorUniforms()
         sceneEntity.setColor(actualColor);
 }
 
+void _Renderer::updateMaterial(_Material m)
+{
+    sceneEntity.getMaterial();
+}
+
 /*
  *  Used in the Draw functon
  * Updates the light uniforms on the model
  * is called in the Scene class in the draw function();
  */
-void _Renderer::updateLightUniforms(_Light l)
+void _Renderer::updateLightUniforms(_Light l)//neds a restructure
 {
     glUniform3f(shdr->getUniformLocation("lightColor"),l.getColor().x,l.getColor().y,l.getColor().z);
     glUniform3f(shdr->getUniformLocation("lightPos"),l.getPosition().x,l.getPosition().y,l.getPosition().z);

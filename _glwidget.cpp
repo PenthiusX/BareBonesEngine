@@ -3,6 +3,7 @@
 #include "_tools.h"
 
 #include "_text.h"
+#include "_material.h"
 
 /*
  * The _GLWidget Class:
@@ -53,9 +54,16 @@ void _GLWidget::initializeGL() {
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);
     //------------Scene Objects--------
-    _AssetLoader a;
+    _Material m = {};
+    m.setDiffuseTexture(":/textures/testTextureS.png");
+    m.setShine(32.0);
+    m.setAmbient(glm::vec3(1.0f,0.5f,0.31f));
+    m.setDiffuse(glm::vec3(1.0f, 0.5f, 0.31f));
+    m.setSpecular(glm::vec3(0.5f, 0.5f, 0.5f));
+    //----------------
     s.setId(8888);
     s.setTag("LitObject");
+    s.setMaterial(m);
     //s.setModelData(":/models/sphere.obj");
     s.setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");
     s.setTexturePath(":/textures/testTextureS.png");
@@ -65,7 +73,7 @@ void _GLWidget::initializeGL() {
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
 //  s.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s.setColor(QVector4D(0.0,0.0,0.0,1.0));
+    //s.setColor(QVector4D(0.0,0.0,0.0,1.0));
     s.setScale(2.2f);
     //Add stuff preloaded Scene Entities to scene;
     //--------Essentials---------------
