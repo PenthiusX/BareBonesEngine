@@ -57,7 +57,7 @@ void _GLWidget::initializeGL() {
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/testTextureC.png");//color texture
     m.setSpecularTexture(":/textures/testTextureCS.png");
-    m.setShine(32.0);
+    m.setShine(10);
     m.setAmbient(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setSpecular(glm::vec3(1.0f, 1.0f, 1.0f));

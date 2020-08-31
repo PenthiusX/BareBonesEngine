@@ -33,13 +33,13 @@ out vec4 FragColor;
 
 //Texturing
 in vec2 TexCoord;
-uniform sampler2D ourTexture;
+uniform sampler2D diffuseTex;
 uniform sampler2D specularTex;
 
 void main()
 {
     //--------------------------------------------------------------
-    vec4 texColor = texture2D(ourTexture,TexCoord);
+    vec4 texColor = texture2D(diffuseTex,TexCoord);
     vec4 specColor = texture2D(specularTex,TexCoord);
 
     if(texColor.a < 0.1){//discarding pixels with value below 0.1 in the alpha component.
@@ -65,7 +65,7 @@ void main()
     vec3 specular = light.specular * spec * specColor.xyz * material.shininess;
 
     //Final
-    vec3 result = (ambient + diffuse + specular);// / (lightDist) ;
+    vec3 result = (ambient + diffuse + specular) / (lightDist) ;
 
     //Final color output
     FragColor = vec4(result.xyz, texColor.a);

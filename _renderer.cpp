@@ -222,9 +222,8 @@ void _Renderer::setupTexture(QString texfile,_Texture::Type t)
 {
     QImage img = QImage(texfile).convertToFormat(QImage::Format_RGBA8888);
     _Texture texture;
-    texture.load(img,t,GL_RGBA,GL_UNSIGNED_BYTE);
+    texture.load(img,t,this->shdr,GL_RGBA,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-    qDebug() << "setupTexture(QString texfile) on entity" << sceneEntity.getTag();
 }
 /*
  * Contributor : saurabh
@@ -622,9 +621,6 @@ void _Renderer::_Renderer::draw()
         for(uint t=0;t<textures.size();t++){
             textures[t].bind(t+1);
         }
-        glUniform1i(shdr->getUniformLocation("ourTexture"), 1);
-        glUniform1i(shdr->getUniformLocation("specularTex"), 2);
-
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
         if(sceneEntity.getIsMeshEditable())
         {

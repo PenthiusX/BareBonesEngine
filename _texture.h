@@ -4,6 +4,7 @@
 #include <QImage>
 #include <QOpenGLExtraFunctions>
 #include <map>
+#include "_shader.h"
 
 class _Texture : private QOpenGLExtraFunctions
 {
@@ -36,7 +37,7 @@ public:
 
     //initialized texture loads texture image
     void load(GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
-    void load(QImage image,Type t, GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
+    void load(QImage image,Type t,_Shader* s, GLenum format = GL_RGBA, GLenum datatype = GL_UNSIGNED_BYTE);
 
     uint getWidth() const;
     uint getHeight() const;

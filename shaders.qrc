@@ -4,12 +4,8 @@
         <file>shaders/dmfshader.glsl</file>
         <file>shaders/lightingVert.glsl</file>
         <file>shaders/lightingFrag.glsl</file>
-        <file>shaders/basicvshader.glsl</file>
-        <file>shaders/basicfshader.glsl</file>
         <file>shaders/fboTexVshader.glsl</file>
         <file>shaders/fboTexFshader.glsl</file>
-        <file>shaders/fshader_background.glsl</file>
-        <file>shaders/vshader_background.glsl</file>
         <file>shaders/compute.glsl</file>
     </qresource>
 </RCC>
