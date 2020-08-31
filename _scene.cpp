@@ -253,8 +253,8 @@ void _Scene::render(){
         if(renderObjects[i]->getSceneEntity().getTag()=="light"){
             glm::vec3 sp  =  renderObjects[i]->getSceneEntity().getPostion();//sets the light Position
             QVector4D col =  renderObjects[i]->getSceneEntity().getColor();//light color
-                                                                        //ambiet , du
-                       lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,1.0,1.0);//stores as a _Light container
+                         //pos ,                   color,                           ambient,spec,diffuse
+            lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,1.0,1.0);//stores as a _Light container
         }
         renderObjects[i]->updateLightUniforms(lx);//update the light uniform if existant.
     }

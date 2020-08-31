@@ -63,7 +63,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
     setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
     //
     if(sceneEntity.getMaterial().getDiffuseTexture().size() != 0){setupTexture(sceneEntity.getMaterial().getDiffuseTexture(),_Texture::Type::Diffuse);}
-    //if(sceneEntity.getMaterial().getSpecualrTexture().size() != 0){setupTexture(sceneEntity.getMaterial().getSpecualrTexture(),_Texture::Type::Specular);}
+    if(sceneEntity.getMaterial().getSpecualrTexture().size() != 0){setupTexture(sceneEntity.getMaterial().getSpecualrTexture(),_Texture::Type::Specular);}
     //
     setModelMatrix(sceneEntity.getPostion(), sceneEntity.getScale(), sceneEntity.getRotation());
 
@@ -613,14 +613,18 @@ void _Renderer::_Renderer::draw()
 {
     setGLEnablements();//function sets openGL Rasterisation modifiers
 
+
     if(sceneEntity.getIsActive())
     {
         //Using the shader program in the current context
         shdr->useShaderProgram();
         //Bind Textures
         for(uint t=0;t<textures.size();t++){
-            textures[t].bind(t);
+            textures[t].bind(t+1);
         }
+        glUniform1i(shdr->getUniformLocation("ourTexture"), 1);
+        glUniform1i(shdr->getUniformLocation("specularTex"), 2);
+
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
         if(sceneEntity.getIsMeshEditable())
         {

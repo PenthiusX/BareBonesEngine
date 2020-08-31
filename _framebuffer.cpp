@@ -127,6 +127,8 @@ void _FrameBuffer::renderFrameOnQuad()
     fboShader->useShaderProgram();//pass the texture to this fboShader
 
     glBindVertexArray(quadVAO);//bind VAO for quad
+
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,textureColorbuffer);//bind the texture created above
 
     glUniform2f(mousePosUniform,mousePos.x(),mousePos.y());//passing mouse value to fboshader

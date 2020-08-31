@@ -9,5 +9,6 @@
         <file>textures/grl.png</file>
         <file>textures/testTextureS.png</file>
         <file>textures/testTextureC.png</file>
+        <file>textures/testTextureCS.png</file>
     </qresource>
 </RCC>

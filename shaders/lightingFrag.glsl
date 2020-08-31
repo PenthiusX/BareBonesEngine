@@ -40,6 +40,8 @@ void main()
 {
     //--------------------------------------------------------------
     vec4 texColor = texture2D(ourTexture,TexCoord);
+    vec4 specColor = texture2D(specularTex,TexCoord);
+
     if(texColor.a < 0.1){//discarding pixels with value below 0.1 in the alpha component.
         discard;
         //texColor.a = 0.5;
@@ -48,25 +50,25 @@ void main()
     float lightDist = distance(light.position , FragPos);//PointLight , Remove this for directonal light
 
     // ambient
-    vec3 ambient = light.ambient * material.ambient * ambientStrength;
+    vec3 ambient = light.ambient * texColor.xyz * ambientStrength;
 
     // diffuse
     vec3 norm  = normalize(Normal);
     vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * material.diffuse;
+    vec3 diffuse = light.diffuse * diff * texColor.xyz;
 
     // specular
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * (spec * material.specular);
+    vec3 specular = light.specular * spec * specColor.xyz * material.shininess;
 
     //Final
-    vec3 result = (ambient + diffuse + specular) / (lightDist * 1.5) ;
+    vec3 result = (ambient + diffuse + specular);// / (lightDist) ;
 
     //Final color output
-    FragColor = vec4(result.xyz, texColor.a) *  texColor;
+    FragColor = vec4(result.xyz, texColor.a);
     //--------------------------------------------------------------
 }
 

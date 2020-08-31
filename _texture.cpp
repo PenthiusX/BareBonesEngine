@@ -88,11 +88,14 @@ void _Texture::bind()
 */
 void _Texture::bind(uint index)
 {
-    if(index == 0){glActiveTexture(GL_TEXTURE0);}
-    if(index == 1){glActiveTexture(GL_TEXTURE1);}
-    if(index == 2){glActiveTexture(GL_TEXTURE2);}
-    if(index == 3){glActiveTexture(GL_TEXTURE3);}
-
+    switch (index) {
+           case 1: glActiveTexture(GL_TEXTURE1);
+               break;
+           case 2: glActiveTexture(GL_TEXTURE2);
+               break;
+           case 3: glActiveTexture(GL_TEXTURE3);
+               break;
+    }
     glBindTexture(GL_TEXTURE_2D,m_ID);
 }
 /* unbinds the default
@@ -121,7 +124,7 @@ void _Texture::load( GLenum format, GLenum datatype)
 
     color_format = format;
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, datatype, image);
-    glGenerateMipmap(GL_TEXTURE_2D);
+//    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void _Texture::load(QImage image,Type t, GLenum format, GLenum datatype)
@@ -134,19 +137,7 @@ void _Texture::load(QImage image,Type t, GLenum format, GLenum datatype)
     {
         glGenTextures(1,&m_ID);
     }
-    if(t == Type::Diffuse){
-        glActiveTexture(GL_TEXTURE0);
-        bind();
-    }
-    if(t == Type::Specular){
-        glActiveTexture(GL_TEXTURE5);
-        bind();
-    }
-    if(t == Type::Bump){
-        glActiveTexture(GL_TEXTURE6);
-        bind();
-    }
-
+    bind();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -155,7 +146,7 @@ void _Texture::load(QImage image,Type t, GLenum format, GLenum datatype)
 
     color_format = format;
     glTexImage2D(GL_TEXTURE_2D, 0, format, image.width(), image.height(), 0, format, datatype, img);
-    glGenerateMipmap(GL_TEXTURE_2D);
+//    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 //return width of loaded texture image
