@@ -12,6 +12,7 @@ struct Material {
 };
 
 struct Light {
+    vec3 type;//1,0,0 ->directionalLight, 0,1,0 -> pointLight, 0,0,1 -> Flash/SpotLight
     vec4 lightType;
     vec3 position;
     vec3 ambient;
@@ -46,8 +47,13 @@ void main()
         discard;
         //texColor.a = 0.5;
     }
-    //--------------------------------------------------------------
-    float lightDist = distance(light.position , FragPos);//PointLight , Remove this for directonal light
+    //-------------------------------------------------------------
+    float attenuation;
+    if(light.type == vec3(1.,0.,0.)){
+    float lightDist = distance(light.position , FragPos);
+          attenuation = 1.0 / (1.0f + 1.0 * lightDist + 0.32 * (lightDist * lightDist));//PointLight
+    }
+    else{attenuation = 1.0;}
 
     // ambient
     vec3 ambient = light.ambient * texColor.xyz * ambientStrength;
@@ -64,8 +70,12 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * specColor.xyz * material.shininess;
 
+    ambient  *= attenuation;
+    diffuse  *= attenuation;
+    specular *= attenuation;
+
     //Final
-    vec3 result = (ambient + diffuse + specular) / (lightDist) ;
+    vec3 result = (ambient + diffuse + specular) ;
 
     //Final color output
     FragColor = vec4(result.xyz, texColor.a);
