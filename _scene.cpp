@@ -40,8 +40,7 @@ _Scene::~_Scene(){
 */
 /*
 * binds the propertes set by the scene objectes into the
-* renderer instace for rendering in the scene
-* this is being called by the _GlWidget class.
+* renderer/GPU  for rendering in the scene
 */
 void _Scene::addSceneObject(_SceneEntity s){
     // Only sets the scene object if the camera has been set already and scene object is active
@@ -412,7 +411,8 @@ void _Scene::setHelperIndexVars(){
 }
 /*
 */
-void _Scene::addAllHelperTypesInScene(){
+void _Scene::addAllHelperTypesInScene()
+{
     //----------Physics Helpers-------
     sph.setId(1);
     sph.setTag("boundingSphere");

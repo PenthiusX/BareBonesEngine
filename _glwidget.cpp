@@ -55,9 +55,9 @@ void _GLWidget::initializeGL() {
     light1.setScale(0.20f);
     //------------Material Params----------------------
     /*_Material*/ m = {};
-    m.setDiffuseTexture(":/textures/testTextureC.png");//color texture
-    m.setSpecularTexture(":/textures/testTextureCS.png");
-    m.setShine(10);
+    m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
+    //m.setSpecularTexture(":/textures/testTextureCS.png");
+    m.setShine(1);
     m.setAmbient(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setSpecular(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -70,13 +70,13 @@ void _GLWidget::initializeGL() {
     s.setGLModes(g);
     s.setMaterial(m);
     //s.setModelData(":/models/sphere.obj");
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/testCube.obj");
-    //s.setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
+    s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
     s.setPosition(glm::vec3(0.0,0.0, 0.0));
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s.setScale(2.2f);
+    s.setScale(0.3f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
@@ -137,10 +137,6 @@ void _GLWidget::paintGL()//the renderloop
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     //
 //    text.render(this);
-
-    //temp rotation , for debug
-    //need to fix mouse rotation on click for externalobjloader objects
-     scene->getSceneObjects()[scene->findSceneEntity("LitObject").getIndexPosInScene()]->setRotation(glm::vec3(0.0,currentTime * 0.5,0.0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·

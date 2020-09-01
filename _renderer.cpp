@@ -559,15 +559,26 @@ void _Renderer::setGLEnablements()
 
     frameBufferMode = g.frameBufferMode;
     switch (frameBufferMode){
+    case  _SceneEntity::GlEnablements::ColorOnly:
+//        glDisable(GL_BLEND);
+//        glDisable(GL_DEPTH_TEST);
+                break;
     case _SceneEntity::GlEnablements::Blend:
         glEnable(GL_BLEND);//for transparency in alpha values
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
                 break;
     case _SceneEntity::GlEnablements::Depth:
-        glEnable(GL_DEPTH_TEST);// Enable depth test
+        glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);//Accept fragment if it closer to the camera than the former one
+        glDepthMask(GL_TRUE);//Enable writing to Dbuffer.
+                break;
+    case _SceneEntity::GlEnablements::DepthAlwaysPass:
+          glEnable(GL_DEPTH_TEST);
+          glDepthFunc(GL_ALWAYS);
+          glDepthMask(GL_FALSE);//Disable writingas glDepthFunc(GL_ALWAYS) as test needs to pass always.
                 break;
     case _SceneEntity::GlEnablements::Stencil:
+        //Pending imp
                 break;
     case _SceneEntity::GlEnablements::BlendAndDepth:
         glEnable(GL_BLEND);
@@ -619,7 +630,7 @@ void _Renderer::_Renderer::draw()
         shdr->useShaderProgram();
         //Bind Textures
         for(uint t=0;t<textures.size();t++){
-            textures[t].bind(t+1);
+            textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
         }
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
         if(sceneEntity.getIsMeshEditable())
@@ -637,6 +648,7 @@ void _Renderer::_Renderer::draw()
         //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
+        //
         glBindVertexArray(0);//Clear the buffer
         for(uint t=0;t<textures.size();t++){textures[t].unbind();}
         //
@@ -700,7 +712,7 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
     glUniform1f(shdr->getUniformLocation("ambientStrength"),l.getAmbientStr());
 
     //Light type
-    glUniform3f(shdr->getUniformLocation("light.type"),0.0,0.0,0.0);//1,0,0 ->directionalLight, 0,1,0 -> pointLight, 0,0,1 -> Flash/SpotLight
+    glUniform3f(shdr->getUniformLocation("light.type"),0.0,1.0,0.0);//0,0,0 ->directionalLight, 0,1,0 -> pointLight, 0,0,1 -> Flash/SpotLight
 
     // light properties
     glUniform3f(shdr->getUniformLocation("light.ambient"), l.getColor().x,l.getColor().y,l.getColor().z); // note that all light colors are set at full intensity

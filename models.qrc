@@ -13,5 +13,6 @@
         <file>models/helpers/max.obj</file>
         <file>models/torus_blender.obj</file>
         <file>models/testCube.obj</file>
+        <file>models/skull_blender.obj</file>
     </qresource>
 </RCC>

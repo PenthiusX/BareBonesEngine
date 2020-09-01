@@ -3,6 +3,7 @@
 
 /* Texture Class currently working for single texture per shader
  * documentation and slots functions will be completed later
+ * Author: Aditya
  */
 
 /* Constructor/Distructor:Texture Class constructor
@@ -77,14 +78,18 @@ void _Texture::setImage(char* img,uint iwidth,uint iheight)
     setImage(img);
 }
 
-/* bind texture to default slot(0)
+/* bind texture to memory
+ * without any activeTexture slot specified
+ * it will bind to 0th texture slot
 */
 void _Texture::bind()
 {
     glBindTexture(GL_TEXTURE_2D,m_ID);
 }
 
-/* bind texture default given slot index
+/* bind texture to a slot defined by the index
+ * no provided
+ *
 */
 void _Texture::bind(uint index)
 {
@@ -148,7 +153,7 @@ void _Texture::load(QImage image,Type t,_Shader* s, GLenum format, GLenum dataty
     glGenerateMipmap(GL_TEXTURE_2D);
 
     s->useShaderProgram();//need to do this before setting the uniform
-    switch (t) {
+    switch (t) {//sets the Activetexture location of the sampler uniforms in the shader
            case Diffuse: glUniform1i(s->getUniformLocation("diffuseTex"), 1);
                break;
            case Specular: glUniform1i(s->getUniformLocation("specularTex"), 2);

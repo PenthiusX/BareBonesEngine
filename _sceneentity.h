@@ -86,8 +86,10 @@ public:
             FrontAndBack,
         };
         enum frameBufferModes{
+            ColorOnly,
             Blend,
             Depth,
+            DepthAlwaysPass,
             Stencil,
             BlendAndDepth,
             BlendAndDepthAndStencil

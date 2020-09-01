@@ -211,6 +211,7 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         // Load .obj File
     bool loadout = Loader.LoadFile(externalFilePath);
     std::vector<VertexInfo> vfa;
+    vertMax = glm::vec4(Loader.LoadedVertices[0].Position.X,Loader.LoadedVertices[0].Position.Y,Loader.LoadedVertices[0].Position.Z,0.0);
 
     if(loadout){
     for(unsigned int i = 0 ; i < Loader.LoadedVertices.size(); i++){
@@ -218,6 +219,19 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         v.Position = glm::vec3(Loader.LoadedVertices[i].Position.X,Loader.LoadedVertices[i].Position.Y,Loader.LoadedVertices[i].Position.Z);
         v.Normal = glm::vec3(Loader.LoadedVertices[i].Normal.X,Loader.LoadedVertices[i].Normal.Y,Loader.LoadedVertices[i].Normal.Z);
         v.TexCoords = glm::vec2(Loader.LoadedVertices[i].TextureCoordinate.X,Loader.LoadedVertices[i].TextureCoordinate.Y);
+        //Set Max min
+        if( Loader.LoadedVertices[i].Position.X > vertMax.x ){vertMax.x = Loader.LoadedVertices[i].Position.X;}
+        if( Loader.LoadedVertices[i].Position.Y > vertMax.y ){vertMax.y = Loader.LoadedVertices[i].Position.Y;}
+        if( Loader.LoadedVertices[i].Position.Z > vertMax.z ){vertMax.z = Loader.LoadedVertices[i].Position.Z;}
+
+        if( Loader.LoadedVertices[i].Position.X < vertMin.x ){vertMax.x = Loader.LoadedVertices[i].Position.X;}
+        if( Loader.LoadedVertices[i].Position.Y < vertMin.y ){vertMax.y = Loader.LoadedVertices[i].Position.Y;}
+        if( Loader.LoadedVertices[i].Position.Z < vertMin.z ){vertMax.z = Loader.LoadedVertices[i].Position.Z;}
+
+        modelInfo.setMaxExtents(vertMax);
+        modelInfo.setMinExtents(vertMin);
+        modelInfo.calcCentroidFromMinMax();
+        //
         vfa.push_back(v);
         }
     }
@@ -225,23 +239,15 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         qInfo() << externalFilePath.c_str() << "Did not load";
     }
 
-//    VertexInfo v;
-//    v.Position = glm::vec3(-1.000000, -0.000000, 1.0000000);
-//    vfa.push_back(v);
-//    v.Position = glm::vec3(1.000000, 0.000000, 1.000000);
-//    vfa.push_back(v);
-//    v.Position = glm::vec3(1.000000, 0.000000, -1.000000);
-//    vfa.push_back(v);
-//    v.Position = glm::vec3(-1.000000, 0.000000, -1.000000);
-//    vfa.push_back(v);
-
-//    std::vector<uint> indiceV = {0,1,2,0,2,3};
+     qInfo() << vertMax.x << vertMax.y << vertMax.z;
 
      //Needs to set model info min max .
      modelInfo.setVertexInfoArray(vfa);
      modelInfo.setIndexArray(Loader.LoadedIndices);
      modelInfo.setIsLoaded(true);
      modelInfo.setPath(externalFilePath.c_str());
+
+     qInfo() << vertMax.x << vertMax.y << vertMax.z;
 }
 
 /* Not in use---
