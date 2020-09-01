@@ -46,7 +46,7 @@ public:
 
 private:
     std::vector<_SceneEntity> sceneEntityVector;
-    std::vector<_Renderer*> renderObjects;
+    std::vector<_Renderer*> meshesR,lightsR;
     _FrameBuffer *fboObject;//framebuffer object in the current instance
     _Renderer* r;
     _Camera cam;

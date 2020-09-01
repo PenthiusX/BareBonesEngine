@@ -38,7 +38,7 @@ uniform sampler2D diffuseTex;
 uniform sampler2D specularTex;
 
 
-vec3 lightCalculations(vec4 diffuseTexture, vec4 specularTexture){
+vec3 lightsMaterial(vec4 diffuseTexture, vec4 specularTexture){
 
     float attenuation;
     if(light.type == vec3(0.,1.,0.)){
@@ -69,21 +69,23 @@ vec3 lightCalculations(vec4 diffuseTexture, vec4 specularTexture){
     return (ambient + diffuse + specular) ;
 }
 
-
-void main()
-{
-    //--------------------------------------------------------------
-    vec4 texColor = texture2D(diffuseTex,TexCoord);
-    vec4 specColor = texture2D(specularTex,TexCoord);
-
-    if(texColor.a < 0.1){//discarding pixels with value below 0.1 in the alpha component.
+void blendingOp(vec4 mainTexture){
+    if(mainTexture.a < 0.1){//discarding pixels with value below 0.1 in the alpha component.
         discard;
         //texColor.a = 0.5;
     }
-    //-------------------------------------------------------------
+}
 
+void main()
+{
+    //Texture inputs
+    vec4 texColor = texture2D(diffuseTex,TexCoord);
+    vec4 specColor = texture2D(specularTex,TexCoord);
+    //Blending
+    blendingOp(texColor);
+    //Light and Material inputs
+    vec4 color = vec4(lightsMaterial(texColor,specColor).xyz, texColor.a);
     //Final color output
-    FragColor = vec4(lightCalculations(texColor,specColor).xyz, texColor.a);
-    //--------------------------------------------------------------
+    FragColor = color;
 }
 
