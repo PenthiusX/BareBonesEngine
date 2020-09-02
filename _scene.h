@@ -38,9 +38,6 @@ public:
     void addAllHelperTypesInScene();
     _SceneEntity findSceneEntity(uint iD);
     _SceneEntity findSceneEntity(QString tag);
-    uint getTotalVertexCount();
-    uint getTotalTriangleCount();
-    uint getSceneObjectCount();
     //Physics
     _SceneEntity getSceneEntityHitWithRay();
 
@@ -59,9 +56,6 @@ private:
     uint cIndex;
     uint mxIndex;
     uint minIndex;
-    uint noOfVerticesInScene;
-    uint noOfTrianglesInScene;
-    uint noOfUniquesObjectsInScene;
     void updateHelpersOnce();
     void updateHelpersLoop(uint index);
     void setHelperIndexVars();

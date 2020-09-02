@@ -4,5 +4,6 @@
         <file>textures/testTextureC.png</file>
         <file>textures/testTextureCS.png</file>
         <file>textures/Skull.jpg</file>
+        <file>textures/SkullSpec.jpg</file>
     </qresource>
 </RCC>

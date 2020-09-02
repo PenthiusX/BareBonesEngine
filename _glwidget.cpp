@@ -56,7 +56,7 @@ void _GLWidget::initializeGL() {
     //------------Material Params----------------------
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
-    //m.setSpecularTexture(":/textures/testTextureCS.png");
+    m.setSpecularTexture(":/textures/SkullSpec.jpg");
     m.setShine(1);
     m.setAmbient(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
@@ -128,11 +128,6 @@ void _GLWidget::paintGL()//the renderloop
     //is to send QtOpenglGl a flag to update openglFrames
     this->update();
     //prints the frame rate in the application output
-    if(_Tools::printFrameRate()){
-        qInfo() << "Triangles" << scene->getTotalTriangleCount();
-        qInfo() << "Objects" << scene->getSceneObjectCount();
-        qInfo() << "deltatime" << deltaTime;
-    }
     //---------------------------
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     //
