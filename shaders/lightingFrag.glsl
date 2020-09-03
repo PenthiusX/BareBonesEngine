@@ -38,8 +38,7 @@ uniform sampler2D diffuseTex;
 uniform sampler2D specularTex;
 
 
-vec3 lightsMaterial(vec4 diffuseTexture, vec4 specularTexture){
-
+vec3 pointLight(vec4 diffuseTexture, vec4 specularTexture){
     float attenuation;
     if(light.type == vec3(0.,1.,0.)){
     float lightDist = distance(light.position , FragPos);
@@ -69,6 +68,26 @@ vec3 lightsMaterial(vec4 diffuseTexture, vec4 specularTexture){
     return (ambient + diffuse + specular) ;
 }
 
+vec3 directonalLight(vec4 diffuseTexture, vec4 specularTexture){
+
+    // ambient
+    vec3 ambient = light.ambient * diffuseTexture.xyz * ambientStrength;
+
+    // diffuse
+    vec3 norm  = normalize(Normal);
+    vec3 lightDir = normalize(light.position - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff * diffuseTexture.xyz;
+
+    // specular
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * spec * specularTexture.xyz;
+    //Final
+    return (ambient + diffuse + specular) ;
+}
+
 void blendingOp(vec4 mainTexture){
     if(mainTexture.a < 0.1){//discarding pixels with value below 0.1 in the alpha component.
         discard;
@@ -84,7 +103,7 @@ void main()
     //Blending
     blendingOp(texColor);
     //Light and Material inputs
-    vec4 color = vec4(lightsMaterial(texColor,specColor).xyz, texColor.a);
+    vec4 color = vec4(pointLight(texColor,specColor).xyz, texColor.a);
     //Final color output
     FragColor = color;
 }
