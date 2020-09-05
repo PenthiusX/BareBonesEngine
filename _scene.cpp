@@ -217,7 +217,12 @@ void _Scene::render(){
         if(meshesR[i]->getSceneEntity().getTag()=="light"){
             glm::vec3 sp  =  meshesR[i]->getSceneEntity().getPostion();//sets the light Position
             QVector4D col =  meshesR[i]->getSceneEntity().getColor();//light color
-            //pos ,                   color,                           ambient,spec,diffuse
+
+//            lp = new _DirLight("ld1");
+//            lp->setPosition(sp);
+//            lp->setDiffuse(glm::vec3(col.x(),col.y(),col.z()));
+//            lp->setLightParams2V3(glm::vec3(),glm::vec3());
+
             lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,1.0,1.0);//stores as a _Light container
         }
         meshesR[i]->updateLightUniforms(lx);//update the light uniform if existant.
@@ -261,9 +266,9 @@ void _Scene::updateAllPhysicsObjectsOnce(){
             //Passing some essentials into the updateLoop for physics
             //updates the physics object instance and runs the main physics updateOperations.
             physVector[index].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-                                                 glm::vec3(cam.getEyePosition().x(),//Camera Position
-                                                           cam.getEyePosition().y(),
-                                                           cam.getEyePosition().z()),
+                                                 glm::vec3(cam.getEyePosition().x,//Camera Position
+                                                           cam.getEyePosition().y,
+                                                           cam.getEyePosition().z),
                                                  glm::vec2(resW,resH));
 
             //updates the status of scneEntity variable that get changed inside the Physis class on Collision Events.
@@ -365,7 +370,6 @@ void _Scene::updateHelpersLoop(uint index){
     }
 }
 /*
-
 */
 void _Scene::setHelperIndexVars(){
     pivotIndex = findSceneEntity("pivot").getIndexPosInScene();

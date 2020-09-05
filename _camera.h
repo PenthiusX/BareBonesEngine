@@ -17,14 +17,15 @@ public:
     _Camera();
     ~_Camera();
     //
-    void setEyePosition(QVector3D epos);
-    QVector3D getEyePosition()const;
+    void setEyePosition(glm::vec3 epos);
+    glm::vec3 getEyePosition()const;
     void setFocalPoint(glm::vec3 focalPos);
     glm::vec3 getFocalPoint()const;
-    void setUpVector(QVector3D upVec);
-    QVector3D getUpVector()const;
+    void setUpVector(glm::vec3 upVec);
+    glm::vec3 getUpVector()const;
     void setFOV(unsigned fov);
     uint getFOV()const;
+    glm::vec3 getFrontVector();
 
     void setFarClipDistance(float fclp);
     void setNearClipDistance(float nclp);
@@ -32,9 +33,10 @@ public:
     float getFarClipDistance()const;
 
 private:
-    QVector3D eyePosition;
+    glm::vec3 eyePosition;
     glm::vec3 focalPoint;
-    QVector3D upVector;
+    glm::vec3 upVector;
+    glm::vec3 frontVector;
     uint fov;
     float nearClipDistance;
     float farClipDistance;

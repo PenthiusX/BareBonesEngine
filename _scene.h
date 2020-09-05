@@ -68,7 +68,8 @@ private:
     void updateAllPhysicsObjectsOnce();
     //Lights
 //    std::vector<Light> lightsArray;
-    _Light la,lx;
+    _Light lx;
+    I_Light *lp;
 
     //Thread
     std::thread pu;

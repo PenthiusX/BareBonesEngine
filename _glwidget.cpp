@@ -41,7 +41,7 @@ void _GLWidget::initializeGL() {
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
     //-------------Camera-----------------------------
-    cam.setEyePosition(QVector3D(0.0, 0.0, 10.0));
+    cam.setEyePosition(glm::vec3(0.0, 0.0, 10.0));
     cam.setFocalPoint(glm::vec3(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
@@ -57,10 +57,10 @@ void _GLWidget::initializeGL() {
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
     m.setSpecularTexture(":/textures/SkullSpec.jpg");
-    m.setShine(1);
-    m.setAmbient(glm::vec3( 1.0f, 1.0f, 1.0f));
+    m.setShine(0.5);
+    m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
-    m.setSpecular(glm::vec3(1.0f, 1.0f, 1.0f));
+    m.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));
     //------GLRaster Ebablements ovveride--------------
     _SceneEntity::GlEnablements g;
     g.fillMode = _SceneEntity::GlEnablements::FrontAndBackFill;
@@ -130,6 +130,7 @@ void _GLWidget::paintGL()//the renderloop
     //prints the frame rate in the application output
     //---------------------------
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
+    float timePerDraw = timeSinceLastFrame - currentTime;
     //
 //    text.render(this);
 }
@@ -258,30 +259,30 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final controlls set.
 {
     if (event->text() == "a" || event->text() == "A"){
-        if (isCamFocus)cam.setEyePosition(QVector3D(cam.getEyePosition().x() - 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
+        if (isCamFocus)cam.setEyePosition(glm::vec3(cam.getEyePosition().x - 0.1, cam.getEyePosition().y, cam.getEyePosition().z));
         else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.1f, -0.f, 0.0));
     }
     if (event->text() == "d" || event->text() == "D"){
         if (isCamFocus){
-            cam.setEyePosition(QVector3D(cam.getEyePosition().x() + 0.1, cam.getEyePosition().y(), cam.getEyePosition().z()));
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x + 0.1, cam.getEyePosition().y, cam.getEyePosition().z));
 //            scene->updateCamera(cam);//is being updated in the main loop
         }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.1f, 0.f, 0.0));
     }
     if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus){
-            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() + 0.2, cam.getEyePosition().z()));
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y + 0.2, cam.getEyePosition().z));
 //            scene->updateCamera(cam);
         }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.f, 0.1, 0.0));
     }
     if (event->text() == "w" || event->text() == "W"){
         if (isCamFocus == true){
-            cam.setEyePosition(QVector3D(cam.getEyePosition().x(), cam.getEyePosition().y() - 0.2, cam.getEyePosition().z()));
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y - 0.2, cam.getEyePosition().z));
 //            scene->updateCamera(cam);
         }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.1, 0.0));
     }
     if (event->text() == "r" || event->text() == "R"){//reset
         if(isCamFocus)
-            cam.setEyePosition(QVector3D(0.0, 0.0, 7.0));
+            cam.setEyePosition(glm::vec3(0.0, 0.0, 7.0));
         else{
             uint ind = scene->getSceneEntityHitWithRay().getIndexPosInScene();
             scene->getSceneObjects()[ind]->setPosition(glm::vec3(0.0f, 0.0, 0.0));

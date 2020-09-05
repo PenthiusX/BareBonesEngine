@@ -27,7 +27,7 @@ public:
     _Renderer();
     ~_Renderer();
     //
-    void setCamViewMatrix(QVector3D eyePos, glm::vec3 focalPoint, QVector3D upVector);// Sets the Camera matrix
+    void setCamViewMatrix(glm::vec3 eyePos, glm::vec3 focalPoint, glm::vec3 upVector);// Sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);// Sets the projection matrix
     //Transformantions
     void setPosition(glm::vec3 pos);// Resets the positon to the value that is required
@@ -100,5 +100,7 @@ private:
     void updateMaterial(_Material m);
     //
     glm::vec3 camposForLight;
+    //
+    QElapsedTimer qtimer;
 };
 #endif // _RENDERER_H

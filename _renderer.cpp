@@ -278,14 +278,14 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
 * Used by: the _glWidget class initialiseGl() or paintGl().
 * depending if the camra needs to update its position in  realtime.
 */
-void _Renderer::setCamViewMatrix(QVector3D eyePos,glm::vec3 focalPoint,QVector3D upVector)
+void _Renderer::setCamViewMatrix(glm::vec3 eyePos,glm::vec3 focalPoint,glm::vec3 upVector)
 {
-    camposForLight = glm::vec3(eyePos.x(), eyePos.y(), eyePos.z());//temp
+    camposForLight = glm::vec3(eyePos.x, eyePos.y, eyePos.z);//temp
     viewMatrix = glm::mat4(1.0f);
     viewMatrix = glm::lookAt(
-                        glm::vec3(eyePos.x(), eyePos.y(), eyePos.z()),
+                        glm::vec3(eyePos.x, eyePos.y, eyePos.z),
                         glm::vec3(focalPoint.x, focalPoint.y, focalPoint.z),
-                        glm::vec3(upVector.x(), upVector.y(), upVector.z()));
+                        glm::vec3(upVector.x, upVector.y, upVector.z));
     keepSceneEntityUpdated();
 }
 /*
@@ -679,19 +679,22 @@ void _Renderer::updateColorUniforms()
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
-    if(sceneEntity.getisHitByRay())
+    if(sceneEntity.getisHitByRay()){
         sceneEntity.setColor(actualColor * 0.5);
-    else if(sceneEntity.getIsHitByTri()){
-        QVector4D qc = actualColor;
-         qc.setX(actualColor.x() + 1.0f);
-        sceneEntity.setColor(qc);}
-    else
-        sceneEntity.setColor(actualColor);
+    }
+
+//    if(sceneEntity.getIsHitByTri()){
+//        QVector4D qc = actualColor;
+//         qc.setX(actualColor.x() + 1.0f);
+//        sceneEntity.setColor(qc);
+//    }
+//    else
+//        sceneEntity.setColor(actualColor);
 }
 
 void _Renderer::updateMaterial(_Material m)
 {
-    sceneEntity.getMaterial();
+    sceneEntity.setMaterial(m);
 }
 
 /*
@@ -701,6 +704,10 @@ void _Renderer::updateMaterial(_Material m)
  */
 void _Renderer::updateLightUniforms(_Light l)//neds a restructure
 {
+
+    glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());
+
+    //positions
     glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
     glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
 
@@ -709,7 +716,6 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
     glUniform3f(shdr->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
     glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
     glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
-    glUniform1f(shdr->getUniformLocation("ambientStrength"),l.getAmbientStr());
 
     //Light type
     glUniform3f(shdr->getUniformLocation("light.type"),0.0,1.0,0.0);//0,0,0 ->directionalLight, 0,1,0 -> pointLight, 0,0,1 -> Flash/SpotLight
@@ -718,5 +724,11 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
     glUniform3f(shdr->getUniformLocation("light.ambient"), l.getColor().x,l.getColor().y,l.getColor().z); // note that all light colors are set at full intensity
     glUniform3f(shdr->getUniformLocation("light.diffuse"), l.getDiffuse(),l.getDiffuse(),l.getDiffuse());
     glUniform3f(shdr->getUniformLocation("light.specular"), l.getSpecular(),l.getSpecular(),l.getSpecular());
+    //PointL
+    glUniform1f(shdr->getUniformLocation("light.constant"),1.0); // note that all light colors are set at full intensity
+    glUniform1f(shdr->getUniformLocation("light.linear"),1.0);
+    glUniform1f(shdr->getUniformLocation("light.quadratic"),0.32);
+    //SpotL-
+
 }
 

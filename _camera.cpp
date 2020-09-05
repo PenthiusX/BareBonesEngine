@@ -16,8 +16,8 @@
 */
 _Camera::_Camera(){
     //default values
-    upVector = QVector3D(0.0, 1.0, 0.0);
-    eyePosition = QVector3D(0.0, 0.0, 10.0);
+    upVector = glm::vec3(0.0, 1.0, 0.0);
+    eyePosition = glm::vec3(0.0, 0.0, 10.0);
     focalPoint = glm::vec3(0.0, 0.0, 0.0);
     nearClipDistance = 0.1;
     farClipDistance = 50.0;
@@ -30,10 +30,10 @@ _Camera::~_Camera(){}
 * into the viewMatrix.
 * Created: 01_03_2019
 */
-void _Camera::setEyePosition(QVector3D epos){
+void _Camera::setEyePosition(glm::vec3 epos){
     eyePosition = epos;
 }
-QVector3D _Camera::getEyePosition() const{
+glm::vec3 _Camera::getEyePosition() const{
     return eyePosition;
 }
 /*
@@ -53,10 +53,10 @@ glm::vec3 _Camera::getFocalPoint() const{
 * the direction in which the camera orents itself.
 * Created: 01_03_2019
 */
-void _Camera::setUpVector(QVector3D upVec){
+void _Camera::setUpVector(glm::vec3 upVec){
     upVector = upVec;
 }
-QVector3D _Camera::getUpVector() const{
+glm::vec3 _Camera::getUpVector() const{
     return upVector;
 }
 
@@ -71,6 +71,11 @@ void _Camera::setFOV(uint fove){
 }
 uint _Camera::getFOV() const{
     return fov;
+}
+
+glm::vec3 _Camera::getFrontVector()
+{
+    return glm::normalize(this->focalPoint - this->eyePosition);
 }
 /*
 * Created: 08_04_2019
