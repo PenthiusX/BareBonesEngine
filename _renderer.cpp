@@ -281,6 +281,7 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
 void _Renderer::setCamViewMatrix(glm::vec3 eyePos,glm::vec3 focalPoint,glm::vec3 upVector)
 {
     camposForLight = glm::vec3(eyePos.x, eyePos.y, eyePos.z);//temp
+    this->focalPoint = focalPoint;
     viewMatrix = glm::mat4(1.0f);
     viewMatrix = glm::lookAt(
                         glm::vec3(eyePos.x, eyePos.y, eyePos.z),
@@ -704,7 +705,6 @@ void _Renderer::updateMaterial(_Material m)
  */
 void _Renderer::updateLightUniforms(_Light l)//neds a restructure
 {
-
     glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());
 
     //positions
@@ -729,6 +729,9 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
     glUniform1f(shdr->getUniformLocation("light.linear"),1.0);
     glUniform1f(shdr->getUniformLocation("light.quadratic"),0.32);
     //SpotL-
-
+    glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
+    glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
+    glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
+    glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
 }
 

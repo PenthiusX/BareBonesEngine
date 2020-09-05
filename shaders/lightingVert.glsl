@@ -18,17 +18,20 @@ out vec2 TexCoord;
 uniform vec2 iMouse;//in
 out vec2 iMouseO;//to fragment
 
-
 void main()
 {
+    //get the Vertex fragment positons,Vertex lighting
     FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = mat3(transpose(inverse(model))) * normal;  //apply the transforms applied on the model position data to update the normal data as well
+
+    //apply the transforms applied on the model position data to update the normal data as well
+    Normal = mat3(transpose(inverse(model))) * normal;
 
     ourColor = aColor;
+
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
 
-    //Default uv coerds for model editors that match coordinate order with opengl
+    //Default uv cords for model editors that match coordinate order with opengl
     //TexCoord = uv;
     //if BlenderAssets wich have oposite coord order , force flip of the uV coords
     TexCoord = vec2(uv.x,1.-uv.y);

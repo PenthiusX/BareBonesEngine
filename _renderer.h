@@ -100,6 +100,7 @@ private:
     void updateMaterial(_Material m);
     //
     glm::vec3 camposForLight;
+    glm::vec3 focalPoint;
     //
     QElapsedTimer qtimer;
 };

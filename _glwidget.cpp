@@ -259,26 +259,33 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final controlls set.
 {
     if (event->text() == "a" || event->text() == "A"){
-        if (isCamFocus)cam.setEyePosition(glm::vec3(cam.getEyePosition().x - 0.1, cam.getEyePosition().y, cam.getEyePosition().z));
+        if (isCamFocus)cam.setEyePosition(glm::vec3(cam.getEyePosition().x - 0.15, cam.getEyePosition().y, cam.getEyePosition().z));
         else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.1f, -0.f, 0.0));
     }
     if (event->text() == "d" || event->text() == "D"){
         if (isCamFocus){
-            cam.setEyePosition(glm::vec3(cam.getEyePosition().x + 0.1, cam.getEyePosition().y, cam.getEyePosition().z));
-//            scene->updateCamera(cam);//is being updated in the main loop
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x + 0.15, cam.getEyePosition().y, cam.getEyePosition().z));
         }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.1f, 0.f, 0.0));
     }
     if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus){
-            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y + 0.2, cam.getEyePosition().z));
-//            scene->updateCamera(cam);
-        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.f, 0.1, 0.0));
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y - 0.15, cam.getEyePosition().z));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.f, -0.1, 0.0));
     }
     if (event->text() == "w" || event->text() == "W"){
         if (isCamFocus == true){
-            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y - 0.2, cam.getEyePosition().z));
-//            scene->updateCamera(cam);
-        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.1, 0.0));
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y + 0.15, cam.getEyePosition().z));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, 0.1, 0.0));
+    }
+    if (event->text() == "q" || event->text() == "Q"){
+        if (isCamFocus == true){
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y, cam.getEyePosition().z + 0.15));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.0, 0.1));
+    }
+    if (event->text() == "e" || event->text() == "E"){
+        if (isCamFocus == true){
+            cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y , cam.getEyePosition().z - 0.15));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.0, -0.1));
     }
     if (event->text() == "r" || event->text() == "R"){//reset
         if(isCamFocus)

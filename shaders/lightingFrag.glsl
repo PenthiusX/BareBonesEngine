@@ -24,6 +24,7 @@ struct Light {
     //Spot
     vec3  direction;
     float cutOff;
+    float outerCutOff;
 };
 
 uniform Material material;
@@ -95,6 +96,35 @@ vec3 directonalLight(vec4 diffuseTexture, vec4 specularTexture){
     return ambient + diffuse + specular ;
 }
 
+vec3 compSpotLight(vec4 diffuseTexture, vec4 specularTexture){
+
+    // ambient
+    vec3 ambient = light.ambient * material.ambient;
+    // diffuse
+    vec3 norm  = normalize(Normal);
+    //vec3 lightDir = normalize(light.position - FragPos);
+     vec3 lightDir = normalize(FragPos - light.position);//inverse light direction just for debug
+
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff * (diffuseTexture.xyz * material.diffuse);
+
+    // specular
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * spec * (specularTexture.xyz * material.specular);
+
+    // spotlight (soft edges)
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = (light.cutOff - light.outerCutOff);
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    diffuse  *= intensity;
+    specular *= intensity;
+
+    //Final
+    return ambient + diffuse + specular ;
+}
+
 void blendingOp(vec4 mainTexture){
     if(mainTexture.a < 0.1){//discarding pixels with value below 0.1 in the alpha component.
         discard;
@@ -111,8 +141,9 @@ void main()
     blendingOp(texColor);
     //Light and Material inputs
     vec3 color;
-    color =  directonalLight(texColor,specColor);
-    color += pointLight(texColor,specColor);
+    color +=  directonalLight(texColor,specColor);
+//    color += pointLight(texColor,specColor);
+    color += compSpotLight(texColor,specColor);
     //Final color output
     FragColor = vec4(color.xyz, texColor.a);
 }
