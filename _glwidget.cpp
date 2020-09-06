@@ -340,7 +340,7 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress->setMaterial(m);
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
         onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");//dont need to reparse modelfile
-        //onPress->setPhysicsObject(_Physics::Sphere);
+        onPress->setPhysicsObject(_SceneEntity::PhysicsBody::Sphere);
         scene->addSceneObject(*onPress);
         qInfo()<< "created" << i <<"th object" << "id" << onPress->getId();
         delete onPress;
