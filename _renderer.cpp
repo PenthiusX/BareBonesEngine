@@ -715,34 +715,32 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
     glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
     glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
 
-    //Light type
-    glUniform3f(shdr->getUniformLocation("light.type"),0.0,1.0,0.0);//0,0,0 ->directionalLight, 0,1,0 -> pointLight, 0,0,1 -> Flash/SpotLight
-
     // light properties
     glUniform3f(shdr->getUniformLocation("light.ambient"), l.getColor().x,l.getColor().y,l.getColor().z); // note that all light colors are set at full intensity
     glUniform3f(shdr->getUniformLocation("light.diffuse"), l.getDiffuse(),l.getDiffuse(),l.getDiffuse());
     glUniform3f(shdr->getUniformLocation("light.specular"), l.getSpecular(),l.getSpecular(),l.getSpecular());
     //PointL
-    glUniform1f(shdr->getUniformLocation("light.constant"),1.0); // note that all light colors are set at full intensity
-    glUniform1f(shdr->getUniformLocation("light.linear"),1.0);
-    glUniform1f(shdr->getUniformLocation("light.quadratic"),0.32);
 
+    for(uint li = 0 ; li < 2 ; li++){
+        std::string f = "pointLights[";
+        std::string u = std::to_string(li);
+        std::string e1 = "].position";
+        std::string e2 = "].ambient";
+        std::string e3 = "].diffuse";
+        std::string e4 = "].specular";
+        std::string e5 = "].constant";
+        std::string e6 = "].linear";
+        std::string e7 = "].quadratic";
 
-    glUniform3f(shdr->getUniformLocation("pointLights[0].position"), l.getPosition().x,l.getPosition().y,l.getPosition().z);
-    glUniform3f(shdr->getUniformLocation("pointLights[0].ambient"),  l.getColor().x,   l.getColor().y,   l.getColor().z); // note that all light colors are set at full intensity
-    glUniform3f(shdr->getUniformLocation("pointLights[0].diffuse"),  l.getDiffuse(),   l.getDiffuse(),   l.getDiffuse());
-    glUniform3f(shdr->getUniformLocation("pointLights[0].specular"), l.getSpecular(),  l.getSpecular(),  l.getSpecular());
-    glUniform1f(shdr->getUniformLocation("pointLights[0].constant"), 1.0); // note that all light colors are set at full intensity
-    glUniform1f(shdr->getUniformLocation("pointLights[0].linear"),   1.0);
-    glUniform1f(shdr->getUniformLocation("pointLights[0].quadratic"),0.32);
+        glUniform3f(shdr->getUniformLocation((f+u+e1).c_str()), l.getPosition().x,l.getPosition().y + li,l.getPosition().z);
+        glUniform3f(shdr->getUniformLocation((f+u+e2).c_str()),  l.getColor().x,   l.getColor().y,   l.getColor().z); // note that all light colors are set at full intensity
+        glUniform3f(shdr->getUniformLocation((f+u+e3).c_str()),  l.getDiffuse(),   l.getDiffuse(),   l.getDiffuse());
+        glUniform3f(shdr->getUniformLocation((f+u+e4).c_str()), l.getSpecular(),  l.getSpecular(),  l.getSpecular());
+        glUniform1f(shdr->getUniformLocation((f+u+e5).c_str()), 1.0); // note that all light colors are set at full intensity
+        glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()),   1.0);
+        glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()),0.32);
+    }
 
-    glUniform3f(shdr->getUniformLocation("pointLights[1].position"), l.getPosition().x,l.getPosition().y - 3,l.getPosition().z);
-    glUniform3f(shdr->getUniformLocation("pointLights[1].ambient"),  l.getColor().x,   l.getColor().y,   l.getColor().z); // note that all light colors are set at full intensity
-    glUniform3f(shdr->getUniformLocation("pointLights[1].diffuse"),  l.getDiffuse(),   l.getDiffuse(),   l.getDiffuse());
-    glUniform3f(shdr->getUniformLocation("pointLights[1].specular"), l.getSpecular(),  l.getSpecular(),  l.getSpecular());
-    glUniform1f(shdr->getUniformLocation("pointLights[1].constant"), 1.0); // note that all light colors are set at full intensity
-    glUniform1f(shdr->getUniformLocation("pointLights[1].linear"),   1.0);
-    glUniform1f(shdr->getUniformLocation("pointLights[1].quadratic"),0.32);
 
     //SpotL-
     glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
