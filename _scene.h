@@ -67,7 +67,7 @@ private:
     void updateAllPhysicsObjectsLoop();
     void updateAllPhysicsObjectsOnce();
     //Lights
-//    std::vector<Light> lightsArray;
+    std::vector<I_Light*> lightsArray;
     _Light lx;
     I_Light *lp;
 

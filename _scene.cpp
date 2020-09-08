@@ -30,6 +30,7 @@ _Scene::~_Scene(){
     meshesR.clear();
     delete r;
     delete fboObject;
+    lightsArray.clear();
 }
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
@@ -58,6 +59,32 @@ void _Scene::addSceneObject(_SceneEntity s){
             _Physics phys;
             phys.initialiseSceneEntity(s);
             physVector.push_back(phys);
+        }
+
+        I_Light* lightInterface = nullptr;
+        if(s.getisLightSource())
+        {
+            if(s.getTag() == "plight"){
+                lightInterface = new _PointLight(s.getTag().toStdString());
+                lightInterface->setPosition(s.getPostion());
+                lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
+                lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
+                lightsArray.push_back(lightInterface);
+            }
+            if(s.getTag() == "dlight"){
+                lightInterface = new _DirLight(s.getTag().toStdString());
+                lightInterface->setPosition(s.getPostion());
+                lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
+                lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
+                lightsArray.push_back(lightInterface);
+            }
+            if(s.getTag() == "slight"){
+                lightInterface = new _SpotLight(s.getTag().toStdString());
+                lightInterface->setPosition(s.getPostion());
+                lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
+                lightInterface->setAdditonalParams2x3(glm::vec3(1.0),glm::vec3(1.0));
+                lightsArray.push_back(lightInterface);
+            }
         }
     }
 }
@@ -122,12 +149,11 @@ _SceneEntity _Scene::findSceneEntity(QString tag){
     return empty;
 }
 /*
- * returns the SceneEntity that is hitBy the mousePointer ray.
+ * Returns the SceneEntity that is hitBy the mousePointer ray.
 */
 _SceneEntity _Scene::getSceneEntityHitWithRay(){
     return rayHitSceneEntity;
 }
-
 /*
  */
 void _Scene::removeSceneObject(uint index){
@@ -140,7 +166,6 @@ void _Scene::removeSceneObject(_SceneEntity s){
             meshesR.erase(meshesR.begin()+r);
         }
 }
-
 /*
   • ▌ ▄ ·.       ▄• ▄▌.▄▄ · ▄▄▄ .   ▄▄▄ .▄• ▄▌ ▄▄ .  ▐ ▄  ▄▄▄▄▄
   ·██ ▐███▪▪     █▪ █▌▐█ ▀. ▀▄.▀·   ▀▄.▀·█▪ █▌▀▄.▀· •█▌▐█ •██
@@ -149,7 +174,6 @@ void _Scene::removeSceneObject(_SceneEntity s){
   ▀▀  █▪▀▀▀ ▀█▄▀▪ ▀▀▀  ▀▀▀▀  ▀▀▀     ▀▀▀  ▀▀  ▀▀▀  ▀▀ █▪  ▀▀▀
 */
 /*
-
 */
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     if(m == Qt::RightButton){
