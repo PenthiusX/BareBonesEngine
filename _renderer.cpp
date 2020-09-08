@@ -715,12 +715,7 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
     glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
     glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
 
-    // light properties
-    glUniform3f(shdr->getUniformLocation("light.ambient"), l.getColor().x,l.getColor().y,l.getColor().z); // note that all light colors are set at full intensity
-    glUniform3f(shdr->getUniformLocation("light.diffuse"), l.getDiffuse(),l.getDiffuse(),l.getDiffuse());
-    glUniform3f(shdr->getUniformLocation("light.specular"), l.getSpecular(),l.getSpecular(),l.getSpecular());
     //PointL
-
     for(uint li = 0 ; li < 2 ; li++){
         std::string f = "pointLights[";
         std::string u = std::to_string(li);
@@ -737,10 +732,15 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
         glUniform3f(shdr->getUniformLocation((f+u+e3).c_str()),  l.getDiffuse(),   l.getDiffuse(),   l.getDiffuse());
         glUniform3f(shdr->getUniformLocation((f+u+e4).c_str()), l.getSpecular(),  l.getSpecular(),  l.getSpecular());
         glUniform1f(shdr->getUniformLocation((f+u+e5).c_str()), 1.0); // note that all light colors are set at full intensity
-        glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()),   1.0);
+        glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()), 1.0);
         glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()),0.32);
     }
 
+
+    // Dir properties
+    glUniform3f(shdr->getUniformLocation("light.ambient"), l.getColor().x,l.getColor().y,l.getColor().z); // note that all light colors are set at full intensity
+    glUniform3f(shdr->getUniformLocation("light.diffuse"), l.getDiffuse(),l.getDiffuse(),l.getDiffuse());
+    glUniform3f(shdr->getUniformLocation("light.specular"), l.getSpecular(),l.getSpecular(),l.getSpecular());
 
     //SpotL-
     glm::vec3 dir = glm::normalize(focalPoint - camposForLight);

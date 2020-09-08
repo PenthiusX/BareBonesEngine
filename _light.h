@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <string>
 
 
 class _Light
@@ -37,55 +38,58 @@ class I_Light
 {
 public:
    virtual ~I_Light();
-   virtual char* getSignature() = 0;
+   virtual std::string getSignature() = 0;
    virtual void setPosition(glm::vec3 pos) = 0;
-   virtual void setDiffuse(glm::vec3 col) = 0;
-
-   //Pending: implement exception handeling  due to abiguity of data
-   virtual void setLightParams2V3(glm::vec3 a, glm::vec3 b) = 0;
-   virtual void setLightParams3V3(glm::vec3 a, glm::vec3 b, glm::vec3 c) = 0;
+   virtual void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c) = 0;
+   virtual void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b) = 0;
+   virtual void setAdditonalParams3x3(glm::vec3 a, glm::vec3 b, glm::vec3 c) = 0;
    virtual std::vector<glm::vec3> getLightParams() = 0;
 };
 
 class _DirLight : public I_Light
 {
 public:
-    _DirLight(char* sig){};
+    _DirLight(std::string sig){};
     virtual ~_DirLight(){};
 
-    char* getSignature();
+    std::string getSignature();
     void setPosition(glm::vec3 pos);
-    void setDiffuse(glm::vec3 diff);
-    void setLightParams2V3(glm::vec3 a, glm::vec3 b);
-    void setLightParams3V3(glm::vec3 a, glm::vec3 b, glm::vec3 c){};//no def
+    void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c);
+    void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b){}//nodef
+    void setAdditonalParams3x3(glm::vec3 a, glm::vec3 b, glm::vec3 c){}//no def
     std::vector<glm::vec3> getLightParams();
 
 private:
-    char* sig;
+    std::string sig;
     glm::vec3 position;
     glm::vec3 diffuse;
     glm::vec3 ambient;
     glm::vec3 specular;
 };
 
-class _PointLight : public I_Light{
+class _PointLight : public I_Light
+{
 
 public:
 
-    _PointLight(char* sig){};
-    virtual ~_PointLight();
+    _PointLight(std::string sig){};
+    virtual ~_PointLight(){};
 
-    char* getSignature();
+    std::string getSignature();
     void setPosition(glm::vec3 pos);
-    void setDiffuse(glm::vec3 diff);
-    void setLightParams2V3(glm::vec3 a, glm::vec3 b);//nodef
-    void setLightParams3V3(glm::vec3 a, glm::vec3 b, glm::vec3 c);
+    void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c);
+    void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b){};//nodef
+    void setAdditonalParams3x3(glm::vec3 a, glm::vec3 b, glm::vec3 c);
     std::vector<glm::vec3> getLightParams();
 
 private:
-    char* sig;
+    std::string sig;
     glm::vec3 position;
+
     glm::vec3 diffuse;
+    glm::vec3 ambient;
+    glm::vec3 specular;
+
     float constant;
     float linear;
     float quadratic;
@@ -94,21 +98,26 @@ private:
 class _SpotLight : public I_Light{
 
 public:
-    _SpotLight(char* sig){};
+    _SpotLight(std::string sig){};
     virtual ~_SpotLight(){};
 
-    char* getSignature();
+    std::string getSignature();
     void setPosition(glm::vec3 pos);
-    void setDiffuse(glm::vec3 diff);
-    void setLightParams2V3(glm::vec3 a, glm::vec3 b);
-    void setLightParams3V3(glm::vec3 a, glm::vec3 b, glm::vec3 c){};//no def
+    void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c);
+    void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b);
+    void setAdditonalParams3x3(glm::vec3 a, glm::vec3 b, glm::vec3 c){};//no def
     std::vector<glm::vec3> getLightParams();
 
 private:
-    char* sig;
+    std::string sig;
     glm::vec3 position;
+
     glm::vec3 diffuse;
+    glm::vec3 ambient;
+    glm::vec3 specular;
+
     glm::vec3 direction;
     float cutOff;
+    float outerCuttof;
 };
 #endif // _LIGHT_H

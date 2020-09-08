@@ -20,6 +20,8 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     isHitByRay = false;
     isMeshEditable = false;
     isPhysicsHelper = false;
+    isLight = false;
+    lightInterface = NULL;
     tag = new char();
     isLineMode = false;
     isLineNoCullMode = false;
@@ -42,6 +44,7 @@ _SceneEntity::_SceneEntity(glm::vec3 pos, glm::vec3 rot, float scale){
     this->scale = scale;
 }
 _SceneEntity::~_SceneEntity(){
+    delete lightInterface;
 }
 /*
  * setId(int id) & getId()
@@ -90,6 +93,7 @@ bool _SceneEntity::getIsTransformationAllowed(){
 */
 void _SceneEntity::setPosition(glm::vec3 pos){
     postion = pos;
+    if(lightInterface != NULL){this->lightInterface->setPosition(pos);}
 }
 glm::vec3 _SceneEntity::getPostion() const{
     return postion;
@@ -139,6 +143,7 @@ float _SceneEntity::getScale() const{
 */
 void _SceneEntity::setColor(QVector4D col){
     color = col;
+    if(lightInterface!=NULL){this->lightInterface->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));}
 }
 QVector4D _SceneEntity::getColor() const{
     return color;
@@ -370,11 +375,39 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::PhysicsBody penum, PhysicsBody
 */
 void _SceneEntity::setMaterial(_Material m)
 {
-   this->material = m;
+    this->material = m;
 }
 _Material _SceneEntity::getMaterial()
 {
     return this->material;
+}
+
+void _SceneEntity::setAsLightSource(light l)
+{
+    isLight = true;
+    switch(l){
+    case Spot:
+        lightInterface = new _SpotLight(this->tag.toStdString());
+        lightInterface->setPosition(this->postion);
+        lightInterface->setAmbDefSpec(glm::vec3(color.x(),color.y(),color.z()),glm::vec3(0.1),glm::vec3(1.0));
+        lightInterface->setAdditonalParams2x3(glm::vec3(1.0),glm::vec3(1.0));
+        break;
+    case Directonal:
+        lightInterface = new _DirLight(this->tag.toStdString());
+        lightInterface->setAmbDefSpec(glm::vec3(color.x(),color.y(),color.z()),glm::vec3(0.1),glm::vec3(1.0));
+        break;
+    case Point:
+        lightInterface = new _PointLight(this->tag.toStdString());
+        lightInterface->setAmbDefSpec(glm::vec3(color.x(),color.y(),color.z()),glm::vec3(0.1),glm::vec3(1.0));
+        lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
+        break;
+    }
+}
+bool _SceneEntity::getisLightSource(){
+    return isLight;
+}
+I_Light* _SceneEntity::getLight(){
+    return lightInterface;
 }
 /*
  * Funtion: getisHitRay()
@@ -393,7 +426,7 @@ void _SceneEntity::setIsHitByRay(bool isHitByRay){
  * collided with anotehr MeshOBject
  * in a Tri on Tri collision scenario
 */
-bool _SceneEntity::getIsHitByTri() {
+bool _SceneEntity::getIsHitByTri(){
     return isHitByTri;
 }
 void _SceneEntity::setIsHitByTri(bool isHitByTri){

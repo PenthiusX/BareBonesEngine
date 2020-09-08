@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include "_assetloader.h"
 #include  "_material.h"
+#include "_light.h"
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -104,8 +105,6 @@ public:
        frameBufferModes frameBufferMode;
        fillModes fillMode;
     };
-
-
     void setGLModes(GlEnablements g);
     GlEnablements getGLModes();
     void setIsLineMode(bool isit);//GlLines
@@ -116,6 +115,7 @@ public:
     //flag for type of transformations
     void setIsTransformationLocal(bool isLoc);
     bool getIsTransformationLocal();
+
     //Physics
     enum PhysicsBody{
         Sphere = 0,
@@ -135,9 +135,20 @@ public:
     _SceneEntity::PhysicsBody getPhysicsObjectType();
     void setPhysicsObject( _SceneEntity::PhysicsBody penum);
     void setPhysicsObject( _SceneEntity::PhysicsBody penum,_SceneEntity::PhysicsBody helper);
+
     //Material
     void setMaterial(_Material m);
     _Material getMaterial();
+    //Light
+    enum light{
+        Directonal,
+        Spot,
+        Point
+    };
+    void setIslight(bool isIt);
+    void setAsLightSource(light l);
+    bool getisLightSource();
+    I_Light *getLight();
 
 private:
     uint id;
@@ -192,5 +203,7 @@ private:
     //
     GlEnablements glEnablements;//setting for GLRasterisation states .
     //
-    _Material material;//Local material state , will be passed into the renderer
+    _Material material;//Local material and light info state , will be passed into the renderer
+    I_Light* lightInterface;
+    bool isLight;
 };
