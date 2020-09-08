@@ -1,2 +1,2 @@
 # OpenGLQTEngine
-an OpenGL based rendering engin
+a from scratch OpenGL based rendering engin
