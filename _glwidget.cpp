@@ -47,9 +47,9 @@ void _GLWidget::initializeGL() {
     cam.setFOV(65);
     //-------------Lights-----------------------------
     light1.setId(8008);
-    light1.setTag("light");
-    light1.setLight(_SceneEntity::Point);
-    light1.setModelData(":/models/sphere.obj");
+    light1.setTag("dlight");
+    light1.setLight(_SceneEntity::Directional);
+    light1.setModelData(":/models/cube.obj");
     light1.setPhysicsObject(_SceneEntity::Sphere);
     light1.setPosition(glm::vec3(0.2f,6.0f, 0.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);

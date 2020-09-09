@@ -112,8 +112,8 @@ vec3 compDirectonalLight(vec4 diffuseTexture, vec4 specularTexture){
     vec3 ambient = light.ambient * material.ambient;
     // diffuse
     vec3 norm  = normalize(Normal);
-    //vec3 lightDir = normalize(light.position - FragPos);
-     vec3 lightDir = normalize(FragPos - light.position);//inverse light direction just for debug
+    vec3 lightDir = normalize(light.position - FragPos);
+     //vec3 lightDir = normalize(FragPos - light.position);//inverse light direction just for debug
 
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * (diffuseTexture.xyz * material.diffuse);

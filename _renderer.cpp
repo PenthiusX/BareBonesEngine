@@ -789,7 +789,7 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
                 glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
 
                 piter++;
-                piter > 2 ? piter = 0: piter;
+                piter > 2 ? piter = 0: piter;//3 is max no of point light should also reflect in the shader
         }
         if(il[li]->getLightType() == "SpotLight")
         {

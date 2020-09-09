@@ -56,6 +56,8 @@ std::vector<glm::vec3> _DirLight::getLightParams(){
     t.push_back(diffuse);//1
     t.push_back(ambient);//2
     t.push_back(specular);//3
+
+     return t;
 }
 //_PointLight::_PointLight(){}
 //_PointLight::~_PointLight(){}
@@ -89,6 +91,8 @@ std::vector<glm::vec3> _PointLight::getLightParams(){
     t.push_back(glm::vec3(constant));//4
     t.push_back(glm::vec3(linear));//5
     t.push_back(glm::vec3(quadratic));//6
+
+    return t;
 }
 //_SpotLight::_SpotLight(){}
 //_SpotLight::~_SpotLight(){}
