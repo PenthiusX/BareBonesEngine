@@ -749,3 +749,64 @@ void _Renderer::updateLightUniforms(_Light l)//neds a restructure
     glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
 }
 
+void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
+{
+    glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());
+    uint piter = 0;
+    for(uint li = 0 ; li < il.size(); li++)
+    {
+        if(il[li]->getLightType() == "DirLight")
+        {
+            //positions
+            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+            glUniform3f(shdr->getUniformLocation("light.position"),il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+            // Dir properties
+            glUniform3f(shdr->getUniformLocation("light.ambient"), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+            glUniform3f(shdr->getUniformLocation("light.diffuse"), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+            glUniform3f(shdr->getUniformLocation("light.specular"), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+
+        }
+        if(il[li]->getLightType() == "PointLight")
+        {
+            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+            //PointL
+                std::string f = "pointLights[";
+                std::string u = std::to_string(piter);
+                std::string e1 = "].position";
+                std::string e2 = "].ambient";
+                std::string e3 = "].diffuse";
+                std::string e4 = "].specular";
+                std::string e5 = "].constant";
+                std::string e6 = "].linear";
+                std::string e7 = "].quadratic";
+
+                glUniform3f(shdr->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+                glUniform3f(shdr->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+                glUniform3f(shdr->getUniformLocation((f+u+e3).c_str()), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+                glUniform3f(shdr->getUniformLocation((f+u+e4).c_str()), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+                glUniform1f(shdr->getUniformLocation((f+u+e5).c_str()), il[li]->getLightParams()[4].x); // note that all light colors are set at full intensity
+                glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()), il[li]->getLightParams()[5].x);
+                glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
+
+                piter++;
+                piter > 2 ? piter = 0: piter;
+        }
+        if(il[li]->getLightType() == "SpotLight")
+        {
+//            //positions
+//            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+//            glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
+//            //SpotL-
+//            glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
+//            glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
+//            glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
+//            glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
+        }
+    }
+
+    // material properties
+    glUniform3f(shdr->getUniformLocation("material.ambient"), sceneEntity.getMaterial().getAmbient().x,sceneEntity.getMaterial().getAmbient().y,sceneEntity.getMaterial().getAmbient().z);
+    glUniform3f(shdr->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
+    glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
+    glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
+}

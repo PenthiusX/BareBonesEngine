@@ -39,6 +39,7 @@ class I_Light
 public:
    virtual ~I_Light();
    virtual std::string getSignature() = 0;
+   virtual std::string getLightType() = 0;
    virtual void setPosition(glm::vec3 pos) = 0;
    virtual void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c) = 0;
    virtual void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b) = 0;
@@ -53,6 +54,7 @@ public:
     virtual ~_DirLight(){};
 
     std::string getSignature();
+    std::string getLightType();
     void setPosition(glm::vec3 pos);
     void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c);
     void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b){}//nodef
@@ -65,6 +67,7 @@ private:
     glm::vec3 diffuse;
     glm::vec3 ambient;
     glm::vec3 specular;
+    const std::string name = "DirLight";
 };
 
 class _PointLight : public I_Light
@@ -76,6 +79,7 @@ public:
     virtual ~_PointLight(){};
 
     std::string getSignature();
+    std::string getLightType();
     void setPosition(glm::vec3 pos);
     void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c);
     void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b){};//nodef
@@ -93,6 +97,7 @@ private:
     float constant;
     float linear;
     float quadratic;
+    const std::string name = "PointLight";
 };
 
 class _SpotLight : public I_Light{
@@ -102,6 +107,7 @@ public:
     virtual ~_SpotLight(){};
 
     std::string getSignature();
+    std::string getLightType();
     void setPosition(glm::vec3 pos);
     void setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c);
     void setAdditonalParams2x3(glm::vec3 a, glm::vec3 b);
@@ -119,5 +125,6 @@ private:
     glm::vec3 direction;
     float cutOff;
     float outerCuttof;
+    const std::string name = "SpotLight";
 };
 #endif // _LIGHT_H

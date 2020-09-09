@@ -45,6 +45,7 @@ public:
     void draw();// Draws paints everything bound in the scene
     //Lights
     void updateLightUniforms(_Light l);
+    void updateLightUniforms(std::vector<I_Light*> il);
     //Frame Enablements
     void setGLEnablements();
 

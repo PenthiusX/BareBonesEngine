@@ -243,25 +243,20 @@ void _Scene::render()
         meshesR[i]->draw();////Render all objects that are active.
         meshesR[i]->updateLightUniforms(lx);//update the light uniform if existant.
 
-        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString())
-        {
-                lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity().getPostion());
-                QVector4D col =  meshesR[i]->getSceneEntity().getColor();
-                lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
-                lrc++;
-        }
-        if(lrc > lightsArray.size()){lrc = 0;}
+//        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString())
+//        {
+//            lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity().getPostion());
+//            QVector4D col =  meshesR[i]->getSceneEntity().getColor();
+//            lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
+//            lrc++;
+//        }
+
+//        lrc > lightsArray.size() ? lrc = 0:lrc;
 
         if(meshesR[i]->getSceneEntity().getTag()=="light")
         {
             glm::vec3 sp  =  meshesR[i]->getSceneEntity().getPostion();//sets the light Position
             QVector4D col =  meshesR[i]->getSceneEntity().getColor();//light color
-
-            //            lp = new _DirLight("ld1");
-            //            lp->setPosition(sp);
-            //            lp->setDiffuse(glm::vec3(col.x(),col.y(),col.z()));
-            //            lp->setLightParams2V3(glm::vec3(),glm::vec3());
-
             lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,1.0,1.0);//stores as a _Light container
         }
     }
