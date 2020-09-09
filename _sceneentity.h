@@ -140,8 +140,15 @@ public:
     void setMaterial(_Material m);
     _Material getMaterial();
     //Light
-    void setIslight(bool isIt);
-    bool getisLightSource();
+    enum light{
+        Empty = 0,
+        Spot =1,
+        Directional =2,
+        Point =3
+    };
+    void setLight(light l);
+    light getLightSource();
+
 
 private:
     uint id;
@@ -197,5 +204,5 @@ private:
     GlEnablements glEnablements;//setting for GLRasterisation states .
     //
     _Material material;//Local material and light info state , will be passed into the renderer
-    bool isLight;
+    light lighttype;
 };

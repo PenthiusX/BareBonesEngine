@@ -23,7 +23,7 @@ _Scene::_Scene(){
     isCamera = false;
     fboObject = new _FrameBuffer();
     fboObject->initialise();
-
+    isHelpers = false;
     loopIndex = 0;
 }
 _Scene::~_Scene(){
@@ -43,9 +43,11 @@ _Scene::~_Scene(){
 * binds the propertes set by the scene objectes into the
 * renderer/GPU  for rendering in the scene
 */
-void _Scene::addSceneObject(_SceneEntity s){
+void _Scene::addSceneObject(_SceneEntity s)
+{
     // Only sets the scene object if the camera has been set already and scene object is active
-    if (s.getIsActive() == true){
+    if (s.getIsActive() == true)
+    {
         s.setOrderInIndex(meshesR.size());
         if (isCamera){
             s.setOrderInIndex(meshesR.size());
@@ -62,23 +64,23 @@ void _Scene::addSceneObject(_SceneEntity s){
         }
 
         I_Light* lightInterface = nullptr;
-        if(s.getisLightSource())
+        if(s.getLightSource() != _SceneEntity::light::Empty)
         {
-            if(s.getTag() == "plight"){
+            if(s.getLightSource() == _SceneEntity::light::Point){
                 lightInterface = new _PointLight(s.getTag().toStdString());
                 lightInterface->setPosition(s.getPostion());
                 lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
                 lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
                 lightsArray.push_back(lightInterface);
             }
-            if(s.getTag() == "dlight"){
+            if(s.getLightSource() == _SceneEntity::light::Directional){
                 lightInterface = new _DirLight(s.getTag().toStdString());
                 lightInterface->setPosition(s.getPostion());
                 lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
                 lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
                 lightsArray.push_back(lightInterface);
             }
-            if(s.getTag() == "slight"){
+            if(s.getLightSource() == _SceneEntity::light::Spot){
                 lightInterface = new _SpotLight(s.getTag().toStdString());
                 lightInterface->setPosition(s.getPostion());
                 lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
@@ -228,28 +230,40 @@ void _Scene::onResize(int w,int h){
  * this is being called by the _GlWidget class.
 
 */
-void _Scene::render(){
+void _Scene::render()
+{
     //sets the Frame for the framebufferObject.
     fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
     //--------------------------------------c
     //Frame to render is below
+    uint lrc;
     for (uint i = 0; i < meshesR.size(); i++)//Rendering Scene Object/Primitives
     {
         //Frame update
         meshesR[i]->draw();////Render all objects that are active.
+        meshesR[i]->updateLightUniforms(lx);//update the light uniform if existant.
 
-        if(meshesR[i]->getSceneEntity().getTag()=="light"){
+        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString())
+        {
+                lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity().getPostion());
+                QVector4D col =  meshesR[i]->getSceneEntity().getColor();
+                lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
+                lrc++;
+        }
+        if(lrc > lightsArray.size()){lrc = 0;}
+
+        if(meshesR[i]->getSceneEntity().getTag()=="light")
+        {
             glm::vec3 sp  =  meshesR[i]->getSceneEntity().getPostion();//sets the light Position
             QVector4D col =  meshesR[i]->getSceneEntity().getColor();//light color
 
-//            lp = new _DirLight("ld1");
-//            lp->setPosition(sp);
-//            lp->setDiffuse(glm::vec3(col.x(),col.y(),col.z()));
-//            lp->setLightParams2V3(glm::vec3(),glm::vec3());
+            //            lp = new _DirLight("ld1");
+            //            lp->setPosition(sp);
+            //            lp->setDiffuse(glm::vec3(col.x(),col.y(),col.z()));
+            //            lp->setLightParams2V3(glm::vec3(),glm::vec3());
 
             lx =  _Light(glm::vec3(sp.x,sp.y,sp.z),glm::vec4(col.x(),col.y(),col.z(),1.),0.1,1.0,1.0);//stores as a _Light container
         }
-        meshesR[i]->updateLightUniforms(lx);//update the light uniform if existant.
     }
     //-----------------------------------------
     // Frame above is loaded in buffers and rendered on FBOquad below
@@ -351,12 +365,15 @@ void _Scene::updateAllPhysicsObjectsLoop()
 */
 /*
  */
-void _Scene::updateHelpersOnce(){
-    if(mxIndex > 0,minIndex > 0,pivotIndex > 0){
+void _Scene::updateHelpersOnce()
+{
+    if(isHelpers == true){
         glm::vec4 mx,mn,cntrd;
         glm::vec3 rot,pos;
-        for (uint i = 0; i < physVector.size(); i++){
-            if(physVector[i].getSceneEntity().getIsPhysicsHelper() && physVector[i].getSceneEntity().getisHitByRay()){
+        for (uint i = 0; i < physVector.size(); i++)
+        {
+            if(physVector[i].getSceneEntity().getIsPhysicsHelper() && physVector[i].getSceneEntity().getisHitByRay())
+            {
                 glm::vec3 p = physVector[i].getRayTriIntersectionPoint();
                 meshesR[mPointerIndex]->setPosition(p);
                 //sc = physVector[i].getSceneEntity().getScale();
@@ -370,6 +387,7 @@ void _Scene::updateHelpersOnce(){
                 rot = physVector[i].getSceneEntity().getRotation();
             }
         }
+
         meshesR[cIndex]->setPosition(cntrd);
 
         meshesR[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
@@ -406,6 +424,7 @@ void _Scene::setHelperIndexVars(){
 */
 void _Scene::addAllHelperTypesInScene()
 {
+    this->isHelpers = true;
     //----------Physics Helpers-------
     sph.setId(1);
     sph.setTag("boundingSphere");

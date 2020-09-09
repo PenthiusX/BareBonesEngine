@@ -49,7 +49,7 @@ public:
 class _DirLight : public I_Light
 {
 public:
-    _DirLight(std::string sig){};
+    _DirLight(std::string sig){this->sig = sig;};
     virtual ~_DirLight(){};
 
     std::string getSignature();
@@ -72,7 +72,7 @@ class _PointLight : public I_Light
 
 public:
 
-    _PointLight(std::string sig){};
+    _PointLight(std::string sig){this->sig = sig;};
     virtual ~_PointLight(){};
 
     std::string getSignature();
@@ -98,7 +98,7 @@ private:
 class _SpotLight : public I_Light{
 
 public:
-    _SpotLight(std::string sig){};
+    _SpotLight(std::string sig){this->sig = sig;};
     virtual ~_SpotLight(){};
 
     std::string getSignature();

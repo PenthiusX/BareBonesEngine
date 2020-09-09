@@ -48,25 +48,25 @@ void _GLWidget::initializeGL() {
     //-------------Lights-----------------------------
     light1.setId(8008);
     light1.setTag("light");
-    light1.setIslight(true);
+    light1.setLight(_SceneEntity::Point);
     light1.setModelData(":/models/sphere.obj");
     light1.setPhysicsObject(_SceneEntity::Sphere);
     light1.setPosition(glm::vec3(0.2f,6.0f, 0.0f));//hard coded value need to get passed into the shader
     light1.setIsLineNoCullMode(false);
     light1.setScale(0.20f);
-
+    //
     p1.setId(8002);
-    p1.setTag("plight");
-    p1.setIslight(true);
+    p1.setTag("plight1");
+    p1.setLight(_SceneEntity::Point);
     p1.setModelData(":/models/sphere.obj");
     p1.setPhysicsObject(_SceneEntity::Sphere);
     p1.setPosition(glm::vec3(-3.2f,0.0f, 0.0f));//hard coded value need to get passed into the shader
     p1.setIsLineNoCullMode(false);
     p1.setScale(0.20f);
-
+    //
     p2.setId(8003);
-    p2.setTag("plight");
-    p1.setIslight(true);
+    p2.setTag("plight2");
+    p2.setLight(_SceneEntity::Point);
     p2.setModelData(":/models/sphere.obj");
     p2.setPhysicsObject(_SceneEntity::Sphere);
     p2.setPosition(glm::vec3(2.2f,-4.0f, 1.0f));//hard coded value need to get passed into the shader
@@ -99,7 +99,7 @@ void _GLWidget::initializeGL() {
     s.setScale(0.3f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
-    scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
+    //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects--------------------------------
     scene->addSceneObject(s);//Adds the entity defined obove to scene
     scene->addSceneObject(light1);//Note: the light object is a regular sceneentity but needs a tag named light for it to be considered a light source in scene.

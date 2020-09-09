@@ -50,7 +50,8 @@ private:
     bool isCamera;
     QVector2D mousePositionR,mousePositionL;
     int resW,resH;
-    //Helpersyif
+    //Helpers
+    bool isHelpers;
     _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot,bg;
     uint pivotIndex,mPointerIndex;
     uint cIndex;

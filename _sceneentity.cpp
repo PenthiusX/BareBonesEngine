@@ -20,7 +20,7 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     isHitByRay = false;
     isMeshEditable = false;
     isPhysicsHelper = false;
-    isLight = false;
+    lighttype = light::Empty;
     tag = new char();
     isLineMode = false;
     isLineNoCullMode = false;
@@ -356,8 +356,7 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::PhysicsBody penum){
     isPhysicsHelper = false;
     phyObjtype = penum;
 }
-void _SceneEntity::setPhysicsObject(_SceneEntity::PhysicsBody penum, PhysicsBody helper)
-{
+void _SceneEntity::setPhysicsObject(_SceneEntity::PhysicsBody penum, PhysicsBody helper){
     if((helper = _SceneEntity::Helper)){
         isPhysicsHelper = true;}
     else if((helper = _SceneEntity::NoHelper)){
@@ -368,22 +367,17 @@ void _SceneEntity::setPhysicsObject(_SceneEntity::PhysicsBody penum, PhysicsBody
 }
 /*
 */
-void _SceneEntity::setMaterial(_Material m)
-{
+void _SceneEntity::setMaterial(_Material m){
     this->material = m;
 }
-_Material _SceneEntity::getMaterial()
-{
+_Material _SceneEntity::getMaterial(){
     return this->material;
 }
-
-void _SceneEntity::setIslight(bool isIt)
-{
-    this->isLight = isIt;
+void _SceneEntity::setLight(light l){
+    this->lighttype = l;
 }
-
-bool _SceneEntity::getisLightSource(){
-    return isLight;
+_SceneEntity::light _SceneEntity::getLightSource(){
+    return lighttype;
 }
 /*
  * Funtion: getisHitRay()
