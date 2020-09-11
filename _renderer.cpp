@@ -14,7 +14,7 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    glClearColor(0.1f, 0.1f, 0.3f, 1.0);//sets the bckground color of the openglContext.
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
     fboShader = new _Shader();
@@ -679,9 +679,8 @@ void _Renderer::updateColorUniforms()
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
     }
-    if(sceneEntity.getisHitByRay()){
-        sceneEntity.setColor(actualColor * 0.5);
-    }
+
+    sceneEntity.getisHitByRay() ? sceneEntity.setColor(actualColor * 2.0) : sceneEntity.setColor(actualColor * 0.5);
 
 //    if(sceneEntity.getIsHitByTri()){
 //        QVector4D qc = actualColor;

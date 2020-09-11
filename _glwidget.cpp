@@ -46,14 +46,14 @@ void _GLWidget::initializeGL() {
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
     //-------------Lights-----------------------------
-    light1.setId(8008);
-    light1.setTag("dlight");
-    light1.setLight(_SceneEntity::Directional);
-    light1.setModelData(":/models/cube.obj");
-    light1.setPhysicsObject(_SceneEntity::Sphere);
-    light1.setPosition(glm::vec3(0.2f,6.0f, 0.0f));//hard coded value need to get passed into the shader
-    light1.setIsLineNoCullMode(false);
-    light1.setScale(0.20f);
+    dl1.setId(8008);
+    dl1.setTag("dlight");
+    dl1.setLight(_SceneEntity::Directional);
+    dl1.setModelData(":/models/cube.obj");
+    dl1.setPhysicsObject(_SceneEntity::Sphere);
+    dl1.setPosition(glm::vec3(0.2f,6.0f, 0.0f));//hard coded value need to get passed into the shader
+    dl1.setIsLineNoCullMode(false);
+    dl1.setScale(0.20f);
     //
     p1.setId(8002);
     p1.setTag("plight1");
@@ -72,6 +72,15 @@ void _GLWidget::initializeGL() {
     p2.setPosition(glm::vec3(2.2f,-4.0f, 1.0f));//hard coded value need to get passed into the shader
     p2.setIsLineNoCullMode(false);
     p2.setScale(0.20f);
+    //
+//    sl1.setId(8003);
+//    sl1.setTag("plight2");
+//    sl1.setLight(_SceneEntity::Spot);
+//    sl1.setModelData(":/models/sphere.obj");
+//    sl1.setPhysicsObject(_SceneEntity::Sphere);
+//    sl1.setPosition(glm::vec3(2.2f,-4.0f, 1.0f));//hard coded value need to get passed into the shader
+//    sl1.setIsLineNoCullMode(false);
+//    sl1.setScale(0.20f);
 
     //------------Material Params----------------------
     /*_Material*/ m = {};
@@ -102,7 +111,7 @@ void _GLWidget::initializeGL() {
     //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects--------------------------------
     scene->addSceneObject(s);//Adds the entity defined obove to scene
-    scene->addSceneObject(light1);//Note: the light object is a regular sceneentity but needs a tag named light for it to be considered a light source in scene.
+    scene->addSceneObject(dl1);//Note: the light object is a regular sceneentity but needs a tag named light for it to be considered a light source in scene.
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
 }

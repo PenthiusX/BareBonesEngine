@@ -1,4 +1,4 @@
-#include "_framebuffer.h"
+#include "_bufferobjects.h"
 #include "_tools.h"
 
 /*
@@ -155,4 +155,38 @@ void _FrameBuffer::setMousePos(QVector2D mPos)
     mousePos.setX(mPos.x());
     //this allignment is needed for it to be represented acurately in the shade.
     mousePos.setY(alignedMouseheight);
+}
+
+_StencilBuffer::_StencilBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
+{
+
+}
+
+_StencilBuffer::~_StencilBuffer()
+{
+
+}
+// We set its mask to 0x00 to not write to the stencil buffer.
+void _StencilBuffer::dontWriteToStencil()
+{
+      glStencilMask(0x00);
+}
+
+void _StencilBuffer::writeToStencilPass()
+{
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilMask(0xFF);
+}
+
+void _StencilBuffer::drawStencilPass()
+{
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilMask(0x00);
+    glDisable(GL_DEPTH_TEST);
+}
+
+void _StencilBuffer::clearStencilBuffer()
+{
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF);
 }

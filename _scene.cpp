@@ -15,13 +15,14 @@
  * Autor: Aditya Mattoo
 
 */
-
+//---------------------------------------------------------------------------------------
 /*
  * Constructor: _Scene class
 */
 _Scene::_Scene(){
     isCamera = false;
     fboObject = new _FrameBuffer();
+    stencilObject = new _StencilBuffer();
     fboObject->initialise();
     isHelpers = false;
     loopIndex = 0;
@@ -32,6 +33,7 @@ _Scene::~_Scene(){
     delete fboObject;
     lightsArray.clear();
 }
+//---------------------------------------------------------------------------------------
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
   ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▪▀·.█▌▀▄.▀·
@@ -43,6 +45,7 @@ _Scene::~_Scene(){
 * binds the propertes set by the scene objectes into the
 * renderer/GPU  for rendering in the scene
 */
+//---------------------------------------------------------------------------------------
 void _Scene::addSceneObject(_SceneEntity s)
 {
     // Only sets the scene object if the camera has been set already and scene object is active
@@ -50,46 +53,63 @@ void _Scene::addSceneObject(_SceneEntity s)
     {
         s.setOrderInIndex(meshesR.size());
         if (isCamera){
-            s.setOrderInIndex(meshesR.size());
-            r = new _Renderer();//creates a new renderare object for each sceneEntity that gets added to the scene
-            r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-            r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
-            r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
-            meshesR.push_back(r);//add the renderer object to array for batch render
+            initialiseMesh(s);
         }
-        if(s.getIsPhysicsObject()){
-            _Physics phys;
-            phys.initialiseSceneEntity(s);
-            physVector.push_back(phys);
-        }
+        initialisePhysics(s);
+        initialiseLights(s);
 
-        I_Light* lightInterface = nullptr;
-        if(s.getLightSource() != _SceneEntity::light::Empty)
-        {
-            if(s.getLightSource() == _SceneEntity::light::Point){
-                lightInterface = new _PointLight(s.getTag().toStdString());
-                lightInterface->setPosition(s.getPostion());
-                lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
-                lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
-                lightsArray.push_back(lightInterface);
-            }
-            if(s.getLightSource() == _SceneEntity::light::Directional){
-                lightInterface = new _DirLight(s.getTag().toStdString());
-                lightInterface->setPosition(s.getPostion());
-                lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
-                lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
-                lightsArray.push_back(lightInterface);
-            }
-            if(s.getLightSource() == _SceneEntity::light::Spot){
-                lightInterface = new _SpotLight(s.getTag().toStdString());
-                lightInterface->setPosition(s.getPostion());
-                lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
-                lightInterface->setAdditonalParams2x3(glm::vec3(1.0),glm::vec3(1.0));
-                lightsArray.push_back(lightInterface);
-            }
+    }
+}
+//---------------------------------------------------------------------------------------
+void _Scene::initialiseMesh(_SceneEntity s)
+{
+    s.setOrderInIndex(meshesR.size());
+    r = new _Renderer();//creates a new renderare object for each sceneEntity that gets added to the scene
+    r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+    r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+    r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
+    meshesR.push_back(r);//add the renderer object to array for batch render
+}
+//---------------------------------------------------------------------------------------
+void _Scene::initialisePhysics(_SceneEntity s)
+{
+    if(s.getIsPhysicsObject()){
+        _Physics phys;
+        phys.initialiseSceneEntity(s);
+        physVector.push_back(phys);
+    }
+}
+//---------------------------------------------------------------------------------------
+void _Scene::initialiseLights(_SceneEntity s)
+{
+    I_Light* lightInterface = nullptr;
+    if(s.getLightSource() != _SceneEntity::light::Empty)
+    {
+        if(s.getLightSource() == _SceneEntity::light::Point){
+            lightInterface = new _PointLight(s.getTag().toStdString());
+            lightInterface->setPosition(s.getPostion());
+            lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
+            lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
+            lightsArray.push_back(lightInterface);
+        }
+        if(s.getLightSource() == _SceneEntity::light::Directional){
+            lightInterface = new _DirLight(s.getTag().toStdString());
+            lightInterface->setPosition(s.getPostion());
+            lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
+            lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
+            lightsArray.push_back(lightInterface);
+        }
+        if(s.getLightSource() == _SceneEntity::light::Spot){
+            lightInterface = new _SpotLight(s.getTag().toStdString());
+            lightInterface->setPosition(s.getPostion());
+            lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
+            lightInterface->setAdditonalParams2x3(glm::vec3(1.0),glm::vec3(1.0));
+            lightsArray.push_back(lightInterface);
         }
     }
 }
+//---------------------------------------------------------------------------------------
+
 /*
    ▄▄ • ▄▄▄ .▄▄▄▄▄   .▄▄ · ▄▄▄ .▄▄▄▄▄
   ▐█ ▀ ▪▀▄.▀·•██     ▐█ ▀. ▀▄.▀·•██
@@ -97,6 +117,7 @@ void _Scene::addSceneObject(_SceneEntity s)
   ▐█▄▪▐█▐█▄▄▌ ▐█▌· • ▐█▄▪▐█▐█▄▄▌ ▐█▌·
   ·▀▀▀▀  ▀▀▀  ▀▀▀  •  ▀▀▀▀  ▀▀▀  ▀▀▀
 */
+//---------------------------------------------------------------------------------------
 /*
  * returns the vector array of sceneObjects.
  * this is being called by the _GlWidget class.
@@ -104,6 +125,7 @@ void _Scene::addSceneObject(_SceneEntity s)
 std::vector<_Renderer*> _Scene::getSceneObjects(){
     return meshesR;
 }
+//---------------------------------------------------------------------------------------
 /*
  * function checks if the cmaera is attached and sets the local
  * camera object with the camera object passed via parameter for use in rendering
@@ -113,6 +135,7 @@ void _Scene::addCamera(_Camera c){
     isCamera = true;
     cam = c;
 }
+//---------------------------------------------------------------------------------------
 /*
  * sets the camera updated values to every render entity matrix
 */
@@ -130,9 +153,7 @@ void _Scene::updateCamera(_Camera c){
 *!!!You risk increasing the complexity of the loop from On to O(posinIndex - n)^2!!!
 *They need to be run only once to find the object.
 */
-/*
-
-*/
+//---------------------------------------------------------------------------------------
 _SceneEntity _Scene::findSceneEntity(uint iD){
     _SceneEntity empty;
     for(int f = 0 ; f < meshesR.size() ; f++){
@@ -141,7 +162,7 @@ _SceneEntity _Scene::findSceneEntity(uint iD){
     }
     return empty;
 }
-
+//---------------------------------------------------------------------------------------
 _SceneEntity _Scene::findSceneEntity(QString tag){
     _SceneEntity empty;
     for(int f = 0 ; f < meshesR.size(); f++){
@@ -156,8 +177,7 @@ _SceneEntity _Scene::findSceneEntity(QString tag){
 _SceneEntity _Scene::getSceneEntityHitWithRay(){
     return rayHitSceneEntity;
 }
-/*
- */
+//---------------------------------------------------------------------------------------
 void _Scene::removeSceneObject(uint index){
     meshesR.erase(meshesR.begin()+index);
 }
@@ -168,6 +188,7 @@ void _Scene::removeSceneObject(_SceneEntity s){
             meshesR.erase(meshesR.begin()+r);
         }
 }
+//---------------------------------------------------------------------------------------
 /*
   • ▌ ▄ ·.       ▄• ▄▌.▄▄ · ▄▄▄ .   ▄▄▄ .▄• ▄▌ ▄▄ .  ▐ ▄  ▄▄▄▄▄
   ·██ ▐███▪▪     █▪ █▌▐█ ▀. ▀▄.▀·   ▀▄.▀·█▪ █▌▀▄.▀· •█▌▐█ •██
@@ -175,8 +196,7 @@ void _Scene::removeSceneObject(_SceneEntity s){
   ██ ██▌▐█▌▐█▌.▐▌▐█▄█▌▐█▄▪▐█▐█▄▄▌   ▐█▄▄▌▐█▄█ ▐█▄▄▌ ██▐█▌  ▐█▌·
   ▀▀  █▪▀▀▀ ▀█▄▀▪ ▀▀▀  ▀▀▀▀  ▀▀▀     ▀▀▀  ▀▀  ▀▀▀  ▀▀ █▪  ▀▀▀
 */
-/*
-*/
+//---------------------------------------------------------------------------------------
 void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     if(m == Qt::RightButton){
         mousePositionR = mousePos;
@@ -197,6 +217,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
         if(ph.joinable()){ph.detach();}
     }
 }
+//---------------------------------------------------------------------------------------
 /*
         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
@@ -204,10 +225,10 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
  ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
   ▀█▄▀ ▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
+//---------------------------------------------------------------------------------------
 /*
  * gets called on resize and all operations will run when the windows is resized
  * this is being called by the _GlWidget class.
-
 */
 void _Scene::onResize(int w,int h){
     resW = w;
@@ -217,6 +238,7 @@ void _Scene::onResize(int w,int h){
     //FBO init and updateTexture on Resize
     fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
+//---------------------------------------------------------------------------------------
 /*
   ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
   █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
@@ -224,41 +246,38 @@ void _Scene::onResize(int w,int h){
   ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
    ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀
 */
+//---------------------------------------------------------------------------------------
 /*
  * This function is render function that will call the glDraw fuinction in
  * the render final draw of all sceneEntity objects attached to scene.
  * this is being called by the _GlWidget class.
-
 */
 void _Scene::render()
 {
-    //sets the Frame for the framebufferObject.
-    fboObject->setUpdatedFrame();// Rhe frames are being bound underneath in the draw() function below
-    //--------------------------------------c
-    //Frame to render is below
-    uint lrc;
-    for (uint i = 0; i < meshesR.size(); i++)//Rendering Scene Object/Primitives
+    //#############################
+    fboObject->setUpdatedFrame();// The frames in context below will be captured
+    //#############################
+    for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
-        //Frame update
-        meshesR[i]->draw();////Render all objects that are active.
-        meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform if existant.
-
+        meshesR[i]->draw();//Rendering Scene Object/Primitives
+        //~~~~~~~~~~~~~
+        meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader.
         lrc > lightsArray.size() ? lrc = 0:lrc;
-        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString())
-        {
+        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString()){
+            //update the light objects with values from there relative meshentities in the secene
             lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity().getPostion());
             QVector4D col =  meshesR[i]->getSceneEntity().getColor();
             lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
-            lrc++;
-        }
+            lrc++;}
+        //~~~~~~~~~~~~~~
     }
-    //-----------------------------------------
-    // Frame above is loaded in buffers and rendered on FBOquad below
+    //#############################
+    fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
-    fboObject->renderFrameOnQuad(); // sets the frame on the Quad that has been hardcoded into the function
+    //#############################
 }
+//---------------------------------------------------------------------------------------
 /*
- *
  * this function updated at setintervals based on a clock timer.
  */
 void _Scene::fixedUpdate(float intervalTime)
@@ -270,7 +289,7 @@ void _Scene::fixedUpdate(float intervalTime)
         //   updateAllPhysicsObjectsLoop();
     }
 }
-
+//---------------------------------------------------------------------------------------
 /*
  ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·
 ▐█ ▄███▪▐█▐█▪██▌▐█ ▀. ██ ▐█ ▌▪▐█ ▀.
@@ -278,10 +297,10 @@ void _Scene::fixedUpdate(float intervalTime)
 ▐█ ·•██▌▐▀ ▐█▀·.▐█▄▪▐█▐█▌▐███▌▐█▄▪▐█
 .▀   ▀▀▀ ·  ▀ •  ▀▀▀▀ ▀▀▀·▀▀▀  ▀▀▀▀
 */
+//---------------------------------------------------------------------------------------
 /*
  * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
-
 */
 void _Scene::updateAllPhysicsObjectsOnce(){
     if(physVector.size() > 0){
@@ -312,8 +331,8 @@ void _Scene::updateAllPhysicsObjectsOnce(){
 /*
  * update the physcs variables realtime and is relativel optmised to run in a loop.
  * is called in the _scene class's fixedUpdate() function.
-
  */
+//---------------------------------------------------------------------------------------
 void _Scene::updateAllPhysicsObjectsLoop()
 {    if(physVector.size() > 0){
         //        physVector[loopIndex].setSceneEntity(meshesR[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
@@ -337,7 +356,7 @@ void _Scene::updateAllPhysicsObjectsLoop()
         //        }
 
         qDebug() << is;
-        //--------------------------------------------
+        //------------------------------------------------------------------------------------------
         loopIndex++;
         if(loopIndex >= physVector.size())
             loopIndex = 0;
@@ -350,8 +369,7 @@ void _Scene::updateAllPhysicsObjectsLoop()
   ██▌▐▀▐█▄▄▌▐█▌▐▌▐█▪·•▐█▄▄▌▐█•█▌▐█▄▪▐█
   ▀▀▀ · ▀▀▀ .▀▀▀ .▀    ▀▀▀ .▀  ▀ ▀▀▀▀
 */
-/*
- */
+//---------------------------------------------------------------------------------------
 void _Scene::updateHelpersOnce()
 {
     if(isHelpers == true){
@@ -390,7 +408,7 @@ void _Scene::updateHelpersOnce()
     }
 }
 
-//Not in use
+//Not in use//---------------------------------------------------------------------------------------
 void _Scene::updateHelpersLoop(uint index){
     if(meshesR[index]->getSceneEntity().getIsPhysicsHelper() &&  meshesR[index]->getSceneEntity().getisHitByRay()){
         // binding the pivot object to focus object
@@ -398,8 +416,7 @@ void _Scene::updateHelpersLoop(uint index){
         meshesR[pivotIndex]->setRotation(meshesR[index]->getSceneEntity().getRotation());
     }
 }
-/*
-*/
+//---------------------------------------------------------------------------------------
 void _Scene::setHelperIndexVars(){
     pivotIndex = findSceneEntity("pivot").getIndexPosInScene();
     cIndex = findSceneEntity("cent").getIndexPosInScene();
@@ -407,8 +424,7 @@ void _Scene::setHelperIndexVars(){
     minIndex = findSceneEntity("min").getIndexPosInScene();
     mPointerIndex = findSceneEntity("mousePointerObject").getIndexPosInScene();
 }
-/*
-*/
+//---------------------------------------------------------------------------------------
 void _Scene::addAllHelperTypesInScene()
 {
     this->isHelpers = true;
@@ -480,3 +496,4 @@ void _Scene::addAllHelperTypesInScene()
     //
     setHelperIndexVars();
 }
+//---------------------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 //#include <Qt3DRender>
 //#include <QEntityPtr>
 
-#include "_ObjLoader.h"
+#include "_extobjLoader.h"
 
 /*
 * Constructor/Distructor:

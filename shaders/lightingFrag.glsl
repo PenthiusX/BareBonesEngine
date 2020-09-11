@@ -174,13 +174,11 @@ void main()
     vec3 color;
     PointLight p;
 
-    color +=  compDirectonalLight(texColor,specColor);
+    color +=  compDirectonalLight(texColor,specColor);//finalise seperate class
+    for(int i = 0; i < 2; i++){color +=  compPointLight(pointLights[i],texColor,specColor);}
+    color += compSpotLight(texColor,specColor);//finalise sperate class
 
-    for(int i = 0; i < 2; i++){
-       color +=  compPointLight(pointLights[i],texColor,specColor);
-    }
-    //color += compSpotLight(texColor,specColor);
-    //Final color output
-    FragColor = vec4(color.xyz, texColor.a);
+    FragColor = vec4(color.xyz, texColor.a);//Final color output
+//    FragColor = vec4(vec3(gl_FragCoord.z), 1.0);
 }
 

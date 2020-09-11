@@ -3,7 +3,7 @@
 
 #include "_renderer.h"
 #include "_camera.h"
-#include "_framebuffer.h"
+#include "_bufferobjects.h"
 #include "_physics.h"
 #include "_sceneentity.h"
 #include "_light.h"
@@ -42,9 +42,15 @@ public:
     _SceneEntity getSceneEntityHitWithRay();
 
 private:
+    //Inithandlers
+    void initialiseMesh(_SceneEntity s);
+    void initialisePhysics(_SceneEntity s);
+    void initialiseLights(_SceneEntity s);
+    //
     std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> meshesR,lightsR;
     _FrameBuffer *fboObject;//framebuffer object in the current instance
+    _StencilBuffer *stencilObject;
     _Renderer* r;
     _Camera cam;
     bool isCamera;
@@ -71,7 +77,6 @@ private:
     std::vector<I_Light*> lightsArray;
     _Light lx;
     I_Light *lp;
-
     //Thread
     std::thread pu;
     std::thread ph;

@@ -1,5 +1,4 @@
-#ifndef _FRAMEBUFFER_H
-#define _FRAMEBUFFER_H
+#pragma once
 
 #include <qopenglextrafunctions.h>
 #include "_shader.h"
@@ -9,7 +8,6 @@
  * Creates an individual instace for the setting and
  * binding of the framebufferObjects
 */
-
 class _FrameBuffer : public QOpenGLExtraFunctions
 {
 public:
@@ -41,4 +39,23 @@ public:
     //
     void setMousePos(QVector2D mousePos);
 };
-#endif // _FRAMEBUFFER_H
+
+
+class _StencilBuffer : public QOpenGLExtraFunctions
+{
+public:
+
+    _StencilBuffer();
+    ~_StencilBuffer();
+
+    void dontWriteToStencil();
+    void writeToStencilPass();
+    void drawStencilPass();
+    void clearStencilBuffer();
+
+
+private:
+
+
+
+};
