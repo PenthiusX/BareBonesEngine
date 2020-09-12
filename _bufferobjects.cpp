@@ -122,7 +122,6 @@ void _FrameBuffer::renderFrameOnQuad()
 {
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);//always force the FBO quad to have a GL_FILL hint.
     glBindFramebuffer(GL_FRAMEBUFFER, 0);// now bind the default(orignal) frame , draw a quad plane attaching the frambuffer texture on it.
-    //glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 
     fboShader->useShaderProgram();//pass the texture to this fboShader
 
@@ -135,7 +134,6 @@ void _FrameBuffer::renderFrameOnQuad()
 
     glDrawArrays(GL_TRIANGLES, 0, 6);//Draw the Quad with the texture
     glBindVertexArray(0);//Clear the buffer
-    //glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
 }
 /*
  * this function should help with implementation of the applying a FrameTextuere onto any
@@ -178,7 +176,7 @@ void _StencilBuffer::writeToStencilPass()
     glStencilMask(0xFF);
 }
 
-void _StencilBuffer::drawStencilPass()
+void _StencilBuffer::stopWriting()
 {
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilMask(0x00);
@@ -189,4 +187,5 @@ void _StencilBuffer::clearStencilBuffer()
 {
     glStencilMask(0xFF);
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
+    glEnable(GL_DEPTH_TEST);
 }

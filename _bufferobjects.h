@@ -50,7 +50,7 @@ public:
 
     void dontWriteToStencil();
     void writeToStencilPass();
-    void drawStencilPass();
+    void stopWriting();
     void clearStencilBuffer();
 
 

@@ -48,7 +48,7 @@ private:
     void initialiseLights(_SceneEntity s);
     //
     std::vector<_SceneEntity> sceneEntityVector;
-    std::vector<_Renderer*> meshesR,lightsR;
+    std::vector<_Renderer*> meshesR,stencilMeshes;
     _FrameBuffer *fboObject;//framebuffer object in the current instance
     _StencilBuffer *stencilObject;
     _Renderer* r;
@@ -76,7 +76,6 @@ private:
     //Lights
     std::vector<I_Light*> lightsArray;
     _Light lx;
-    I_Light *lp;
     //Thread
     std::thread pu;
     std::thread ph;

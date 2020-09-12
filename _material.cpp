@@ -64,3 +64,16 @@ float _Material::getShine()
 {
     return this->shininess;
 }
+
+void _Material::setShaders(QString v, QString f)
+{
+   shaderCont sc;
+   sc.vshader = v;
+   sc.fshader = f;
+   shadersC.push_back(sc);
+}
+
+std::vector<_Material::shaderCont> _Material::getShaders()
+{
+    return shadersC;
+}

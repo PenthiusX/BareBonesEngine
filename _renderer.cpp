@@ -34,6 +34,7 @@ _Renderer::~_Renderer()
 {
     delete fboShader;
     delete shdr;
+    shaderV.clear();
 }
 /*
 *
@@ -118,7 +119,7 @@ void _Renderer::setShader()
 void _Renderer::setShader(QString vSh, QString fSh)
 {
     shdr->attachShaders(vSh,fSh);
-    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();;
+    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();
 }
 /*
  * set Vertex and Index data into
@@ -561,8 +562,8 @@ void _Renderer::setGLEnablements()
     frameBufferMode = g.frameBufferMode;
     switch (frameBufferMode){
     case  _SceneEntity::GlEnablements::ColorOnly:
-//        glDisable(GL_BLEND);
-//        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
                 break;
     case _SceneEntity::GlEnablements::Blend:
         glEnable(GL_BLEND);//for transparency in alpha values
@@ -614,6 +615,11 @@ void _Renderer::setGLEnablements()
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         break;
     }
+}
+
+void _Renderer::ovverideShader(QString vertexShader, QString fragmentShader)
+{
+    setShader(vertexShader,fragmentShader);
 }
 /*
  * This is your proprietory draw function
@@ -701,53 +707,6 @@ void _Renderer::updateMaterial(_Material m)
  * Updates the light uniforms on the model
  * is called in the Scene class in the draw function();
  */
-void _Renderer::updateLightUniforms(_Light l)//neds a restructure
-{
-    glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());
-    //positions
-    glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
-    glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
-
-    // material properties
-    glUniform3f(shdr->getUniformLocation("material.ambient"), sceneEntity.getMaterial().getAmbient().x,sceneEntity.getMaterial().getAmbient().y,sceneEntity.getMaterial().getAmbient().z);
-    glUniform3f(shdr->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
-    glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
-    glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
-
-    //PointL
-    for(uint li = 0 ; li < 2 ; li++){
-        std::string f = "pointLights[";
-        std::string u = std::to_string(li);
-        std::string e1 = "].position";
-        std::string e2 = "].ambient";
-        std::string e3 = "].diffuse";
-        std::string e4 = "].specular";
-        std::string e5 = "].constant";
-        std::string e6 = "].linear";
-        std::string e7 = "].quadratic";
-
-        glUniform3f(shdr->getUniformLocation((f+u+e1).c_str()), l.getPosition().x,l.getPosition().y + li,l.getPosition().z);
-        glUniform3f(shdr->getUniformLocation((f+u+e2).c_str()),  l.getColor().x,   l.getColor().y,   l.getColor().z); // note that all light colors are set at full intensity
-        glUniform3f(shdr->getUniformLocation((f+u+e3).c_str()),  l.getDiffuse(),   l.getDiffuse(),   l.getDiffuse());
-        glUniform3f(shdr->getUniformLocation((f+u+e4).c_str()), l.getSpecular(),  l.getSpecular(),  l.getSpecular());
-        glUniform1f(shdr->getUniformLocation((f+u+e5).c_str()), 1.0); // note that all light colors are set at full intensity
-        glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()), 1.0);
-        glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()),0.32);
-    }
-
-
-    // Dir properties
-    glUniform3f(shdr->getUniformLocation("light.ambient"), l.getColor().x,l.getColor().y,l.getColor().z); // note that all light colors are set at full intensity
-    glUniform3f(shdr->getUniformLocation("light.diffuse"), l.getDiffuse(),l.getDiffuse(),l.getDiffuse());
-    glUniform3f(shdr->getUniformLocation("light.specular"), l.getSpecular(),l.getSpecular(),l.getSpecular());
-
-    //SpotL-
-    glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
-    glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
-    glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
-    glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
-}
-
 void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
 {
     glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());

@@ -1,5 +1,8 @@
-#ifndef _SHADER_H
-#define _SHADER_H
+#pragma once
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <QString>
 #include <QOpenGLExtraFunctions>
 #include "_tools.h"
@@ -29,6 +32,12 @@ public:
     void setChildShader(QString s,uint typ);
     void setChildShader(std::vector<QString>, uint typ);
 
+    //
+    void uniform4f(GLuint index,glm::vec4 data);
+    void uniform3f(GLuint index,glm::vec3 data);
+    void uniform2f(GLuint index,glm::vec2 data);
+    void uniformMatrix4fv(GLuint index , glm::mat4x4 data);
+
 private:
     //Shader Program
     uint shaderProgram;
@@ -48,5 +57,3 @@ private:
     char infoLog[512];
     void setUpParticles();
 };
-
-#endif // _SHADER_H

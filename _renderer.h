@@ -44,10 +44,11 @@ public:
     //
     void draw();// Draws paints everything bound in the scene
     //Lights
-    void updateLightUniforms(_Light l);
     void updateLightUniforms(std::vector<I_Light*> il);
     //Frame Enablements
     void setGLEnablements();
+    //Shader
+    void ovverideShader(QString vertexShader, QString fragmentShader);//cost ineffecent should be done once
 
 private:
     QVector4D actualColor;
@@ -56,6 +57,7 @@ private:
     uint EBO;//index buffer object
     //Shader class object sets the shaders and passes the program to the current context
     _Shader* shdr;
+    std::vector<_Shader*> shaderV;
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     GLint colorUniform;

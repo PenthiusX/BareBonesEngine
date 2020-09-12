@@ -31,7 +31,10 @@ _Scene::~_Scene(){
     meshesR.clear();
     delete r;
     delete fboObject;
+    delete stencilObject;
     lightsArray.clear();
+    meshesR.clear();
+    stencilMeshes.clear();
 }
 //---------------------------------------------------------------------------------------
 /*
@@ -48,17 +51,13 @@ _Scene::~_Scene(){
 //---------------------------------------------------------------------------------------
 void _Scene::addSceneObject(_SceneEntity s)
 {
-    // Only sets the scene object if the camera has been set already and scene object is active
-    if (s.getIsActive() == true)
-    {
         s.setOrderInIndex(meshesR.size());
+        assert(isCamera);//camera is mandatory to the scene please set it.
         if (isCamera){
             initialiseMesh(s);
+            initialisePhysics(s);
+            initialiseLights(s);
         }
-        initialisePhysics(s);
-        initialiseLights(s);
-
-    }
 }
 //---------------------------------------------------------------------------------------
 void _Scene::initialiseMesh(_SceneEntity s)
@@ -69,6 +68,20 @@ void _Scene::initialiseMesh(_SceneEntity s)
     r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
     meshesR.push_back(r);//add the renderer object to array for batch render
+
+    //Set stencil objects for boreders ,Later add it to the main meshesR as the structure does not
+    //alow for multiple Rendere array in scene for now
+    r = new _Renderer();//creates a new renderare object for each sceneEntity that gets added to the scene
+    r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+    r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+    s.setScale(s.getScale() * 1.01);
+    s.setShader(":/shaders/dmvshader.glsl",":/shaders/dmfshader.glsl");
+    s.setColor(QVector4D(1.0,0.0,0.0,1.0));
+    _SceneEntity::GlEnablements g;
+    g.frameBufferMode = _SceneEntity::GlEnablements::ColorOnly;
+    s.setGLModes(g);
+    r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
+    meshesR.push_back(r);//add the renderer object to array for batch renders
 }
 //---------------------------------------------------------------------------------------
 void _Scene::initialisePhysics(_SceneEntity s)
@@ -109,7 +122,6 @@ void _Scene::initialiseLights(_SceneEntity s)
     }
 }
 //---------------------------------------------------------------------------------------
-
 /*
    ▄▄ • ▄▄▄ .▄▄▄▄▄   .▄▄ · ▄▄▄ .▄▄▄▄▄
   ▐█ ▀ ▪▀▄.▀·•██     ▐█ ▀. ▀▄.▀·•██
@@ -254,11 +266,17 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render()
 {
-    //#############################
     fboObject->setUpdatedFrame();// The frames in context below will be captured
-    //#############################
-    for (uint i = 0,lrc=0; i < meshesR.size(); i++)
-    {
+    //
+    stencilObject->writeToStencilPass();//---
+    for (uint i = 1; i < meshesR.size(); i+=2){
+        meshesR[i]->setRotation(meshesR[i-1]->getSceneEntity().getRotation());
+        meshesR[i]->setPosition(meshesR[i-1]->getSceneEntity().getPostion());
+        meshesR[i]->draw();//Rendering Scene Object/Primitives
+    }
+    //
+    stencilObject->stopWriting();//----
+    for (uint i = 0,lrc=0; i < meshesR.size(); i+=2){
         meshesR[i]->draw();//Rendering Scene Object/Primitives
         //~~~~~~~~~~~~~
         meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader.
@@ -271,10 +289,10 @@ void _Scene::render()
             lrc++;}
         //~~~~~~~~~~~~~~
     }
-    //#############################
+    stencilObject->clearStencilBuffer();//---
+    //
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
-    //#############################
 }
 //---------------------------------------------------------------------------------------
 /*
@@ -302,7 +320,8 @@ void _Scene::fixedUpdate(float intervalTime)
  * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
 */
-void _Scene::updateAllPhysicsObjectsOnce(){
+void _Scene::updateAllPhysicsObjectsOnce()
+{
     if(physVector.size() > 0){
         for (uint index = 0; index < physVector.size(); index++){
             physVector[index].setSceneEntity(meshesR[physVector[index].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
@@ -343,8 +362,6 @@ void _Scene::updateAllPhysicsObjectsLoop()
         //                                                      cam.getEyePosition().y(),
         //                                                      cam.getEyePosition().z()),
         //                                            glm::vec2(resW,resH));
-
-
         //       TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
         bool is = false;
         is = physVector[loopIndex].updateObjObjPhysics(physVector);

@@ -140,6 +140,26 @@ void _Shader::setChildShader(std::vector<QString> shader_parts, uint typ)
     uint shader = compileShader(combined_src,typ);
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
+
+void _Shader::uniform4f(GLuint index, glm::vec4 data)
+{
+
+}
+
+void _Shader::uniform3f(GLuint index, glm::vec3 data)
+{
+
+}
+
+void _Shader::uniform2f(GLuint index, glm::vec2 data)
+{
+
+}
+
+void _Shader::uniformMatrix4fv(GLuint index, glm::mat4x4 data)
+{
+    glUniformMatrix4fv(index,1,GL_FALSE,glm::value_ptr(data));
+}
 /*
  * useShaderProgram() Needs to be called before draw
  * everyloop for multiple
