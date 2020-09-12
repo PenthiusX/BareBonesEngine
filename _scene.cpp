@@ -262,7 +262,7 @@ void _Scene::render()
         meshesR[i]->draw();//Rendering Scene Object/Primitives
         //~~~~~~~~~~~~~
         meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader.
-        lrc > lightsArray.size() ? lrc = 0:lrc;
+        lrc == lightsArray.size() ? lrc = 0:lrc;
         if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString()){
             //update the light objects with values from there relative meshentities in the secene
             lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity().getPostion());
