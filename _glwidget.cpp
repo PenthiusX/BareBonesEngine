@@ -154,8 +154,7 @@ void _GLWidget::paintGL()//the renderloop
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;
     //
-
-    text.render(this,1/timePerDraw,QString("Null"),glm::vec3(0),glm::vec3(0));
+   text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·

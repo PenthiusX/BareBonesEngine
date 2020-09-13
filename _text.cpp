@@ -34,7 +34,7 @@ void _Text::render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::v
     f1 = QString::number(pos.x);
     QString f11= QString::number(pos.y);
     QString f12 = QString::number(pos.z);
-    f2 = "Pos:" + f1 + f11 + f12;
+    f2 = "Pos:" + f1 + "," + f11 + ","  + f12;
     QStaticText a(f2);
     //
     f1 = Name;
