@@ -7,6 +7,9 @@ _Text::~_Text(){
 void _Text::setPainterWidgetContext(){
 }
 void _Text::onResize(int w,int h){
+    width = w;
+    height = h;
+
     m_window_normalised_matrix.setToIdentity();
     m_window_normalised_matrix.translate(w / 2.0, h / 2.0);
     m_window_normalised_matrix.scale(w / 2.0, -h / 2.0);
@@ -20,12 +23,25 @@ void _Text::onResize(int w,int h){
     m_projection.perspective(45.f, qreal(w) / qreal(h), 0.1f, 100.f);
 }
 
-void _Text::render(_GLWidget *q){
+void _Text::render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::vec3 rotation){
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    QString f1 = QString::number(fps);
+    QString f2 = "FPS:";
+    QStaticText fo(f2 + f1);
+    //
+    f1 = QString::number(pos.x);
+    QString f11= QString::number(pos.y);
+    QString f12 = QString::number(pos.z);
+    f2 = "Pos:" + f1 + f11 + f12;
+    QStaticText a(f2);
+    //
+    f1 = Name;
+    f2 = "Name:" + f1;
+    QStaticText b(f2);
+
     QStaticText c("Id: ");
-    QStaticText b("Name:");
-    QStaticText a("Pos: ");
     QStaticText d("Rot: ");
 
     QPainter p(q);
@@ -37,27 +53,30 @@ void _Text::render(_GLWidget *q){
     QTransform text_transform = (m_window_painter_matrix * m_view * m_model_text).toTransform();
     p.setTransform(text_transform, false);
     m_text_layout.prepare(text_transform);
-
-//    qreal x = q->width()*0.5;
-//    qreal y = q->height()*0.5;
-
-    qreal x = -00;
-    qreal y = -00;
-
-    p.setPen(Qt::yellow);
+    //Set the location of the text
+    qreal x = -(width * 0.5) + 10;
+    qreal y = -(height * 0.5) + 20 ;
+    //
+    p.setPen(Qt::red);
     p.setFont(QFont("Courier", 12));
-
+    //
     p.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+    //
+    uint ofset= 2;
+    m_text_layout = fo;
+    p.drawStaticText(x, y - (10.0f  * ofset) , m_text_layout);
     m_text_layout = c;
-    p.drawStaticText(x, y, m_text_layout);
+    p.drawStaticText(x, y, c);
     m_text_layout = b;
-    p.drawStaticText(x, y + 10.0f, m_text_layout);
+    p.drawStaticText(x, y + (10.0f * ofset), m_text_layout);
     m_text_layout = a;
-    p.drawStaticText(x, y + 20.0f, m_text_layout);
+    p.drawStaticText(x, y + (20.0f * ofset), m_text_layout);
     m_text_layout = d;
-    p.drawStaticText(x, y + 30.0f, m_text_layout);
+    p.drawStaticText(x, y + (30.0f * ofset), m_text_layout);
     p.end();
-   // m_model_text.rotate(2, 0, 2, 0);
+
+    //m_model_text.rotate(2, 0, 2, 0);
+    //m_model_text.translate(4.0,0.0,0.0);
 }
 
 /*

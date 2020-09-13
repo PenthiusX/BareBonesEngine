@@ -72,20 +72,11 @@ void _GLWidget::initializeGL() {
     p2.setPosition(glm::vec3(2.2f,-4.0f, 1.0f));//hard coded value need to get passed into the shader
     p2.setIsLineNoCullMode(false);
     p2.setScale(0.20f);
-    //
-//    sl1.setId(8003);
-//    sl1.setTag("plight2");
-//    sl1.setLight(_SceneEntity::Spot);
-//    sl1.setModelData(":/models/sphere.obj");
-//    sl1.setPhysicsObject(_SceneEntity::Sphere);
-//    sl1.setPosition(glm::vec3(2.2f,-4.0f, 1.0f));//hard coded value need to get passed into the shader
-//    sl1.setIsLineNoCullMode(false);
-//    sl1.setScale(0.20f);
 
     //------------Material Params----------------------
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
-    m.setSpecularTexture(":/textures/SkullSpec.jpg");
+    m.setSpecularTexture(":/textures/SkullSpec.jpg");//spec texture
     m.setShine(0.5);
     m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
@@ -96,8 +87,8 @@ void _GLWidget::initializeGL() {
     //-------------------------------------------------
     s.setId(8888);
     s.setTag("LitObject");
-    s.setGLModes(g);
-    s.setMaterial(m);
+    s.setGLModes(g);// glmode settings
+    s.setMaterial(m);//material obhect
     //s.setModelData(":/models/sphere.obj");
     s.setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
     s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
@@ -129,10 +120,10 @@ void _GLWidget::initializeGL() {
 */
 
 //Text
-// _Text text;
+ _Text text;
 void _GLWidget::resizeGL(int w, int h){
     scene->onResize(w, h);
-//    text.onResize(w,h);
+    text.onResize(w,h);
 }
 /*
   ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
@@ -163,7 +154,8 @@ void _GLWidget::paintGL()//the renderloop
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;
     //
-//    text.render(this);
+
+    text.render(this,1/timePerDraw,QString("Null"),glm::vec3(0),glm::vec3(0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·

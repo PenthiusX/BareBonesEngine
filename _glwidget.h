@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include "_scene.h"
+#include "_material.h"
 /*
  * Class: _GLWidget
  * This class is the Controller is a typical MVC where the

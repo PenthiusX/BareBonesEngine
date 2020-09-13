@@ -24,7 +24,7 @@ public:
 
     void setPainterWidgetContext();
     void onResize(int w, int h);
-    void render(_GLWidget *q);
+    void render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::vec3 rotation);
 
     void createFont(_GLWidget *q);
     int nearestPowerOfTwo(uint n);
@@ -39,6 +39,9 @@ private:
     QMatrix4x4 m_view;
     QMatrix4x4 m_model_triangle;
     QMatrix4x4 m_model_text;
+
+    uint width;
+    uint height;
 
 
 };

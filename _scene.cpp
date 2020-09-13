@@ -254,9 +254,7 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render()
 {
-    //#############################
     fboObject->setUpdatedFrame();// The frames in context below will be captured
-    //#############################
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
         meshesR[i]->draw();//Rendering Scene Object/Primitives
@@ -271,10 +269,8 @@ void _Scene::render()
             lrc++;}
         //~~~~~~~~~~~~~~
     }
-    //#############################
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
-    //#############################
 }
 //---------------------------------------------------------------------------------------
 /*
