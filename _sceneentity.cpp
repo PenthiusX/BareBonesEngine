@@ -373,7 +373,7 @@ void _SceneEntity::setMaterial(_Material m){
 _Material _SceneEntity::getMaterial(){
     return this->material;
 }
-void _SceneEntity::setLight(light l){
+void _SceneEntity::setAsLight(light l){
     this->lighttype = l;
 }
 _SceneEntity::light _SceneEntity::getLightSource(){

@@ -57,7 +57,6 @@ void _Scene::addSceneObject(_SceneEntity s)
         }
         initialisePhysics(s);
         initialiseLights(s);
-
     }
 }
 //---------------------------------------------------------------------------------------
@@ -204,10 +203,13 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     else if(m == Qt::LeftButton){
         mousePositionL = mousePos;
         //Physics+Helpers update on detached threads
-        pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
-        ph = std::thread(&_Scene::updateHelpersOnce,this);
-        if(pu.joinable()){pu.detach();}
-        if(ph.joinable()){ph.detach();}
+//        pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
+//        ph = std::thread(&_Scene::updateHelpersOnce,this);
+//        if(pu.joinable()){pu.detach();}
+//        if(ph.joinable()){ph.detach();}
+
+        updateAllPhysicsObjectsOnce();
+        updateHelpersOnce();
     }
     else if(m == Qt::MiddleButton){
         //Physics+Helpers update on detached threads

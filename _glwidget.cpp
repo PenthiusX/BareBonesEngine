@@ -45,10 +45,12 @@ void _GLWidget::initializeGL() {
     cam.setFocalPoint(glm::vec3(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
-    //-------------Lights-----------------------------
+    //-------------------------------------------------
+
+    //-------------Lights------------------------------
     dl1.setId(8008);
     dl1.setTag("dlight");
-    dl1.setLight(_SceneEntity::Directional);
+    dl1.setAsLight(_SceneEntity::Directional);
     dl1.setModelData(":/models/cube.obj");
     dl1.setPhysicsObject(_SceneEntity::Sphere);
     dl1.setPosition(glm::vec3(0.2f,6.0f, 0.0f));//hard coded value need to get passed into the shader
@@ -57,7 +59,7 @@ void _GLWidget::initializeGL() {
     //
     p1.setId(8002);
     p1.setTag("plight1");
-    p1.setLight(_SceneEntity::Point);
+    p1.setAsLight(_SceneEntity::Point);
     p1.setModelData(":/models/sphere.obj");
     p1.setPhysicsObject(_SceneEntity::Sphere);
     p1.setPosition(glm::vec3(-3.2f,0.0f, 0.0f));//hard coded value need to get passed into the shader
@@ -66,14 +68,15 @@ void _GLWidget::initializeGL() {
     //
     p2.setId(8003);
     p2.setTag("plight2");
-    p2.setLight(_SceneEntity::Point);
+    p2.setAsLight(_SceneEntity::Point);
     p2.setModelData(":/models/sphere.obj");
     p2.setPhysicsObject(_SceneEntity::Sphere);
     p2.setPosition(glm::vec3(2.2f,-4.0f, 1.0f));//hard coded value need to get passed into the shader
     p2.setIsLineNoCullMode(false);
     p2.setScale(0.20f);
+    //--------------------------------------------------
 
-    //------------Material Params----------------------
+    //------------Material Params-----------------------
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
     m.setSpecularTexture(":/textures/SkullSpec.jpg");//spec texture
@@ -81,15 +84,16 @@ void _GLWidget::initializeGL() {
     m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));
-    //------GLRaster Ebablements ovveride--------------
+    //------GLRaster Ebablements ovveride---------------
     _SceneEntity::GlEnablements g;
     g.fillMode = _SceneEntity::GlEnablements::FrontAndBackFill;
-    //-------------------------------------------------
+    //--------------------------------------------------
+
+    //------------------Main Meshes---------------------
     s.setId(8888);
     s.setTag("LitObject");
     s.setGLModes(g);// glmode settings
     s.setMaterial(m);//material obhect
-    //s.setModelData(":/models/sphere.obj");
     s.setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
     s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
@@ -100,9 +104,10 @@ void _GLWidget::initializeGL() {
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
-    //-----Scene Objects--------------------------------
+    //-----Scene Objects---------------------------------
     scene->addSceneObject(s);//Adds the entity defined obove to scene
-    scene->addSceneObject(dl1);//Note: the light object is a regular sceneentity but needs a tag named light for it to be considered a light source in scene.
+    //
+    scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
 }
@@ -353,16 +358,15 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
         onPress->setIsTransformationLocal(false);
+        onPress->setPhysicsObject(_SceneEntity::PhysicsBody::Sphere);
 //      onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
         onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setRotation(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
         onPress->setColor(QVector4D(_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1),_Tools::getRandomNumberfromRangeF(0,1)));
-//      onPress->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
         onPress->setShader(":/shaders/lightingVert.glsl", ":/shaders/lightingFrag.glsl");
         onPress->setMaterial(m);
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
         onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");//dont need to reparse modelfile
-        onPress->setPhysicsObject(_SceneEntity::PhysicsBody::Sphere);
         scene->addSceneObject(*onPress);
         qInfo()<< "created" << i <<"th object" << "id" << onPress->getId();
         delete onPress;

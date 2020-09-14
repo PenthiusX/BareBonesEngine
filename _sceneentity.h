@@ -146,7 +146,7 @@ public:
         Directional =2,
         Point =3
     };
-    void setLight(light l);
+    void setAsLight(light l);
     light getLightSource();
 
 

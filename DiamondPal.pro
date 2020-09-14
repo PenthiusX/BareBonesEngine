@@ -16,6 +16,7 @@ HEADERS  += \
     _bufferobjects.h \
     _extobjLoader.h \
     _material.h \
+    _skboxtest.h \
     mainwindow.h \
     _glwidget.h \
     _light.h \
