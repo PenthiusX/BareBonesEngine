@@ -60,14 +60,18 @@ void _Shader::attachShaders()
 
         //attatch child shaders to program
         for (auto const& child_shader : child_shaders){
-            glAttachShader(shaderProgram, child_shader.second);}//second specifies value at key in map(dictionary)
+            glAttachShader(shaderProgram, child_shader.second);//second specifies value at key in map(dictionary)
+        }
 
         glLinkProgram(shaderProgram);
         //check for link error
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
         if(!success){
+
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;}
+            std::cerr << "ERROR::SHADERPROGRAM::LINK_FAILED." << infoLog << std::endl;
+            assert(success != true);
+        }
         //delete shader
         for (auto const& child_shader : child_shaders)
         {
@@ -171,6 +175,7 @@ uint _Shader::compileShader(QString src, uint typ)
     {
         glGetShaderInfoLog(shader, 512, nullptr, infoLog);
         std::cerr << "ERROR::SHADER::COMPILATION_FAILED::TYPE_ENUM: " << typ  << infoLog << std::endl;
+        assert(success != true);
     }
     return shader;
 }

@@ -43,7 +43,6 @@ void _Texture::setImage(QString pathtoTexture)
     image = (char*)img.bits();
     width = img.width();
     height = img.height();
-    qDebug() << "setting image" << GL_RED << color_format;
 }
 
 /* Function:setImage(QImage& img)
@@ -54,7 +53,6 @@ void _Texture::setImage(QImage& img)
     image = (char*)img.bits();
     width = img.width();
     height = img.height();
-    qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
 }
@@ -64,7 +62,6 @@ void _Texture::setImage(QImage& img)
 void _Texture::setImage(char* img)
 {
     image = img;
-    qDebug() << "setting image" << GL_RED << color_format;
     glBindTexture(GL_TEXTURE_2D,m_ID);
     glTexImage2D(GL_TEXTURE_2D, 0, color_format, width, height, 0, color_format, GL_UNSIGNED_BYTE, image);
 }
@@ -145,11 +142,13 @@ void _Texture::load(QImage image,Type t,_Shader* s, GLenum format, GLenum dataty
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     color_format = format;
-    glTexImage2D(GL_TEXTURE_2D, 0, format, image.width(), image.height(), 0, format, datatype, img);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, image.width(), image.height(), 0, color_format, datatype, image.bits());
     glGenerateMipmap(GL_TEXTURE_2D);
 
     s->useShaderProgram();//need to do this before setting the uniform

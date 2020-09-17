@@ -37,6 +37,8 @@ _GLWidget::~_GLWidget(){
 * same function in the OpopenglFunctions class
 * runs once the opengl context is initialised.
 */
+//Text
+ _Text text;
 void _GLWidget::initializeGL() {
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
@@ -53,27 +55,30 @@ void _GLWidget::initializeGL() {
     dl1.setAsLight(_SceneEntity::Directional);
     dl1.setModelData(":/models/cube.obj");
     dl1.setPhysicsObject(_SceneEntity::Sphere);
-    dl1.setPosition(glm::vec3(0.2f,6.0f, 0.0f));//hard coded value need to get passed into the shader
+    dl1.setPosition(glm::vec3(-4.4f,5.76f, 1.3f));//hard coded value need to get passed into the shader
     dl1.setIsLineNoCullMode(false);
     dl1.setScale(0.20f);
+    dl1.setColor(QVector4D(0.15,0.2,0.4,1.0));
     //
     p1.setId(8002);
     p1.setTag("plight1");
     p1.setAsLight(_SceneEntity::Point);
     p1.setModelData(":/models/sphere.obj");
     p1.setPhysicsObject(_SceneEntity::Sphere);
-    p1.setPosition(glm::vec3(-3.2f,0.0f, 0.0f));//hard coded value need to get passed into the shader
+    p1.setPosition(glm::vec3(-1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
     p1.setIsLineNoCullMode(false);
     p1.setScale(0.20f);
+    p1.setColor(QVector4D(0.15,0.2,0.4,1.0));
     //
     p2.setId(8003);
     p2.setTag("plight2");
     p2.setAsLight(_SceneEntity::Point);
     p2.setModelData(":/models/sphere.obj");
     p2.setPhysicsObject(_SceneEntity::Sphere);
-    p2.setPosition(glm::vec3(2.2f,-4.0f, 1.0f));//hard coded value need to get passed into the shader
+    p2.setPosition(glm::vec3(1.5f,1.1f, 0.0f));//hard coded value need to get passed into the shader
     p2.setIsLineNoCullMode(false);
     p2.setScale(0.20f);
+    p2.setColor(QVector4D(0.15,0.2,0.4,1.0));
     //--------------------------------------------------
 
     //------------Material Params-----------------------
@@ -110,6 +115,8 @@ void _GLWidget::initializeGL() {
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
+
+    //text.setPainterWidgetContext(this);
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -124,8 +131,7 @@ void _GLWidget::initializeGL() {
  * of the layout via - int w and int h
 */
 
-//Text
- _Text text;
+
 void _GLWidget::resizeGL(int w, int h){
     scene->onResize(w, h);
     text.onResize(w,h);
@@ -159,7 +165,7 @@ void _GLWidget::paintGL()//the renderloop
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;
     //
-   text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
+    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·
@@ -334,6 +340,7 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     if(event->key() == Qt::Key_Control)
         isCTRL = true;
 }
+
 void _GLWidget::keyReleaseEvent(QKeyEvent *event){
     if(event->key() == Qt::Key_Control)
         isCTRL = false;

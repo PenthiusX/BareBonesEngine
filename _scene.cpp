@@ -3,10 +3,6 @@
 #include "_tools.h"
 #include <future>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 /*
  * Class: _Scene()
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -26,6 +22,7 @@ _Scene::_Scene(){
     fboObject->initialise();
     isHelpers = false;
     loopIndex = 0;
+    skyb.initialise();
 }
 _Scene::~_Scene(){
     meshesR.clear();
@@ -207,7 +204,6 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
 //        ph = std::thread(&_Scene::updateHelpersOnce,this);
 //        if(pu.joinable()){pu.detach();}
 //        if(ph.joinable()){ph.detach();}
-
         updateAllPhysicsObjectsOnce();
         updateHelpersOnce();
     }
@@ -257,6 +253,8 @@ void _Scene::onResize(int w,int h){
 void _Scene::render()
 {
     fboObject->setUpdatedFrame();// The frames in context below will be captured
+    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
+
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
         meshesR[i]->draw();//Rendering Scene Object/Primitives
@@ -271,6 +269,7 @@ void _Scene::render()
             lrc++;}
         //~~~~~~~~~~~~~~
     }
+
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
 }

@@ -10,6 +10,9 @@
 #include <vector>
 #include <thread>         // std::thread
 
+//Test skybox
+#include "_skboxtest.h"
+
 /*
  * Class: _Scene
  * This class define the scene manager , manages what needs to be rendered and what propertes need to be
@@ -80,6 +83,8 @@ private:
     //Thread
     std::thread pu;
     std::thread ph;
+    //Skybox
+    TestSkyBox skyb;
 };
 
 #endif // _SCENE_H

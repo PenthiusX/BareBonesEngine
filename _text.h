@@ -22,7 +22,7 @@ public:
     _Text();
     ~_Text();
 
-    void setPainterWidgetContext();
+    void setPainterWidgetContext(_GLWidget *q);
     void onResize(int w, int h);
     void render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::vec3 rotation);
 
@@ -30,7 +30,7 @@ public:
     int nearestPowerOfTwo(uint n);
 
 private:
-    QPainter painter;
+    QPainter* painter;
 
     QStaticText m_text_layout;
     QMatrix4x4 m_window_normalised_matrix;

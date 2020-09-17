@@ -4,7 +4,11 @@ _Text::_Text(){
 }
 _Text::~_Text(){
 }
-void _Text::setPainterWidgetContext(){
+void _Text::setPainterWidgetContext(_GLWidget *q){
+    QPainter p(q);
+    p.begin(q);
+
+    painter = &p;
 }
 void _Text::onResize(int w,int h){
     width = w;

@@ -1,5 +1,5 @@
-#ifndef _RENDERER_H
-#define _RENDERER_H
+#pragma once
+
 #include <vector>
 #include "_shader.h"
 #include "_sceneentity.h"
@@ -44,7 +44,6 @@ public:
     //
     void draw();// Draws paints everything bound in the scene
     //Lights
-    void updateLightUniforms(_Light l);
     void updateLightUniforms(std::vector<I_Light*> il);
     //Frame Enablements
     void setGLEnablements();
@@ -105,4 +104,3 @@ private:
     //
     QElapsedTimer qtimer;
 };
-#endif // _RENDERER_H

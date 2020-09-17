@@ -64,6 +64,7 @@ private:
     float deltaTime;
     float currentTime;
     float timeSinceLastFrame;
+    int ic = 0;//interval counter
     //
     _Material m;
 };

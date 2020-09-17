@@ -5,5 +5,17 @@
         <file>textures/testTextureCS.png</file>
         <file>textures/Skull.jpg</file>
         <file>textures/SkullSpec.jpg</file>
+        <file>textures/back.jpg</file>
+        <file>textures/bottom.jpg</file>
+        <file>textures/front.jpg</file>
+        <file>textures/left.jpg</file>
+        <file>textures/right.jpg</file>
+        <file>textures/top.jpg</file>
+        <file>textures/nightsky_down.bmp</file>
+        <file>textures/nightsky_east.bmp</file>
+        <file>textures/nightsky_north.bmp</file>
+        <file>textures/nightsky_south.bmp</file>
+        <file>textures/nightsky_up.bmp</file>
+        <file>textures/nightsky_west.bmp</file>
     </qresource>
 </RCC>
