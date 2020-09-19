@@ -26,7 +26,7 @@ void main()
     //apply the transforms applied on the model position data to update the normal data as well
     Normal = mat3(transpose(inverse(model))) * normal;
 
-    ourColor = aColor;
+    ourColor = aColor;//not being used in this instance
 
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);

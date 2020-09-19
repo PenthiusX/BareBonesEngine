@@ -85,7 +85,7 @@ void _Scene::initialiseLights(_SceneEntity s)
             lightInterface = new _PointLight(s.getTag().toStdString());
             lightInterface->setPosition(s.getPostion());
             lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
-            lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
+            lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(32.0));
             lightsArray.push_back(lightInterface);
         }
         if(s.getLightSource() == _SceneEntity::light::Directional){
@@ -253,13 +253,14 @@ void _Scene::onResize(int w,int h){
 void _Scene::render()
 {
     fboObject->setUpdatedFrame();// The frames in context below will be captured
+    //
     skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
-
+    //
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
         meshesR[i]->draw();//Rendering Scene Object/Primitives
         //~~~~~~~~~~~~~
-        meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader.
+        meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
         lrc == lightsArray.size() ? lrc = 0:lrc;
         if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString()){
             //update the light objects with values from there relative meshentities in the secene

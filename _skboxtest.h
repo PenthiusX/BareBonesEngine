@@ -81,19 +81,19 @@ public :
         };
 
         //Test tex
-//        faces.push_back(":/textures/right.jpg");
-//        faces.push_back(":/textures/left.jpg");
-//        faces.push_back(":/textures/top.jpg");
-//        faces.push_back(":/textures/bottom.jpg");
-//        faces.push_back(":/textures/front.jpg");
-//        faces.push_back(":/textures/back.jpg");
+        faces.push_back(":/textures/right.jpg");
+        faces.push_back(":/textures/left.jpg");
+        faces.push_back(":/textures/top.jpg");
+        faces.push_back(":/textures/bottom.jpg");
+        faces.push_back(":/textures/front.jpg");
+        faces.push_back(":/textures/back.jpg");
 
-        faces.push_back(":/textures/nightsky_east.bmp");
-        faces.push_back(":/textures/nightsky_west.bmp");
-        faces.push_back(":/textures/nightsky_up.bmp");
-        faces.push_back(":/textures/nightsky_down.bmp");
-        faces.push_back(":/textures/nightsky_north.bmp");
-        faces.push_back(":/textures/nightsky_south.bmp");
+//        faces.push_back(":/textures/nightsky_east.bmp");
+//        faces.push_back(":/textures/nightsky_west.bmp");
+//        faces.push_back(":/textures/nightsky_up.bmp");
+//        faces.push_back(":/textures/nightsky_down.bmp");
+//        faces.push_back(":/textures/nightsky_north.bmp");
+//        faces.push_back(":/textures/nightsky_south.bmp");
 
 
 
@@ -133,8 +133,8 @@ public :
             }
         }
 
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);

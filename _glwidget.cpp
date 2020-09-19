@@ -58,7 +58,7 @@ void _GLWidget::initializeGL() {
     dl1.setPosition(glm::vec3(-4.4f,5.76f, 1.3f));//hard coded value need to get passed into the shader
     dl1.setIsLineNoCullMode(false);
     dl1.setScale(0.20f);
-    dl1.setColor(QVector4D(0.15,0.2,0.4,1.0));
+    dl1.setColor(QVector4D(0.5,0.5,0.5,1.0));
     //
     p1.setId(8002);
     p1.setTag("plight1");
@@ -68,27 +68,36 @@ void _GLWidget::initializeGL() {
     p1.setPosition(glm::vec3(-1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
     p1.setIsLineNoCullMode(false);
     p1.setScale(0.20f);
-    p1.setColor(QVector4D(0.15,0.2,0.4,1.0));
+    p1.setColor(QVector4D(0.5,0.5,0.5,1.0));
     //
     p2.setId(8003);
     p2.setTag("plight2");
     p2.setAsLight(_SceneEntity::Point);
     p2.setModelData(":/models/sphere.obj");
     p2.setPhysicsObject(_SceneEntity::Sphere);
-    p2.setPosition(glm::vec3(1.5f,1.1f, 0.0f));//hard coded value need to get passed into the shader
+    p2.setPosition(glm::vec3(1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
     p2.setIsLineNoCullMode(false);
     p2.setScale(0.20f);
-    p2.setColor(QVector4D(0.15,0.2,0.4,1.0));
+    p2.setColor(QVector4D(0.5,0.5,0.5,1.0));
     //--------------------------------------------------
 
     //------------Material Params-----------------------
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
-    m.setSpecularTexture(":/textures/SkullSpec.jpg");//spec texture
+    m.setSpecularTexture(":/textures/SkullSpec2.jpg");//spec texture
     m.setShine(0.5);
     m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
-    m.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));
+    m.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
+
+    /*_Material*/ m2 = {};
+    m2.setDiffuseTexture(":/textures/testTextureC.png");//color texture
+    m2.setSpecularTexture(":/textures/testTextureCS.png");//spec texture
+    m2.setShine(0.5);
+    m2.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
+    m2.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
+    m2.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
+    m2.setShine(32.0);
     //------GLRaster Ebablements ovveride---------------
     _SceneEntity::GlEnablements g;
     g.fillMode = _SceneEntity::GlEnablements::FrontAndBackFill;
@@ -103,14 +112,27 @@ void _GLWidget::initializeGL() {
     s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     s.setIsTransformationLocal(false);
     s.setIsLineNoCullMode(false);
-    s.setPosition(glm::vec3(0.0,0.0, 0.0));
+    s.setPosition(glm::vec3(0.0,0.0,0.0));
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
     s.setScale(0.3f);
+
+    s2.setId(8888);
+    s2.setTag("LitObject");
+    s2.setGLModes(g);// glmode settings
+    s2.setMaterial(m2);//material obhect
+    s2.setModelData("D:/DiamondPalRepo/DiamondPal/models/testCube.obj");//Model data
+    s2.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
+    s2.setIsTransformationLocal(false);
+    s2.setIsLineNoCullMode(false);
+    s2.setPosition(glm::vec3(0.0,5.0,0.0));//initial position
+    s2.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+    s2.setScale(2.0f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
-    //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
+    scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects---------------------------------
     scene->addSceneObject(s);//Adds the entity defined obove to scene
+    scene->addSceneObject(s2);
     //
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
@@ -130,8 +152,6 @@ void _GLWidget::initializeGL() {
  * pasees the current width and height
  * of the layout via - int w and int h
 */
-
-
 void _GLWidget::resizeGL(int w, int h){
     scene->onResize(w, h);
     text.onResize(w,h);
@@ -164,7 +184,7 @@ void _GLWidget::paintGL()//the renderloop
     //---------------------------
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;
-    //
+    //Rendering info as text on screen
     text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
 }
 /*

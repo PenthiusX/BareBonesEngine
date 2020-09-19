@@ -514,6 +514,11 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest)
     this->sceneEntity.setModelMatrix(modelMatrix);
     keepSceneEntityUpdated();
 }
+//updates the local material info
+void _Renderer::updateMaterial(_Material m)
+{
+    sceneEntity.setMaterial(m);
+}
 
 /*
   ·▄▄▄▄  ▄▄▄   ▄▄▄· ▄▄▌ ▐ ▄▌
@@ -522,6 +527,149 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest)
   ██. ██ ▐█•█▌▐█ ▪▐▌▐█▌██▐█▌
   ▀▀▀▀▀• .▀  ▀ ▀  ▀  ▀▀▀▀ ▀▪
 */
+/*
+ * This is your proprietory draw function
+ * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
+ * Used by: the _glWidget class paintGl().
+*/
+void _Renderer::_Renderer::draw()
+{
+    setGLEnablements();//function sets openGL Rasterisation modifiers
+
+    if(sceneEntity.getIsActive())
+    {
+        //Using the shader program in the current context
+        shdr->useShaderProgram();
+        //Bind Textures
+        for(uint t=0;t<textures.size();t++){
+            textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
+        }
+        //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
+        if(sceneEntity.getIsMeshEditable())
+        {
+            glBindBuffer(GL_ARRAY_BUFFER,VBO);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+        }
+        //Bind the VAO of the respective buffer object (needs to be bound everytime)
+        glBindVertexArray(VAO);
+        //
+        //Sets the values for the MVP matrix in the vertex shader
+        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
+        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
+        glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
+        //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
+        //
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
+        //
+        glBindVertexArray(0);//Clear the buffer
+        for(uint t=0;t<textures.size();t++){textures[t].unbind();}
+        //
+        updateColorUniforms();//Setting the uniform for color if shader allows
+    }
+}
+/*
+ *  Used in the Draw functon
+ * Updates the color and relative uniforms
+ */
+void _Renderer::updateColorUniforms()
+{
+    glUniform4f(colorUniform,sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
+    //set sfidex color attributes for defined objects
+    if(sceneEntity.getId() == 999 || sceneEntity.getId() == 991|| sceneEntity.getId() == 992 || sceneEntity.getId() == 993)//PointHelpers
+    {
+        QVector4D col = sceneEntity.getColor();
+        col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
+        col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
+        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
+        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+    }
+    if(sceneEntity.getId() == 888)//pivot
+    {
+        QVector4D col = sceneEntity.getColor();
+        col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
+        col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
+        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
+        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+    }
+
+    sceneEntity.getisHitByRay() ? sceneEntity.setColor(actualColor * 2.0) : sceneEntity.setColor(actualColor * 1.0);
+
+//    if(sceneEntity.getIsHitByTri()){
+//        QVector4D qc = actualColor;
+//         qc.setX(actualColor.x() + 1.0f);
+//        sceneEntity.setColor(qc);
+//    }
+//    else
+//        sceneEntity.setColor(actualColor);
+}
+/*
+ *  Used in the Draw functon
+ * Updates the light uniforms on the model
+ * is called in the Scene class in the draw function();
+ */
+
+void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
+{
+    glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());
+    uint piter = 0;
+    for(uint li = 0 ; li < il.size(); li++)
+    {
+        if(il[li]->getLightType() == "DirLight")
+        {
+            //positions
+            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+            glUniform3f(shdr->getUniformLocation("light.position"),il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+            // Dir properties
+            glUniform3f(shdr->getUniformLocation("light.ambient"), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+            glUniform3f(shdr->getUniformLocation("light.diffuse"), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+            glUniform3f(shdr->getUniformLocation("light.specular"), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+
+        }
+        if(il[li]->getLightType() == "PointLight")
+        {
+            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+            //PointL
+                std::string f = "pointLights[";
+                std::string u = std::to_string(piter);
+                std::string e1 = "].position";
+                std::string e2 = "].ambient";
+                std::string e3 = "].diffuse";
+                std::string e4 = "].specular";
+                std::string e5 = "].constant";
+                std::string e6 = "].linear";
+                std::string e7 = "].quadratic";
+
+                glUniform3f(shdr->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+                glUniform3f(shdr->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+                glUniform3f(shdr->getUniformLocation((f+u+e3).c_str()), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+                glUniform3f(shdr->getUniformLocation((f+u+e4).c_str()), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+                glUniform1f(shdr->getUniformLocation((f+u+e5).c_str()), il[li]->getLightParams()[4].x); // note that all light colors are set at full intensity
+                glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()), il[li]->getLightParams()[5].x);
+                glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
+
+                piter++;
+                piter > 2 ? piter = 0: piter;//3 is max no of point light should also reflect in the shader
+        }
+        if(il[li]->getLightType() == "SpotLight")
+        {
+//            //positions
+//            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+//            glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
+//            //SpotL-
+//            glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
+//            glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
+//            glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
+//            glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
+        }
+    }
+
+    // material properties
+    glUniform3f(shdr->getUniformLocation("material.ambient"), sceneEntity.getMaterial().getAmbient().x,sceneEntity.getMaterial().getAmbient().y,sceneEntity.getMaterial().getAmbient().z);
+    glUniform3f(shdr->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
+    glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
+    glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
+}
+
 
 //Sets the rastersation enablements for Opengl
 //via implecit extension invocations.
@@ -537,7 +685,7 @@ void _Renderer::setGLEnablements()
     glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
     // Cull triangles which normal is not towards the camera
 //    glEnable(GL_CULL_FACE);
-//    glCullFace(GL_BACK);//culls the backface saving some raster ops
+    glCullFace(GL_BACK);//culls the backface saving some raster ops
 
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
@@ -614,152 +762,4 @@ void _Renderer::setGLEnablements()
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         break;
     }
-}
-/*
- * This is your proprietory draw function
- * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
- * Used by: the _glWidget class paintGl().
-*/
-void _Renderer::_Renderer::draw()
-{
-    setGLEnablements();//function sets openGL Rasterisation modifiers
-
-    if(sceneEntity.getIsActive())
-    {
-        //Using the shader program in the current context
-        shdr->useShaderProgram();
-        //Bind Textures
-        for(uint t=0;t<textures.size();t++){
-            textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
-        }
-        //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
-        if(sceneEntity.getIsMeshEditable())
-        {
-            glBindBuffer(GL_ARRAY_BUFFER,VBO);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
-        }
-        //Bind the VAO of the respective buffer object (needs to be bound everytime)
-        glBindVertexArray(VAO);
-        //
-        //Sets the values for the MVP matrix in the vertex shader
-        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
-        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
-        glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
-        //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
-        //
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
-        //
-        glBindVertexArray(0);//Clear the buffer
-        for(uint t=0;t<textures.size();t++){textures[t].unbind();}
-        //
-        updateColorUniforms();//Setting the uniform for color if shader allows
-    }
-}
-/*
- *  Used in the Draw functon
- * Updates the color and relative uniforms
- */
-void _Renderer::updateColorUniforms()
-{
-    glUniform4f(colorUniform,sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
-    //set sfidex color attributes for defined objects
-    if(sceneEntity.getId() == 999 || sceneEntity.getId() == 991|| sceneEntity.getId() == 992 || sceneEntity.getId() == 993)//PointHelpers
-    {
-        QVector4D col = sceneEntity.getColor();
-        col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
-        col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
-        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
-        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
-    }
-    if(sceneEntity.getId() == 888)//pivot
-    {
-        QVector4D col = sceneEntity.getColor();
-        col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
-        col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
-        col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
-        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
-    }
-
-    //sceneEntity.getisHitByRay() ? sceneEntity.setColor(actualColor * 2.0) : sceneEntity.setColor(actualColor * 0.5);
-
-//    if(sceneEntity.getIsHitByTri()){
-//        QVector4D qc = actualColor;
-//         qc.setX(actualColor.x() + 1.0f);
-//        sceneEntity.setColor(qc);
-//    }
-//    else
-//        sceneEntity.setColor(actualColor);
-}
-
-void _Renderer::updateMaterial(_Material m)
-{
-    sceneEntity.setMaterial(m);
-}
-
-/*
- *  Used in the Draw functon
- * Updates the light uniforms on the model
- * is called in the Scene class in the draw function();
- */
-
-void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
-{
-    glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());
-    uint piter = 0;
-    for(uint li = 0 ; li < il.size(); li++)
-    {
-        if(il[li]->getLightType() == "DirLight")
-        {
-            //positions
-            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
-            glUniform3f(shdr->getUniformLocation("light.position"),il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
-            // Dir properties
-            glUniform3f(shdr->getUniformLocation("light.ambient"), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
-            glUniform3f(shdr->getUniformLocation("light.diffuse"), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
-            glUniform3f(shdr->getUniformLocation("light.specular"), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
-
-        }
-        if(il[li]->getLightType() == "PointLight")
-        {
-            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
-            //PointL
-                std::string f = "pointLights[";
-                std::string u = std::to_string(piter);
-                std::string e1 = "].position";
-                std::string e2 = "].ambient";
-                std::string e3 = "].diffuse";
-                std::string e4 = "].specular";
-                std::string e5 = "].constant";
-                std::string e6 = "].linear";
-                std::string e7 = "].quadratic";
-
-                glUniform3f(shdr->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
-                glUniform3f(shdr->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
-                glUniform3f(shdr->getUniformLocation((f+u+e3).c_str()), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
-                glUniform3f(shdr->getUniformLocation((f+u+e4).c_str()), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
-                glUniform1f(shdr->getUniformLocation((f+u+e5).c_str()), il[li]->getLightParams()[4].x); // note that all light colors are set at full intensity
-                glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()), il[li]->getLightParams()[5].x);
-                glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
-
-                piter++;
-                piter > 2 ? piter = 0: piter;//3 is max no of point light should also reflect in the shader
-        }
-        if(il[li]->getLightType() == "SpotLight")
-        {
-//            //positions
-//            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
-//            glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
-//            //SpotL-
-//            glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
-//            glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
-//            glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
-//            glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
-        }
-    }
-
-    // material properties
-    glUniform3f(shdr->getUniformLocation("material.ambient"), sceneEntity.getMaterial().getAmbient().x,sceneEntity.getMaterial().getAmbient().y,sceneEntity.getMaterial().getAmbient().z);
-    glUniform3f(shdr->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
-    glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
-    glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
 }

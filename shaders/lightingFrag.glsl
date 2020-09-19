@@ -143,7 +143,7 @@ vec3 compSpotLight(vec4 diffuseTexture, vec4 specularTexture){
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * spec * (specularTexture.xyz * material.specular);
+    vec3 specular = light.specular * spec ;//* (specularTexture.xyz * material.specular);
 
     // spotlight (soft edges)
     float theta = dot(lightDir, normalize(-light.direction));

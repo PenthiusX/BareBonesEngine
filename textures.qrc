@@ -17,5 +17,6 @@
         <file>textures/nightsky_south.bmp</file>
         <file>textures/nightsky_up.bmp</file>
         <file>textures/nightsky_west.bmp</file>
+        <file>textures/SkullSpec2.jpg</file>
     </qresource>
 </RCC>
