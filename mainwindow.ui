@@ -16,10 +16,204 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QGridLayout" name="gridLayout"/>
+     <widget class="_GLWidget" name="widget" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>200</height>
+       </size>
+      </property>
+     </widget>
     </item>
     <item>
-     <widget class="_GLWidget" name="widget" native="true"/>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="font">
+       <font>
+        <pointsize>6</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <kerning>true</kerning>
+       </font>
+      </property>
+      <property name="text">
+       <string>~Toggle Tool Bar~</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="title">
+       <string>GroupBox</string>
+      </property>
+      <widget class="QSlider" name="hs2">
+       <property name="geometry">
+        <rect>
+         <x>579</x>
+         <y>180</y>
+         <width>241</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>200</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="x">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>120</y>
+         <width>50</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="y">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>140</y>
+         <width>41</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>y</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="z">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>160</y>
+         <width>31</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>z</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="Pos">
+       <property name="geometry">
+        <rect>
+         <x>670</x>
+         <y>120</y>
+         <width>50</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Pos</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="Scale">
+       <property name="geometry">
+        <rect>
+         <x>670</x>
+         <y>160</y>
+         <width>83</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Scale</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="Rot">
+       <property name="geometry">
+        <rect>
+         <x>670</x>
+         <y>140</y>
+         <width>83</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Rot</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="Amb">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>120</y>
+         <width>51</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Amb</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="Diff">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>160</y>
+         <width>83</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Diff</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="Shine">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>140</y>
+         <width>83</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Shine</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="LightsR">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>80</y>
+         <width>97</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Lights</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="TransformR">
+       <property name="geometry">
+        <rect>
+         <x>670</x>
+         <y>80</y>
+         <width>97</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Transform</string>
+       </property>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
