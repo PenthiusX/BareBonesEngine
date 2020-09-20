@@ -87,7 +87,7 @@ void _GLWidget::initializeGL() {
     m.setSpecularTexture(":/textures/SkullSpec.jpg");//spec texture
     m.setShine(0.5);
     m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
-    m.setDiffuse(glm::vec3( 0.1f, 0.1f, 0.1f));
+    m.setDiffuse(glm::vec3( 0.7f, 0.7f, 0.7f));
     m.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
     m.setShine(5.0);
 
@@ -96,7 +96,7 @@ void _GLWidget::initializeGL() {
     m2.setSpecularTexture(":/textures/brickwallSpec.png");//spec texture
     m2.setShine(0.5);
     m2.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
-    m2.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));//0 means value only from texture
+    m2.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
     m2.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
     m2.setShine(32.0);
     //------GLRaster Ebablements ovveride---------------

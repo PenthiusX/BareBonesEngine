@@ -56,6 +56,20 @@ public:
 
 private:
 
+};
 
 
+class _ShadowBuffer : public QOpenGLExtraFunctions
+{
+public:
+    _ShadowBuffer();
+    ~_ShadowBuffer();
+
+    void init();
+
+
+private:
+   _Shader *sbShader;//local shader for the Fbo quad
+   GLuint depthMapFBO;
+   GLuint depthMap;
 };
