@@ -14,5 +14,6 @@
         <file>models/torus_blender.obj</file>
         <file>models/testCube.obj</file>
         <file>models/skull_blender.obj</file>
+        <file>models/plane_blender.obj</file>
     </qresource>
 </RCC>

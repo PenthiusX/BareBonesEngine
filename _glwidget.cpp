@@ -87,13 +87,13 @@ void _GLWidget::initializeGL() {
     m.setSpecularTexture(":/textures/SkullSpec.jpg");//spec texture
     m.setShine(0.5);
     m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
-    m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
+    m.setDiffuse(glm::vec3( 0.1f, 0.1f, 0.1f));
     m.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
     m.setShine(5.0);
 
     /*_Material*/ m2 = {};
-    //m2.setDiffuseTexture(":/textures/testTextureC.png");//color texture
-    m2.setSpecularTexture(":/textures/testTextureCS.png");//spec texture
+    m2.setDiffuseTexture(":/textures/brickwall.jpg");//color texture
+    m2.setSpecularTexture(":/textures/brickwallSpec.png");//spec texture
     m2.setShine(0.5);
     m2.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
     m2.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));//0 means value only from texture
@@ -121,13 +121,13 @@ void _GLWidget::initializeGL() {
     s2.setTag("LitObject");
     s2.setGLModes(g);// glmode settings
     s2.setMaterial(m2);//material obhect
-    s2.setModelData("D:/DiamondPalRepo/DiamondPal/models/testCube.obj");//Model data
+    s2.setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
     s2.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
     s2.setIsTransformationLocal(false);
     s2.setIsLineNoCullMode(false);
-    s2.setPosition(glm::vec3(0.0,5.0,0.0));//initial position
+    s2.setPosition(glm::vec3(0.0,-4.0,0.0));//initial position
     s2.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s2.setScale(2.0f);
+    s2.setScale(10.0f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.

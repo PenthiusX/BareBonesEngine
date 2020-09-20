@@ -18,5 +18,8 @@
         <file>textures/nightsky_up.bmp</file>
         <file>textures/nightsky_west.bmp</file>
         <file>textures/SkullSpec2.jpg</file>
+        <file>textures/brickwall.jpg</file>
+        <file>textures/brickwall_normal.jpg</file>
+        <file>textures/brickwallSpec.png</file>
     </qresource>
 </RCC>
