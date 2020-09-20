@@ -84,19 +84,20 @@ void _GLWidget::initializeGL() {
     //------------Material Params-----------------------
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
-    m.setSpecularTexture(":/textures/SkullSpec2.jpg");//spec texture
+    m.setSpecularTexture(":/textures/SkullSpec.jpg");//spec texture
     m.setShine(0.5);
     m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
     m.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
     m.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
+    m.setShine(5.0);
 
     /*_Material*/ m2 = {};
     m2.setDiffuseTexture(":/textures/testTextureC.png");//color texture
     m2.setSpecularTexture(":/textures/testTextureCS.png");//spec texture
     m2.setShine(0.5);
-    m2.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
-    m2.setDiffuse(glm::vec3( 1.0f, 1.0f, 1.0f));
-    m2.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
+    m2.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
+    m2.setDiffuse(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from texture
+    m2.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
     m2.setShine(32.0);
     //------GLRaster Ebablements ovveride---------------
     _SceneEntity::GlEnablements g;

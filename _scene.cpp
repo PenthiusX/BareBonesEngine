@@ -253,7 +253,7 @@ void _Scene::render()
 {
     fboObject->setUpdatedFrame();// The frames in context below will be captured
     //
-    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
+    //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {

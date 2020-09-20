@@ -14,7 +14,7 @@
 */
 _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0);//sets the bckground color of the openglContext.
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
     fboShader = new _Shader();
