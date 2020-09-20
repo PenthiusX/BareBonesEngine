@@ -9,6 +9,7 @@ void _Text::setPainterWidgetContext(_GLWidget *q){
     p.begin(q);
 
     painter = &p;
+    runOnce = true;
 }
 void _Text::onResize(int w,int h){
     width = w;
@@ -49,7 +50,10 @@ void _Text::render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::v
     QStaticText d("Rot: ");
 
     QPainter p(q);
+    if(runOnce){
     p.begin(q);
+        runOnce = false;
+    }
 
     p.setWorldTransform(m_window_normalised_matrix.toTransform());
     //QMatrix4x4 mvp = m_projection * m_view * m_model_triangle;

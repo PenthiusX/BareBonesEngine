@@ -25,10 +25,17 @@ _Scene::_Scene(){
     skyb.initialise();
 }
 _Scene::~_Scene(){
-    meshesR.clear();
+
+    for(auto m : meshesR){
+        delete m;
+    }meshesR.clear();
+    for(auto m : lightsArray){
+        delete m;
+    }lightsArray.clear();
+
     delete r;
     delete fboObject;
-    lightsArray.clear();
+
 }
 //---------------------------------------------------------------------------------------
 /*
@@ -253,7 +260,7 @@ void _Scene::render()
 {
     fboObject->setUpdatedFrame();// The frames in context below will be captured
     //
-    //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
+    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {

@@ -43,6 +43,6 @@ private:
     uint width;
     uint height;
 
-
+    bool runOnce;
 };
 

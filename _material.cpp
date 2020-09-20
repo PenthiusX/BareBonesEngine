@@ -16,6 +16,11 @@ void _Material::setSpecularTexture(QString path)
     this->specularPath = path;
 }
 
+void _Material::setBumpTexture(QString path)
+{
+    this->bumpTexturePath = path;
+}
+
 QString _Material::getDiffuseTexture()
 {
     return this->diffusePath;
@@ -23,6 +28,11 @@ QString _Material::getDiffuseTexture()
 QString _Material::getSpecualrTexture()
 {
     return this->specularPath;
+}
+
+QString _Material::getBumpTexture()
+{
+    return bumpTexturePath;
 }
 
 void _Material::setAmbient(glm::vec3 amb)

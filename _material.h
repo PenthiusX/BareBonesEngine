@@ -11,10 +11,11 @@ public:
     ~_Material();
 
     void setDiffuseTexture(QString path);
-    void setSpecularTexture(QString path);//pending
-    void setBumpTexture(QString path);//pending
+    void setSpecularTexture(QString path);
+    void setBumpTexture(QString path);
     QString getDiffuseTexture();
     QString getSpecualrTexture();
+    QString getBumpTexture();
     //
     void setAmbient(glm::vec3 amb);
     void setDiffuse(glm::vec3 diff);
@@ -34,5 +35,5 @@ private:
 
     QString diffusePath;
     QString specularPath;
-    QString bumpTexture;
+    QString bumpTexturePath;
 };
