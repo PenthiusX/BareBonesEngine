@@ -1,37 +1,9 @@
-#ifndef _LIGHT_H
-#define _LIGHT_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <vector>
 #include <string>
 
-
-class _Light
-{
-public:
-
-    _Light();
-    _Light(glm::vec3 position,glm::vec4 color,float ambient,float specular,float diffuse);
-
-    ~_Light();
-
-    glm::vec3 getPosition();
-    glm::vec4 getColor();
-    float getSpecular();
-    float getDiffuse();
-
-    void setPosition(glm::vec3 pos);
-    void setColor(glm::vec4 color);
-    void setSpecular(float ss);
-    void setDiffuse(float d);
-
-private:
-    glm::vec3 position;
-    glm::vec4 color;
-    float ambientStr;
-    float diffuse;
-    float specular;
-};
 
 
 class I_Light
@@ -72,9 +44,7 @@ private:
 
 class _PointLight : public I_Light
 {
-
 public:
-
     _PointLight(std::string sig){this->sig = sig;};
     virtual ~_PointLight(){};
 
@@ -127,4 +97,21 @@ private:
     float outerCuttof;
     const std::string name = "SpotLight";
 };
-#endif // _LIGHT_H
+
+//For keeping a local copy of the values in
+//sceneEntity  ONly , used to update values in the shader during runtime
+//in the scene
+class _Light
+{
+public:
+
+    _Light();
+    _Light(glm::vec3 position,glm::vec4 color,float ambient,float specular,float diffuse);
+
+    ~_Light();
+
+    glm::vec3 diffuse;
+    glm::vec3 ambient;
+    glm::vec3 specular;
+    float shininess;
+};

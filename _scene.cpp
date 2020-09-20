@@ -85,14 +85,13 @@ void _Scene::initialiseLights(_SceneEntity s)
             lightInterface = new _PointLight(s.getTag().toStdString());
             lightInterface->setPosition(s.getPostion());
             lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
-            lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(32.0));
+            lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(0.09),glm::vec3(0.032));
             lightsArray.push_back(lightInterface);
         }
         if(s.getLightSource() == _SceneEntity::light::Directional){
             lightInterface = new _DirLight(s.getTag().toStdString());
             lightInterface->setPosition(s.getPostion());
-            lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(0.1),glm::vec3(1.0));
-            lightInterface->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(1.0),glm::vec3(0.32));
+            lightInterface->setAmbDefSpec(glm::vec3(s.getColor().x(),s.getColor().y(),s.getColor().z()),glm::vec3(1),glm::vec3(1));
             lightsArray.push_back(lightInterface);
         }
         if(s.getLightSource() == _SceneEntity::light::Spot){
@@ -267,10 +266,12 @@ void _Scene::render()
             lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity().getPostion());
             QVector4D col =  meshesR[i]->getSceneEntity().getColor();
             lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
+            if(lightsArray[lrc]->getLightType() == "PointLight"){
+                 lightsArray[lrc]->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(0.09),glm::vec3(0.032));
+            }
             lrc++;}
         //~~~~~~~~~~~~~~
     }
-
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
 }

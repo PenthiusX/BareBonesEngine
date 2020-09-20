@@ -18,7 +18,6 @@ public:
 public slots:
 
 private slots:
-    void on_pushButton_clicked();
     void on_pushButton_2_clicked();
     void on_x_stateChanged(int arg1);
     void on_y_stateChanged(int arg1);

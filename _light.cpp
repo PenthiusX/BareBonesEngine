@@ -77,9 +77,9 @@ void _PointLight::setAmbDefSpec(glm::vec3 a, glm::vec3 b, glm::vec3 c){
     this->specular = c;
 }
 void _PointLight::setAdditonalParams3x3(glm::vec3 a, glm::vec3 b, glm::vec3 c){
-    this->constant = (a.x + a.y + a.z)/3;
-    this->linear = (b.x + b.y + b.z)/3;
-    this->quadratic = (c.x + c.y + c.z)/3;
+    this->constant = a.x;
+    this->linear = b.x;
+    this->quadratic = c.x;
 }
 std::vector<glm::vec3> _PointLight::getLightParams(){
     std::vector<glm::vec3> t;
