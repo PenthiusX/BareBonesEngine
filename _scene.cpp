@@ -28,12 +28,11 @@ _Scene::~_Scene(){
 
     for(auto m : meshesR){
         delete m;
-    }meshesR.clear();
+    } meshesR.clear();
     for(auto m : lightsArray){
         delete m;
     }lightsArray.clear();
 
-    delete r;
     delete fboObject;
 
 }

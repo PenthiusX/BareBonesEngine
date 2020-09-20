@@ -52,6 +52,8 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
 {
     resH = resHeight;
     resW = resWidth;
+    glViewport(0, 0, resH * 0.5, resW * 0.5);
+
 
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -78,6 +80,7 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
     }
     //reset to the default framebuffer 0
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, resH, resW );//revert vieport back to default
 }
 /*
  * this function calls to all function needed on initialisation
@@ -105,6 +108,7 @@ void _FrameBuffer::initialise()
 */
 void _FrameBuffer::setUpdatedFrame()
 {
+   // glViewport(0, 0, resH * 0.2, resW * 0.2);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
