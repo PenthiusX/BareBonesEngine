@@ -17,7 +17,6 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     glClearColor(0.0f, 0.0f, 0.0f, 1.0);//sets the bckground color of the openglContext.
     //
     shdr = new _Shader();//initialising the _shader() class * object.
-    fboShader = new _Shader();
     setShader();//will run this shader by default.
     timer.start();
     //
@@ -32,7 +31,6 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 */
 _Renderer::~_Renderer()
 {
-    delete fboShader;
     delete shdr;
 }
 /*
@@ -117,7 +115,6 @@ void _Renderer::setShader()
 void _Renderer::setShader(QString vSh, QString fSh)
 {
     shdr->attachShaders(vSh,fSh);
-    shdr2.attachShaders(":/shaders/shadowDepthMapV.glsl", ":/shaders/shadowDepthMapF.glsl");
     qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();
 }
 /*

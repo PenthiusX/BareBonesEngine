@@ -55,11 +55,6 @@ private:
     uint VBO;//vertex buffer objec
     uint VAO;//attribute buffer object
     uint EBO;//index buffer object
-    //Frambuffer variables
-    GLuint frameBuffer1;
-    uint fbtexture,textureColorbuffer,rbo;
-    uint quadVAO,quadVBO;
-    _Shader *fboShader;
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
     glm::mat4 modelMatrix;
     glm::mat4 rotationMatrix,translationMatrix,scalingMatrix;
@@ -92,7 +87,7 @@ private:
     void updateMaterial(_Material m);
     //
     //Shader class object sets the shaders and passes the program to the current context
-    _Shader* shdr,shdr2;//shader2 is for utility only
+    _Shader *shdr;
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
 };
