@@ -9,6 +9,7 @@ out vec3 FragPos;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 orthoProjection;
 //
 uniform vec4 aColor;//in
 out vec4 ourColor;//to fragment
