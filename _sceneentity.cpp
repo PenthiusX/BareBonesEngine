@@ -221,6 +221,14 @@ bool _SceneEntity::getIsMeshEditable(){
     return isMeshEditable;
 }
 
+void _SceneEntity::setIsShadowCaster(bool isit){
+    this->isShadowCaster = isit;
+}
+
+bool _SceneEntity::getIsShadowCaster(){
+    return isShadowCaster;
+}
+
 void _SceneEntity::setGLModes(_SceneEntity::GlEnablements g)
 {
     this->glEnablements = g;

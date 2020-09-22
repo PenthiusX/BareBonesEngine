@@ -80,6 +80,9 @@ public:
     //flag for enabling mesh editing
     void setIsMeshEditable(bool isit);
     bool getIsMeshEditable();
+    //
+    void setIsShadowCaster(bool isit);
+    bool getIsShadowCaster();
 
     //setting for glModes to rnder current object
     struct GlEnablements{
@@ -189,6 +192,7 @@ private:
     bool isDepthTest;
     bool isBlending;
     bool isTransformationAllowed;
+    bool isShadowCaster;
     //
     glm::mat4x4 translationMatrix;
     glm::mat4x4 rotationMatrix;

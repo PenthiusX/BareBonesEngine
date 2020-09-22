@@ -49,6 +49,8 @@ public:
     void updateLightUniforms(std::vector<I_Light*> il);
     //Frame Enablements
     void setGLEnablements();
+    //
+    void setShderSelector(uint ssl);
 
 private:
     QVector4D actualColor;

@@ -763,3 +763,8 @@ void _Renderer::setGLEnablements()
         break;
     }
 }
+
+void _Renderer::setShderSelector(uint ssl)
+{
+    this->ssl = ssl;
+}
