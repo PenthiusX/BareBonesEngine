@@ -4,7 +4,6 @@ layout (location = 0) in vec3 aPos;
 uniform mat4 model;
 
 uniform mat4 view;//this is the dir lights position
-uniform mat4 projection;//this is set as ortho
 uniform mat4 orthoProjection;//this is set as ortho
 
 void main()

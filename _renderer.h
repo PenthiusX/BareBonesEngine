@@ -55,16 +55,6 @@ private:
     uint VBO;//vertex buffer objec
     uint VAO;//attribute buffer object
     uint EBO;//index buffer object
-    //Shader class object sets the shaders and passes the program to the current context
-    _Shader* shdr;
-    void setShader();//default shatder to load
-    void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
-    GLint colorUniform;
-    GLint mvpUniform;
-    GLint modelUnifrom;
-    GLint viewUniform;
-    GLint projectionUniform,orthoProjuniform;
-    GLint mousePosUniform;
     //Frambuffer variables
     GLuint frameBuffer1;
     uint fbtexture,textureColorbuffer,rbo;
@@ -76,11 +66,17 @@ private:
     glm::mat4 pivotTmat;
     glm::mat4 projectionMatrix,orthoProjMatrix;
     glm::mat4 viewMatrix;
+    //
+    _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
+    QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
+    glm::vec3 camposForLight;
+    glm::vec3 focalPoint;
+    QElapsedTimer qtimer;
+    //
     void setModelMatrix(glm::vec3 position, float scale, glm::vec3 rotation);//set the model matrix
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
     void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
     //void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
-
     //Holds the vertex and index data
     std::vector<uint> indices;
     //
@@ -88,21 +84,15 @@ private:
     void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object
     void setTexture(char* texBitmap,uint iwidth,uint iheight);//takes am image and binds it to object
-    //
     void setupTexture();//takes a hardcoded imagedata and binds it to object
     void setupTexture(QString texfile,_Texture::Type t); //initializes texture from file
     //
-    _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
-    //
-    QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
-    //Stores the uniform location allocated in the shader
-    void setuniformLocations();
     void keepSceneEntityUpdated();
     void updateColorUniforms();
     void updateMaterial(_Material m);
     //
-    glm::vec3 camposForLight;
-    glm::vec3 focalPoint;
-    //
-    QElapsedTimer qtimer;
+    //Shader class object sets the shaders and passes the program to the current context
+    _Shader* shdr,shdr2;//shader2 is for utility only
+    void setShader();//default shatder to load
+    void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
 };

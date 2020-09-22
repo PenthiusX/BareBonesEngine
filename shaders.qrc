@@ -9,5 +9,7 @@
         <file>shaders/compute.glsl</file>
         <file>shaders/skyboxF.glsl</file>
         <file>shaders/skyboxV.glsl</file>
+        <file>shaders/shadowDepthMapF.glsl</file>
+        <file>shaders/shadowDepthMapV.glsl</file>
     </qresource>
 </RCC>

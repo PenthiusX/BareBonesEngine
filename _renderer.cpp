@@ -69,7 +69,6 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 
     if(sceneEntity.getModelInfo().getVertexArray().size() > 1){setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());}
     else{setModelDataInBuffers(sceneEntity.getModelInfo().getVertexInfoArray(), sceneEntity.getModelInfo().getIndexArray());}
-    setuniformLocations();//sets all uniform locations to respective variables.
     qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
 }
 /*
@@ -106,7 +105,7 @@ void _Renderer::keepSceneEntityUpdated(){
 */
 void _Renderer::setShader()
 {
-    shdr->attachShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
+    shdr->attachShaders(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     qDebug() << "default Shader attached for entity" << sceneEntity.getTag();
 }
 /*
@@ -118,7 +117,8 @@ void _Renderer::setShader()
 void _Renderer::setShader(QString vSh, QString fSh)
 {
     shdr->attachShaders(vSh,fSh);
-    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();;
+    shdr2.attachShaders(":/shaders/shadowDepthMapV.glsl", ":/shaders/shadowDepthMapF.glsl");
+    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();
 }
 /*
  * set Vertex and Index data into
@@ -181,30 +181,6 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 
        glBindVertexArray(0);
-}
-
-
-/*
- * sets the unform location uints into there respectively
- * named variables. These variables are used based on definition in shader.
-*/
-void _Renderer::setuniformLocations()
-{
-    qInfo() << "---------------UNIFORM INFO------------------------";
-    qDebug() <<"Tag ->"<<sceneEntity.getTag();
-    colorUniform = shdr->getUniformLocation("aColor");
-    qDebug() << "colorUniform ->" << colorUniform;
-    modelUnifrom = shdr->getUniformLocation("model");
-    qDebug() << "modelUnifrom ->" << modelUnifrom;
-    viewUniform  = shdr->getUniformLocation("view");
-    qDebug() << "viewUniform ->" << viewUniform;
-    projectionUniform = shdr->getUniformLocation("projection");
-    orthoProjuniform = shdr->getUniformLocation("orthoProjection");
-    qDebug() << "projectionUniform ->" << projectionUniform;
-    mousePosUniform = shdr->getUniformLocation("iMouse");
-    qDebug() << "mousePosUniform ->" << mousePosUniform;
-    qDebug() <<"---------------------------------------------------";
-    qDebug() <<"---------------------------------------------------";
 }
 /*
  * creates new texture and adds into list(vector) of textures
@@ -564,11 +540,11 @@ void _Renderer::_Renderer::draw()
         glBindVertexArray(VAO);
         //
         //Sets the values for the MVP matrix in the vertex shader
-        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
-        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
-        glUniformMatrix4fv(orthoProjuniform, 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
-        glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
-        //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
+        glUniformMatrix4fv(shdr->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
+        glUniformMatrix4fv(shdr->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
+        glUniformMatrix4fv(shdr->getUniformLocation("orthoProjection"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
+        glUniformMatrix4fv(shdr->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
+        //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         //
@@ -584,7 +560,7 @@ void _Renderer::_Renderer::draw()
  */
 void _Renderer::updateColorUniforms()
 {
-    glUniform4f(colorUniform,sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
+    glUniform4f(shdr->getUniformLocation("aColor"),sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
     //set sfidex color attributes for defined objects
     if(sceneEntity.getId() == 999 || sceneEntity.getId() == 991|| sceneEntity.getId() == 992 || sceneEntity.getId() == 993)//PointHelpers
     {
@@ -592,7 +568,7 @@ void _Renderer::updateColorUniforms()
         col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
         col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
-        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+        glUniform4f(shdr->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
     }
     if(sceneEntity.getId() == 888)//pivot
     {
@@ -600,7 +576,7 @@ void _Renderer::updateColorUniforms()
         col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
         col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
-        glUniform4f(colorUniform, col.x(),col.y(), col.z(), col.w());
+        glUniform4f(shdr->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
     }
 
     sceneEntity.getisHitByRay() ? sceneEntity.setColor(actualColor * 2.0) : sceneEntity.setColor(actualColor * 1.0);
