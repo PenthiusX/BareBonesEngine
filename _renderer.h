@@ -88,6 +88,7 @@ private:
     //
     //Shader class object sets the shaders and passes the program to the current context
     _Shader *shdr;
+    std::vector<_Shader*> shaderVec;
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
 };

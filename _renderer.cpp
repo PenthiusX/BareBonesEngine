@@ -16,7 +16,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0);//sets the bckground color of the openglContext.
     //
-    shdr = new _Shader();//initialising the _shader() class * object.
+   // shdr = new _Shader();//initialising the _shader() class * object.
     setShader();//will run this shader by default.
     timer.start();
     //
@@ -31,7 +31,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 */
 _Renderer::~_Renderer()
 {
-    delete shdr;
+    //delete shdr;
 }
 /*
 *
@@ -103,7 +103,10 @@ void _Renderer::keepSceneEntityUpdated(){
 */
 void _Renderer::setShader()
 {
+    shdr = new _Shader();
     shdr->attachShaders(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    shaderVec.push_back(shdr);
+
     qDebug() << "default Shader attached for entity" << sceneEntity.getTag();
 }
 /*
@@ -114,7 +117,9 @@ void _Renderer::setShader()
 */
 void _Renderer::setShader(QString vSh, QString fSh)
 {
+    shdr = new _Shader();
     shdr->attachShaders(vSh,fSh);
+    shaderVec.push_back(shdr);
     qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();
 }
 /*
@@ -191,12 +196,22 @@ void _Renderer::setupTexture()
     textures.push_back(texture);
     qDebug() << "setupTexture() on entity" << sceneEntity.getTag();
 }
-
+//Bind the textre set in the Matirial obj of SceneEntity.
 void _Renderer::setupTexture(QString texfile,_Texture::Type t)
 {
     QImage img = QImage(texfile).convertToFormat(QImage::Format_RGBA8888);
     _Texture texture;
-    texture.load(img,t,this->shdr,GL_RGBA,GL_UNSIGNED_BYTE);
+    texture.load(img,t,GL_RGBA,GL_UNSIGNED_BYTE);//Load the tex , genrate a ID for that texture
+
+    for(uint s = 0 ; s < shaderVec.size(); s++){
+        shaderVec[s]->useShaderProgram();//need to do this before setting the uniforms Always to reduce ambiguity
+        //Sets the Texture slot id here , is invoked by glActiveTexture(GL_TEXTUREn) where n is the value assigned
+        //make sure this matches in the Texture objects in the texture array.
+        glUniform1i(shaderVec[s]->getUniformLocation("diffuseTex"), 1);
+        glUniform1i(shaderVec[s]->getUniformLocation("specularTex"), 2);
+        glUniform1i(shaderVec[s]->getUniformLocation("bumpTex"), 3);
+    }
+
     textures.push_back(texture);
 }
 /*
@@ -522,7 +537,7 @@ void _Renderer::_Renderer::draw()
     if(sceneEntity.getIsActive())
     {
         //Using the shader program in the current context
-        shdr->useShaderProgram();
+        shaderVec[1]->useShaderProgram();
         //Bind Textures
         for(uint t=0;t<textures.size();t++){
             textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
@@ -537,10 +552,10 @@ void _Renderer::_Renderer::draw()
         glBindVertexArray(VAO);
         //
         //Sets the values for the MVP matrix in the vertex shader
-        glUniformMatrix4fv(shdr->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
-        glUniformMatrix4fv(shdr->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
-        glUniformMatrix4fv(shdr->getUniformLocation("orthoProjection"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
-        glUniformMatrix4fv(shdr->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
+        glUniformMatrix4fv(shaderVec[1]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
+        glUniformMatrix4fv(shaderVec[1]->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
+        glUniformMatrix4fv(shaderVec[1]->getUniformLocation("orthoProjection"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
+        glUniformMatrix4fv(shaderVec[1]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
         //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         //
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
@@ -557,7 +572,7 @@ void _Renderer::_Renderer::draw()
  */
 void _Renderer::updateColorUniforms()
 {
-    glUniform4f(shdr->getUniformLocation("aColor"),sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
+    glUniform4f(shaderVec[1]->getUniformLocation("aColor"),sceneEntity.getColor().x(),sceneEntity.getColor().y(),sceneEntity.getColor().z(),sceneEntity.getColor().w());
     //set sfidex color attributes for defined objects
     if(sceneEntity.getId() == 999 || sceneEntity.getId() == 991|| sceneEntity.getId() == 992 || sceneEntity.getId() == 993)//PointHelpers
     {
@@ -565,7 +580,7 @@ void _Renderer::updateColorUniforms()
         col.setX(col.x() + abs(cos(timer.elapsed() * 0.002)));
         col.setY(col.y() + abs(cos(timer.elapsed() * 0.003)));
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.005)));
-        glUniform4f(shdr->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
+        glUniform4f(shaderVec[1]->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
     }
     if(sceneEntity.getId() == 888)//pivot
     {
@@ -573,7 +588,7 @@ void _Renderer::updateColorUniforms()
         col.setX(col.x() + abs(cos(timer.elapsed() * 0.04)));
         col.setY(col.y() + abs(cos(timer.elapsed() * 0.03)));
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
-        glUniform4f(shdr->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
+        glUniform4f(shaderVec[1]->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
     }
 
     sceneEntity.getisHitByRay() ? sceneEntity.setColor(actualColor * 2.0) : sceneEntity.setColor(actualColor * 1.0);
@@ -594,19 +609,19 @@ void _Renderer::updateColorUniforms()
 
 void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
 {
-    glUniform1f(shdr->getUniformLocation("time"),qtimer.elapsed());
+    glUniform1f(shaderVec[1]->getUniformLocation("time"),qtimer.elapsed());
     uint piter = 0;
     for(uint li = 0 ; li < il.size(); li++)
     {
         if(il[li]->getLightType() == "DirLight")
         {
             //positions
-            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
-            glUniform3f(shdr->getUniformLocation("light.position"),il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+            glUniform3f(shaderVec[1]->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+            glUniform3f(shaderVec[1]->getUniformLocation("light.position"),il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
             // Dir properties
-            glUniform3f(shdr->getUniformLocation("light.ambient"), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
-            glUniform3f(shdr->getUniformLocation("light.diffuse"), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
-            glUniform3f(shdr->getUniformLocation("light.specular"), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+            glUniform3f(shaderVec[1]->getUniformLocation("light.ambient"), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+            glUniform3f(shaderVec[1]->getUniformLocation("light.diffuse"), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+            glUniform3f(shaderVec[1]->getUniformLocation("light.specular"), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
 
         }
         if(il[li]->getLightType() == "PointLight")
@@ -623,13 +638,13 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
                 std::string e6 = "].linear";
                 std::string e7 = "].quadratic";
 
-                glUniform3f(shdr->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
-                glUniform3f(shdr->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
-                glUniform3f(shdr->getUniformLocation((f+u+e3).c_str()), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
-                glUniform3f(shdr->getUniformLocation((f+u+e4).c_str()), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
-                glUniform1f(shdr->getUniformLocation((f+u+e5).c_str()), il[li]->getLightParams()[4].x); // note that all light colors are set at full intensity
-                glUniform1f(shdr->getUniformLocation((f+u+e6).c_str()), il[li]->getLightParams()[5].x);
-                glUniform1f(shdr->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
+                glUniform3f(shaderVec[1]->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+                glUniform3f(shaderVec[1]->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+                glUniform3f(shaderVec[1]->getUniformLocation((f+u+e3).c_str()), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+                glUniform3f(shaderVec[1]->getUniformLocation((f+u+e4).c_str()), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+                glUniform1f(shaderVec[1]->getUniformLocation((f+u+e5).c_str()), il[li]->getLightParams()[4].x); // note that all light colors are set at full intensity
+                glUniform1f(shaderVec[1]->getUniformLocation((f+u+e6).c_str()), il[li]->getLightParams()[5].x);
+                glUniform1f(shaderVec[1]->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
 
                 piter++;
                 piter > 2 ? piter = 0: piter;//3 is max no of point light should also reflect in the shader
@@ -648,10 +663,10 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
     }
 
     // material properties
-    glUniform3f(shdr->getUniformLocation("material.ambient"), sceneEntity.getMaterial().getAmbient().x,sceneEntity.getMaterial().getAmbient().y,sceneEntity.getMaterial().getAmbient().z);
-    glUniform3f(shdr->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
-    glUniform3f(shdr->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
-    glUniform1f(shdr->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
+    glUniform3f(shaderVec[1]->getUniformLocation("material.ambient"), sceneEntity.getMaterial().getAmbient().x,sceneEntity.getMaterial().getAmbient().y,sceneEntity.getMaterial().getAmbient().z);
+    glUniform3f(shaderVec[1]->getUniformLocation("material.diffuse"), sceneEntity.getMaterial().getDiffuse().x,sceneEntity.getMaterial().getDiffuse().y,sceneEntity.getMaterial().getDiffuse().z);
+    glUniform3f(shaderVec[1]->getUniformLocation("material.specular"), sceneEntity.getMaterial().getSpecular().x,sceneEntity.getMaterial().getSpecular().y,sceneEntity.getMaterial().getSpecular().z);
+    glUniform1f(shaderVec[1]->getUniformLocation("material.shininess"), sceneEntity.getMaterial().getShine());
 }
 
 

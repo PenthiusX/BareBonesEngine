@@ -129,7 +129,7 @@ void _Texture::load( GLenum format, GLenum datatype)
 //    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void _Texture::load(QImage image,Type t,_Shader* s, GLenum format, GLenum datatype)
+void _Texture::load(QImage image,Type t, GLenum format, GLenum datatype)
 {
     char* img = (char*)image.bits();
     this->image = img;
@@ -150,16 +150,6 @@ void _Texture::load(QImage image,Type t,_Shader* s, GLenum format, GLenum dataty
     color_format = format;
     glTexImage2D(GL_TEXTURE_2D, 0, format, image.width(), image.height(), 0, color_format, datatype, image.bits());
     glGenerateMipmap(GL_TEXTURE_2D);
-
-    s->useShaderProgram();//need to do this before setting the uniform
-    switch (t) {//sets the Activetexture location of the sampler uniforms in the shader
-           case Diffuse: glUniform1i(s->getUniformLocation("diffuseTex"), 1);
-               break;
-           case Specular: glUniform1i(s->getUniformLocation("specularTex"), 2);
-               break;
-           case Bump: glUniform1i(s->getUniformLocation("bumpTex"), 3);
-               break;
-    }
 }
 
 //return width of loaded texture image
