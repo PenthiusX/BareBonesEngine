@@ -44,7 +44,7 @@ public:
     void setSceneEntityInRenderer(_SceneEntity s);
     _SceneEntity getSceneEntity() const;
     //
-    void draw();// Draws paints everything bound in the scene
+    void draw(uint shaderSelector);// Draws paints everything bound in the scene
     //Lights
     void updateLightUniforms(std::vector<I_Light*> il);
     //Frame Enablements
@@ -91,4 +91,6 @@ private:
     std::vector<_Shader*> shaderVec;
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
+    //
+    uint ssl;//shader index selector
 };
