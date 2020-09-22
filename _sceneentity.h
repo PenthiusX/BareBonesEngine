@@ -3,6 +3,7 @@
 #include <qquaternion.h>
 #include <vector>
 #include <glm/glm.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "_assetloader.h"
 #include  "_material.h"
@@ -140,6 +141,7 @@ public:
     //Material
     void setMaterial(_Material m);
     _Material getMaterial();
+    bool hasMaterial();
     //Light
     enum light{
         Empty = 0,
@@ -149,8 +151,6 @@ public:
     };
     void setAsLight(light l);
     light getLightSource();
-
-
 private:
     uint id;
     QString tag;
@@ -194,8 +194,8 @@ private:
     glm::mat4x4 rotationMatrix;
     glm::mat4x4 scaleMatirx;
     glm::mat4x4 modelMatrix;
-    glm::mat4x4 projectionMatrix;
     glm::mat4x4 viewMatrix;
+    glm::mat4x4 projectionMatrix;
     //
     _AssetLoader assetLoader;//Asset loading
     _ModelInfo modelInfo;
@@ -205,5 +205,6 @@ private:
     GlEnablements glEnablements;//setting for GLRasterisation states .
     //
     _Material material;//Local material and light info state , will be passed into the renderer
+    bool hasMat;
     light lighttype;
 };

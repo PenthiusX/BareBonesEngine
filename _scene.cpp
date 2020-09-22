@@ -259,10 +259,11 @@ void _Scene::render()
 {
     fboObject->setUpdatedFrame();// The frames in context below will be captured
     //
-    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
+//    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
+        meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,7.5);
         meshesR[i]->draw();//Rendering Scene Object/Primitives
         //~~~~~~~~~~~~~
         meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity

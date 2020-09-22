@@ -29,6 +29,8 @@ public:
     //
     void setCamViewMatrix(glm::vec3 eyePos, glm::vec3 focalPoint, glm::vec3 upVector);// Sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);// Sets the projection matrix
+    void setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar);
+    void setProjectionMatrix(int type ,glm::mat4x4 m);
     //Transformantions
     void setPosition(glm::vec3 pos);// Resets the positon to the value that is required
     void translate(glm::vec3 pos);// Update the current positon with the value that is set
@@ -61,7 +63,7 @@ private:
     GLint mvpUniform;
     GLint modelUnifrom;
     GLint viewUniform;
-    GLint projectionUniform;
+    GLint projectionUniform,orthoProjuniform;
     GLint mousePosUniform;
     //Frambuffer variables
     GLuint frameBuffer1;
@@ -72,7 +74,7 @@ private:
     glm::mat4 modelMatrix;
     glm::mat4 rotationMatrix,translationMatrix,scalingMatrix;
     glm::mat4 pivotTmat;
-    glm::mat4 projectionMatrix;
+    glm::mat4 projectionMatrix,orthoProjMatrix;
     glm::mat4 viewMatrix;
     void setModelMatrix(glm::vec3 position, float scale, glm::vec3 rotation);//set the model matrix
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer

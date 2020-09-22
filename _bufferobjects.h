@@ -66,6 +66,8 @@ public:
     ~_ShadowBuffer();
 
     void init();
+    void startWriteToDepthBuffer();
+
 
 
 private:

@@ -199,6 +199,7 @@ void _Renderer::setuniformLocations()
     viewUniform  = shdr->getUniformLocation("view");
     qDebug() << "viewUniform ->" << viewUniform;
     projectionUniform = shdr->getUniformLocation("projection");
+    orthoProjuniform = shdr->getUniformLocation("orthoProjection");
     qDebug() << "projectionUniform ->" << projectionUniform;
     mousePosUniform = shdr->getUniformLocation("iMouse");
     qDebug() << "mousePosUniform ->" << mousePosUniform;
@@ -302,12 +303,21 @@ void _Renderer::setCamViewMatrix(glm::vec3 eyePos,glm::vec3 focalPoint,glm::vec3
 * window is resized.and needs to be called in the resizeGl function.
 * Used by: the _glWidget class resizeGL().
 */
-void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar)
-{
+void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, float zFar){
     // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     projectionMatrix = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
     //qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
+}
+void _Renderer::setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar){
+//    float near_plane = 1.0f, far_plane = 7.5f;
+//     orthoProjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+     orthoProjMatrix = glm::ortho(left,right,bottom,top, zNear, zFar);
+     //sceneEntity.setOrthoProjMatrix(orthoProjMatrix);//keep local  updated
+}
+void _Renderer::setProjectionMatrix(int type, glm::mat4x4 m)
+{
+    projectionMatrix = m;
 }
 /*
  ▄▄▄▄▄▄▄▄   ▄▄▄·  ▐ ▄ .▄▄ · ·▄▄▄      ▄▄▄  • ▌ ▄ ·.
@@ -556,6 +566,7 @@ void _Renderer::_Renderer::draw()
         //Sets the values for the MVP matrix in the vertex shader
         glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getViewMatrix()));
         glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(sceneEntity.getProjectionMatrix()));
+        glUniformMatrix4fv(orthoProjuniform, 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
         glUniformMatrix4fv(modelUnifrom,1,GL_FALSE,glm::value_ptr(sceneEntity.getModelMatrix()));
         //glUniformMatrix4fv(modelUnifrom, 1, GL_FALSE, glm::value_ptr(sceneEntity.getTranslationMatrix()*sceneEntity.getRotationmatrix()*pivotTmat *sceneEntity.getScaleingMatrix()));
         //
