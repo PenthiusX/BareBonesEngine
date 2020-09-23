@@ -107,6 +107,7 @@ void _GLWidget::initializeGL() {
     //------------------Main Meshes---------------------
     s.setId(8888);
     s.setTag("LitObject");
+    s.setIsShadowCaster(true);
     s.setGLModes(g);// glmode settings
     s.setMaterial(m);//material obhect
     s.setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
@@ -119,6 +120,7 @@ void _GLWidget::initializeGL() {
 
     s2.setId(8888);
     s2.setTag("LitObject");
+    //s2.setIsShadowCaster(true);
     s2.setGLModes(g);// glmode settings
     s2.setMaterial(m2);//material obhect
     s2.setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
@@ -168,6 +170,8 @@ void _GLWidget::resizeGL(int w, int h){
  * Your proprietory Draw function this run in a loop
  * till the application ends.
 */
+uint titer = 0;
+auto t = 0;
 void _GLWidget::paintGL()//the renderloop
 {
     //calculates Deltatime, should be used in Frame independent tranformations.
@@ -186,7 +190,11 @@ void _GLWidget::paintGL()//the renderloop
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;
     //Rendering info as text on screen
-    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
+    titer++;
+    if(titer > 100){
+        t = 1/timePerDraw;
+    }
+    text.render(this,t,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·

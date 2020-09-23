@@ -58,7 +58,8 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 {
     sceneEntity = s;
     actualColor = sceneEntity.getColor();
-    setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());
+    setShader(sceneEntity.getVertexShaderPath(), sceneEntity.getFragmentShaderPath());//1
+    if(sceneEntity.getIsShadowCaster()){setShader(":/shaders/shadowDepthMapV.glsl",":/shaders/shadowDepthMapF.glsl");}//2
     //
     if(sceneEntity.getMaterial().getDiffuseTexture().size() != 0){setupTexture(sceneEntity.getMaterial().getDiffuseTexture(),_Texture::Type::Diffuse);}
     if(sceneEntity.getMaterial().getSpecualrTexture().size() != 0){setupTexture(sceneEntity.getMaterial().getSpecualrTexture(),_Texture::Type::Specular);}
