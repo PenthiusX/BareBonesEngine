@@ -120,7 +120,7 @@ void _GLWidget::initializeGL() {
 
     s2.setId(8888);
     s2.setTag("LitObject");
-    //s2.setIsShadowCaster(true);
+    s2.setIsShadowCaster(true);
     s2.setGLModes(g);// glmode settings
     s2.setMaterial(m2);//material obhect
     s2.setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
@@ -185,7 +185,7 @@ void _GLWidget::paintGL()//the renderloop
     scene->fixedUpdate(0.4);
     //is to send QtOpenglGl a flag to update openglFrames
     this->update();
-    //prints the frame rate in the application output
+    //prints the frame rate in the application outputmvpx
     //---------------------------
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;

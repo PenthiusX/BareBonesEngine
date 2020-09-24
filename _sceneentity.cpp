@@ -25,6 +25,7 @@ _SceneEntity::_SceneEntity(){	//sets the rotation value at init and uses the fro
     isLineMode = false;
     isLineNoCullMode = false;
     isTransformationAllowed = true;
+    isShadowCaster = false;
     modelInfo.setIsLoaded(false);
 
     glEnablements.cullMode = GlEnablements::BackFace;

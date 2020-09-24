@@ -20,6 +20,7 @@ uniform sampler2D screenTexture;
 //            1.0, 0.0, -1.0
 //            );
 
+
 void main()
 {
     vec4 col;
@@ -57,11 +58,24 @@ void main()
 
 
     //Makes a screen change shaders based on mouse pos
-    if(gl_FragCoord.x >= iMouseO.x){
-        col = vec4(vec3(1.0 - texture2D(screenTexture, TexCoords)), 1.0);}//invertColors
-    else{
-        col =  texture2D(screenTexture,TexCoords);}
-
+    if(gl_FragCoord.x > iMouseO.x){
+        col = vec4(vec3(1.0 - texture2D(screenTexture, TexCoords)), 1.0);//invertColors
+    }
+    if(gl_FragCoord.x < iMouseO.x - 200.0)
+    {
+        col = texture2D(screenTexture,TexCoords);
+    }
+//    if(gl_FragCoord.x > iMouseO.x + 40.0)
+//    {
+//        col = texture2D(screenTexture,TexCoords);
+//    }
+    if(gl_FragCoord.x < iMouseO.x)
+    {
+        float depth =  texture2D(screenTexture,TexCoords).g;
+        if(depth > 0.5){
+            col = texture2D(screenTexture,TexCoords) + vec4(0.1,0.1,0.1,1.0);
+        }
+    }
     FragColor = col;
 }
 

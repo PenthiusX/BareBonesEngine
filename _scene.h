@@ -44,12 +44,6 @@ public:
     //Physics
     _SceneEntity getSceneEntityHitWithRay();
 
-    enum shaderSelect{
-        basic,
-        lighting,
-        shadowmapBuffer,
-    };
-
 private:
     //Inithandlers
     void initialiseMesh(_SceneEntity s);

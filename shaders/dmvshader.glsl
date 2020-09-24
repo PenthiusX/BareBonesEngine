@@ -17,6 +17,12 @@ void main()
 {
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
+
+    //vec4 ndc = mvpx * vec4(aPos, 1);
+    //float sz = ndc.w;
+
+    //gl_Position= mvpx * vec4(aPos.xy * sz, aPos.z, 1.0);
+
     //gl_FragDepth = 0.99;
 
     ourColor = aColor;
