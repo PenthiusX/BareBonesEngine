@@ -40,9 +40,9 @@ public:
     void lookAt(QVector3D ptl);
     void RotationBetweenVectors(glm::vec3 dest);
     //Scene Entity
-    void initSceneEntityInRenderer(_SceneEntity s_);
-    void setSceneEntityInRenderer(_SceneEntity s);
-    _SceneEntity getSceneEntity() const;
+    void initSceneEntityInRenderer(_SceneEntity* s_);
+    void setSceneEntityInRenderer(_SceneEntity* s);
+    _SceneEntity* getSceneEntity() const;
     //
     void draw(uint shaderSelector);// Draws paints everything bound in the scene
     //Lights
@@ -64,7 +64,7 @@ private:
     glm::mat4 projectionMatrix,orthoProjMatrix;
     glm::mat4 viewMatrix;
     //
-    _SceneEntity sceneEntity;//the local sceneEntity object for use in the renderer
+    _SceneEntity *sceneEntity;//the local sceneEntity object for use in the renderer
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
     glm::vec3 camposForLight;
     glm::vec3 focalPoint;

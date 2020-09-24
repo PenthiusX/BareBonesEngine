@@ -42,9 +42,9 @@ public:
     _Physics();
     ~_Physics();
     //
-    void initialiseSceneEntity(_SceneEntity s);
-    void setSceneEntity(_SceneEntity s);
-    _SceneEntity getSceneEntity();
+    void initialiseSceneEntity(_SceneEntity* s);
+    void setSceneEntity(_SceneEntity* s);
+    _SceneEntity* getSceneEntity();
     //
     void genTriesforCollision(std::vector<float>vert,std::vector<uint> index);
     void genNormalsForTries(std::vector<_Phy_Triangle> triV);
@@ -78,7 +78,7 @@ private:
     //
     int resW,resH;
     //
-    _SceneEntity sceneEntity;
+    _SceneEntity* sceneEntity;
     glm::vec3 outIntersectionPoint;
     //
     glm::vec4 initialMax,initialMin;//Store the initial extent positions before transformations.

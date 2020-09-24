@@ -22,9 +22,25 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent){
     //  keeps the event callbacks working for the GL widget
     this->setFocusPolicy(Qt::StrongFocus);
     qTimer.start();
+
+    s   = new _SceneEntity();
+    s2  = new _SceneEntity();
+    dl1 = new _SceneEntity();
+    p1  = new _SceneEntity();
+    p2  = new _SceneEntity();
+    d1  = new _SceneEntity();
+    sl1 = new _SceneEntity();
+
 }
 _GLWidget::~_GLWidget(){
     delete scene;
+    delete s  ;
+    delete s2 ;
+    delete dl1;
+    delete p1 ;
+    delete p2 ;
+    delete d1 ;
+    delete sl1;
 }
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  .▄▄ · ▄▄▄ .
@@ -50,35 +66,35 @@ void _GLWidget::initializeGL() {
     //-------------------------------------------------
 
     //-------------Lights------------------------------
-    dl1.setId(8008);
-    dl1.setTag("dlight");
-    dl1.setAsLight(_SceneEntity::Directional);
-    dl1.setModelData(":/models/cube.obj");
-    dl1.setPhysicsObject(_SceneEntity::Sphere);
-    dl1.setPosition(glm::vec3(-4.4f,5.76f, 1.3f));//hard coded value need to get passed into the shader
-    dl1.setIsLineNoCullMode(false);
-    dl1.setScale(0.20f);
-    dl1.setColor(QVector4D(0.5,0.5,0.5,1.0));
+    dl1->setId(8008);
+    dl1->setTag("dlight");
+    dl1->setAsLight(_SceneEntity::Directional);
+    dl1->setModelData(":/models/cube.obj");
+    dl1->setPhysicsObject(_SceneEntity::Sphere);
+    dl1->setPosition(glm::vec3(-4.4f,5.76f, 1.3f));//hard coded value need to get passed into the shader
+    dl1->setIsLineNoCullMode(false);
+    dl1->setScale(0.20f);
+    dl1->setColor(QVector4D(0.5,0.5,0.5,1.0));
     //
-    p1.setId(8002);
-    p1.setTag("plight1");
-    p1.setAsLight(_SceneEntity::Point);
-    p1.setModelData(":/models/sphere.obj");
-    p1.setPhysicsObject(_SceneEntity::Sphere);
-    p1.setPosition(glm::vec3(-1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
-    p1.setIsLineNoCullMode(false);
-    p1.setScale(0.20f);
-    p1.setColor(QVector4D(0.5,0.5,0.5,1.0));
-    //
-    p2.setId(8003);
-    p2.setTag("plight2");
-    p2.setAsLight(_SceneEntity::Point);
-    p2.setModelData(":/models/sphere.obj");
-    p2.setPhysicsObject(_SceneEntity::Sphere);
-    p2.setPosition(glm::vec3(1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
-    p2.setIsLineNoCullMode(false);
-    p2.setScale(0.20f);
-    p2.setColor(QVector4D(0.5,0.5,0.5,1.0));
+    p1->setId(8002);
+    p1->setTag("plight1");
+    p1->setAsLight(_SceneEntity::Point);
+    p1->setModelData(":/models/sphere.obj");
+    p1->setPhysicsObject(_SceneEntity::Sphere);
+    p1->setPosition(glm::vec3(-1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
+    p1->setIsLineNoCullMode(false);
+    p1->setScale(0.20f);
+    p1->setColor(QVector4D(0.5,0.5,0.5,1.0));
+    //->
+    p2->setId(8003);
+    p2->setTag("plight2");
+    p2->setAsLight(_SceneEntity::Point);
+    p2->setModelData(":/models/sphere.obj");
+    p2->setPhysicsObject(_SceneEntity::Sphere);
+    p2->setPosition(glm::vec3(1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
+    p2->setIsLineNoCullMode(false);
+    p2->setScale(0.20f);
+    p2->setColor(QVector4D(0.5,0.5,0.5,1.0));
     //--------------------------------------------------
 
     //------------Material Params-----------------------
@@ -105,34 +121,34 @@ void _GLWidget::initializeGL() {
     //--------------------------------------------------
 
     //------------------Main Meshes---------------------
-    s.setId(8880);
-    s.setTag("LitObject1");
-    s.setIsShadowCaster(true);
-    s.setGLModes(g);// glmode settings
-    s.setMaterial(m);//material obhect
-    s.setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
-    s.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
-    s.setIsTransformationLocal(false);
-    s.setIsLineNoCullMode(false);
-    s.setPosition(glm::vec3(0.0,0.0,0.0));
-    s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s.setScale(0.3f);
+    s->setId(8880);
+    s->setTag("LitObject1");
+    s->setIsShadowCaster(true);
+    s->setGLModes(g);// glmode settings
+    s->setMaterial(m);//material obhect
+    s->setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
+    s->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
+    s->setIsTransformationLocal(false);
+    s->setIsLineNoCullMode(false);
+    s->setPosition(glm::vec3(0.0,0.0,0.0));
+    s->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+    s->setScale(0.3f);
 
-    s2.setId(8881);
-    s2.setTag("LitObject2");
-    s2.setIsShadowCaster(true);
-    s2.setGLModes(g);// glmode settings
-    s2.setMaterial(m2);//material obhect
-    s2.setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
-    s2.setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
-    s2.setIsTransformationLocal(false);
-    s2.setIsLineNoCullMode(false);
-    s2.setPosition(glm::vec3(0.0,-4.0,0.0));//initial position
-    s2.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s2.setScale(10.0f);
+    s2->setId(8881);
+    s2->setTag("LitObject2");
+    s2->setIsShadowCaster(true);
+    s2->setGLModes(g);// glmode settings
+    s2->setMaterial(m2);//material obhect
+    s2->setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
+    s2->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
+    s2->setIsTransformationLocal(false);
+    s2->setIsLineNoCullMode(false);
+    s2->setPosition(glm::vec3(0.0,-4.0,0.0));//initial position
+    s2->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+    s2->setScale(10.0f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
-    scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
+    //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects---------------------------------
     scene->addSceneObject(s);
     scene->addSceneObject(s2);
@@ -192,7 +208,7 @@ void _GLWidget::paintGL()//the renderloop
     //Rendering info as text on screen
     iter++;
     if(iter > 100){iter = 0; qInfo()<< 1/timePerDraw << "\n";}
-    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
+    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay()->getTag(),scene->getSceneEntityHitWithRay()->getPostion(),glm::vec3(0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·
@@ -243,7 +259,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
     globalMPoint = this->mapFromGlobal(QCursor::pos());
     if(e->button() == Qt::LeftButton){
         scene->setMousePositionInScene(QVector2D(globalMPoint),Qt::LeftButton);//set mose pos in scene for use
-        cam.setFocalPoint(scene->getSceneEntityHitWithRay().getPostion()); //sets cam focus on object with the objet that is hitwith ray in scene
+        cam.setFocalPoint(scene->getSceneEntityHitWithRay()->getPostion()); //sets cam focus on object with the objet that is hitwith ray in scene
         //        qDebug() << "LpressRel";
     }
     if(e->button() == Qt::RightButton){
@@ -284,7 +300,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
             }
             double damp = 0.01;//to decrese the magnitude of the value coming in from the mousepos
             rotRads  += QVector2D(globalMPoint) - mosPos;
-            scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->setRotation(glm::vec3(rotRads.y() * damp, rotRads.x() * damp, 0.f));
+            scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->setRotation(glm::vec3(rotRads.y() * damp, rotRads.x() * damp, 0.f));
             //qDebug() << "MpressMv";
         }
     }
@@ -302,8 +318,8 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
     if(isCTRL){
-        scroolScale = scene->getSceneEntityHitWithRay().getScale() + (numSteps * 0.005);
-        scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->setscale(scroolScale);
+        scroolScale = scene->getSceneEntityHitWithRay()->getScale() + (numSteps * 0.005);
+        scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->setscale(scroolScale);
     }
     else if(!isCTRL){
         scroolScale = cam.getFOV() - numSteps;
@@ -320,38 +336,38 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
 {
     if (event->text() == "a" || event->text() == "A"){
         if (isCamFocus)cam.setEyePosition(glm::vec3(cam.getEyePosition().x - 0.15, cam.getEyePosition().y, cam.getEyePosition().z));
-        else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.1f, -0.f, 0.0));
+        else scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->translate(glm::vec3(-0.1f, -0.f, 0.0));
     }
     if (event->text() == "d" || event->text() == "D"){
         if (isCamFocus){
             cam.setEyePosition(glm::vec3(cam.getEyePosition().x + 0.15, cam.getEyePosition().y, cam.getEyePosition().z));
-        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.1f, 0.f, 0.0));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->translate(glm::vec3(0.1f, 0.f, 0.0));
     }
     if (event->text() == "s" || event->text() == "S"){
         if (isCamFocus){
             cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y - 0.15, cam.getEyePosition().z));
-        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(0.f, -0.1, 0.0));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->translate(glm::vec3(0.f, -0.1, 0.0));
     }
     if (event->text() == "w" || event->text() == "W"){
         if (isCamFocus == true){
             cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y + 0.15, cam.getEyePosition().z));
-        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, 0.1, 0.0));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->translate(glm::vec3(-0.f, 0.1, 0.0));
     }
     if (event->text() == "q" || event->text() == "Q"){
         if (isCamFocus == true){
             cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y, cam.getEyePosition().z + 0.15));
-        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.0, 0.1));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.0, 0.1));
     }
     if (event->text() == "e" || event->text() == "E"){
         if (isCamFocus == true){
             cam.setEyePosition(glm::vec3(cam.getEyePosition().x, cam.getEyePosition().y , cam.getEyePosition().z - 0.15));
-        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay().getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.0, -0.1));
+        }else scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->translate(glm::vec3(-0.f, -0.0, -0.1));
     }
     if (event->text() == "r" || event->text() == "R"){//reset
         if(isCamFocus)
             cam.setEyePosition(glm::vec3(0.0, 0.0, 7.0));
         else{
-            uint ind = scene->getSceneEntityHitWithRay().getIndexPosInScene();
+            uint ind = scene->getSceneEntityHitWithRay()->getIndexPosInScene();
             scene->getSceneObjects()[ind]->setPosition(glm::vec3(0.0f, 0.0, 0.0));
             scene->getSceneObjects()[ind]->setRotation(glm::vec3(0.0f, 0.0, 0.0));
             scene->getSceneObjects()[ind]->setscale(1.0f);
@@ -401,7 +417,7 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress->setMaterial(m);
         onPress->setScale(_Tools::getRandomNumberfromRangeF(0.2,2));
         onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");//dont need to reparse modelfile
-        scene->addSceneObject(*onPress);
+        scene->addSceneObject(onPress);
         qInfo()<< "created" << i <<"th object" << "id" << onPress->getId();
         delete onPress;
         doneCurrent();

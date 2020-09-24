@@ -26,7 +26,7 @@ public:
     ~_Scene();
     //
     std::vector<_Renderer*> getSceneObjects();
-    void addSceneObject(_SceneEntity s);
+    void addSceneObject(_SceneEntity* s);
     void removeSceneObject(uint index);
     void removeSceneObject(_SceneEntity s);
     //
@@ -39,18 +39,17 @@ public:
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo
     //Helpers
     void addAllHelperTypesInScene();
-    _SceneEntity findSceneEntity(uint iD);
-    _SceneEntity findSceneEntity(std::string tag);
+    _SceneEntity* findSceneEntity(uint iD);
+    _SceneEntity* findSceneEntity(std::string tag);
     //Physics
-    _SceneEntity getSceneEntityHitWithRay();
+    _SceneEntity* getSceneEntityHitWithRay();
 
 private:
     //Inithandlers
-    void initialiseMesh(_SceneEntity s);
-    void initialisePhysics(_SceneEntity s);
-    void initialiseLights(_SceneEntity s);
+    void initialiseMesh(_SceneEntity* s);
+    void initialisePhysics(_SceneEntity *s);
+    void initialiseLights(_SceneEntity* s);
     //
-    std::vector<_SceneEntity> sceneEntityVector;
     std::vector<_Renderer*> meshesR,lightsR;
     _FrameBuffer *fboObject;//framebuffer object in the current instance
     _StencilBuffer *stencilObject;
@@ -72,7 +71,7 @@ private:
     void setHelperIndexVars();
     //Physics
     std::vector<_Physics> physVector;
-    _SceneEntity rayHitSceneEntity,triCollidedSceneEntity;
+    _SceneEntity *rayHitSceneEntity,*triCollidedSceneEntity;
     uint hc;//physics and helper object counter
     uint loopIndex;
     void updateAllPhysicsObjectsLoop();

@@ -15,8 +15,11 @@
 //#include "_tools.h"
 
 _Physics::_Physics(){
+    sceneEntity = new _SceneEntity();
 }
-_Physics::~_Physics(){}
+_Physics::~_Physics(){
+    delete sceneEntity;
+}
 
 /*
    ▄▄ • ▄▄▄ .▄▄▄▄▄   .▄▄ · ▄▄▄ .▄▄▄▄▄
@@ -25,10 +28,10 @@ _Physics::~_Physics(){}
   ▐█▄▪▐█▐█▄▄▌ ▐█▌· • ▐█▄▪▐█▐█▄▄▌ ▐█▌·
   ·▀▀▀▀  ▀▀▀  ▀▀▀  •  ▀▀▀▀  ▀▀▀  ▀▀▀
 */
-void _Physics::setSceneEntity(_SceneEntity s){
+void _Physics::setSceneEntity(_SceneEntity* s){
     this->sceneEntity = s;
 }
-_SceneEntity _Physics::getSceneEntity(){
+_SceneEntity* _Physics::getSceneEntity(){
     return sceneEntity;
 }
 /*
@@ -50,27 +53,27 @@ std::vector<_Phy_Triangle> _Physics::getPhysTries() const{
   ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
-void _Physics::initialiseSceneEntity(_SceneEntity s){
+void _Physics::initialiseSceneEntity(_SceneEntity* s){
     sceneEntity = s;
     //Initialise based on SceneEntity;
-    if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere){
-        sp.center = sceneEntity.getPostion();
-        sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent())) ;
+    if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere){
+        sp.center = sceneEntity->getPostion();
+        sp.radius = glm::distance(glm::vec3(sceneEntity->getModelInfo().getCentroid()), glm::vec3(sceneEntity->getModelInfo().getMaxExtent())) ;
         //used for maxextent update
-        initialMax = sceneEntity.getModelInfo().getMaxExtent();
-        initialMin = sceneEntity.getModelInfo().getMinExtent();
+        initialMax = sceneEntity->getModelInfo().getMaxExtent();
+        initialMin = sceneEntity->getModelInfo().getMinExtent();
     }
-    else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Box){
+    else if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box){
         //used for maxextent update
-        initialMax = sceneEntity.getModelInfo().getMaxExtent();
-        initialMin = sceneEntity.getModelInfo().getMinExtent();
+        initialMax = sceneEntity->getModelInfo().getMaxExtent();
+        initialMin = sceneEntity->getModelInfo().getMinExtent();
     }
-    else if(sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh){
-        genTriesforCollision(sceneEntity.getModelInfo().getVertexArray(),sceneEntity.getModelInfo().getIndexArray());
+    else if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
+        genTriesforCollision(sceneEntity->getModelInfo().getVertexArray(),sceneEntity->getModelInfo().getIndexArray());
         triVectorCopy = triVector;
         //used for maxextent update
-        initialMax = sceneEntity.getModelInfo().getMaxExtent();
-        initialMin = sceneEntity.getModelInfo().getMinExtent();
+        initialMax = sceneEntity->getModelInfo().getMaxExtent();
+        initialMin = sceneEntity->getModelInfo().getMinExtent();
     }
 }
 /*
@@ -293,18 +296,18 @@ void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix){
 /*
 */
 void _Physics::transFormBoxExtents(glm::mat4x4 rotScaleMatrix){
-    glm::vec4 max = glm::vec4(sceneEntity.getPostion().x,sceneEntity.getPostion().y,sceneEntity.getPostion().z,0.0f) + rotScaleMatrix * initialMax;
-    glm::vec4 min = glm::vec4(sceneEntity.getPostion().x,sceneEntity.getPostion().y,sceneEntity.getPostion().z,0.0f) + rotScaleMatrix * initialMin;
-    _ModelInfo m = sceneEntity.getModelInfo();
+    glm::vec4 max = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + rotScaleMatrix * initialMax;
+    glm::vec4 min = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + rotScaleMatrix * initialMin;
+    _ModelInfo m = sceneEntity->getModelInfo();
     m.setMaxExtents(max);
     m.setMinExtents(min);
     m.calcCentroidFromMinMax();
-    sceneEntity.setModelInfo(m);
+    sceneEntity->setModelInfo(m);
 }
 
 void _Physics::updateSphereExtents(){
-    sp.center = sceneEntity.getPostion();
-    sp.radius = glm::distance(glm::vec3(sceneEntity.getModelInfo().getCentroid()), glm::vec3(sceneEntity.getModelInfo().getMaxExtent()));
+    sp.center = sceneEntity->getPostion();
+    sp.radius = glm::distance(glm::vec3(sceneEntity->getModelInfo().getCentroid()), glm::vec3(sceneEntity->getModelInfo().getMaxExtent()));
 }
 
 /*
@@ -318,44 +321,44 @@ void _Physics::updateSphereExtents(){
  * Update everything Internally goes in the _scene update loop
 */
 void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes){
-    setMousePointerRay(mousePos,sceneEntity.getProjectionMatrix(),sceneEntity.getViewMatrix(),screenRes);
-    switch(sceneEntity.getPhysicsObjectType()){
+    setMousePointerRay(mousePos,sceneEntity->getProjectionMatrix(),sceneEntity->getViewMatrix(),screenRes);
+    switch(sceneEntity->getPhysicsObjectType()){
     case _SceneEntity::Sphere :
         //updates the maxExtents
-        transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
+        transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
         //set sphere collider dimensions
         updateSphereExtents();
         //intersection check
-        hitSphere(sp.center,sp.radius,camPos)?sceneEntity.setIsHitByRay(true):sceneEntity.setIsHitByRay(false);
+        hitSphere(sp.center,sp.radius,camPos)?sceneEntity->setIsHitByRay(true):sceneEntity->setIsHitByRay(false);
         if(hitSphere(sp.center,sp.radius,camPos)){
-            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId()<<"Hit Ipos-"<<sceneEntity.getIndexPosInScene();
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
         }
         break;
     case _SceneEntity::Box :
         //updates the maxExtents
-        transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
+        transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
         //set box collider extents
-        bx.max = sceneEntity.getModelInfo().getMaxExtent();
-        bx.min = sceneEntity.getModelInfo().getMinExtent();
+        bx.max = sceneEntity->getModelInfo().getMaxExtent();
+        bx.min = sceneEntity->getModelInfo().getMinExtent();
         //intersection check.
         if(hitBoundingBoxF(bx,camPos,ray_wor)){
-            sceneEntity.setIsHitByRay(true);
-            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId()<<"Hit Ipos-"<<sceneEntity.getIndexPosInScene();
+            sceneEntity->setIsHitByRay(true);
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
         }
         else if(!hitBoundingBoxF(bx,camPos,ray_wor))
-            sceneEntity.setIsHitByRay(false);
+            sceneEntity->setIsHitByRay(false);
         break;
     case _SceneEntity::Mesh :
         //updates the maxExtents
-        transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
-        //sets the updated modelMatrix from the sceneEntity.
-        transFormPhysicsTriangles(sceneEntity.getModelMatrix());
+        transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
+        //sets the updated modelMatrix from the sceneEntity->
+        transFormPhysicsTriangles(sceneEntity->getModelMatrix());
         //Intersection check.
         if(rayIntersectsTriangles(triVector,camPos,ray_wor)){
-            sceneEntity.setIsHitByRay(true);
-            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity.getId()<<"Hit Ipos-"<<sceneEntity.getIndexPosInScene();
+            sceneEntity->setIsHitByRay(true);
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
         }else if(!rayIntersectsTriangles(triVector,camPos,ray_wor)){
-            sceneEntity.setIsHitByRay(false);}
+            sceneEntity->setIsHitByRay(false);}
         break;
     }
 }
@@ -367,18 +370,18 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
     //the arry of all other physics object triangles
     //selected for collision in scene.
     for(uint i = 0 ; i < _physicsObjArray.size() ;i++){
-        if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Mesh &&
-                _physicsObjArray[i].getSceneEntity().getPhysicsObjectType() == _SceneEntity::Mesh &&
-                this->sceneEntity.getId() != _physicsObjArray[i].getSceneEntity().getId()){//make sure its not the same object
+        if(this->sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh &&
+                _physicsObjArray[i].getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Mesh &&
+                this->sceneEntity->getId() != _physicsObjArray[i].getSceneEntity()->getId()){//make sure its not the same object
             //updates the maxExtents
-            transFormBoxExtents(sceneEntity.getRotationmatrix() * sceneEntity.getScaleingMatrix());
-            //sets the updated modelMatrix from the sceneEntity.
-            transFormPhysicsTriangles(sceneEntity.getModelMatrix());
+            transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
+            //sets the updated modelMatrix from the sceneEntity->
+            transFormPhysicsTriangles(sceneEntity->getModelMatrix());
             return triangleTriangleIntersectionTest(*this,_physicsObjArray[i]);
         }
-        else if(this->sceneEntity.getPhysicsObjectType() == _SceneEntity::Sphere &&
-                _physicsObjArray[i].getSceneEntity().getPhysicsObjectType() == _SceneEntity::Sphere &&
-                this->sceneEntity.getId() != _physicsObjArray[i].getSceneEntity().getId()){
+        else if(this->sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere &&
+                _physicsObjArray[i].getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Sphere &&
+                this->sceneEntity->getId() != _physicsObjArray[i].getSceneEntity()->getId()){
             //implement sphere on sphere here;
         }
     }
