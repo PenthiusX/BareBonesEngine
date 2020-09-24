@@ -40,7 +40,7 @@ public:
     //Helpers
     void addAllHelperTypesInScene();
     _SceneEntity findSceneEntity(uint iD);
-    _SceneEntity findSceneEntity(QString tag);
+    _SceneEntity findSceneEntity(std::string tag);
     //Physics
     _SceneEntity getSceneEntityHitWithRay();
 
@@ -54,6 +54,7 @@ private:
     std::vector<_Renderer*> meshesR,lightsR;
     _FrameBuffer *fboObject;//framebuffer object in the current instance
     _StencilBuffer *stencilObject;
+//    _ShadowBuffer *shadowBObject;
     _Renderer* r;
     _Camera cam;
     bool isCamera;

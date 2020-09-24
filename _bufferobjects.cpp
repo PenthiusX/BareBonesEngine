@@ -190,6 +190,19 @@ void _StencilBuffer::clearStencilBuffer()
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
 }
 
+
+
+
+_ShadowBuffer::_ShadowBuffer()
+{
+    sbShader = new _Shader();
+}
+
+_ShadowBuffer::~_ShadowBuffer()
+{
+    delete sbShader;
+}
+
 void _ShadowBuffer::init()
 {
     glGenFramebuffers(1, &depthMapFBO);
@@ -209,4 +222,9 @@ void _ShadowBuffer::init()
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void _ShadowBuffer::startWriteToDepthBuffer()
+{
+
 }

@@ -62,10 +62,10 @@ uint _SceneEntity::getId() const{
  * Tag is a string name uniqe identifier for the
  * object,similar to iD.
 */
-void _SceneEntity::setTag(QString tag){
+void _SceneEntity::setTag(std::string tag){
     this->tag = tag;
 }
-QString _SceneEntity::getTag() const{
+std::string _SceneEntity::getTag() const{
     return tag;
 }
 /*

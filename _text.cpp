@@ -28,7 +28,7 @@ void _Text::onResize(int w,int h){
     m_projection.perspective(45.f, qreal(w) / qreal(h), 0.1f, 100.f);
 }
 
-void _Text::render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::vec3 rotation){
+void _Text::render(_GLWidget *q , float fps, std::string Name, glm::vec3 pos, glm::vec3 rotation){
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -42,7 +42,7 @@ void _Text::render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::v
     f2 = "Pos:" + f1 + "," + f11 + ","  + f12;
     QStaticText a(f2);
     //
-    f1 = Name;
+    f1 = Name.c_str();
     f2 = "Name:" + f1;
     QStaticText b(f2);
 

@@ -95,4 +95,14 @@ private:
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
     //
     uint ssl;//shader index selector
+    //lights
+    std::string f ;
+    std::string u ;
+    std::string e1;
+    std::string e2;
+    std::string e3;
+    std::string e4;
+    std::string e5;
+    std::string e6;
+    std::string e7;
 };

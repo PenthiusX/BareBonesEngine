@@ -105,8 +105,8 @@ void _GLWidget::initializeGL() {
     //--------------------------------------------------
 
     //------------------Main Meshes---------------------
-    s.setId(8888);
-    s.setTag("LitObject");
+    s.setId(8880);
+    s.setTag("LitObject1");
     s.setIsShadowCaster(true);
     s.setGLModes(g);// glmode settings
     s.setMaterial(m);//material obhect
@@ -118,8 +118,8 @@ void _GLWidget::initializeGL() {
     s.setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
     s.setScale(0.3f);
 
-    s2.setId(8888);
-    s2.setTag("LitObject");
+    s2.setId(8881);
+    s2.setTag("LitObject2");
     s2.setIsShadowCaster(true);
     s2.setGLModes(g);// glmode settings
     s2.setMaterial(m2);//material obhect
@@ -134,8 +134,9 @@ void _GLWidget::initializeGL() {
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects---------------------------------
-    scene->addSceneObject(s);//Adds the entity defined obove to scene
+    scene->addSceneObject(s);
     scene->addSceneObject(s2);
+
     //
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
@@ -170,8 +171,7 @@ void _GLWidget::resizeGL(int w, int h){
  * Your proprietory Draw function this run in a loop
  * till the application ends.
 */
-uint titer = 0;
-auto t = 0;
+uint iter =0;
 void _GLWidget::paintGL()//the renderloop
 {
     //calculates Deltatime, should be used in Frame independent tranformations.
@@ -190,11 +190,9 @@ void _GLWidget::paintGL()//the renderloop
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;
     //Rendering info as text on screen
-    titer++;
-    if(titer > 100){
-        t = 1/timePerDraw;
-    }
-    text.render(this,t,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
+    iter++;
+    if(iter > 100){iter = 0; qInfo()<< 1/timePerDraw << "\n";}
+    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay().getTag(),scene->getSceneEntityHitWithRay().getPostion(),glm::vec3(0));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·

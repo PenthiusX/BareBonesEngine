@@ -32,6 +32,11 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 _Renderer::~_Renderer()
 {
     //delete shdr;
+    for(auto sr : shaderVec)
+    {
+        delete  sr;
+    }
+    shaderVec.clear();
 }
 /*
 *
@@ -68,7 +73,7 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity s)
 
     if(sceneEntity.getModelInfo().getVertexArray().size() > 1){setModelDataInBuffers(sceneEntity.getModelInfo().getVertexArray(), sceneEntity.getModelInfo().getIndexArray());}
     else{setModelDataInBuffers(sceneEntity.getModelInfo().getVertexInfoArray(), sceneEntity.getModelInfo().getIndexArray());}
-    qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag();
+    qDebug() << "setModelDataInBuffers() for entity" << sceneEntity.getTag().c_str();
 }
 /*
  sets a copy of sceneEntity in the renderer
@@ -108,7 +113,7 @@ void _Renderer::setShader()
     shdr->attachShaders(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     shaderVec.push_back(shdr);
 
-    qDebug() << "default Shader attached for entity" << sceneEntity.getTag();
+    qDebug() << "default Shader attached for entity" << sceneEntity.getTag().c_str();
 }
 /*
  * Takes the path to the relative qrc aided directory
@@ -121,7 +126,7 @@ void _Renderer::setShader(QString vSh, QString fSh)
     shdr = new _Shader();
     shdr->attachShaders(vSh,fSh);
     shaderVec.push_back(shdr);
-    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag();
+    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity.getTag().c_str();
 }
 /*
  * set Vertex and Index data into
@@ -195,7 +200,7 @@ void _Renderer::setupTexture()
     _Texture texture(img,1360,1024);
     texture.load(GL_RED,GL_UNSIGNED_BYTE);
     textures.push_back(texture);
-    qDebug() << "setupTexture() on entity" << sceneEntity.getTag();
+    qDebug() << "setupTexture() on entity" << sceneEntity.getTag().c_str();
 }
 //Bind the textre set in the Matirial obj of SceneEntity.
 void _Renderer::setupTexture(QString texfile,_Texture::Type t)
@@ -225,19 +230,19 @@ void _Renderer::setTexture(char* texBitmap)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap);
-    qDebug() << "setTexture(char* texBitmap) on entity" << sceneEntity.getTag();
+    qDebug() << "setTexture(char* texBitmap) on entity" << sceneEntity.getTag().c_str();
 }
 void _Renderer::setTexture(char* texBitmap,uint iwidth,uint iheight)
 {
     if(!textures.empty())
         textures[0].setImage(texBitmap,iwidth,iheight);
-    qDebug() << "setTexture(char* texBitmap,uint iwidth,uint iheight) on entity" << sceneEntity.getTag();
+    qDebug() << "setTexture(char* texBitmap,uint iwidth,uint iheight) on entity" << sceneEntity.getTag().c_str();
 }
 void _Renderer::setTexture(QString pathtoTexture)
 {
     if(!textures.empty())
         textures[0].setImage(pathtoTexture);
-    qDebug() << "setTexture(QString pathtoTexture) on entity" << sceneEntity.getTag();
+    qDebug() << "setTexture(QString pathtoTexture) on entity" << sceneEntity.getTag().c_str();
 }
 
 /*
@@ -259,7 +264,7 @@ void _Renderer::setModelMatrix(glm::vec3 position,float scale,glm::vec3 rotation
     translationMatrix = glm::translate(translationMatrix,position);
 
     modelMatrix = translationMatrix * rotationMatrix * scalingMatrix;
-    qDebug() << "setModelMatrix() on entity" << sceneEntity.getTag();
+    qDebug() << "setModelMatrix() on entity" << sceneEntity.getTag().c_str();
     keepSceneEntityUpdated();
 }
 /*
@@ -296,7 +301,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     projectionMatrix = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
-    //qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag();
+    //qDebug() << "setProjectionMatrix() on entity" << sceneEntity.getTag().c_str();
 }
 void _Renderer::setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar){
 //    float near_plane = 1.0f, far_plane = 7.5f;
@@ -630,15 +635,15 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
         {
             glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
             //PointL
-                std::string f = "pointLights[";
-                std::string u = std::to_string(piter);
-                std::string e1 = "].position";
-                std::string e2 = "].ambient";
-                std::string e3 = "].diffuse";
-                std::string e4 = "].specular";
-                std::string e5 = "].constant";
-                std::string e6 = "].linear";
-                std::string e7 = "].quadratic";
+                f  = "pointLights[";
+                u  = std::to_string(piter);
+                e1 = "].position";
+                e2 = "].ambient";
+                e3 = "].diffuse";
+                e4 = "].specular";
+                e5 = "].constant";
+                e6 = "].linear";
+                e7 = "].quadratic";
 
                 glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
                 glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity

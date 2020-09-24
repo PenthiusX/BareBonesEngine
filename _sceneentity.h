@@ -4,6 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/mat4x4.hpp>
+#include <string>
 
 #include "_assetloader.h"
 #include  "_material.h"
@@ -31,8 +32,8 @@ public:
     //
     void setId(uint id);
     uint getId() const;
-    void setTag(QString tag);
-    QString getTag() const;
+    void setTag(std::string tag);
+    std::string getTag() const;
     void setOrderInIndex(uint i);
     uint getIndexPosInScene() const;
     //
@@ -156,7 +157,7 @@ public:
     light getLightSource();
 private:
     uint id;
-    QString tag;
+    std::string tag;
     glm::vec3 postion;
     glm::vec3 rotation;
     glm::vec3 pivot;

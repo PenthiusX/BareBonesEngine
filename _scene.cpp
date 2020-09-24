@@ -19,10 +19,13 @@ _Scene::_Scene(){
     isCamera = false;
     fboObject = new _FrameBuffer();
     stencilObject = new _StencilBuffer();
+//    shadowBObject = new _ShadowBuffer();
+
     fboObject->initialise();
     isHelpers = false;
     loopIndex = 0;
     skyb.initialise();
+//    shadowBObject->init();
 }
 _Scene::~_Scene(){
 
@@ -34,7 +37,7 @@ _Scene::~_Scene(){
     }lightsArray.clear();
 
     delete fboObject;
-
+//    delete shadowBObject;
 }
 //---------------------------------------------------------------------------------------
 /*
@@ -257,12 +260,15 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render()
 {
-
-//    for (uint i = 0; i < meshesR.size(); i++){
-//       // meshesR[i]->getSceneEntity().getIsShadowCaster() == true ? meshesR[i]->draw(2): meshesR[i]->getSceneEntity().setIsActive(false);
+//    glm::vec3 sLightPos;
+//   for (uint i = 0; i < meshesR.size(); i++){
+////        if(meshesR[i]->getSceneEntity().getTag() == "dlight"){
+////            sLightPos = meshesR[i]->getSceneEntity().getPostion();
+////        }
 //       if(meshesR[i]->getSceneEntity().getIsShadowCaster() == true){
-//        meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,100.5);
-//        meshesR[i]->draw(2);
+////            meshesR[i]->setCamViewMatrix(glm::vec3(-4.4f,5.76f, 1.3f),glm::vec3(0),cam.getUpVector());
+////            meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,100.5);
+//            //meshesR[i]->draw(1);
 //       }
 //    }
 
@@ -272,11 +278,12 @@ void _Scene::render()
     //
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
+        meshesR[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
         meshesR[i]->draw(1);//Rendering Scene Object/Primitives
         //~~~~~~~~~~~~~
         meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
         lrc == lightsArray.size() ? lrc = 0:lrc;
-        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag().toStdString()){
+        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity().getTag()){//get tag is super slow , conver se to pointer
             //update the light objects with values from there relative meshentities in the secene
             lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity().getPostion());
             QVector4D col =  meshesR[i]->getSceneEntity().getColor();

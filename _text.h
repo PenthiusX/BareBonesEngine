@@ -24,7 +24,7 @@ public:
 
     void setPainterWidgetContext(_GLWidget *q);
     void onResize(int w, int h);
-    void render(_GLWidget *q , float fps, QString Name, glm::vec3 pos, glm::vec3 rotation);
+    void render(_GLWidget *q , float fps, std::string Name, glm::vec3 pos, glm::vec3 rotation);
 
     void createFont(_GLWidget *q);
     int nearestPowerOfTwo(uint n);
