@@ -61,7 +61,7 @@ void _Scene::addSceneObject(_SceneEntity* s)
         if (isCamera){
             initialiseMesh(s);
         }
-        initialisePhysics(s);
+//        initialisePhysics(s);
         initialiseLights(s);
     }
 }
@@ -278,7 +278,7 @@ void _Scene::render()
     //
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
-        meshesR[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+        //meshesR[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
         meshesR[i]->draw(1);//Rendering Scene Object/Primitives
         //~~~~~~~~~~~~~
         meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
@@ -292,7 +292,7 @@ void _Scene::render()
                  lightsArray[lrc]->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(0.09),glm::vec3(0.032));
             }
             lrc++;}
-        //~~~~~~~~~~~~~~
+//        //~~~~~~~~~~~~~~
     }
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad

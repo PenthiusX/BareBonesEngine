@@ -111,7 +111,7 @@ void _Renderer::setShader()
     shdr->attachShaders(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
     shaderVec.push_back(shdr);
 
-    qDebug() << "default Shader attached for entity" << sceneEntity->getTag().c_str();
+    //qDebug() << "default Shader attached for entity" << sceneEntity->getTag().c_str();
 }
 /*
  * Takes the path to the relative qrc aided directory
