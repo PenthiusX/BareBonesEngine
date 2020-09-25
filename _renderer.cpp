@@ -40,7 +40,7 @@ _Renderer::~_Renderer()
 *
 * returns the current scene entity object.
 */
-_SceneEntity *_Renderer::getSceneEntity() const
+_SceneEntity* _Renderer::getSceneEntity() const
 {
     return sceneEntity;
 }

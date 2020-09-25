@@ -29,6 +29,8 @@ _Scene::_Scene(){
     sph = new _SceneEntity();bb= new _SceneEntity();s= new _SceneEntity();
     mpnt= new _SceneEntity();cnet= new _SceneEntity();max= new _SceneEntity();
     min= new _SceneEntity();pivot= new _SceneEntity();bg= new _SceneEntity();
+    rayHitSceneEntity = new _SceneEntity();
+    triCollidedSceneEntity = new _SceneEntity();
 }
 _Scene::~_Scene()
 {
@@ -40,6 +42,8 @@ _Scene::~_Scene()
     physVector.clear();
 
     delete fboObject;
+    //delete rayHitSceneEntity;
+    delete triCollidedSceneEntity;
 //    delete shadowBObject;
 }
 //---------------------------------------------------------------------------------------
