@@ -149,6 +149,10 @@ void _GLWidget::initializeGL() {
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
+
+    for(uint i = 0 ; i < scene->getSceneObjects().size();i++){
+        triCount += (scene->getSceneObjects()[i]->getSceneEntity()->getModelInfo().getIndexArray().size() * 0.3333333333333);
+    }
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
@@ -198,7 +202,7 @@ void _GLWidget::paintGL()//the renderloop
     //Rendering info as text on screen
     iter++;
     if(iter > 100){iter = 0; qInfo()<< 1/timePerDraw << "\n";}
-    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay()->getTag(),scene->getSceneEntityHitWithRay()->getPostion(),glm::vec3(0));
+    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay()->getTag(),scene->getSceneEntityHitWithRay()->getPostion(),glm::vec3(triCount));
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·

@@ -193,18 +193,18 @@ void _StencilBuffer::clearStencilBuffer()
 
 
 
-_ShadowBuffer::_ShadowBuffer()
-{
-    sbShader = new _Shader();
+_ShadowBuffer::_ShadowBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext()){
+
 }
 
-_ShadowBuffer::~_ShadowBuffer()
-{
+_ShadowBuffer::~_ShadowBuffer(){
     delete sbShader;
 }
 
 void _ShadowBuffer::init()
 {
+    sbShader = new _Shader();
+
     glGenFramebuffers(1, &depthMapFBO);
     const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;//shadow res
 

@@ -49,12 +49,17 @@ private:
     void initialiseMesh(_SceneEntity* s);
     void initialisePhysics(_SceneEntity *s);
     void initialiseLights(_SceneEntity* s);
-    //
-    std::vector<_Renderer*> meshesR,lightsR;
+    //Light opss
+    std::vector<I_Light*> lightsArray;
+    I_Light *lp;
+    //Frame buffer ops
     _FrameBuffer *fboObject;//framebuffer object in the current instance
     _StencilBuffer *stencilObject;
-//    _ShadowBuffer *shadowBObject;
+    _ShadowBuffer shadowBObject;
+    //
     _Renderer* r;
+    std::vector<_Renderer*> meshesR;
+    //
     _Camera cam;
     bool isCamera;
     QVector2D mousePositionR,mousePositionL;
@@ -69,16 +74,13 @@ private:
     void updateHelpersOnce();
     void updateHelpersLoop(uint index);
     void setHelperIndexVars();
-    //Physics
+    //Physics ops
     std::vector<_Physics*> physVector;
     _SceneEntity *rayHitSceneEntity,*triCollidedSceneEntity;
     uint hc;//physics and helper object counter
     uint loopIndex;
     void updateAllPhysicsObjectsLoop();
     void updateAllPhysicsObjectsOnce();
-    //Lights
-    std::vector<I_Light*> lightsArray;
-    I_Light *lp;
     //Thread
     std::thread pu;
     std::thread ph;

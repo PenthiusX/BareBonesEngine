@@ -19,18 +19,19 @@ _Scene::_Scene(){
     isCamera = false;
     fboObject = new _FrameBuffer();
     stencilObject = new _StencilBuffer();
-//    shadowBObject = new _ShadowBuffer();
-
+    //
     fboObject->initialise();
     isHelpers = false;
     loopIndex = 0;
-    skyb.initialise();
-//    shadowBObject->init();
+    //
     sph = new _SceneEntity();bb= new _SceneEntity();s= new _SceneEntity();
     mpnt= new _SceneEntity();cnet= new _SceneEntity();max= new _SceneEntity();
     min= new _SceneEntity();pivot= new _SceneEntity();bg= new _SceneEntity();
     rayHitSceneEntity = new _SceneEntity();
     triCollidedSceneEntity = new _SceneEntity();
+    //
+    skyb.initialise();
+    shadowBObject.init();
 }
 _Scene::~_Scene()
 {
@@ -44,7 +45,6 @@ _Scene::~_Scene()
     delete fboObject;
     //delete rayHitSceneEntity;
     delete triCollidedSceneEntity;
-//    delete shadowBObject;
 }
 //---------------------------------------------------------------------------------------
 /*
@@ -267,17 +267,17 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render()
 {
-//    glm::vec3 sLightPos;
-//   for (uint i = 0; i < meshesR.size(); i++){
-////        if(meshesR[i]->getSceneEntity().getTag() == "dlight"){
-////            sLightPos = meshesR[i]->getSceneEntity().getPostion();
-////        }
-//       if(meshesR[i]->getSceneEntity().getIsShadowCaster() == true){
-////            meshesR[i]->setCamViewMatrix(glm::vec3(-4.4f,5.76f, 1.3f),glm::vec3(0),cam.getUpVector());
-////            meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,100.5);
-//            //meshesR[i]->draw(1);
-//       }
-//    }
+    glm::vec3 sLightPos;
+   for (uint i = 0; i < meshesR.size(); i++){
+        if(meshesR[i]->getSceneEntity()->getTag() == "dlight"){
+            sLightPos = meshesR[i]->getSceneEntity()->getPostion();
+        }
+       if(meshesR[i]->getSceneEntity()->getIsShadowCaster() == true){
+            meshesR[i]->setCamViewMatrix(glm::vec3(-4.4f,5.76f, 1.3f),glm::vec3(0),cam.getUpVector());
+            meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,10.0);
+            meshesR[i]->draw(2);
+       }
+    }
 
     fboObject->setUpdatedFrame();// The frames in context below will be captured
     //
@@ -285,7 +285,7 @@ void _Scene::render()
     //
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
-        //meshesR[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+        meshesR[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
         meshesR[i]->draw(1);//Rendering Scene Object/Primitives
         //~~~~~~~~~~~~~
         meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity

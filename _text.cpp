@@ -45,8 +45,10 @@ void _Text::render(_GLWidget *q , float fps, std::string Name, glm::vec3 pos, gl
     f1 = Name.c_str();
     f2 = "Name:" + f1;
     QStaticText b(f2);
-
-    QStaticText c("Id: ");
+    //
+    f1 = QString::number(rotation.x);
+    f2 = "TriCount:" + f1;
+    QStaticText c( f2);
     QStaticText d("Rot: ");
 
     QPainter p(q);

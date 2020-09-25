@@ -32,7 +32,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 */
 _Renderer::~_Renderer()
 {
-    delete sceneEntity;
+    //delete sceneEntity;
     for(auto sr : shaderVec){delete  sr;}
     shaderVec.clear();
 }
@@ -61,17 +61,17 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity* s)
 {
     sceneEntity = s;
     actualColor = sceneEntity->getColor();
+    //generates a shader program
     setShader(sceneEntity->getVertexShaderPath(), sceneEntity->getFragmentShaderPath());//1
     if(sceneEntity->getIsShadowCaster()){setShader(":/shaders/shadowDepthMapV.glsl",":/shaders/shadowDepthMapF.glsl");}//2
-    //
+    //sets the lightings init info
     if(sceneEntity->getMaterial().getDiffuseTexture().size() != 0){setupTexture(sceneEntity->getMaterial().getDiffuseTexture(),_Texture::Type::Diffuse);}
     if(sceneEntity->getMaterial().getSpecualrTexture().size() != 0){setupTexture(sceneEntity->getMaterial().getSpecualrTexture(),_Texture::Type::Specular);}
-    //
+    //Sets the matrices init info
     setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
-
+    //sets the model data into buffers
     if(sceneEntity->getModelInfo().getVertexArray().size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexArray(), sceneEntity->getModelInfo().getIndexArray());}
     else{setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}
-    qDebug() << "setModelDataInBuffers() for entity" << sceneEntity->getTag().c_str();
 }
 /*
  sets a copy of sceneEntity in the renderer
