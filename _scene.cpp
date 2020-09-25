@@ -26,15 +26,18 @@ _Scene::_Scene(){
     loopIndex = 0;
     skyb.initialise();
 //    shadowBObject->init();
+    sph = new _SceneEntity();bb= new _SceneEntity();s= new _SceneEntity();
+    mpnt= new _SceneEntity();cnet= new _SceneEntity();max= new _SceneEntity();
+    min= new _SceneEntity();pivot= new _SceneEntity();bg= new _SceneEntity();
 }
-_Scene::~_Scene(){
-
-    for(auto m : meshesR){
-        delete m;
-    } meshesR.clear();
-    for(auto m : lightsArray){
-        delete m;
-    }lightsArray.clear();
+_Scene::~_Scene()
+{
+    for(auto m : meshesR){delete m;}
+    meshesR.clear();
+    for(auto m : lightsArray){delete m;}
+    lightsArray.clear();
+    for(auto p : physVector){delete p;}
+    physVector.clear();
 
     delete fboObject;
 //    delete shadowBObject;
@@ -61,7 +64,7 @@ void _Scene::addSceneObject(_SceneEntity* s)
         if (isCamera){
             initialiseMesh(s);
         }
-//        initialisePhysics(s);
+        initialisePhysics(s);
         initialiseLights(s);
     }
 }
@@ -79,8 +82,8 @@ void _Scene::initialiseMesh(_SceneEntity* s)
 void _Scene::initialisePhysics(_SceneEntity* s)
 {
     if(s->getIsPhysicsObject()){
-        _Physics phys;
-        phys.initialiseSceneEntity(s);
+        _Physics *phys = new _Physics();
+        phys->initialiseSceneEntity(s);
         physVector.push_back(phys);
     }
 }
@@ -212,15 +215,15 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
 //        ph = std::thread(&_Scene::updateHelpersOnce,this);
 //        if(pu.joinable()){pu.detach();}
 //        if(ph.joinable()){ph.detach();}
-        //updateAllPhysicsObjectsOnce();
+        updateAllPhysicsObjectsOnce();
         //updateHelpersOnce();
     }
     else if(m == Qt::MiddleButton){
         //Physics+Helpers update on detached threads
         //pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
        // ph = std::thread(&_Scene::updateHelpersOnce,this);
-        if(pu.joinable()){pu.detach();}
-        if(ph.joinable()){ph.detach();}
+//        if(pu.joinable()){pu.detach();}
+//        if(ph.joinable()){ph.detach();}
     }
 }
 //---------------------------------------------------------------------------------------
@@ -323,66 +326,66 @@ void _Scene::fixedUpdate(float intervalTime)
  * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
 */
-//void _Scene::updateAllPhysicsObjectsOnce(){
-//    if(physVector.size() > 0){
-//        for (uint index = 0; index < physVector.size(); index++){
-//            physVector[index].setSceneEntity(meshesR[physVector[index].getSceneEntity()->getIndexPosInScene()]->getSceneEntity());
+void _Scene::updateAllPhysicsObjectsOnce(){
+    if(physVector.size() > 0){
+        for (uint index = 0; index < physVector.size(); index++){
+            physVector[index]->setSceneEntity(meshesR[physVector[index]->getSceneEntity()->getIndexPosInScene()]->getSceneEntity());
 
-//            //Passing some essentials into the updateLoop for physics
-//            //updates the physics object instance and runs the main physics updateOperations.
-//            physVector[index].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-//                                                 glm::vec3(cam.getEyePosition().x,//Camera Position
-//                                                           cam.getEyePosition().y,
-//                                                           cam.getEyePosition().z),
-//                                                 glm::vec2(resW,resH));
+            //Passing some essentials into the updateLoop for physics
+            //updates the physics object instance and runs the main physics updateOperations.
+            physVector[index]->updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
+                                                 glm::vec3(cam.getEyePosition().x,//Camera Position
+                                                           cam.getEyePosition().y,
+                                                           cam.getEyePosition().z),
+                                                 glm::vec2(resW,resH));
 
-//            //updates the status of scneEntity variable that get changed inside the Physis class on Collision Events.
-//            //style of implmentation can vary, its essentally updates the sceEntityObjet in the rendered if it is
-//            //getting collided with ray, So SceneEntity is the sharedVariable across classes Physics and Renderer
-//            uint pi = physVector[index].getSceneEntity()->getIndexPosInScene();
-//            meshesR[pi]->setSceneEntityInRenderer(physVector[index].getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
+            //updates the status of scneEntity variable that get changed inside the Physis class on Collision Events.
+            //style of implmentation can vary, its essentally updates the sceEntityObjet in the rendered if it is
+            //getting collided with ray, So SceneEntity is the sharedVariable across classes Physics and Renderer
+            uint pi = physVector[index]->getSceneEntity()->getIndexPosInScene();
+            meshesR[pi]->setSceneEntityInRenderer(physVector[index]->getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
 
-//            if(meshesR[pi]->getSceneEntity()->getisHitByRay()){
-//                rayHitSceneEntity = meshesR[pi]->getSceneEntity();
-//            }
-//        }
-//    }
-//}
+            if(meshesR[pi]->getSceneEntity()->getisHitByRay()){
+                rayHitSceneEntity = meshesR[pi]->getSceneEntity();
+            }
+        }
+    }
+}
 
 ///*
 // * update the physcs variables realtime and is relativel optmised to run in a loop.
 // * is called in the _scene class's fixedUpdate() function.
 // */
 ////---------------------------------------------------------------------------------------
-//void _Scene::updateAllPhysicsObjectsLoop()
-//{    if(physVector.size() > 0){
-//        //        physVector[loopIndex].setSceneEntity(meshesR[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
-//        //        //Passing some essentials into the updateLoop for physics
-//        //        //updates the physics object instance and runs the main physics updateOperations.
-//        //        physVector[loopIndex].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-//        //                                            glm::vec3(cam.getEyePosition().x(),//Camera Position
-//        //                                                      cam.getEyePosition().y(),
-//        //                                                      cam.getEyePosition().z()),
-//        //                                            glm::vec2(resW,resH));
+void _Scene::updateAllPhysicsObjectsLoop()
+{    if(physVector.size() > 0){
+        //        physVector[loopIndex].setSceneEntity(meshesR[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
+        //        //Passing some essentials into the updateLoop for physics
+        //        //updates the physics object instance and runs the main physics updateOperations.
+        //        physVector[loopIndex].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
+        //                                            glm::vec3(cam.getEyePosition().x(),//Camera Position
+        //                                                      cam.getEyePosition().y(),
+        //                                                      cam.getEyePosition().z()),
+        //                                            glm::vec2(resW,resH));
 
 
-//        //       TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
-//        bool is = false;
-//        is = physVector[loopIndex].updateObjObjPhysics(physVector);
-//        _SceneEntity* ss = physVector[loopIndex].getSceneEntity();
-//        ss->setIsHitByTri(is);
-//        meshesR[ss->getIndexPosInScene()]->setSceneEntityInRenderer(ss);
-//        //        if(meshesR[ss.getIndexPosInScene()]->getSceneEntity().getIsHitByTri()){
-//        //            triCollidedSceneEntity = meshesR[ss.getIndexPosInScene()]->getSceneEntity();//sets the sceneEntity that has been set by ray.
-//        //        }
+        //       TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
+        bool is = false;
+        is = physVector[loopIndex]->updateObjObjPhysics(physVector);
+        _SceneEntity* ss = physVector[loopIndex]->getSceneEntity();
+        ss->setIsHitByTri(is);
+        meshesR[ss->getIndexPosInScene()]->setSceneEntityInRenderer(ss);
+        //        if(meshesR[ss.getIndexPosInScene()]->getSceneEntity().getIsHitByTri()){
+        //            triCollidedSceneEntity = meshesR[ss.getIndexPosInScene()]->getSceneEntity();//sets the sceneEntity that has been set by ray.
+        //        }
 
-//        qDebug() << is;
-//        //------------------------------------------------------------------------------------------
-//        loopIndex++;
-//        if(loopIndex >= physVector.size())
-//            loopIndex = 0;
-//    }
-//}
+        qDebug() << is;
+        //------------------------------------------------------------------------------------------
+        loopIndex++;
+        if(loopIndex >= physVector.size())
+            loopIndex = 0;
+    }
+}
 /*
    ▄ .▄▄▄▄ .▄▄▌   ▄▄▄·▄▄▄ .▄▄▄  .▄▄ ·
   ██▪▐█▀▄.▀·██•  ▐█ ▄█▀▄.▀·▀▄ █·▐█ ▀.
@@ -391,130 +394,130 @@ void _Scene::fixedUpdate(float intervalTime)
   ▀▀▀ · ▀▀▀ .▀▀▀ .▀    ▀▀▀ .▀  ▀ ▀▀▀▀
 */
 //---------------------------------------------------------------------------------------
-//void _Scene::updateHelpersOnce()
-//{
-//    if(isHelpers == true){
-//        glm::vec4 mx,mn,cntrd;
-//        glm::vec3 rot,pos;
-//        for (uint i = 0; i < physVector.size(); i++)
-//        {
-//            if(physVector[i].getSceneEntity()->getIsPhysicsHelper() && physVector[i].getSceneEntity()->getisHitByRay())
-//            {
-//                glm::vec3 p = physVector[i].getRayTriIntersectionPoint();
-//                meshesR[mPointerIndex]->setPosition(p);
-//                //sc = physVector[i].getSceneEntity().getScale();
+void _Scene::updateHelpersOnce()
+{
+    if(isHelpers == true){
+        glm::vec4 mx,mn,cntrd;
+        glm::vec3 rot,pos;
+        for (uint i = 0; i < physVector.size(); i++)
+        {
+            if(physVector[i]->getSceneEntity()->getIsPhysicsHelper() && physVector[i]->getSceneEntity()->getisHitByRay())
+            {
+                glm::vec3 p = physVector[i]->getRayTriIntersectionPoint();
+                meshesR[mPointerIndex]->setPosition(p);
+                //sc = physVector[i].getSceneEntity().getScale();
 
-//                //Temporary Helpers for Max min extents
-//                mx = physVector[i].getSceneEntity()->getModelInfo().getMaxExtent();
-//                mn = physVector[i].getSceneEntity()->getModelInfo().getMinExtent();
-//                cntrd = physVector[i].getSceneEntity()->getModelInfo().getCentroid();
+                //Temporary Helpers for Max min extents
+                mx = physVector[i]->getSceneEntity()->getModelInfo().getMaxExtent();
+                mn = physVector[i]->getSceneEntity()->getModelInfo().getMinExtent();
+                cntrd = physVector[i]->getSceneEntity()->getModelInfo().getCentroid();
 
-//                pos = physVector[i].getSceneEntity()->getPostion();
-//                rot = physVector[i].getSceneEntity()->getRotation();
-//            }
-//        }
+                pos = physVector[i]->getSceneEntity()->getPostion();
+                rot = physVector[i]->getSceneEntity()->getRotation();
+            }
+        }
 
-//        meshesR[cIndex]->setPosition(cntrd);
+        meshesR[cIndex]->setPosition(cntrd);
 
-//        meshesR[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
-//        meshesR[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
-//        //meshesR[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
+        meshesR[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
+        meshesR[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //meshesR[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
 
-//        meshesR[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
-//        meshesR[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
-//        //meshesR[minIndex]->lookAt(cam.getEyePosition());//buggy look at
+        meshesR[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
+        meshesR[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //meshesR[minIndex]->lookAt(cam.getEyePosition());//buggy look at
 
-//        meshesR[pivotIndex]->setPosition(pos);
-//        meshesR[pivotIndex]->setRotation(rot);
-//    }
-//}
+        meshesR[pivotIndex]->setPosition(pos);
+        meshesR[pivotIndex]->setRotation(rot);
+    }
+}
 
-////Not in use//---------------------------------------------------------------------------------------
-//void _Scene::updateHelpersLoop(uint index){
-//    if(meshesR[index]->getSceneEntity()->getIsPhysicsHelper() &&  meshesR[index]->getSceneEntity()->getisHitByRay()){
-//        // binding the pivot object to focus object
-//        meshesR[pivotIndex]->setPosition(meshesR[index]->getSceneEntity()->getPostion());
-//        meshesR[pivotIndex]->setRotation(meshesR[index]->getSceneEntity()->getRotation());
-//    }
-//}
-////---------------------------------------------------------------------------------------
-//void _Scene::setHelperIndexVars(){
-//    pivotIndex = findSceneEntity("pivot")->getIndexPosInScene();
-//    cIndex = findSceneEntity("cent")->getIndexPosInScene();
-//    mxIndex = findSceneEntity("max")->getIndexPosInScene();
-//    minIndex = findSceneEntity("min")->getIndexPosInScene();
-//    mPointerIndex = findSceneEntity("mousePointerObject")->getIndexPosInScene();
-//}
-////---------------------------------------------------------------------------------------
-//void _Scene::addAllHelperTypesInScene()
-//{
+//Not in use//---------------------------------------------------------------------------
+void _Scene::updateHelpersLoop(uint index){
+    if(meshesR[index]->getSceneEntity()->getIsPhysicsHelper() &&  meshesR[index]->getSceneEntity()->getisHitByRay()){
+        // binding the pivot object to focus object
+        meshesR[pivotIndex]->setPosition(meshesR[index]->getSceneEntity()->getPostion());
+        meshesR[pivotIndex]->setRotation(meshesR[index]->getSceneEntity()->getRotation());
+    }
+}
+//---------------------------------------------------------------------------------------
+void _Scene::setHelperIndexVars(){
+    pivotIndex = findSceneEntity("pivot")->getIndexPosInScene();
+    cIndex = findSceneEntity("cent")->getIndexPosInScene();
+    mxIndex = findSceneEntity("max")->getIndexPosInScene();
+    minIndex = findSceneEntity("min")->getIndexPosInScene();
+    mPointerIndex = findSceneEntity("mousePointerObject")->getIndexPosInScene();
+}
+//---------------------------------------------------------------------------------------
+void _Scene::addAllHelperTypesInScene()
+{
 //    this->isHelpers = true;
 //    //----------Physics Helpers-------
-//    sph.setId(1);
-//    sph.setTag("boundingSphere");
-//    sph.setIsLineMode(true);
-//    sph.setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::NoHelper);
-//    sph.setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-//    sph.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    sph.setColor(QVector4D(0.3,0.5,0.0,0.9));
-//    sph.setScale(1.0f);
-//    sph.setModelData(":/models/sphere.obj");
-//    sph.setIsActive(false);
+//    sph->setId(1);
+//    sph->setTag("boundingSphere");
+//    sph->setIsLineMode(true);
+//    sph->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::NoHelper);
+//    sph->setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
+//    sph->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//    sph->setColor(QVector4D(0.3,0.5,0.0,0.9));
+//    sph->setScale(1.0f);
+//    sph->setModelData(":/models/sphere.obj");
+//    sph->setIsActive(false);
 //    //---
-//    bb.setId(2);
-//    bb.setTag("boundingBox");
-//    bb.setIsLineMode(true);
-//    bb.setPhysicsObject(_SceneEntity::Box,_SceneEntity::NoHelper);
-//    bb.setIsTransformationLocal(false);
-//    bb.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    bb.setColor(QVector4D(0.5,1.0,1.0,0.9));
-//    bb.setScale(1.0f);
-//    bb.setModelData(":/models/cube.obj");//dont need to reparse modelfile
-//    bb.setIsActive(false);
+//    bb->setId(2);
+//    bb->setTag("boundingBox");
+//    bb->setIsLineMode(true);
+//    bb->setPhysicsObject(_SceneEntity::Box,_SceneEntity::NoHelper);
+//    bb->setIsTransformationLocal(false);
+//    bb->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//    bb->setColor(QVector4D(0.5,1.0,1.0,0.9));
+//    bb->setScale(1.0f);
+//    bb->setModelData(":/models/cube.obj");//dont need to reparse modelfile
+//    bb->setIsActive(false);
 //    //
-////    addSceneObject(sph);
-////    addSceneObject(bb);
+//    addSceneObject(sph);
+//    addSceneObject(bb);
 //    //----------Orentation Helpers---------------
-//    pivot.setId(888);
-//    pivot.setTag("pivot");
-//    pivot.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-//    pivot.setColor(QVector4D(1.0,1.0,1.0,1.0));
-//    pivot.setScale(1.0f);
-//    pivot.setModelData(":/models/pivot.obj");
+//    pivot->setId(888);
+//    pivot->setTag("pivot");
+//    pivot->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+//    pivot->setColor(QVector4D(1.0,1.0,1.0,1.0));
+//    pivot->setScale(1.0f);
+//    pivot->setModelData(":/models/pivot.obj");
 //    //---
-//    mpnt.setId(999);
-//    mpnt.setTag("mousePointerObject");
-//    mpnt.setIsTransformationLocal(false);
-//    mpnt.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    mpnt.setScale(0.02f);
-//    mpnt.setModelData(sph.getModelInfo());
+//    mpnt->setId(999);
+//    mpnt->setTag("mousePointerObject");
+//    mpnt->setIsTransformationLocal(false);
+//    mpnt->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//    mpnt->setScale(0.02f);
+//    mpnt->setModelData(sph->getModelInfo());
 //    //---
-//    cnet.setId(991);
-//    cnet.setTag("cent");
-//    cnet.setIsTransformationLocal(false);
-//    cnet.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    cnet.setScale(0.07f);
-//    cnet.setModelData(sph.getModelInfo());
+//    cnet->setId(991);
+//    cnet->setTag("cent");
+//    cnet->setIsTransformationLocal(false);
+//    cnet->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//    cnet->setScale(0.07f);
+//    cnet->setModelData(sph->getModelInfo());
 //    //---
-//    max.setId(992);
-//    max.setTag("max");
-//    max.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    max.setColor(QVector4D(0.5,0.5,0.5,1.0));
-//    max.setScale(0.1f);
-//    max.setModelData(":/models/helpers/max.obj");
+//    max->setId(992);
+//    max->setTag("max");
+//    max->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//    max->setColor(QVector4D(0.5,0.5,0.5,1.0));
+//    max->setScale(0.1f);
+//    max->setModelData(":/models/helpers/max.obj");
 //    //---
-//    min.setId(993);
-//    min.setTag("min");
-//    min.setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    min.setScale(0.1f);
-//    min.setModelData(":/models/helpers/min.obj");
+//    min->setId(993);
+//    min->setTag("min");
+//    min->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+//    min->setScale(0.1f);
+//    min->setModelData(":/models/helpers/min.obj");
 //    //
-////    addSceneObject(mpnt);
-////    addSceneObject(cnet);
-////    addSceneObject(min);
-////    addSceneObject(max);
-////    addSceneObject(pivot);
+//    addSceneObject(mpnt);
+//    addSceneObject(cnet);
+//    addSceneObject(min);
+//    addSceneObject(max);
+//    addSceneObject(pivot);
 //    //
 //    setHelperIndexVars();
-//}
+}
 ////---------------------------------------------------------------------------------------

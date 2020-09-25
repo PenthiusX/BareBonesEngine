@@ -34,13 +34,6 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent){
 }
 _GLWidget::~_GLWidget(){
     delete scene;
-    delete s  ;
-    delete s2 ;
-    delete dl1;
-    delete p1 ;
-    delete p2 ;
-    delete d1 ;
-    delete sl1;
 }
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  .▄▄ · ▄▄▄ .
@@ -152,11 +145,10 @@ void _GLWidget::initializeGL() {
     //-----Scene Objects---------------------------------
     scene->addSceneObject(s);
     scene->addSceneObject(s2);
-//    //
+    //
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
-
 }
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .

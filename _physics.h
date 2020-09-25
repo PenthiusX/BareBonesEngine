@@ -62,7 +62,7 @@ public:
     glm::vec3 getRayTriIntersectionPoint() const;
     //
     void updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes);
-    bool updateObjObjPhysics(std::vector<_Physics> _physicsObjArray);
+    bool updateObjObjPhysics(std::vector<_Physics*> _physicsObjArray);
 
 private:
     std::vector<_Phy_Triangle> triVector,triVectorCopy;

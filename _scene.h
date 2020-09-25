@@ -61,7 +61,7 @@ private:
     int resW,resH;
     //Helpers
     bool isHelpers;
-    _SceneEntity sph,bb,s,mpnt,cnet,max,min,pivot,bg;
+    _SceneEntity *sph,*bb,*s,*mpnt,*cnet,*max,*min,*pivot,*bg;
     uint pivotIndex,mPointerIndex;
     uint cIndex;
     uint mxIndex;
@@ -70,7 +70,7 @@ private:
     void updateHelpersLoop(uint index);
     void setHelperIndexVars();
     //Physics
-    std::vector<_Physics> physVector;
+    std::vector<_Physics*> physVector;
     _SceneEntity *rayHitSceneEntity,*triCollidedSceneEntity;
     uint hc;//physics and helper object counter
     uint loopIndex;

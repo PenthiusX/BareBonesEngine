@@ -15,10 +15,10 @@
 //#include "_tools.h"
 
 _Physics::_Physics(){
-    sceneEntity = new _SceneEntity();
+//    sceneEntity = new _SceneEntity();
 }
 _Physics::~_Physics(){
-    delete sceneEntity;
+//    delete sceneEntity;
 }
 
 /*
@@ -365,23 +365,23 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
 
 /*
 */
-bool _Physics::updateObjObjPhysics(std::vector<_Physics> _physicsObjArray){
+bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
     //Scan this Physics object and its triangles with
     //the arry of all other physics object triangles
     //selected for collision in scene.
     for(uint i = 0 ; i < _physicsObjArray.size() ;i++){
         if(this->sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh &&
-                _physicsObjArray[i].getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Mesh &&
-                this->sceneEntity->getId() != _physicsObjArray[i].getSceneEntity()->getId()){//make sure its not the same object
+                _physicsObjArray[i]->getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Mesh &&
+                this->sceneEntity->getId() != _physicsObjArray[i]->getSceneEntity()->getId()){//make sure its not the same object
             //updates the maxExtents
             transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
             //sets the updated modelMatrix from the sceneEntity->
             transFormPhysicsTriangles(sceneEntity->getModelMatrix());
-            return triangleTriangleIntersectionTest(*this,_physicsObjArray[i]);
+            return triangleTriangleIntersectionTest(*this,*_physicsObjArray[i]);
         }
         else if(this->sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere &&
-                _physicsObjArray[i].getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Sphere &&
-                this->sceneEntity->getId() != _physicsObjArray[i].getSceneEntity()->getId()){
+                _physicsObjArray[i]->getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Sphere &&
+                this->sceneEntity->getId() != _physicsObjArray[i]->getSceneEntity()->getId()){
             //implement sphere on sphere here;
         }
     }
