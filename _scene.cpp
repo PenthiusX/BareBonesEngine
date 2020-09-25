@@ -267,6 +267,8 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render()
 {
+
+    shadowBObject.startWriteToDepthBuffer();
     glm::vec3 sLightPos;
    for (uint i = 0; i < meshesR.size(); i++){
         if(meshesR[i]->getSceneEntity()->getTag() == "dlight"){
@@ -278,6 +280,7 @@ void _Scene::render()
             meshesR[i]->draw(2);
        }
     }
+   shadowBObject.stopWrite();
 
     fboObject->setUpdatedFrame();// The frames in context below will be captured
     //

@@ -67,6 +67,7 @@ public:
 
     void init();
     void startWriteToDepthBuffer();
+    void stopWrite();
 
 
 

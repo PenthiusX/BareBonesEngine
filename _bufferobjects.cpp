@@ -27,11 +27,11 @@ void _FrameBuffer::setupQuad()
                              // positions   // texCoords
                              -1.0f,  1.0f,  0.0f, 1.0f,
                              -1.0f, -1.0f,  0.0f, 0.0f,
-                              1.0f, -1.0f,  1.0f, 0.0f,
+                             1.0f, -1.0f,  1.0f, 0.0f,
 
                              -1.0f,  1.0f,  0.0f, 1.0f,
-                              1.0f, -1.0f,  1.0f, 0.0f,
-                              1.0f,  1.0f,  1.0f, 1.0f
+                             1.0f, -1.0f,  1.0f, 0.0f,
+                             1.0f,  1.0f,  1.0f, 1.0f
                            };
 
     glGenVertexArrays(1, &quadVAO);
@@ -52,8 +52,6 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
 {
     resH = resHeight;
     resW = resWidth;
-    glViewport(0, 0, resH * 0.5, resW * 0.5);
-
 
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -108,10 +106,14 @@ void _FrameBuffer::initialise()
 */
 void _FrameBuffer::setUpdatedFrame()
 {
-   // glViewport(0, 0, resH * 0.2, resW * 0.2);
+
+    //    GLint viewport[4];
+    //    glGetIntegerv(GL_MAX_VIEWPORT_DIMS, viewport);
+    //    glViewport(0, 0, resW, resH);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);//bind the framebuffer instance to store the current frame on
     glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear for goodmeasure
+    //glViewport(0, 0, resW, resH);
 }
 /*
  * this function will render the frame generated via setFrame, and render it on the Quad
@@ -119,6 +121,7 @@ void _FrameBuffer::setUpdatedFrame()
 */
 void _FrameBuffer::renderFrameOnQuad()
 {
+
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);//always force the FBO quad to have a GL_FILL hint.
     glBindFramebuffer(GL_FRAMEBUFFER, 0);// now bind the default(orignal) frame , draw a quad plane attaching the frambuffer texture on it.
     //glDisable(GL_DEPTH_TEST | GL_STENCIL_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
@@ -134,7 +137,6 @@ void _FrameBuffer::renderFrameOnQuad()
 
     glDrawArrays(GL_TRIANGLES, 0, 6);//Draw the Quad with the texture
     glBindVertexArray(0);//Clear the buffer
-    //glEnable(GL_DEPTH_TEST | GL_STENCIL_TEST);// enable depth and stencil testing (is disabled for rendering screen-space quad)
 }
 /*
  * this function should help with implementation of the applying a FrameTextuere onto any
@@ -168,7 +170,7 @@ _StencilBuffer::~_StencilBuffer()
 // We set its mask to 0x00 to not write to the stencil buffer.
 void _StencilBuffer::dontWriteToStencil()
 {
-      glStencilMask(0x00);
+    glStencilMask(0x00);
 }
 
 void _StencilBuffer::writeToStencilPass()
@@ -192,14 +194,8 @@ void _StencilBuffer::clearStencilBuffer()
 
 
 
-
-_ShadowBuffer::_ShadowBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext()){
-
-}
-
-_ShadowBuffer::~_ShadowBuffer(){
-    delete sbShader;
-}
+_ShadowBuffer::_ShadowBuffer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext()){}
+_ShadowBuffer::~_ShadowBuffer(){ delete sbShader;}
 
 void _ShadowBuffer::init()
 {
@@ -226,5 +222,12 @@ void _ShadowBuffer::init()
 
 void _ShadowBuffer::startWriteToDepthBuffer()
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glActiveTexture(GL_TEXTURE0);
+}
 
+void _ShadowBuffer::stopWrite()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
