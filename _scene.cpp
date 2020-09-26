@@ -275,8 +275,8 @@ void _Scene::render()
             sLightPos = meshesRVec[i]->getSceneEntity()->getPostion();
         }
         if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true){
-            meshesRVec[i]->setCamViewMatrix(sLightPos,glm::vec3(0),cam.getUpVector());
-            meshesRVec[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,20.0);
+            meshesRVec[i]->setCamViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
+            meshesRVec[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,100.5);
             meshesRVec[i]->draw(2);
         }
     }
@@ -290,6 +290,7 @@ void _Scene::render()
     {
         //-----Draw the Meshes-----
         meshesRVec[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+        meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
         meshesRVec[i]->draw(1);//Rendering Scene Object/Primitives
 
         //~~~~~Get and update Light information---

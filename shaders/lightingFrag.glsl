@@ -75,10 +75,28 @@ in vec2 TexCoord;
 uniform sampler2D diffuseTex;//1
 uniform sampler2D specularTex;//2
 uniform sampler2D bumpTex;//3 //not in use yet
+//Shadow
 uniform sampler2D shadowDepthTex;//4
+in vec4 fragPosLightSpace;
 //Time
 uniform float time;
 #define PI 3.14159265359
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture2D(shadowDepthTex, projCoords.xy).r;
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+
+    return shadow;
+}
 
 vec3 compPointLight(PointLight pl ,vec4 diffuseTexture, vec4 specularTexture){
 
@@ -125,9 +143,10 @@ vec3 compDirectonalLight(vec4 diffuseTexture, vec4 specularTexture){
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * (specularTexture.xyz * material.specular);
-
+    //shadow
+    float sd = ShadowCalculation(fragPosLightSpace);
     //Final
-    return ambient + diffuse + specular ;
+    return (ambient + (1.0 - sd)) * (diffuse + specular) ;
 }
 
 vec3 compSpotLight(vec4 diffuseTexture, vec4 specularTexture){

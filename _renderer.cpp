@@ -16,7 +16,7 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0);//sets the bckground color of the openglContext.
     //
-   // shdr = new _Shader();//initialising the _shader() class * object.
+    // shdr = new _Shader();//initialising the _shader() class * object.
     setShader();//will run this shader by default.
     timer.start();
     //
@@ -25,7 +25,9 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     viewMatrix = glm::mat4(1.0f);
     pivotTmat = glm::mat4(1.0f);
     qDebug() << "render initialised ";
-        sceneEntity = new _SceneEntity();
+    sceneEntity = new _SceneEntity();
+    lightViewMatrix =glm::mat4(1.0f);
+
 }
 /*
  *Distructor: _Renderer Class
@@ -149,10 +151,10 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof(float), &vertexArray[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
 
-//  glEnableVertexAttribArray(0);
-//  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    //  glEnableVertexAttribArray(0);
+    //  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
-//  position attribute
+    //  position attribute
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     // normal attribute
@@ -162,31 +164,31 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
 
 void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
 {
-      indices = indexArray;
+    indices = indexArray;
 
-       glGenVertexArrays(1, &VAO);
-       glGenBuffers(1, &VBO);
-       glGenBuffers(1, &EBO);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-       glBindVertexArray(VAO);
+    glBindVertexArray(VAO);
 
-       glBindBuffer(GL_ARRAY_BUFFER, VBO);
-       glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
 
-       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-       glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(uint),&indexArray[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(uint),&indexArray[0], GL_STATIC_DRAW);
 
-       // vertex positions
-       glEnableVertexAttribArray(0);
-       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
-       // vertex normals
-       glEnableVertexAttribArray(1);
-       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
-       // vertex texture coords
-       glEnableVertexAttribArray(2);
-       glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
+    // vertex positions
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
+    // vertex normals
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
+    // vertex texture coords
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 
-       glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 //Bind the textre set in the Matirial obj of sceneEntity->
@@ -267,9 +269,9 @@ void _Renderer::setCamViewMatrix(glm::vec3 eyePos,glm::vec3 focalPoint,glm::vec3
     this->focalPoint = focalPoint;
     viewMatrix = glm::mat4(1.0f);
     viewMatrix = glm::lookAt(
-                        glm::vec3(eyePos.x, eyePos.y, eyePos.z),
-                        glm::vec3(focalPoint.x, focalPoint.y, focalPoint.z),
-                        glm::vec3(upVector.x, upVector.y, upVector.z));
+                glm::vec3(eyePos.x, eyePos.y, eyePos.z),
+                glm::vec3(focalPoint.x, focalPoint.y, focalPoint.z),
+                glm::vec3(upVector.x, upVector.y, upVector.z));
     keepSceneEntityUpdated();
 }
 /*
@@ -292,11 +294,15 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     //qDebug() << "setProjectionMatrix() on entity" << sceneEntity->getTag().c_str();
 }
 void _Renderer::setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar){
-//    float near_plane = 1.0f, far_plane = 7.5f;
-//     orthoProjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-     orthoProjMatrix = glm::ortho(left,right,bottom,top, zNear, zFar);
-     //sceneEntity->setOrthoProjMatrix(orthoProjMatrix);//keep local  updated
+    //    float near_plane = 1.0f, far_plane = 7.5f;
+    //     orthoProjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+    orthoProjMatrix = glm::ortho(left,right,bottom,top, zNear, zFar);
 }
+void _Renderer::setLightViewMatrix(glm::vec3 eye, glm::vec3 focal, glm::vec3 up)
+{
+    lightViewMatrix = glm::lookAt(eye,focal,up);
+}
+
 void _Renderer::setProjectionMatrix(int type, glm::mat4x4 m)
 {
     projectionMatrix = m;
@@ -552,6 +558,7 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
         glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
         glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getProjectionMatrix()));
         glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("orthoProjection"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
+        glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("shadowLightSpace"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix * lightViewMatrix));//for shadow calcs
         glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity->getModelMatrix()));
         //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getTranslationMatrix()*sceneEntity->getRotationmatrix()*pivotTmat *sceneEntity->getScaleingMatrix()));
         //
@@ -590,13 +597,13 @@ void _Renderer::updateColorUniforms()
 
     sceneEntity->getisHitByRay() ? sceneEntity->setColor(actualColor * 2.0) : sceneEntity->setColor(actualColor * 1.0);
 
-//    if(sceneEntity->getIsHitByTri()){
-//        QVector4D qc = actualColor;
-//         qc.setX(actualColor.x() + 1.0f);
-//        sceneEntity->setColor(qc);
-//    }
-//    else
-//        sceneEntity->setColor(actualColor);
+    //    if(sceneEntity->getIsHitByTri()){
+    //        QVector4D qc = actualColor;
+    //         qc.setX(actualColor.x() + 1.0f);
+    //        sceneEntity->setColor(qc);
+    //    }
+    //    else
+    //        sceneEntity->setColor(actualColor);
 }
 /*
  *  Used in the Draw functon
@@ -625,37 +632,37 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
         {
             glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
             //PointL
-                f  = "pointLights[";
-                u  = std::to_string(piter);
-                e1 = "].position";
-                e2 = "].ambient";
-                e3 = "].diffuse";
-                e4 = "].specular";
-                e5 = "].constant";
-                e6 = "].linear";
-                e7 = "].quadratic";
+            f  = "pointLights[";
+            u  = std::to_string(piter);
+            e1 = "].position";
+            e2 = "].ambient";
+            e3 = "].diffuse";
+            e4 = "].specular";
+            e5 = "].constant";
+            e6 = "].linear";
+            e7 = "].quadratic";
 
-                glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
-                glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
-                glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e3).c_str()), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
-                glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e4).c_str()), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
-                glUniform1f(shaderVec[ssl]->getUniformLocation((f+u+e5).c_str()), il[li]->getLightParams()[4].x); // note that all light colors are set at full intensity
-                glUniform1f(shaderVec[ssl]->getUniformLocation((f+u+e6).c_str()), il[li]->getLightParams()[5].x);
-                glUniform1f(shaderVec[ssl]->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
+            glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e1).c_str()), il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+            glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e2).c_str()), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+            glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e3).c_str()), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+            glUniform3f(shaderVec[ssl]->getUniformLocation((f+u+e4).c_str()), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+            glUniform1f(shaderVec[ssl]->getUniformLocation((f+u+e5).c_str()), il[li]->getLightParams()[4].x); // note that all light colors are set at full intensity
+            glUniform1f(shaderVec[ssl]->getUniformLocation((f+u+e6).c_str()), il[li]->getLightParams()[5].x);
+            glUniform1f(shaderVec[ssl]->getUniformLocation((f+u+e7).c_str()), il[li]->getLightParams()[6].x);
 
-                piter++;
-                piter > 2 ? piter = 0: piter;//3 is max no of point light should also reflect in the shader
+            piter++;
+            piter > 2 ? piter = 0: piter;//3 is max no of point light should also reflect in the shader
         }
         if(il[li]->getLightType() == "SpotLight")
         {
-//            //positions
-//            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
-//            glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
-//            //SpotL-
-//            glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
-//            glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
-//            glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
-//            glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
+            //            //positions
+            //            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
+            //            glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
+            //            //SpotL-
+            //            glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
+            //            glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
+            //            glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
+            //            glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
         }
     }
 
@@ -673,29 +680,29 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
 //but can be utilised in the scene class to render entire sets of objs with the same settings
 void _Renderer::setGLEnablements()
 {
-//-----------------------------Default Overide------------------------------------------------------
+    //-----------------------------Default Overide------------------------------------------------------
 
     glEnable(GL_BLEND);//for transparency in alpha values
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
     // Cull triangles which normal is not towards the camera
-//    glEnable(GL_CULL_FACE);
+    //    glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);//culls the backface saving some raster ops
 
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
-//    //The poligon winding order in which it is rendered,
-//    //glFrontFace(GL_CW);//clockwise
+    //    //The poligon winding order in which it is rendered,
+    //    //glFrontFace(GL_CW);//clockwise
     glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
     //!!**NOTE**!!
-//    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
-//    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
+    //    //Opengl uses right handed cordinates meaning X+ = right , y up and -z towards you.
+    //    //if switching it to left handed(in the modelview matrix) dont forget to change the winding order
 
-//-----------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------
     //The obove is needed as default as the settings  might be enabled/disabled in other instances or
     //entites and causes fast switchign between raster states which causes artifacts in the final render.
-//-------------------------------Controlled Overide----------------------------------------------------
+    //-------------------------------Controlled Overide----------------------------------------------------
 
     _SceneEntity::GlEnablements g = sceneEntity->getGLModes();
     _SceneEntity::GlEnablements::frameBufferModes frameBufferMode;
@@ -705,49 +712,49 @@ void _Renderer::setGLEnablements()
     frameBufferMode = g.frameBufferMode;
     switch (frameBufferMode){
     case  _SceneEntity::GlEnablements::ColorOnly:
-//        glDisable(GL_BLEND);
-//        glDisable(GL_DEPTH_TEST);
-                break;
+        //        glDisable(GL_BLEND);
+        //        glDisable(GL_DEPTH_TEST);
+        break;
     case _SceneEntity::GlEnablements::Blend:
         glEnable(GL_BLEND);//for transparency in alpha values
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//define how the blending needs to be applied
-                break;
+        break;
     case _SceneEntity::GlEnablements::Depth:
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);//Accept fragment if it closer to the camera than the former one
         glDepthMask(GL_TRUE);//Enable writing to Dbuffer.
-                break;
+        break;
     case _SceneEntity::GlEnablements::DepthAlwaysPass:
-          glEnable(GL_DEPTH_TEST);
-          glDepthFunc(GL_ALWAYS);
-          glDepthMask(GL_FALSE);//Disable writingas glDepthFunc(GL_ALWAYS) as test needs to pass always.
-                break;
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_ALWAYS);
+        glDepthMask(GL_FALSE);//Disable writingas glDepthFunc(GL_ALWAYS) as test needs to pass always.
+        break;
     case _SceneEntity::GlEnablements::Stencil:
         //Pending imp
-                break;
+        break;
     case _SceneEntity::GlEnablements::BlendAndDepth:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH);
         glDepthFunc(GL_LESS);
-                break;
+        break;
     case _SceneEntity::GlEnablements::BlendAndDepthAndStencil:
-                break;
+        break;
     }
     cullMode = g.cullMode;
     switch (cullMode) {
     case _SceneEntity::GlEnablements::BackFace:
         glEnable(GL_CULL_FACE);// Cull triangles which normal is not towards the camera
         glCullFace(GL_BACK);//culls the backfaces saving some raster ops
-                break;
+        break;
     case  _SceneEntity::GlEnablements::FrontFace:
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);//culls the front faces
-                break;
+        break;
     case  _SceneEntity::GlEnablements::FrontAndBack:
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT_AND_BACK);//culls the entire object
-                break;
+        break;
     }
     fillMode = g.fillMode;
     switch(fillMode){

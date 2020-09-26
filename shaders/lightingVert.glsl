@@ -10,6 +10,9 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 orthoProjection;
+//shadow`
+uniform mat4 shadowLightSpace;
+out vec4 fragPosLightSpace;
 //
 uniform vec4 aColor;//in
 out vec4 ourColor;//to fragment
@@ -23,6 +26,7 @@ void main()
 {
     //get the Vertex fragment positons,Vertex lighting
     FragPos = vec3(model * vec4(aPos, 1.0));
+    fragPosLightSpace = shadowLightSpace * vec4(FragPos, 1.0);
 
     //apply the transforms applied on the model position data to update the normal data as well
     Normal = mat3(transpose(inverse(model))) * normal;

@@ -30,6 +30,7 @@ public:
     void setCamViewMatrix(glm::vec3 eyePos, glm::vec3 focalPoint, glm::vec3 upVector);// Sets the Camera matrix
     void setProjectionMatrix(int resW, int resH, float fov, float zFar, float zNear);// Sets the projection matrix
     void setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar);
+    void setLightViewMatrix(glm::vec3 eye ,glm::vec3 focal ,glm::vec3 up);
     void setProjectionMatrix(int type ,glm::mat4x4 m);
     //Transformantions
     void setPosition(glm::vec3 pos);// Resets the positon to the value that is required
@@ -63,7 +64,7 @@ private:
     glm::mat4 rotationMatrix,translationMatrix,scalingMatrix;
     glm::mat4 pivotTmat;
     glm::mat4 projectionMatrix,orthoProjMatrix;
-    glm::mat4 viewMatrix;
+    glm::mat4 viewMatrix,lightViewMatrix;
     //
     _SceneEntity *sceneEntity;//the local sceneEntity object for use in the renderer
     QElapsedTimer timer;//timer object to maintain a timer based events and trasformations
