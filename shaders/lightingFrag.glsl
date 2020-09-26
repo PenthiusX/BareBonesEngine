@@ -72,8 +72,10 @@ out vec4 FragColor;
 
 //Texturing
 in vec2 TexCoord;
-uniform sampler2D diffuseTex;
-uniform sampler2D specularTex;
+uniform sampler2D diffuseTex;//1
+uniform sampler2D specularTex;//2
+uniform sampler2D bumpTex;//3 //not in use yet
+uniform sampler2D shadowDepthTex;//4
 //Time
 uniform float time;
 #define PI 3.14159265359

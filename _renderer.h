@@ -81,7 +81,6 @@ private:
     void setTexture(QString pathtoTexture);
     void setTexture(char* texBitmap);//takes am image and binds it to object
     void setTexture(char* texBitmap,uint iwidth,uint iheight);//takes am image and binds it to object
-    void setupTexture();//takes a hardcoded imagedata and binds it to object
     void setupTexture(QString texfile,_Texture::Type t); //initializes texture from file
     //
     void keepSceneEntityUpdated();
@@ -105,4 +104,6 @@ private:
     std::string e5;
     std::string e6;
     std::string e7;
+    //Shadow
+    GLuint shadoDepthTex;//holds the depth texture index locally;
 };

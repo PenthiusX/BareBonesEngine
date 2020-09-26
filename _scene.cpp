@@ -35,8 +35,8 @@ _Scene::_Scene(){
 }
 _Scene::~_Scene()
 {
-    for(auto m : meshesR){delete m;}
-    meshesR.clear();
+    for(auto m : meshesRVec){delete m;}
+    meshesRVec.clear();
     for(auto m : lightsArray){delete m;}
     lightsArray.clear();
     for(auto p : physVector){delete p;}
@@ -64,7 +64,7 @@ void _Scene::addSceneObject(_SceneEntity* s)
     // Only sets the scene object if the camera has been set already and scene object is active
     if (s->getIsActive() == true)
     {
-        s->setOrderInIndex(meshesR.size());
+        s->setOrderInIndex(meshesRVec.size());
         if (isCamera){
             initialiseMesh(s);
         }
@@ -75,12 +75,12 @@ void _Scene::addSceneObject(_SceneEntity* s)
 //---------------------------------------------------------------------------------------
 void _Scene::initialiseMesh(_SceneEntity* s)
 {
-    r = new _Renderer();//creates a new render object for each sceneEntity that gets added to the scene
-    r->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-    r->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
-    r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
-    s->setOrderInIndex(meshesR.size());
-    meshesR.push_back(r);//add the renderer object to array for batch render
+    s->setOrderInIndex(meshesRVec.size());
+    meshR = new _Renderer();//creates a new render object for each sceneEntity that gets added to the scene
+    meshR->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+    meshR->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+    meshR->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
+    meshesRVec.push_back(meshR);//add the renderer object to array for batch render
 }
 //---------------------------------------------------------------------------------------
 void _Scene::initialisePhysics(_SceneEntity* s)
@@ -134,7 +134,7 @@ void _Scene::initialiseLights(_SceneEntity* s)
  * this is being called by the _GlWidget class.
 */
 std::vector<_Renderer*> _Scene::getSceneObjects(){
-    return meshesR;
+    return meshesRVec;
 }
 //---------------------------------------------------------------------------------------
 /*
@@ -153,9 +153,9 @@ void _Scene::addCamera(_Camera c){
 void _Scene::updateCamera(_Camera c){
     cam = c;
     if(isCamera == true)
-        for (uint i = 0; i < meshesR.size(); i++){
-            meshesR[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
-            meshesR[i]->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
+        for (uint i = 0; i < meshesRVec.size(); i++){
+            meshesRVec[i]->setCamViewMatrix(c.getEyePosition(),c.getFocalPoint(),c.getUpVector());
+            meshesRVec[i]->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
         }
 }
 /*
@@ -167,18 +167,18 @@ void _Scene::updateCamera(_Camera c){
 //---------------------------------------------------------------------------------------
 _SceneEntity* _Scene::findSceneEntity(uint iD){
     _SceneEntity empty;
-    for(int f = 0 ; f < meshesR.size() ; f++){
-        if(meshesR[f]->getSceneEntity()->getId() == iD)
-            return meshesR[f]->getSceneEntity();
+    for(uint f = 0 ; f < meshesRVec.size() ; f++){
+        if(meshesRVec[f]->getSceneEntity()->getId() == iD)
+            return meshesRVec[f]->getSceneEntity();
     }
     return nullptr;
 }
 //---------------------------------------------------------------------------------------
 _SceneEntity* _Scene::findSceneEntity(std::string tag){
     _SceneEntity empty;
-    for(int f = 0 ; f < meshesR.size(); f++){
-        if(meshesR[f]->getSceneEntity()->getTag() == tag)
-            return meshesR[f]->getSceneEntity();
+    for(uint f = 0 ; f < meshesRVec.size(); f++){
+        if(meshesRVec[f]->getSceneEntity()->getTag() == tag)
+            return meshesRVec[f]->getSceneEntity();
     }
     return nullptr;
 }
@@ -190,13 +190,13 @@ _SceneEntity* _Scene::getSceneEntityHitWithRay(){
 }
 //---------------------------------------------------------------------------------------
 void _Scene::removeSceneObject(uint index){
-    meshesR.erase(meshesR.begin()+index);
+    meshesRVec.erase(meshesRVec.begin()+index);
 }
 void _Scene::removeSceneObject(_SceneEntity s){
-    for(uint r = 0 ; r < meshesR.size() ; r++)
-        if(meshesR[r]->getSceneEntity()->getId() == s.getId()){
-            meshesR[r] = NULL;
-            meshesR.erase(meshesR.begin()+r);
+    for(uint r = 0 ; r < meshesRVec.size() ; r++)
+        if(meshesRVec[r]->getSceneEntity()->getId() == s.getId()){
+            meshesRVec[r] = NULL;
+            meshesRVec.erase(meshesRVec.begin()+r);
         }
 }
 //---------------------------------------------------------------------------------------
@@ -246,8 +246,8 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
 void _Scene::onResize(int w,int h){
     resW = w;
     resH = h;
-    for(uint i = 0; i < meshesR.size(); i++){
-        meshesR[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());}
+    for(uint i = 0; i < meshesRVec.size(); i++){
+        meshesRVec[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());}
     //FBO init and updateTexture on Resize
     fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
 }
@@ -269,14 +269,14 @@ void _Scene::render()
 {
 
     shadowBObject.startWriteToDepthBuffer();
-    for (uint i = 0; i < meshesR.size(); i++){
-        if(meshesR[i]->getSceneEntity()->getTag() == "dlight"){
-            sLightPos = meshesR[i]->getSceneEntity()->getPostion();
+    for (uint i = 0; i < meshesRVec.size(); i++){
+        if(meshesRVec[i]->getSceneEntity()->getTag() == "dlight"){
+            sLightPos = meshesRVec[i]->getSceneEntity()->getPostion();
         }
-        if(meshesR[i]->getSceneEntity()->getIsShadowCaster() == true){
-            meshesR[i]->setCamViewMatrix(sLightPos,glm::vec3(0),cam.getUpVector());
-            meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,20.0);
-            meshesR[i]->draw(2);
+        if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true){
+            meshesRVec[i]->setCamViewMatrix(sLightPos,glm::vec3(0),cam.getUpVector());
+            meshesRVec[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,20.0);
+            meshesRVec[i]->draw(2);
         }
     }
     shadowBObject.stopWrite();
@@ -285,20 +285,20 @@ void _Scene::render()
     //~~~~~~~~~~~~~~
     //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //~~~~~~~~~~~~~~
-    for (uint i = 0,lrc=0; i < meshesR.size(); i++)
+    for (uint i = 0,lrc=0; i < meshesRVec.size(); i++)
     {
         //-----Draw the Meshes-----
-        meshesR[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
-        meshesR[i]->draw(1);//Rendering Scene Object/Primitives
+        meshesRVec[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+        meshesRVec[i]->draw(1);//Rendering Scene Object/Primitives
 
         //~~~~~Get and update Light information---
-        meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
+        meshesRVec[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
         lrc == lightsArray.size() ? lrc = 0:lrc;
-        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity()->getTag())
+        if(lightsArray[lrc]->getSignature() == meshesRVec[i]->getSceneEntity()->getTag())
         {
             //update the light objects with values from there relative meshentities in the secene
-            lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity()->getPostion());
-            QVector4D col =  meshesR[i]->getSceneEntity()->getColor();
+            lightsArray[lrc]->setPosition(meshesRVec[i]->getSceneEntity()->getPostion());
+            QVector4D col =  meshesRVec[i]->getSceneEntity()->getColor();
             lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
             if(lightsArray[lrc]->getLightType() == "PointLight")
             {
@@ -306,7 +306,7 @@ void _Scene::render()
             }
             lrc++;
         }
-       //~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~
     }
     //~~~~~~~~~~~~~~
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
@@ -341,7 +341,7 @@ void _Scene::fixedUpdate(float intervalTime)
 void _Scene::updateAllPhysicsObjectsOnce(){
     if(physVector.size() > 0){
         for (uint index = 0; index < physVector.size(); index++){
-            physVector[index]->setSceneEntity(meshesR[physVector[index]->getSceneEntity()->getIndexPosInScene()]->getSceneEntity());
+            physVector[index]->setSceneEntity(meshesRVec[physVector[index]->getSceneEntity()->getIndexPosInScene()]->getSceneEntity());
 
             //Passing some essentials into the updateLoop for physics
             //updates the physics object instance and runs the main physics updateOperations.
@@ -355,10 +355,10 @@ void _Scene::updateAllPhysicsObjectsOnce(){
             //style of implmentation can vary, its essentally updates the sceEntityObjet in the rendered if it is
             //getting collided with ray, So SceneEntity is the sharedVariable across classes Physics and Renderer
             uint pi = physVector[index]->getSceneEntity()->getIndexPosInScene();
-            meshesR[pi]->setSceneEntityInRenderer(physVector[index]->getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
+            meshesRVec[pi]->setSceneEntityInRenderer(physVector[index]->getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
 
-            if(meshesR[pi]->getSceneEntity()->getisHitByRay()){
-                rayHitSceneEntity = meshesR[pi]->getSceneEntity();
+            if(meshesRVec[pi]->getSceneEntity()->getisHitByRay()){
+                rayHitSceneEntity = meshesRVec[pi]->getSceneEntity();
             }
         }
     }
@@ -371,7 +371,7 @@ void _Scene::updateAllPhysicsObjectsOnce(){
 ////---------------------------------------------------------------------------------------
 void _Scene::updateAllPhysicsObjectsLoop()
 {    if(physVector.size() > 0){
-        //        physVector[loopIndex].setSceneEntity(meshesR[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
+        //        physVector[loopIndex].setSceneEntity(meshesRVec[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
         //        //Passing some essentials into the updateLoop for physics
         //        //updates the physics object instance and runs the main physics updateOperations.
         //        physVector[loopIndex].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
@@ -386,9 +386,9 @@ void _Scene::updateAllPhysicsObjectsLoop()
         is = physVector[loopIndex]->updateObjObjPhysics(physVector);
         _SceneEntity* ss = physVector[loopIndex]->getSceneEntity();
         ss->setIsHitByTri(is);
-        meshesR[ss->getIndexPosInScene()]->setSceneEntityInRenderer(ss);
-        //        if(meshesR[ss.getIndexPosInScene()]->getSceneEntity().getIsHitByTri()){
-        //            triCollidedSceneEntity = meshesR[ss.getIndexPosInScene()]->getSceneEntity();//sets the sceneEntity that has been set by ray.
+        meshesRVec[ss->getIndexPosInScene()]->setSceneEntityInRenderer(ss);
+        //        if(meshesRVec[ss.getIndexPosInScene()]->getSceneEntity().getIsHitByTri()){
+        //            triCollidedSceneEntity = meshesRVec[ss.getIndexPosInScene()]->getSceneEntity();//sets the sceneEntity that has been set by ray.
         //        }
 
         qDebug() << is;
@@ -416,7 +416,7 @@ void _Scene::updateHelpersOnce()
             if(physVector[i]->getSceneEntity()->getIsPhysicsHelper() && physVector[i]->getSceneEntity()->getisHitByRay())
             {
                 glm::vec3 p = physVector[i]->getRayTriIntersectionPoint();
-                meshesR[mPointerIndex]->setPosition(p);
+                meshesRVec[mPointerIndex]->setPosition(p);
                 //sc = physVector[i].getSceneEntity().getScale();
 
                 //Temporary Helpers for Max min extents
@@ -429,27 +429,27 @@ void _Scene::updateHelpersOnce()
             }
         }
 
-        meshesR[cIndex]->setPosition(cntrd);
+        meshesRVec[cIndex]->setPosition(cntrd);
 
-        meshesR[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
-        meshesR[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
-        //meshesR[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
+        meshesRVec[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
+        meshesRVec[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //meshesRVec[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
 
-        meshesR[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
-        meshesR[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
-        //meshesR[minIndex]->lookAt(cam.getEyePosition());//buggy look at
+        meshesRVec[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
+        meshesRVec[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //meshesRVec[minIndex]->lookAt(cam.getEyePosition());//buggy look at
 
-        meshesR[pivotIndex]->setPosition(pos);
-        meshesR[pivotIndex]->setRotation(rot);
+        meshesRVec[pivotIndex]->setPosition(pos);
+        meshesRVec[pivotIndex]->setRotation(rot);
     }
 }
 
 //Not in use//---------------------------------------------------------------------------
 void _Scene::updateHelpersLoop(uint index){
-    if(meshesR[index]->getSceneEntity()->getIsPhysicsHelper() &&  meshesR[index]->getSceneEntity()->getisHitByRay()){
+    if(meshesRVec[index]->getSceneEntity()->getIsPhysicsHelper() &&  meshesRVec[index]->getSceneEntity()->getisHitByRay()){
         // binding the pivot object to focus object
-        meshesR[pivotIndex]->setPosition(meshesR[index]->getSceneEntity()->getPostion());
-        meshesR[pivotIndex]->setRotation(meshesR[index]->getSceneEntity()->getRotation());
+        meshesRVec[pivotIndex]->setPosition(meshesRVec[index]->getSceneEntity()->getPostion());
+        meshesRVec[pivotIndex]->setRotation(meshesRVec[index]->getSceneEntity()->getRotation());
     }
 }
 //---------------------------------------------------------------------------------------

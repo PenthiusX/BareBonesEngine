@@ -188,18 +188,7 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
 
        glBindVertexArray(0);
 }
-/*
- * creates new texture and adds into list(vector) of textures
- * set a default 8bit single color texture of size 1360 x 1024
- */
-void _Renderer::setupTexture()
-{
-    char* img = new char[1360*1024];
-    _Texture texture(img,1360,1024);
-    texture.load(GL_RED,GL_UNSIGNED_BYTE);
-    textures.push_back(texture);
-    qDebug() << "setupTexture() on entity" << sceneEntity->getTag().c_str();
-}
+
 //Bind the textre set in the Matirial obj of sceneEntity->
 void _Renderer::setupTexture(QString texfile,_Texture::Type t)
 {
@@ -207,13 +196,14 @@ void _Renderer::setupTexture(QString texfile,_Texture::Type t)
     _Texture texture;
     texture.load(img,t,GL_RGBA,GL_UNSIGNED_BYTE);//Load the tex , genrate a ID for that texture
 
-    for(uint s = 0 ; s < shaderVec.size(); s++){
-        shaderVec[s]->useShaderProgram();//need to do this before setting the uniforms Always to reduce ambiguity
-        //Sets the Texture slot id here , is invoked by glActiveTexture(GL_TEXTUREn) where n is the value assigned
-        //make sure this matches in the Texture objects in the texture array.
+    for(uint s = 0 ; s < shaderVec.size(); s++){//!!Sets for all shaders initialised in this mesh!!
+        shaderVec[s]->useShaderProgram();//!Need to do this before setting the uniforms Always to reduce ambiguity!
+        //Sets the Texture slot id here , is invoked by glActiveTexture(GL_TEXTURE'n')
+        //where 'n' is the value assigned ,make sure this 'n' matches in the Texture binding function in textures.bind()
         glUniform1i(shaderVec[s]->getUniformLocation("diffuseTex"), 1);
         glUniform1i(shaderVec[s]->getUniformLocation("specularTex"), 2);
         glUniform1i(shaderVec[s]->getUniformLocation("bumpTex"), 3);
+        glUniform1i(shaderVec[s]->getUniformLocation("shadowDepthTex"), 4);
     }
 
     textures.push_back(texture);

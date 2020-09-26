@@ -58,8 +58,8 @@ private:
     _ShadowBuffer shadowBObject;
     glm::vec3 sLightPos;
     //
-    _Renderer* r;
-    std::vector<_Renderer*> meshesR;
+    _Renderer* meshR;
+    std::vector<_Renderer*> meshesRVec;
     //
     _Camera cam;
     bool isCamera;

@@ -29,6 +29,7 @@ void main()
 
     ourColor = aColor;//not being used in this instance
 
+    //Model view projection combined
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
 

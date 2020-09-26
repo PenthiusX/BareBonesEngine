@@ -90,7 +90,8 @@ void _Texture::bind()
 */
 void _Texture::bind(uint index)
 {
-    switch (index) {
+    switch (index)
+    {
            case 1: glActiveTexture(GL_TEXTURE1);
                break;
            case 2: glActiveTexture(GL_TEXTURE2);
@@ -142,10 +143,10 @@ void _Texture::load(QImage image,Type t, GLenum format, GLenum datatype)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     color_format = format;
     glTexImage2D(GL_TEXTURE_2D, 0, format, image.width(), image.height(), 0, color_format, datatype, image.bits());
