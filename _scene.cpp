@@ -270,12 +270,18 @@ void _Scene::render()
 {
 
     shadowBObject.startWriteToDepthBuffer();
-    for (uint i = 0; i < meshesRVec.size(); i++){
-        if(meshesRVec[i]->getSceneEntity()->getTag() == "dlight"){
+    for (uint i = 0; i < meshesRVec.size(); i++)
+    {
+        if(meshesRVec[i]->getSceneEntity()->getTag() == "dlight")
+        {
             sLightPos = meshesRVec[i]->getSceneEntity()->getPostion();
         }
-        if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true){
-            meshesRVec[i]->setCamViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
+        if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true)
+        {
+            _SceneEntity::GlEnablements g;
+            g.cullMode = _SceneEntity::GlEnablements::cullModes::FrontFace;
+            meshesRVec[i]->getSceneEntity()->setGLModes(g);
+            meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
             meshesRVec[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,100.5);
             meshesRVec[i]->draw(2);
         }
@@ -289,7 +295,9 @@ void _Scene::render()
     for (uint i = 0,lrc=0; i < meshesRVec.size(); i++)
     {
         //-----Draw the Meshes-----
-        meshesRVec[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
+        _SceneEntity::GlEnablements g;
+        g.cullMode = _SceneEntity::GlEnablements::cullModes::BackFace;
+        meshesRVec[i]->getSceneEntity()->setGLModes(g);
         meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
         meshesRVec[i]->draw(1);//Rendering Scene Object/Primitives
 

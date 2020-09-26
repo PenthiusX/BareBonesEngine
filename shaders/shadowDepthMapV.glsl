@@ -3,13 +3,11 @@ layout (location = 0) in vec3 aPos;
 
 uniform mat4 model;
 
-uniform mat4 view;//this is the dir lights position
-uniform mat4 orthoProjection;//this is set as ortho
+uniform mat4 shadowLightSpace;//orthoProjection matrix * viewMat from light pos
 
 void main()
 {
-    mat4 lightSpaceMatrix = orthoProjection * view;//from the Lights perspective capture FBO
-    gl_Position = lightSpaceMatrix * model * vec4(aPos, 1.0);
+    gl_Position = shadowLightSpace * model * vec4(aPos, 1.0);
     //The position will be sent for vertexoperation and rasterisation ,
     //this will generate the raster,and the relative depthMap implicitly as well.
     //This will be captured in the FBO.

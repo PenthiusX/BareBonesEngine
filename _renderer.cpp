@@ -274,6 +274,15 @@ void _Renderer::setCamViewMatrix(glm::vec3 eyePos,glm::vec3 focalPoint,glm::vec3
                 glm::vec3(upVector.x, upVector.y, upVector.z));
     keepSceneEntityUpdated();
 }
+void _Renderer::setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar){
+    //    float near_plane = 1.0f, far_plane = 7.5f;
+    //     orthoProjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+    orthoProjMatrix = glm::ortho(left,right,bottom,top, zNear, zFar);
+}
+void _Renderer::setLightViewMatrix(glm::vec3 eye, glm::vec3 focal, glm::vec3 up)
+{
+    lightViewMatrix = glm::lookAt(eye,focal,up);
+}
 /*
         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
@@ -293,16 +302,6 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     projectionMatrix = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
     //qDebug() << "setProjectionMatrix() on entity" << sceneEntity->getTag().c_str();
 }
-void _Renderer::setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar){
-    //    float near_plane = 1.0f, far_plane = 7.5f;
-    //     orthoProjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-    orthoProjMatrix = glm::ortho(left,right,bottom,top, zNear, zFar);
-}
-void _Renderer::setLightViewMatrix(glm::vec3 eye, glm::vec3 focal, glm::vec3 up)
-{
-    lightViewMatrix = glm::lookAt(eye,focal,up);
-}
-
 void _Renderer::setProjectionMatrix(int type, glm::mat4x4 m)
 {
     projectionMatrix = m;

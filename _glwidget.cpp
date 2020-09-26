@@ -23,6 +23,7 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent){
     this->setFocusPolicy(Qt::StrongFocus);
     qTimer.start();
 
+    s3  = new _SceneEntity();
     s   = new _SceneEntity();
     s2  = new _SceneEntity();
     dl1 = new _SceneEntity();
@@ -139,12 +140,26 @@ void _GLWidget::initializeGL() {
     s2->setPosition(glm::vec3(0.0,-4.0,0.0));//initial position
     s2->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
     s2->setScale(10.0f);
+
+    s3->setId(8882);
+    s3->setTag("LitObject3");
+    s3->setIsShadowCaster(true);
+    s3->setGLModes(g);// glmode settings
+    s3->setMaterial(m2);//material obhect
+    s3->setModelData("D:/DiamondPalRepo/DiamondPal/models/testCube.obj");//Model data
+    s3->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
+    s3->setIsTransformationLocal(false);
+    s3->setIsLineNoCullMode(false);
+    s3->setPosition(glm::vec3(-5.0,0.0,0.0));//initial position
+    s3->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+    s3->setScale(2.0f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //-----Scene Objects---------------------------------
     scene->addSceneObject(s);
     scene->addSceneObject(s2);
+    scene->addSceneObject(s3);
     //
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
