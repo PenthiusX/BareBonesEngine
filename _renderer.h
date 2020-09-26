@@ -51,6 +51,7 @@ public:
     void setGLEnablements();
     //
     void setShderSelector(uint ssl);
+    void setShadowDepthTex(GLuint sst);
 
 private:
     QVector4D actualColor;
@@ -106,4 +107,5 @@ private:
     std::string e7;
     //Shadow
     GLuint shadoDepthTex;//holds the depth texture index locally;
+
 };

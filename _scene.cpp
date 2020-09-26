@@ -80,6 +80,7 @@ void _Scene::initialiseMesh(_SceneEntity* s)
     meshR->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
     meshR->setProjectionMatrix(resW,resH,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());
     meshR->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
+    meshR->setShadowDepthTex(shadowBObject.getShadowDepthTexture());
     meshesRVec.push_back(meshR);//add the renderer object to array for batch render
 }
 //---------------------------------------------------------------------------------------

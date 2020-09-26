@@ -537,6 +537,8 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
         for(uint t=0;t<textures.size();t++){
             textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
         }
+        glActiveTexture(GL_TEXTURE4);//sets the shadow texture in the shader
+        glBindTexture(GL_TEXTURE_2D,shadoDepthTex);
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
         if(sceneEntity->getIsMeshEditable())
         {
@@ -758,7 +760,10 @@ void _Renderer::setGLEnablements()
     }
 }
 
-void _Renderer::setShderSelector(uint ssl)
-{
+void _Renderer::setShderSelector(uint ssl){
     this->ssl = ssl;
+}
+
+void _Renderer::setShadowDepthTex(GLuint sst){
+    this->shadoDepthTex = sst;
 }
