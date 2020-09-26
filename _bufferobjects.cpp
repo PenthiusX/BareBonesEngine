@@ -231,3 +231,8 @@ void _ShadowBuffer::stopWrite()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+GLuint _ShadowBuffer::getShadowDepthTexture()
+{
+    return this->depthMap;
+}

@@ -56,6 +56,7 @@ private:
     _FrameBuffer *fboObject;//framebuffer object in the current instance
     _StencilBuffer *stencilObject;
     _ShadowBuffer shadowBObject;
+    glm::vec3 sLightPos;
     //
     _Renderer* r;
     std::vector<_Renderer*> meshesR;

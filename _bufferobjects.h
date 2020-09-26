@@ -53,7 +53,6 @@ public:
     void drawStencilPass();
     void clearStencilBuffer();
 
-
 private:
 
 };
@@ -68,6 +67,7 @@ public:
     void init();
     void startWriteToDepthBuffer();
     void stopWrite();
+    GLuint getShadowDepthTexture();
 
 
 

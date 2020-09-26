@@ -215,19 +215,19 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     else if(m == Qt::LeftButton){
         mousePositionL = mousePos;
         //Physics+Helpers update on detached threads
-//        pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
-//        ph = std::thread(&_Scene::updateHelpersOnce,this);
-//        if(pu.joinable()){pu.detach();}
-//        if(ph.joinable()){ph.detach();}
+        //        pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
+        //        ph = std::thread(&_Scene::updateHelpersOnce,this);
+        //        if(pu.joinable()){pu.detach();}
+        //        if(ph.joinable()){ph.detach();}
         updateAllPhysicsObjectsOnce();
         //updateHelpersOnce();
     }
     else if(m == Qt::MiddleButton){
         //Physics+Helpers update on detached threads
         //pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
-       // ph = std::thread(&_Scene::updateHelpersOnce,this);
-//        if(pu.joinable()){pu.detach();}
-//        if(ph.joinable()){ph.detach();}
+        // ph = std::thread(&_Scene::updateHelpersOnce,this);
+        //        if(pu.joinable()){pu.detach();}
+        //        if(ph.joinable()){ph.detach();}
     }
 }
 //---------------------------------------------------------------------------------------
@@ -269,41 +269,46 @@ void _Scene::render()
 {
 
     shadowBObject.startWriteToDepthBuffer();
-    glm::vec3 sLightPos;
-   for (uint i = 0; i < meshesR.size(); i++){
+    for (uint i = 0; i < meshesR.size(); i++){
         if(meshesR[i]->getSceneEntity()->getTag() == "dlight"){
             sLightPos = meshesR[i]->getSceneEntity()->getPostion();
         }
-       if(meshesR[i]->getSceneEntity()->getIsShadowCaster() == true){
-            meshesR[i]->setCamViewMatrix(glm::vec3(-4.4f,5.76f, 1.3f),glm::vec3(0),cam.getUpVector());
-            meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,10.0);
+        if(meshesR[i]->getSceneEntity()->getIsShadowCaster() == true){
+            meshesR[i]->setCamViewMatrix(sLightPos,glm::vec3(0),cam.getUpVector());
+            meshesR[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,20.0);
             meshesR[i]->draw(2);
-       }
+        }
     }
-   shadowBObject.stopWrite();
+    shadowBObject.stopWrite();
 
     fboObject->setUpdatedFrame();// The frames in context below will be captured
-    //
+    //~~~~~~~~~~~~~~
     //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
-    //
+    //~~~~~~~~~~~~~~
     for (uint i = 0,lrc=0; i < meshesR.size(); i++)
     {
+        //-----Draw the Meshes-----
         meshesR[i]->setCamViewMatrix(cam.getEyePosition(), cam.getFocalPoint(), cam.getUpVector());
         meshesR[i]->draw(1);//Rendering Scene Object/Primitives
-        //~~~~~~~~~~~~~
+
+        //~~~~~Get and update Light information---
         meshesR[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
         lrc == lightsArray.size() ? lrc = 0:lrc;
-        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity()->getTag()){//get tag is super slow , conver se to pointer
+        if(lightsArray[lrc]->getSignature() == meshesR[i]->getSceneEntity()->getTag())
+        {
             //update the light objects with values from there relative meshentities in the secene
             lightsArray[lrc]->setPosition(meshesR[i]->getSceneEntity()->getPostion());
             QVector4D col =  meshesR[i]->getSceneEntity()->getColor();
             lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
-            if(lightsArray[lrc]->getLightType() == "PointLight"){
-                 lightsArray[lrc]->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(0.09),glm::vec3(0.032));
+            if(lightsArray[lrc]->getLightType() == "PointLight")
+            {
+                lightsArray[lrc]->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(0.09),glm::vec3(0.032));
             }
-            lrc++;}
-//        //~~~~~~~~~~~~~~
+            lrc++;
+        }
+       //~~~~~~~~~~~~~~
     }
+    //~~~~~~~~~~~~~~
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
 }
@@ -341,10 +346,10 @@ void _Scene::updateAllPhysicsObjectsOnce(){
             //Passing some essentials into the updateLoop for physics
             //updates the physics object instance and runs the main physics updateOperations.
             physVector[index]->updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-                                                 glm::vec3(cam.getEyePosition().x,//Camera Position
-                                                           cam.getEyePosition().y,
-                                                           cam.getEyePosition().z),
-                                                 glm::vec2(resW,resH));
+                                                  glm::vec3(cam.getEyePosition().x,//Camera Position
+                                                            cam.getEyePosition().y,
+                                                            cam.getEyePosition().z),
+                                                  glm::vec2(resW,resH));
 
             //updates the status of scneEntity variable that get changed inside the Physis class on Collision Events.
             //style of implmentation can vary, its essentally updates the sceEntityObjet in the rendered if it is
@@ -458,73 +463,73 @@ void _Scene::setHelperIndexVars(){
 //---------------------------------------------------------------------------------------
 void _Scene::addAllHelperTypesInScene()
 {
-//    this->isHelpers = true;
-//    //----------Physics Helpers-------
-//    sph->setId(1);
-//    sph->setTag("boundingSphere");
-//    sph->setIsLineMode(true);
-//    sph->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::NoHelper);
-//    sph->setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-//    sph->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    sph->setColor(QVector4D(0.3,0.5,0.0,0.9));
-//    sph->setScale(1.0f);
-//    sph->setModelData(":/models/sphere.obj");
-//    sph->setIsActive(false);
-//    //---
-//    bb->setId(2);
-//    bb->setTag("boundingBox");
-//    bb->setIsLineMode(true);
-//    bb->setPhysicsObject(_SceneEntity::Box,_SceneEntity::NoHelper);
-//    bb->setIsTransformationLocal(false);
-//    bb->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    bb->setColor(QVector4D(0.5,1.0,1.0,0.9));
-//    bb->setScale(1.0f);
-//    bb->setModelData(":/models/cube.obj");//dont need to reparse modelfile
-//    bb->setIsActive(false);
-//    //
-//    addSceneObject(sph);
-//    addSceneObject(bb);
-//    //----------Orentation Helpers---------------
-//    pivot->setId(888);
-//    pivot->setTag("pivot");
-//    pivot->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-//    pivot->setColor(QVector4D(1.0,1.0,1.0,1.0));
-//    pivot->setScale(1.0f);
-//    pivot->setModelData(":/models/pivot.obj");
-//    //---
-//    mpnt->setId(999);
-//    mpnt->setTag("mousePointerObject");
-//    mpnt->setIsTransformationLocal(false);
-//    mpnt->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    mpnt->setScale(0.02f);
-//    mpnt->setModelData(sph->getModelInfo());
-//    //---
-//    cnet->setId(991);
-//    cnet->setTag("cent");
-//    cnet->setIsTransformationLocal(false);
-//    cnet->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    cnet->setScale(0.07f);
-//    cnet->setModelData(sph->getModelInfo());
-//    //---
-//    max->setId(992);
-//    max->setTag("max");
-//    max->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    max->setColor(QVector4D(0.5,0.5,0.5,1.0));
-//    max->setScale(0.1f);
-//    max->setModelData(":/models/helpers/max.obj");
-//    //---
-//    min->setId(993);
-//    min->setTag("min");
-//    min->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-//    min->setScale(0.1f);
-//    min->setModelData(":/models/helpers/min.obj");
-//    //
-//    addSceneObject(mpnt);
-//    addSceneObject(cnet);
-//    addSceneObject(min);
-//    addSceneObject(max);
-//    addSceneObject(pivot);
-//    //
-//    setHelperIndexVars();
+    //    this->isHelpers = true;
+    //    //----------Physics Helpers-------
+    //    sph->setId(1);
+    //    sph->setTag("boundingSphere");
+    //    sph->setIsLineMode(true);
+    //    sph->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::NoHelper);
+    //    sph->setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
+    //    sph->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    //    sph->setColor(QVector4D(0.3,0.5,0.0,0.9));
+    //    sph->setScale(1.0f);
+    //    sph->setModelData(":/models/sphere.obj");
+    //    sph->setIsActive(false);
+    //    //---
+    //    bb->setId(2);
+    //    bb->setTag("boundingBox");
+    //    bb->setIsLineMode(true);
+    //    bb->setPhysicsObject(_SceneEntity::Box,_SceneEntity::NoHelper);
+    //    bb->setIsTransformationLocal(false);
+    //    bb->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    //    bb->setColor(QVector4D(0.5,1.0,1.0,0.9));
+    //    bb->setScale(1.0f);
+    //    bb->setModelData(":/models/cube.obj");//dont need to reparse modelfile
+    //    bb->setIsActive(false);
+    //    //
+    //    addSceneObject(sph);
+    //    addSceneObject(bb);
+    //    //----------Orentation Helpers---------------
+    //    pivot->setId(888);
+    //    pivot->setTag("pivot");
+    //    pivot->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+    //    pivot->setColor(QVector4D(1.0,1.0,1.0,1.0));
+    //    pivot->setScale(1.0f);
+    //    pivot->setModelData(":/models/pivot.obj");
+    //    //---
+    //    mpnt->setId(999);
+    //    mpnt->setTag("mousePointerObject");
+    //    mpnt->setIsTransformationLocal(false);
+    //    mpnt->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    //    mpnt->setScale(0.02f);
+    //    mpnt->setModelData(sph->getModelInfo());
+    //    //---
+    //    cnet->setId(991);
+    //    cnet->setTag("cent");
+    //    cnet->setIsTransformationLocal(false);
+    //    cnet->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    //    cnet->setScale(0.07f);
+    //    cnet->setModelData(sph->getModelInfo());
+    //    //---
+    //    max->setId(992);
+    //    max->setTag("max");
+    //    max->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    //    max->setColor(QVector4D(0.5,0.5,0.5,1.0));
+    //    max->setScale(0.1f);
+    //    max->setModelData(":/models/helpers/max.obj");
+    //    //---
+    //    min->setId(993);
+    //    min->setTag("min");
+    //    min->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+    //    min->setScale(0.1f);
+    //    min->setModelData(":/models/helpers/min.obj");
+    //    //
+    //    addSceneObject(mpnt);
+    //    addSceneObject(cnet);
+    //    addSceneObject(min);
+    //    addSceneObject(max);
+    //    addSceneObject(pivot);
+    //    //
+    //    setHelperIndexVars();
 }
 ////---------------------------------------------------------------------------------------
