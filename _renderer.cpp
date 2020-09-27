@@ -300,6 +300,7 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     // Calculate aspect ratio
     float aspect = float(resW) / float(resH ? resH : 1);
     projectionMatrix = glm::perspective(glm::radians(fov), float(aspect), zNear, zFar);
+    sceneEntity->setProjectionMatrix(projectionMatrix);
     //qDebug() << "setProjectionMatrix() on entity" << sceneEntity->getTag().c_str();
 }
 void _Renderer::setProjectionMatrix(int type, glm::mat4x4 m)

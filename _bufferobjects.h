@@ -65,6 +65,7 @@ public:
     ~_ShadowBuffer();
 
     void init();
+    void onResize(uint wRes,uint hRes);
     void startWriteToDepthBuffer();
     void stopWrite();
     GLuint getShadowDepthTexture();
@@ -72,7 +73,6 @@ public:
 
 
 private:
-   _Shader *sbShader;//local shader for the Fbo quad
    GLuint depthMapFBO;
    GLuint depthMap;
 };

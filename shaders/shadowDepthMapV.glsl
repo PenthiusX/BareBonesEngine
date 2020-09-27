@@ -3,11 +3,18 @@ layout (location = 0) in vec3 aPos;
 
 uniform mat4 model;
 
+uniform mat4 view;//Xnot needed for debug
+uniform mat4 projection;//X
+
+
+
 uniform mat4 shadowLightSpace;//orthoProjection matrix * viewMat from light pos
 
 void main()
 {
     gl_Position = shadowLightSpace * model * vec4(aPos, 1.0);
+    //gl_Position = projection * view * model * vec4(aPos, 1.0);
+
     //The position will be sent for vertexoperation and rasterisation ,
     //this will generate the raster,and the relative depthMap implicitly as well.
     //This will be captured in the FBO.

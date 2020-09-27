@@ -251,6 +251,7 @@ void _Scene::onResize(int w,int h){
         meshesRVec[i]->setProjectionMatrix(w,h,cam.getFOV(),cam.getNearClipDistance(),cam.getFarClipDistance());}
     //FBO init and updateTexture on Resize
     fboObject->setupFramebuffer(w,h);//FBO buffer and textures getSetup here.
+    shadowBObject.onResize(w,h);
 }
 //---------------------------------------------------------------------------------------
 /*
@@ -278,11 +279,11 @@ void _Scene::render()
         }
         if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true)
         {
-            _SceneEntity::GlEnablements g;
-            g.cullMode = _SceneEntity::GlEnablements::cullModes::FrontFace;
-            meshesRVec[i]->getSceneEntity()->setGLModes(g);
+//            _SceneEntity::GlEnablements g;
+//            g.cullMode = _SceneEntity::GlEnablements::cullModes::FrontFace;
+//            meshesRVec[i]->getSceneEntity()->setGLModes(g);
             meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
-            meshesRVec[i]->setOrthoProjectionMatrix(-10.0f, 10.0f, -10.0f, 10.0f,1.0,100.5);
+            meshesRVec[i]->setOrthoProjectionMatrix(-20.0f, 20.0f, -20.0f, 20.0f,1.0,100.0);
             meshesRVec[i]->draw(2);
         }
     }
@@ -295,9 +296,9 @@ void _Scene::render()
     for (uint i = 0,lrc=0; i < meshesRVec.size(); i++)
     {
         //-----Draw the Meshes-----
-        _SceneEntity::GlEnablements g;
-        g.cullMode = _SceneEntity::GlEnablements::cullModes::BackFace;
-        meshesRVec[i]->getSceneEntity()->setGLModes(g);
+//        _SceneEntity::GlEnablements g;
+//        g.cullMode = _SceneEntity::GlEnablements::cullModes::BackFace;
+//        meshesRVec[i]->getSceneEntity()->setGLModes(g);
         meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
         meshesRVec[i]->draw(1);//Rendering Scene Object/Primitives
 
@@ -322,6 +323,8 @@ void _Scene::render()
     fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
     fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
 }
+
+
 //---------------------------------------------------------------------------------------
 /*
  * this function updated at setintervals based on a clock timer.
