@@ -8,7 +8,6 @@
 /vs
 /.vscode
 /Dependancies
-/models
 
 *.vs
 *.vcxproj
