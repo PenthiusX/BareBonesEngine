@@ -12,6 +12,7 @@
 
 */
 //---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 /*
  * Constructor: _Scene class
 */
@@ -46,6 +47,7 @@ _Scene::~_Scene()
     //delete rayHitSceneEntity;
     delete triCollidedSceneEntity;
 }
+//---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  ·▄▄▄▄•▄▄▄ .
@@ -120,6 +122,7 @@ void _Scene::initialiseLights(_SceneEntity* s)
         }
     }
 }
+//---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
 /*
@@ -201,6 +204,7 @@ void _Scene::removeSceneObject(_SceneEntity s){
         }
 }
 //---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 /*
   • ▌ ▄ ·.       ▄• ▄▌.▄▄ · ▄▄▄ .   ▄▄▄ .▄• ▄▌ ▄▄ .  ▐ ▄  ▄▄▄▄▄
   ·██ ▐███▪▪     █▪ █▌▐█ ▀. ▀▄.▀·   ▀▄.▀·█▪ █▌▀▄.▀· •█▌▐█ •██
@@ -232,6 +236,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     }
 }
 //---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 /*
         ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
  ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
@@ -254,6 +259,7 @@ void _Scene::onResize(int w,int h){
     shadowBObject.onResize(w,h);
 }
 //---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 /*
   ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
   █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
@@ -269,40 +275,50 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render()
 {
-
-    shadowBObject.startWriteToDepthBuffer();
+    shadowBObject.startWriteToDepthBuffer();//wrtites the info drawn after
+    //--
+    drawMeshesForShadowBuffer(meshesRVec);
+    //--
+    shadowBObject.stopWrite();//Binds 0 to stop write to the shadowFbuff
+    //--
+    fboObject->setUpdatedFrame();//wrtites the info drawn after
+    //--
+    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
+    //--
+     drawMeshesWithLigthingInfo(meshesRVec);
+    //--
+    // use the texture color and pass it as pixel info for the Quad used in front of the screen
+    fboObject->renderFrameOnQuad();
+    //sets the mouse pointervalues for the shader applied on the FBO quad
+    fboObject->setMousePos(mousePositionR);
+}
+//---------------------------------------------------------------------------------------
+void _Scene::drawMeshesForShadowBuffer(std::vector<_Renderer *> meshesRVec)
+{
+    //~~~~~~~~~~~~~~
     for (uint i = 0; i < meshesRVec.size(); i++)
     {
-        if(meshesRVec[i]->getSceneEntity()->getTag() == "dlight")
-        {
+        if(meshesRVec[i]->getSceneEntity()->getTag() == "dlight"){
             sLightPos = meshesRVec[i]->getSceneEntity()->getPostion();
         }
-        if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true)
-        {
-//            _SceneEntity::GlEnablements g;
-//            g.cullMode = _SceneEntity::GlEnablements::cullModes::FrontFace;
-//            meshesRVec[i]->getSceneEntity()->setGLModes(g);
-            meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
-            meshesRVec[i]->setOrthoProjectionMatrix(-20.0f, 20.0f, -20.0f, 20.0f,1.0,100.0);
+        if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true){
+            //sets the view to orthographics so as to have no perspective devide to the buffer image
+            meshesRVec[i]->setOrthoProjectionMatrix(-20.0f, 20.0f, -20.0f, 20.0f,0.1,100.0);
+            //shader just has the lightspaceMatrix * pos to capture the FBO depth tex for use in shadows
             meshesRVec[i]->draw(2);
         }
+        meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
     }
-    shadowBObject.stopWrite();
-
-    fboObject->setUpdatedFrame();// The frames in context below will be captured
-    //~~~~~~~~~~~~~~
-    //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
-    //~~~~~~~~~~~~~~
+}
+//---------------------------------------------------------------------------------------
+void _Scene::drawMeshesWithLigthingInfo(std::vector<_Renderer *> sv)
+{
     for (uint i = 0,lrc=0; i < meshesRVec.size(); i++)
     {
         //-----Draw the Meshes-----
-//        _SceneEntity::GlEnablements g;
-//        g.cullMode = _SceneEntity::GlEnablements::cullModes::BackFace;
-//        meshesRVec[i]->getSceneEntity()->setGLModes(g);
-        meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
-        meshesRVec[i]->draw(1);//Rendering Scene Object/Primitives
+        meshesRVec[i]->draw(1);//(int 1) = the index of the shader applied.
 
-        //~~~~~Get and update Light information---
+        //~~~~~Get and update Light information~~~~~~~~
         meshesRVec[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
         lrc == lightsArray.size() ? lrc = 0:lrc;
         if(lightsArray[lrc]->getSignature() == meshesRVec[i]->getSceneEntity()->getTag())
@@ -317,13 +333,8 @@ void _Scene::render()
             }
             lrc++;
         }
-        //~~~~~~~~~~~~~~
     }
-    //~~~~~~~~~~~~~~
-    fboObject->renderFrameOnQuad();// captured frame is loaded in buffers and rendered on *FBOquad*
-    fboObject->setMousePos(mousePositionR); //sets the mouse pointervalues for the shader applied on the FBO quad
 }
-
 
 //---------------------------------------------------------------------------------------
 /*
@@ -338,6 +349,7 @@ void _Scene::fixedUpdate(float intervalTime)
         //   updateAllPhysicsObjectsLoop();
     }
 }
+//---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 /*
  ▄▄▄· ▄ .▄ ▄· ▄▌.▄▄ · ▪   ▄▄· .▄▄ ·
@@ -377,11 +389,11 @@ void _Scene::updateAllPhysicsObjectsOnce(){
     }
 }
 
-///*
-// * update the physcs variables realtime and is relativel optmised to run in a loop.
-// * is called in the _scene class's fixedUpdate() function.
-// */
-////---------------------------------------------------------------------------------------
+/*
+ * update the physcs variables realtime and is relativel optmised to run in a loop.
+ * is called in the _scene class's fixedUpdate() function.
+ */
+//---------------------------------------------------------------------------------------
 void _Scene::updateAllPhysicsObjectsLoop()
 {    if(physVector.size() > 0){
         //        physVector[loopIndex].setSceneEntity(meshesRVec[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
@@ -411,6 +423,8 @@ void _Scene::updateAllPhysicsObjectsLoop()
             loopIndex = 0;
     }
 }
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 /*
    ▄ .▄▄▄▄ .▄▄▌   ▄▄▄·▄▄▄ .▄▄▄  .▄▄ ·
   ██▪▐█▀▄.▀·██•  ▐█ ▄█▀▄.▀·▀▄ █·▐█ ▀.
@@ -545,4 +559,5 @@ void _Scene::addAllHelperTypesInScene()
     //    //
     //    setHelperIndexVars();
 }
-////---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------

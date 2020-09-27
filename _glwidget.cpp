@@ -65,7 +65,7 @@ void _GLWidget::initializeGL() {
     dl1->setAsLight(_SceneEntity::Directional);
     dl1->setModelData(":/models/cube.obj");
     dl1->setPhysicsObject(_SceneEntity::Sphere);
-    dl1->setPosition(glm::vec3(-4.4f,15.76f, 1.3f));//hard coded value need to get passed into the shader
+    dl1->setPosition(glm::vec3(-4.4f,5.76f, 1.3f));//hard coded value need to get passed into the shader
     dl1->setIsLineNoCullMode(false);
     dl1->setScale(0.20f);
     dl1->setColor(QVector4D(0.5,0.5,0.5,1.0));
@@ -327,7 +327,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
     int numDegrees = e->delta() / 8;
     int numSteps = numDegrees / 15;
     if(isCTRL){
-        scroolScale = scene->getSceneEntityHitWithRay()->getScale() + (numSteps * 0.005);
+        scroolScale = scene->getSceneEntityHitWithRay()->getScale() + (numSteps * 0.05);
         scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->setscale(scroolScale);
     }
     else if(!isCTRL){

@@ -34,6 +34,9 @@ public:
     void updateCamera(_Camera c);
     void onResize(int w,int h);
     void render();
+    void drawMeshesForShadowBuffer(std::vector<_Renderer*>  meshesRVec);
+    void drawMeshesWithLigthingInfo(std::vector<_Renderer*>  sv);
+
     void fixedUpdate(float intervalTime);
     //
     void setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m);//Sets the mouse Positions into the scene object for use in the Physics and FBo
