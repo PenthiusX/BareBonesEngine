@@ -53,7 +53,7 @@ void _GLWidget::initializeGL() {
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
     //-------------Camera-----------------------------
-    cam.setEyePosition(glm::vec3(0.0, 0.0, 10.0));
+    cam.setEyePosition(glm::vec3(-15.0, 20.0, 30.0));
     cam.setFocalPoint(glm::vec3(0.0, 0.0, 0.0));
     cam.setFarClipDistance(100.0f);
     cam.setFOV(65);
@@ -65,9 +65,9 @@ void _GLWidget::initializeGL() {
     dl1->setAsLight(_SceneEntity::Directional);
     dl1->setModelData(":/models/cube.obj");
     dl1->setPhysicsObject(_SceneEntity::Sphere);
-    dl1->setPosition(glm::vec3(-4.4f,5.76f, 1.3f));//hard coded value need to get passed into the shader
+    dl1->setPosition(glm::vec3(7.5f,6.56f, 6.1f));//hard coded value need to get passed into the shader
     dl1->setIsLineNoCullMode(false);
-    dl1->setScale(0.20f);
+    dl1->setScale(0.15f);
     dl1->setColor(QVector4D(0.5,0.5,0.5,1.0));
     //
     p1->setId(8002);
@@ -75,9 +75,9 @@ void _GLWidget::initializeGL() {
     p1->setAsLight(_SceneEntity::Point);
     p1->setModelData(":/models/sphere.obj");
     p1->setPhysicsObject(_SceneEntity::Sphere);
-    p1->setPosition(glm::vec3(-1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
+    p1->setPosition(glm::vec3(-14.9f,9.40001f, -12.5f));//hard coded value need to get passed into the shader
     p1->setIsLineNoCullMode(false);
-    p1->setScale(0.20f);
+    p1->setScale(0.8);
     p1->setColor(QVector4D(0.5,0.5,0.5,1.0));
     //->
     p2->setId(8003);
@@ -85,7 +85,7 @@ void _GLWidget::initializeGL() {
     p2->setAsLight(_SceneEntity::Point);
     p2->setModelData(":/models/sphere.obj");
     p2->setPhysicsObject(_SceneEntity::Sphere);
-    p2->setPosition(glm::vec3(1.3f,1.3f, 0.0f));//hard coded value need to get passed into the shader
+    p2->setPosition(glm::vec3(-2.5f,-1.9f, 0.3f));//hard coded value need to get passed into the shader
     p2->setIsLineNoCullMode(false);
     p2->setScale(0.20f);
     p2->setColor(QVector4D(0.5,0.5,0.5,1.0));
@@ -109,6 +109,15 @@ void _GLWidget::initializeGL() {
     m2.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
     m2.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
     m2.setShine(32.0);
+
+    /*_Material*/ m3 = {};
+    m3.setDiffuseTexture(":/textures/diffuse_bkp2k.jpg");//color texture
+    m3.setSpecularTexture(":/textures/specular_bkp2k.jpg");//spec texture
+    m3.setShine(0.5);
+    m3.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
+    m3.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
+    m3.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
+    m3.setShine(32.0);
     //------GLRaster Ebablements ovveride---------------
     _SceneEntity::GlEnablements g;
     g.fillMode = _SceneEntity::GlEnablements::FrontAndBackFill;
@@ -126,7 +135,7 @@ void _GLWidget::initializeGL() {
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
     s->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s->setScale(0.3f);
+    s->setScale(0.2f);
 
     s2->setId(8881);
     s2->setTag("LitObject2");
@@ -139,20 +148,21 @@ void _GLWidget::initializeGL() {
     s2->setIsLineNoCullMode(false);
     s2->setPosition(glm::vec3(0.0,-4.0,0.0));//initial position
     s2->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s2->setScale(10.0f);
+    s2->setScale(15.0f);
 
     s3->setId(8882);
     s3->setTag("LitObject3");
     s3->setIsShadowCaster(true);
     s3->setGLModes(g);// glmode settings
-    s3->setMaterial(m2);//material obhect
-    s3->setModelData("D:/DiamondPalRepo/DiamondPal/models/testCube.obj");//Model data
+    s3->setMaterial(m3);//material obhect
+    s3->setModelData("D:/DiamondPalRepo/DiamondPal/models/backpack.obj");//Model data
     s3->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
     s3->setIsTransformationLocal(false);
     s3->setIsLineNoCullMode(false);
-    s3->setPosition(glm::vec3(-5.0,0.0,0.0));//initial position
+    s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
+    s3->setRotation(glm::vec3(-0.95,-0.24,0.0));
     s3->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
-    s3->setScale(2.0f);
+    s3->setScale(4.7f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
@@ -217,7 +227,11 @@ void _GLWidget::paintGL()//the renderloop
     //Rendering info as text on screen
     iter++;
     if(iter > 100){iter = 0; qInfo()<< 1/timePerDraw << "\n";}
-    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay()->getTag(),scene->getSceneEntityHitWithRay()->getPostion(),glm::vec3(triCount));
+    text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay()->getTag(),
+                scene->getSceneEntityHitWithRay()->getPostion(),
+                scene->getSceneEntityHitWithRay()->getRotation(),
+                glm::vec3(scene->getSceneEntityHitWithRay()->getScale()),
+                (uint)triCount);
 }
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·

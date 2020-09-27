@@ -21,5 +21,7 @@
         <file>textures/brickwall.jpg</file>
         <file>textures/brickwall_normal.jpg</file>
         <file>textures/brickwallSpec.png</file>
+        <file>textures/diffuse_bkp2k.jpg</file>
+        <file>textures/specular_bkp2k.jpg</file>
     </qresource>
 </RCC>

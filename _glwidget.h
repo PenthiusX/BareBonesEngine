@@ -66,7 +66,7 @@ private:
     float timeSinceLastFrame;
     int ic = 0;//interval counter
     //
-    _Material m,m2;
+    _Material m,m2,m3;
     //Scene data count
     uint triCount=0,vertCount;
 };

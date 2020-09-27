@@ -28,7 +28,7 @@ void _Text::onResize(int w,int h){
     m_projection.perspective(45.f, qreal(w) / qreal(h), 0.1f, 100.f);
 }
 
-void _Text::render(_GLWidget *q , float fps, std::string Name, glm::vec3 pos, glm::vec3 rotation){
+void _Text::render(_GLWidget *q , float fps, std::string Name, glm::vec3 pos, glm::vec3 rotation, glm::vec3 scale ,uint tricount){
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -46,10 +46,21 @@ void _Text::render(_GLWidget *q , float fps, std::string Name, glm::vec3 pos, gl
     f2 = "Name:" + f1;
     QStaticText b(f2);
     //
-    f1 = QString::number(rotation.x);
+    f1 = QString::number(tricount);
     f2 = "TriCount:" + f1;
     QStaticText c( f2);
-    QStaticText d("Rot: ");
+
+    f1 = QString::number(rotation.x);
+    QString f21= QString::number(rotation.y);
+    QString f22 = QString::number(rotation.z);
+    f2 = "Rot: " + f1 + "," + f21 + ","  + f22;
+    QStaticText d(f2);
+
+    f1 = QString::number(scale.x);
+    QString f31= QString::number(scale.y);
+    QString f32 = QString::number(scale.z);
+    f2 = "Scale: " + f1 + "," + f31 + ","  + f32;
+    QStaticText e(f2);
 
     QPainter p(q);
     if(runOnce){
@@ -83,6 +94,8 @@ void _Text::render(_GLWidget *q , float fps, std::string Name, glm::vec3 pos, gl
     p.drawStaticText(x, y + (20.0f * ofset), m_text_layout);
     m_text_layout = d;
     p.drawStaticText(x, y + (30.0f * ofset), m_text_layout);
+    m_text_layout = e;
+    p.drawStaticText(x, y + (40.0f * ofset), m_text_layout);
     p.end();
 
     //m_model_text.rotate(2, 0, 2, 0);

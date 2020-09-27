@@ -15,5 +15,6 @@
         <file>models/testCube.obj</file>
         <file>models/skull_blender.obj</file>
         <file>models/plane_blender.obj</file>
+        <file>models/backpack.obj</file>
     </qresource>
 </RCC>

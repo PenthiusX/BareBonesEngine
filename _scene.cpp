@@ -283,7 +283,7 @@ void _Scene::render()
     //--
     fboObject->setUpdatedFrame();//wrtites the info drawn after
     //--
-    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
+    //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //--
      drawMeshesWithLigthingInfo(meshesRVec);
     //--
