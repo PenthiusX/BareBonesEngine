@@ -1,7 +1,9 @@
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 #version 330 core
+//-----------------------------------------
 in vec4 iMouseO;
-
-
+//-----------------------------------------
 struct Material {
     sampler2D diffuseTex;
     sampler2D specularTex;
@@ -10,7 +12,7 @@ struct Material {
     vec3 specular;
     float shininess;
 };
-
+//-----------------------------------------
 struct Light {
     vec3 position;
     //Base
@@ -36,7 +38,6 @@ struct DirLight{
 };
 struct PointLight{
     vec3 position;
-
     //Base
     vec3 ambient;
     vec3 diffuse;
@@ -49,39 +50,46 @@ struct PointLight{
 struct SpotLight{
     vec3 position;
     //Base
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    //Spot
     vec3  direction;
     float cutOff;
     float outerCutOff;
 };
+//-----------------------------------------
+//Lights
+uniform Light light;
+uniform SpotLight spot;
 
 #define NR_POINT_LIGHTS 4
-
-//Lights
-uniform Material material;
-uniform Light light;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
-
-
+//-----------------------------------------
 //Lighting inputs
 in vec3 Normal;
 in vec3 FragPos;
 uniform vec3 viewPos;
-
+//-----------------------------------------
 //Final Outcolor to the pixel
 out vec4 FragColor;
-
+//-----------------------------------------
 //Texturing
 in vec2 TexCoord;
 uniform sampler2D diffuseTex;//1
 uniform sampler2D specularTex;//2
 uniform sampler2D bumpTex;//3 //not in use yet
+//-----------------------------------------
+uniform Material material;
+//-----------------------------------------
 //Shadow
 uniform sampler2D shadowDepthTex;//4
 in vec4 fragPosLightSpace;
+//-----------------------------------------
 //Time
 uniform float time;
 #define PI 3.14159265359
-
+//---------------------------------------------------------------------------------------
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
     // perform perspective divide
@@ -114,7 +122,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
     return shadow;
 }
-
+//---------------------------------------------------------------------------------------
 vec3 compPointLight(PointLight pl ,vec4 diffuseTexture, vec4 specularTexture){
 
     // ambient
@@ -142,7 +150,7 @@ vec3 compPointLight(PointLight pl ,vec4 diffuseTexture, vec4 specularTexture){
     //Final
     return (ambient + diffuse + specular);
 }
-
+//---------------------------------------------------------------------------------------
 vec3 compDirectonalLight(vec4 diffuseTexture, vec4 specularTexture){
 
     // ambient
@@ -165,42 +173,43 @@ vec3 compDirectonalLight(vec4 diffuseTexture, vec4 specularTexture){
     //Final
     return (ambient + (1.0 - sd)) * (diffuse + specular) ;
 }
-
-vec3 compSpotLight(vec4 diffuseTexture, vec4 specularTexture){
+//---------------------------------------------------------------------------------------
+vec3 compSpotLight(SpotLight spt,vec4 diffuseTexture, vec4 specularTexture){
 
     // ambient
-    vec3 ambient = light.ambient * material.ambient;
+    vec3 ambient = spt.ambient * material.ambient;
     // diffuse
     vec3 norm  = normalize(Normal);
     vec3 lightDir = normalize(light.position - FragPos);
 
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * (diffuseTexture.xyz * material.diffuse);
+    vec3 diffuse = spt.diffuse * diff * (diffuseTexture.xyz * material.diffuse);
 
     // specular
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * spec ;//* (specularTexture.xyz * material.specular);
+    vec3 specular = spt.specular * spec ;//* (specularTexture.xyz * material.specular);
 
     // spotlight (soft edges)
-    float theta = dot(lightDir, normalize(-light.direction));
-    float epsilon = (light.cutOff - light.outerCutOff);
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    float theta = dot(lightDir, normalize(-spt.direction));
+    float epsilon = (spt.cutOff - spt.outerCutOff);
+    float intensity = clamp((theta - spt.outerCutOff) / epsilon, 0.0, 1.0);
     diffuse  *= intensity;
     specular *= intensity;
 
     //Final
     return ambient + diffuse + specular;
-}
 
+}
+//---------------------------------------------------------------------------------------
 void blendingOp(vec4 mainTexture){
     if(mainTexture.a < 0.1){//discarding pixels with value below 0.1 in the alpha component.
         discard;
         //texColor.a = 0.5;
     }
 }
-
+//---------------------------------------------------------------------------------------
 void main()
 {
     //Texture inputs
@@ -214,10 +223,11 @@ void main()
 
     color +=  compDirectonalLight(texColor,specColor);//finalise seperate class
     for(int i = 0; i < 2; i++){color +=  compPointLight(pointLights[i],texColor,specColor);}
-    color += compSpotLight(texColor,specColor);//finalise sperate class
+    color += compSpotLight(spot,texColor,specColor);//finalise sperate class
 
     FragColor = vec4(color.xyz, texColor.a);//Final color output
 //    FragColor = vec4(vec3(gl_FragCoord.z), 1.0);
     //FragColor = texture2D(shadowDepthTex,TexCoord);
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------

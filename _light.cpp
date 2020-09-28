@@ -95,5 +95,6 @@ std::vector<glm::vec3> _SpotLight::getLightParams(){
     //
     t.push_back(direction);
     t.push_back(glm::vec3(cutOff,outerCuttof,0.0));
+    return t;
 }
 I_Light::~I_Light(){}

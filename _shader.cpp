@@ -120,6 +120,7 @@ void _Shader::setGeometryShader(QString geoS)
 */
 GLint _Shader::getUniformLocation(const char* nameOfUniform)
 {
+   // qInfo() << nameOfUniform << "-" <<glGetUniformLocation(shaderProgram, nameOfUniform);
     return  glGetUniformLocation(shaderProgram, nameOfUniform);
 }
 /*

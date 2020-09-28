@@ -533,6 +533,7 @@ void _Renderer::updateMaterial(_Material m)
 void _Renderer::_Renderer::draw(uint shaderSelector)
 {
     setGLEnablements();//function sets openGL Rasterisation modifiers
+    //---
     shaderSelector > shaderVec.size() ? shaderSelector = 0 : shaderSelector;
     ssl = shaderSelector;
     if(sceneEntity->getIsActive())
@@ -606,7 +607,6 @@ void _Renderer::updateColorUniforms()
     //        sceneEntity->setColor(actualColor);
 }
 /*
- *  Used in the Draw functon
  * Updates the light uniforms on the model
  * is called in the Scene class in the draw function();
  */
@@ -617,10 +617,10 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
     uint piter = 0;
     for(uint li = 0 ; li < il.size(); li++)
     {
+        glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
         if(il[li]->getLightType() == "DirLight")
         {
             //positions
-            glUniform3f(shaderVec[ssl]->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
             glUniform3f(shaderVec[ssl]->getUniformLocation("light.position"),il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
             // Dir properties
             glUniform3f(shaderVec[ssl]->getUniformLocation("light.ambient"), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
@@ -630,7 +630,6 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
         }
         if(il[li]->getLightType() == "PointLight")
         {
-            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
             //PointL
             f  = "pointLights[";
             u  = std::to_string(piter);
@@ -655,14 +654,18 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
         }
         if(il[li]->getLightType() == "SpotLight")
         {
-            //            //positions
-            //            glUniform3f(shdr->getUniformLocation("viewPos"),camposForLight.x,camposForLight.y,camposForLight.z);
-            //            glUniform3f(shdr->getUniformLocation("light.position"),l.getPosition().x,l.getPosition().y,l.getPosition().z);
-            //            //SpotL-
-            //            glm::vec3 dir = glm::normalize(focalPoint - camposForLight);
-            //            glUniform3f(shdr->getUniformLocation("light.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
-            //            glUniform1f(shdr->getUniformLocation("light.cutOff"),glm::cos(glm::radians(12.5f)));
-            //            glUniform1f(shdr->getUniformLocation("light.outerCutOff"),glm::cos(glm::radians(17.5f)));
+            //positions
+            glUniform3f(shaderVec[ssl]->getUniformLocation("spot.position"),il[li]->getLightParams()[0].x,il[li]->getLightParams()[0].y,il[li]->getLightParams()[0].z);
+
+            glUniform3f(shaderVec[ssl]->getUniformLocation("spot.ambient"), il[li]->getLightParams()[2].x,il[li]->getLightParams()[2].y,il[li]->getLightParams()[2].z); // note that all light colors are set at full intensity
+            glUniform3f(shaderVec[ssl]->getUniformLocation("spot.diffuse"), il[li]->getLightParams()[1].x,il[li]->getLightParams()[1].y,il[li]->getLightParams()[1].z);
+            glUniform3f(shaderVec[ssl]->getUniformLocation("spot.specular"), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
+
+            //SpotL-
+            glm::vec3 dir = glm::normalize(focalPoint - camposForLight);//need to get this from the obj itself instead of the cam
+            glUniform3f(shaderVec[ssl]->getUniformLocation("spot.direction"),dir.x,dir.y,dir.z); // note that all light colors are set at full intensity
+            glUniform1f(shaderVec[ssl]->getUniformLocation("spot.cutOff"),glm::cos(glm::radians(12.5f)));
+            glUniform1f(shaderVec[ssl]->getUniformLocation("spot.outerCutOff"),glm::cos(glm::radians(17.5f)));
         }
     }
 

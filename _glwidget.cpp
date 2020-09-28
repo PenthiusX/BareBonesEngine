@@ -4,13 +4,13 @@
 
 #include "_text.h"
 #include "_material.h"
-
+//---------------------------------------------------------------------------------------
 /*
  * The _GLWidget Class:
  * This class is the Controller is a typical MVC where the
  * View and Controller are being handeled by the QT GUI frameowrk and
  * its wrapper functions for creating Opengl and GUI windowing context.
-
+//---------------------------------------------------------------------------------------
 */
 /*
 * Constructor:_GLWidget(QWidget *parent) : QOpenGLWidget(parent)
@@ -36,12 +36,14 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent){
 _GLWidget::~_GLWidget(){
     delete scene;
 }
+//---------------------------------------------------------------------------------------
 /*
   ▪   ▐ ▄ ▪  ▄▄▄▄▄▪   ▄▄▄· ▄▄▌  ▪  .▄▄ · ▄▄▄ .
   ██ •█▌▐███ •██  ██ ▐█ ▀█ ██•  ██ ▐█ ▀. ▀▄.▀·
   ▐█·▐█▐▐▌▐█· ▐█.▪▐█·▄█▀▀█ ██▪  ▐█·▄▀▀▀█▄▐▀▀▪▄
   ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌▐█▄▪▐█▐█▄▄▌
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀  ▀▀▀*/
+//---------------------------------------------------------------------------------------
 /*
  * initializeGL() overrides the
 * same function in the OpopenglFunctions class
@@ -89,6 +91,16 @@ void _GLWidget::initializeGL() {
     p2->setIsLineNoCullMode(false);
     p2->setScale(0.20f);
     p2->setColor(QVector4D(0.5,0.5,0.5,1.0));
+
+    sl1->setId(8004);
+    sl1->setTag("slight2");
+    sl1->setAsLight(_SceneEntity::Spot);
+    sl1->setModelData(":/models/sphere.obj");
+    sl1->setPhysicsObject(_SceneEntity::Sphere);
+    sl1->setPosition(glm::vec3(2.5f,6.56f, 6.1f));//hard coded value need to get passed into the shader
+    sl1->setIsLineNoCullMode(false);
+    sl1->setScale(0.50f);
+    sl1->setColor(QVector4D(0.5,0.5,0.5,1.0));
     //--------------------------------------------------
 
     //------------Material Params-----------------------
@@ -174,17 +186,20 @@ void _GLWidget::initializeGL() {
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
+    scene->addSceneObject(sl1);
 
     for(uint i = 0 ; i < scene->getSceneObjects().size();i++){
         triCount += (scene->getSceneObjects()[i]->getSceneEntity()->getModelInfo().getIndexArray().size() * 0.3333333333333);
     }
 }
+//---------------------------------------------------------------------------------------
 /*
          ▐ ▄     ▄▄▄  ▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .
   ▪     •█▌▐█    ▀▄ █·▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·
    ▄█▀▄ ▐█▐▐▌    ▐▀▀▄ ▐▀▀▪▄▄▀▀▀█▄▐█·▄█▀▀▀•▐▀▀▪▄
   ▐█▌.▐▌██▐█▌    ▐█•█▌▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌
    ▀█▄▀▪▀▀ █▪    .▀  ▀ ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀*/
+//---------------------------------------------------------------------------------------
 /*
     overides the
  * function in OpopenglFunctions class.
@@ -195,12 +210,14 @@ void _GLWidget::resizeGL(int w, int h){
     scene->onResize(w, h);
     text.onResize(w,h);
 }
+//---------------------------------------------------------------------------------------
 /*
   ▄• ▄▌ ▄▄▄··▄▄▄▄   ▄▄▄· ▄▄▄▄▄▄▄▄ .
   █▪██▌▐█ ▄███▪ ██ ▐█ ▀█ •██  ▀▄.▀·
   █▌▐█▌ ██▀·▐█· ▐█▌▄█▀▀█  ▐█.▪▐▀▀▪▄
   ▐█▄█▌▐█▪·•██. ██ ▐█ ▪▐▌ ▐█▌·▐█▄▄▌
    ▀▀▀ .▀   ▀▀▀▀▀•  ▀  ▀  ▀▀▀  ▀▀▀*/
+//---------------------------------------------------------------------------------------
 /*
  * ovveriding thes function in OpopenglFunctions
  * Your proprietory Draw function this run in a loop
@@ -233,6 +250,7 @@ void _GLWidget::paintGL()//the renderloop
                 glm::vec3(scene->getSceneEntityHitWithRay()->getScale()),
                 (uint)triCount);
 }
+//---------------------------------------------------------------------------------------
 /*
    ▄▄·        ▐ ▄ ▄▄▄▄▄▄▄▄        ▄▄▌  ▄▄▌  .▄▄ ·
   ▐█ ▌▪▪     •█▌▐█•██  ▀▄ █·▪     ██•  ██•  ▐█ ▀.
@@ -246,6 +264,7 @@ void _GLWidget::paintGL()//the renderloop
 * Press and Hold C to move camera
 * Press and Hold Ctrl to rotate object
 */
+//---------------------------------------------------------------------------------------
 /*
 * this is a overriden function from the QWidget parent
 * runs each time the mouse is pressed.
@@ -271,6 +290,7 @@ void _GLWidget::mousePressEvent(QMouseEvent *e){
         //        qDebug() << "Mpress";
     }
 }
+//---------------------------------------------------------------------------------------
 /*
 * This is a overriden function from the QWidget parent
 * runs each time the mouse is released.
@@ -293,6 +313,7 @@ void _GLWidget::mouseReleaseEvent(QMouseEvent *e)
         scene->setMousePositionInScene(mousePressPositionL,Qt::MiddleButton);//set mose pos in scene for use
     }
 }
+//---------------------------------------------------------------------------------------
 /*
 * This is a overriden function from the QWidget parent
 * runs each time the mouse is pressed and moved.
@@ -328,6 +349,7 @@ void _GLWidget::mouseMoveEvent(QMouseEvent *e)
         }
     }
 }
+//---------------------------------------------------------------------------------------
 /*
 * This is a overriden function from the QWidget parent
 * runs each time the mouse wheel is scrolled.
@@ -350,7 +372,7 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
         scene->updateCamera(cam);
     }
 }
-
+//---------------------------------------------------------------------------------------
 /*
 * runns anytime a key is presses and returns which key through the
 * event pointer of QKeyEvent object.
@@ -406,14 +428,14 @@ void _GLWidget::keyPressEvent(QKeyEvent * event)//Primary Debug use, not a final
     if(event->key() == Qt::Key_Control)
         isCTRL = true;
 }
-
+//---------------------------------------------------------------------------------------
 void _GLWidget::keyReleaseEvent(QKeyEvent *event){
     if(event->key() == Qt::Key_Control)
         isCTRL = false;
     if (event->text() == "c" || event->text() == "C")
         isCamFocus = false;
 }
-
+//---------------------------------------------------------------------------------------
 /*
   • ▌ ▄ ·. ▪  .▄▄ ·  ▄▄·            ▄▄▄·▄▄▄ .▄▄▄   ▄▄▄· ▄▄▄▄▄▪         ▐ ▄ .▄▄ ·
   ·██ ▐███▪██ ▐█ ▀. ▐█ ▌▪    ▪     ▐█ ▄█▀▄.▀·▀▄ █·▐█ ▀█ •██  ██ ▪     •█▌▐█▐█ ▀.
@@ -454,3 +476,4 @@ void _GLWidget::removeSceneEntityFromScene(){
     if(scene->getSceneObjects().size() > 7)
         scene->removeSceneObject(scene->getSceneObjects().size()-1);
 }
+//---------------------------------------------------------------------------------------
