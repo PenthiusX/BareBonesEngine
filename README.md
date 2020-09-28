@@ -4,5 +4,5 @@
 ![golScreen](https://user-images.githubusercontent.com/17414730/94368652-ee080f00-0102-11eb-8019-3a15c1cb02f5.png)
 
 - From scratch Perfromant Opengl based Rendering Engine,
-- consolidating popular Rendering Techinques
-- WIP
+- Consolidating popular Rendering Techinques
+- WIP..
