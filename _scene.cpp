@@ -68,10 +68,10 @@ void _Scene::addSceneObject(_SceneEntity* s)
     {
         s->setOrderInIndex(meshesRVec.size());
         if (isCamera){
-            initialiseMesh(s);
+            initialiseMesh(s);//initialise meshes for drawing
         }
-        initialisePhysics(s);
-        initialiseLights(s);
+        initialisePhysics(s);//For Physics calulations
+        initialiseLights(s);//for Ligthing calculations
     }
 }
 //---------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void _Scene::initialiseMesh(_SceneEntity* s)
 }
 //---------------------------------------------------------------------------------------
 void _Scene::initialisePhysics(_SceneEntity* s)
-{
+{//only inits if the object has a physics component attached
     if(s->getIsPhysicsObject()){
         _Physics *phys = new _Physics();
         phys->initialiseSceneEntity(s);
@@ -95,6 +95,9 @@ void _Scene::initialisePhysics(_SceneEntity* s)
     }
 }
 //---------------------------------------------------------------------------------------
+//Abstract Factory of Lights
+//sets the lights based on no of scene Entites introduced to the scene
+//with light modifier attached.This is set in _scene.initalise
 void _Scene::initialiseLights(_SceneEntity* s)
 {
     I_Light* lightInterface = nullptr;

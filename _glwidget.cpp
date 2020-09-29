@@ -51,7 +51,7 @@ _GLWidget::~_GLWidget(){
 */
 //Text
  _Text text;
-void _GLWidget::initializeGL() {
+void _GLWidget::initializeGL(){
     //needs to be run after the openGl contxt is initialised
     scene = new _Scene();
     //-------------Camera-----------------------------
@@ -452,6 +452,7 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         makeCurrent();
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
+
         onPress->setIsTransformationLocal(false);
         onPress->setPhysicsObject(_SceneEntity::PhysicsBody::Sphere);
 //      onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
