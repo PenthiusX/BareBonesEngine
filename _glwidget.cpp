@@ -180,8 +180,8 @@ void _GLWidget::initializeGL(){
     //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //Scene Objects-----------
     scene->addSceneObject(s2);
-//    scene->addSceneObject(s);
-//    scene->addSceneObject(s3);
+    scene->addSceneObject(s);
+    scene->addSceneObject(s3);
     //Lights------------------
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);

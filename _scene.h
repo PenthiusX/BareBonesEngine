@@ -46,6 +46,7 @@ public:
     _SceneEntity* findSceneEntity(std::string tag);
     //Physics
     _SceneEntity* getSceneEntityHitWithRay();
+    std::vector<_SceneEntity*> getRayHitList();
 
 private:
     //Inithandlers
@@ -83,6 +84,7 @@ private:
     //Physics ops
     std::vector<_Physics*> physVector;
     _SceneEntity *rayHitSceneEntity,*triCollidedSceneEntity;
+    std::vector<_SceneEntity*> hitList;
     uint hc;//physics and helper object counter
     uint loopIndex;
     void updateAllPhysicsObjectsLoop();

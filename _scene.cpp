@@ -369,14 +369,16 @@ void _Scene::fixedUpdate(float intervalTime)
 */
 void _Scene::updateAllPhysicsObjectsOnce(){
     if(physVector.size() > 0){
-        for (uint index = 0; index < physVector.size(); index++){
+        for (uint index = 0; index < physVector.size(); index++)
+        {
             physVector[index]->updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
                                                   glm::vec3(cam.getEyePosition().x,//Camera Position for screen space cals
                                                             cam.getEyePosition().y,
                                                             cam.getEyePosition().z),
                                                   glm::vec2(resW,resH));
 
-            if(physVector[index]->getSceneEntity()->getisHitByRay()){
+            if(physVector[index]->getSceneEntity()->getisHitByRay())
+            {
                 rayHitSceneEntity = physVector[index]->getSceneEntity();
             }
         }
