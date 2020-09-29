@@ -123,7 +123,6 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
 */
 void _AssetLoader::objLoader(QString pathToFile)
 {
-
     qInfo() << "Loading Model" << pathToFile <<  "vertices.";
     QByteArray qba = _Tools::ReadStringFromQrc(pathToFile).toLocal8Bit();
     const char* p = qba;
@@ -212,7 +211,7 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
     bool loadout = Loader.LoadFile(externalFilePath);
     std::vector<VertexInfo> vfa;
     vertMax = glm::vec4(Loader.LoadedVertices[0].Position.X,Loader.LoadedVertices[0].Position.Y,Loader.LoadedVertices[0].Position.Z,0.0);
-
+    vertMin = glm::vec4(Loader.LoadedVertices[0].Position.X,Loader.LoadedVertices[0].Position.Y,Loader.LoadedVertices[0].Position.Z,0.0);
     if(loadout){
     for(unsigned int i = 0 ; i < Loader.LoadedVertices.size(); i++){
         VertexInfo v;

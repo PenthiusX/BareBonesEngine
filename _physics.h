@@ -52,7 +52,7 @@ public:
     //
     void setMousePointerRay(glm::vec2 mPressPos, glm::mat4x4 projectionmat, glm::mat4x4 viewmat, glm::vec2 res);//returns the worldSpace ray cast from mousePosition,must be run in update
     bool hitSphere(glm::vec3 center, float radius , glm::vec3 rayOrigin);
-    float raySphereIntersect(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
+    float raySphereIntersectDistance(glm::vec3 rayOrigin, glm::vec3 s0, float sr);
     bool hitBoundingBox(Phy_Box b, glm::vec3 rayOrigin, glm::vec3 rDirection);
     //
     _Phy_Plane constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1,glm::vec3 V2);

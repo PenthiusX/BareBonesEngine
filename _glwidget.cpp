@@ -178,16 +178,16 @@ void _GLWidget::initializeGL(){
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
-    //-----Scene Objects---------------------------------
-    scene->addSceneObject(s);
+    //Scene Objects-----------
     scene->addSceneObject(s2);
-    scene->addSceneObject(s3);
-    //
+//    scene->addSceneObject(s);
+//    scene->addSceneObject(s3);
+    //Lights------------------
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
     scene->addSceneObject(sl1);
-
+    //------------------------
     for(uint i = 0 ; i < scene->getSceneObjects().size();i++){
         triCount += (scene->getSceneObjects()[i]->getSceneEntity()->getModelInfo().getIndexArray().size() * 0.3333333333333);
     }

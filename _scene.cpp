@@ -365,28 +365,19 @@ void _Scene::fixedUpdate(float intervalTime)
 /*
  * update the physcs variables realtime or on MouseClick as currently configured
  * is called in the _scene class's render() function.
+ *  * It holds a refrence of its respective sceneEntity and gets updated values if affected.
 */
 void _Scene::updateAllPhysicsObjectsOnce(){
     if(physVector.size() > 0){
         for (uint index = 0; index < physVector.size(); index++){
-            physVector[index]->setSceneEntity(meshesRVec[physVector[index]->getSceneEntity()->getIndexPosInScene()]->getSceneEntity());
-
-            //Passing some essentials into the updateLoop for physics
-            //updates the physics object instance and runs the main physics updateOperations.
             physVector[index]->updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-                                                  glm::vec3(cam.getEyePosition().x,//Camera Position
+                                                  glm::vec3(cam.getEyePosition().x,//Camera Position for screen space cals
                                                             cam.getEyePosition().y,
                                                             cam.getEyePosition().z),
                                                   glm::vec2(resW,resH));
 
-            //updates the status of scneEntity variable that get changed inside the Physis class on Collision Events.
-            //style of implmentation can vary, its essentally updates the sceEntityObjet in the rendered if it is
-            //getting collided with ray, So SceneEntity is the sharedVariable across classes Physics and Renderer
-            uint pi = physVector[index]->getSceneEntity()->getIndexPosInScene();
-            meshesRVec[pi]->setSceneEntityInRenderer(physVector[index]->getSceneEntity());//Is needed if we need to see changes to the sceneEntity in the main render as well.
-
-            if(meshesRVec[pi]->getSceneEntity()->getisHitByRay()){
-                rayHitSceneEntity = meshesRVec[pi]->getSceneEntity();
+            if(physVector[index]->getSceneEntity()->getisHitByRay()){
+                rayHitSceneEntity = physVector[index]->getSceneEntity();
             }
         }
     }
