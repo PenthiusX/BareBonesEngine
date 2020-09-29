@@ -47,6 +47,7 @@ public:
     _SceneEntity* getSceneEntity();
     //
     void genTriesforCollision(std::vector<float>vert,std::vector<uint> index);
+    void genTriesforCollision(std::vector<VertexInfo> vi,std::vector<uint> index);
     void genNormalsForTries(std::vector<_Phy_Triangle> triV);
     std::vector<_Phy_Triangle> getPhysTries()const;
     //

@@ -142,7 +142,7 @@ void _GLWidget::initializeGL(){
     s->setGLModes(g);// glmode settings
     s->setMaterial(m);//material obhect
     s->setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
-    s->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
+    s->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
@@ -168,7 +168,7 @@ void _GLWidget::initializeGL(){
     s3->setGLModes(g);// glmode settings
     s3->setMaterial(m3);//material obhect
     s3->setModelData("D:/DiamondPalRepo/DiamondPal/models/backpack.obj");//Model data
-    s3->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
+    s3->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
     s3->setIsTransformationLocal(false);
     s3->setIsLineNoCullMode(false);
     s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
@@ -177,11 +177,11 @@ void _GLWidget::initializeGL(){
     s3->setScale(4.7f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
-    //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
+    scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //Scene Objects-----------
     scene->addSceneObject(s2);
     scene->addSceneObject(s);
-    scene->addSceneObject(s3);
+   // scene->addSceneObject(s3);
     //Lights------------------
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);

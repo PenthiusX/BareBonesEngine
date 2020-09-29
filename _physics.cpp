@@ -69,11 +69,44 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s){
         initialMin = sceneEntity->getModelInfo().getMinExtent();
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
+        //inline if condition--
+        sceneEntity->getModelInfo().getVertexArray().size() == 0 ?
+        genTriesforCollision(sceneEntity->getModelInfo().getVertexInfoArray(),sceneEntity->getModelInfo().getIndexArray()):
         genTriesforCollision(sceneEntity->getModelInfo().getVertexArray(),sceneEntity->getModelInfo().getIndexArray());
+        //---------------
         triVectorCopy = triVector;
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
+    }
+}
+/*
+ *
+*/
+void _Physics::genTriesforCollision(std::vector<VertexInfo> vert, std::vector<unsigned int> index){
+    std::vector< glm::vec4> pv;
+    if(vert.size() > 0){
+        for(uint i = 0 ; i < vert.size() ; i++){
+            pv.push_back(glm::vec4(vert[i].Position.x,vert[i].Position.y,vert[i].Position.z,0.0));
+        }
+
+    }
+    if(index.size() > 0){
+        //Exception handeling: for improper models with extra
+        //vertices that are not forming tries.
+        //Improper models invoke an out of bounds error.
+        uint setOfTries = index.size()/3;
+        //
+        for(uint i = 0 ; i < setOfTries * 3 ; i+= 3){
+            _Phy_Triangle tri;
+            tri.pointA = pv[index[i]];
+            tri.pointB = pv[index[i+1]];
+            tri.pointC = pv[index[i+2]];
+            triVector.push_back(tri);
+        }
+    }
+    else{
+        qInfo() << "cant generate triangles for collision ModelData incomplete";
     }
 }
 /*
@@ -100,9 +133,9 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
         //Exception handeling: for improper models with extra
         //vertices that are not forming tries.
         //Improper models invoke an out of bounds error.
-        unsigned int setOfTries = index.size()/3;
+        uint setOfTries = index.size()/3;
         //
-        for(int i = 0 ; i < setOfTries * 3 ; i+= 3){
+        for(uint i = 0 ; i < setOfTries * 3 ; i+= 3){
             _Phy_Triangle tri;
             tri.pointA = pv[index[i]];
             tri.pointB = pv[index[i+1]];

@@ -78,7 +78,7 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
     std::vector <glm::vec3> normalsVec3;
     uint indexCounter = 0;
     bool normalSet = false;
-    for(int v = 0 ; v < (int)vertices.size() ; v++)
+    for(uint v = 0 ; v < vertices.size() ; v++)
     {
         indexCounter++;
         if(indexCounter == 9){
@@ -99,7 +99,7 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
       //only for compound arrays with nor
      indexCounter = 0; //create array of VertexOffsetnormal array
      uint ncounter = 0;
-     for(int v = 0 ; v < (int)vertices.size() ; v++){
+     for(uint v = 0 ; v < vertices.size() ; v++){
 
          if(indexCounter == 3){
              normalVertices.push_back(normalsVec3[ncounter].x);
@@ -214,6 +214,11 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
     vertMin = glm::vec4(Loader.LoadedVertices[0].Position.X,Loader.LoadedVertices[0].Position.Y,Loader.LoadedVertices[0].Position.Z,0.0);
     if(loadout){
     for(unsigned int i = 0 ; i < Loader.LoadedVertices.size(); i++){
+//        //For existing Mesh physics
+//        vertices.push_back(Loader.LoadedVertices[i].Position.X);
+//        vertices.push_back(Loader.LoadedVertices[i].Position.Y);
+//        vertices.push_back(Loader.LoadedVertices[i].Position.Z);
+        //
         VertexInfo v;
         v.Position = glm::vec3(Loader.LoadedVertices[i].Position.X,Loader.LoadedVertices[i].Position.Y,Loader.LoadedVertices[i].Position.Z);
         v.Normal = glm::vec3(Loader.LoadedVertices[i].Normal.X,Loader.LoadedVertices[i].Normal.Y,Loader.LoadedVertices[i].Normal.Z);

@@ -228,7 +228,7 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
         //        if(pu.joinable()){pu.detach();}
         //        if(ph.joinable()){ph.detach();}
         updateAllPhysicsObjectsOnce();
-        //updateHelpersOnce();
+        updateHelpersOnce();
     }
     else if(m == Qt::MiddleButton){
         //Physics+Helpers update on detached threads
@@ -322,7 +322,8 @@ void _Scene::drawMeshesWithLigthingInfo(std::vector<_Renderer *> sv)
         meshesRVec[i]->draw(1);//(int 1) = the index of the shader applied.
 
         //~~~~~Get and update Light information~~~~~~~~
-        meshesRVec[i]->updateLightUniforms(lightsArray);//update the light uniform values in shader. From its relative LightSceneEntity
+        //update the light uniform values in shader. From its relative LightSceneEntity in lightsArray
+        meshesRVec[i]->updateLightUniforms(lightsArray);
         lrc == lightsArray.size() ? lrc = 0:lrc;
         if(lightsArray[lrc]->getSignature() == meshesRVec[i]->getSceneEntity()->getTag())
         {
@@ -380,6 +381,9 @@ void _Scene::updateAllPhysicsObjectsOnce(){
             if(physVector[index]->getSceneEntity()->getisHitByRay())
             {
                 rayHitSceneEntity = physVector[index]->getSceneEntity();
+                qInfo() << physVector[index]->getRayTriIntersectionPoint().x <<"," <<
+                           physVector[index]->getRayTriIntersectionPoint().y <<"," <<
+                           physVector[index]->getRayTriIntersectionPoint().z<<"\n";
             }
         }
     }
@@ -486,74 +490,74 @@ void _Scene::setHelperIndexVars(){
 //---------------------------------------------------------------------------------------
 void _Scene::addAllHelperTypesInScene()
 {
-    //    this->isHelpers = true;
-    //    //----------Physics Helpers-------
-    //    sph->setId(1);
-    //    sph->setTag("boundingSphere");
-    //    sph->setIsLineMode(true);
-    //    sph->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::NoHelper);
-    //    sph->setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
-    //    sph->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    //    sph->setColor(QVector4D(0.3,0.5,0.0,0.9));
-    //    sph->setScale(1.0f);
-    //    sph->setModelData(":/models/sphere.obj");
-    //    sph->setIsActive(false);
-    //    //---
-    //    bb->setId(2);
-    //    bb->setTag("boundingBox");
-    //    bb->setIsLineMode(true);
-    //    bb->setPhysicsObject(_SceneEntity::Box,_SceneEntity::NoHelper);
-    //    bb->setIsTransformationLocal(false);
-    //    bb->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    //    bb->setColor(QVector4D(0.5,1.0,1.0,0.9));
-    //    bb->setScale(1.0f);
-    //    bb->setModelData(":/models/cube.obj");//dont need to reparse modelfile
-    //    bb->setIsActive(false);
-    //    //
-    //    addSceneObject(sph);
-    //    addSceneObject(bb);
-    //    //----------Orentation Helpers---------------
-    //    pivot->setId(888);
-    //    pivot->setTag("pivot");
-    //    pivot->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
-    //    pivot->setColor(QVector4D(1.0,1.0,1.0,1.0));
-    //    pivot->setScale(1.0f);
-    //    pivot->setModelData(":/models/pivot.obj");
-    //    //---
-    //    mpnt->setId(999);
-    //    mpnt->setTag("mousePointerObject");
-    //    mpnt->setIsTransformationLocal(false);
-    //    mpnt->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    //    mpnt->setScale(0.02f);
-    //    mpnt->setModelData(sph->getModelInfo());
-    //    //---
-    //    cnet->setId(991);
-    //    cnet->setTag("cent");
-    //    cnet->setIsTransformationLocal(false);
-    //    cnet->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    //    cnet->setScale(0.07f);
-    //    cnet->setModelData(sph->getModelInfo());
-    //    //---
-    //    max->setId(992);
-    //    max->setTag("max");
-    //    max->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    //    max->setColor(QVector4D(0.5,0.5,0.5,1.0));
-    //    max->setScale(0.1f);
-    //    max->setModelData(":/models/helpers/max.obj");
-    //    //---
-    //    min->setId(993);
-    //    min->setTag("min");
-    //    min->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-    //    min->setScale(0.1f);
-    //    min->setModelData(":/models/helpers/min.obj");
-    //    //
-    //    addSceneObject(mpnt);
-    //    addSceneObject(cnet);
-    //    addSceneObject(min);
-    //    addSceneObject(max);
-    //    addSceneObject(pivot);
-    //    //
-    //    setHelperIndexVars();
+        this->isHelpers = true;
+        //----------Physics Helpers-------
+        sph->setId(1);
+        sph->setTag("boundingSphere");
+        sph->setIsLineMode(true);
+        sph->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::NoHelper);
+        sph->setIsTransformationLocal(false);//keep it false(true only if object need to move like physics boides or particles)
+        sph->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        sph->setColor(QVector4D(0.3,0.5,0.0,0.9));
+        sph->setScale(1.0f);
+        sph->setModelData(":/models/sphere.obj");
+        sph->setIsActive(false);
+        //---
+        bb->setId(2);
+        bb->setTag("boundingBox");
+        bb->setIsLineMode(true);
+        bb->setPhysicsObject(_SceneEntity::Box,_SceneEntity::NoHelper);
+        bb->setIsTransformationLocal(false);
+        bb->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        bb->setColor(QVector4D(0.5,1.0,1.0,0.9));
+        bb->setScale(1.0f);
+        bb->setModelData(":/models/cube.obj");//dont need to reparse modelfile
+        bb->setIsActive(false);
+        //
+        addSceneObject(sph);
+        addSceneObject(bb);
+        //----------Orentation Helpers---------------
+        pivot->setId(888);
+        pivot->setTag("pivot");
+        pivot->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");//texture Compliable shader not complete//need to pass UVs externally//
+        pivot->setColor(QVector4D(1.0,1.0,1.0,1.0));
+        pivot->setScale(1.0f);
+        pivot->setModelData(":/models/pivot.obj");
+        //---
+        mpnt->setId(999);
+        mpnt->setTag("mousePointerObject");
+        mpnt->setIsTransformationLocal(false);
+        mpnt->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        mpnt->setScale(0.02f);
+        mpnt->setModelData(sph->getModelInfo());
+        //---
+        cnet->setId(991);
+        cnet->setTag("cent");
+        cnet->setIsTransformationLocal(false);
+        cnet->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        cnet->setScale(0.07f);
+        cnet->setModelData(sph->getModelInfo());
+        //---
+        max->setId(992);
+        max->setTag("max");
+        max->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        max->setColor(QVector4D(0.5,0.5,0.5,1.0));
+        max->setScale(0.1f);
+        max->setModelData(":/models/helpers/max.obj");
+        //---
+        min->setId(993);
+        min->setTag("min");
+        min->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
+        min->setScale(0.1f);
+        min->setModelData(":/models/helpers/min.obj");
+        //
+        addSceneObject(mpnt);
+        addSceneObject(cnet);
+        addSceneObject(min);
+        addSceneObject(max);
+        addSceneObject(pivot);
+        //
+        setHelperIndexVars();
 }
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
