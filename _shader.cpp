@@ -76,7 +76,7 @@ void _Shader::attachShaders()
         for (auto const& child_shader : child_shaders)
         {
             glDeleteShader(child_shader.second);
-            glDetachShader(shaderProgram,child_shader.second);
+  //          glDetachShader(shaderProgram,child_shader.second);
         }
     }
     else{//if no child shaders attatched
@@ -93,6 +93,14 @@ void _Shader::attachShaders(QString v,QString f)
     setFragmentShader(f);
     attachShaders();
 }
+
+void _Shader::attachShaders(QString v, QString f, QString g)
+{
+    setVertexShader(v);
+    setGeometryShader(g);
+    setFragmentShader(f);
+    attachShaders();
+}
 /*
  * attachGeometryShader(QString geoS)
  * takes in a qrc path to the geometry shader for this
@@ -101,16 +109,23 @@ void _Shader::attachShaders(QString v,QString f)
 */
 void _Shader::setGeometryShader(QString geoS)
 {
-    QByteArray source_utf = geoS.toLocal8Bit(); // get shader source from qrc file
-    const char *shader_src = source_utf.data(); //convert to const char*
 
-    auto geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-    glShaderSource(geometryShader, 1, &shader_src, nullptr);
-    glCompileShader(geometryShader);
-    glAttachShader(shaderProgram, geometryShader);
-    glLinkProgram(shaderProgram);
-    glDeleteShader(geometryShader);
-    glDetachShader(shaderProgram,geometryShader);
+    setChildShader(geoS,GL_GEOMETRY_SHADER);
+
+//    QByteArray source_utf = geoS.toLocal8Bit(); // get shader source from qrc file
+//    const char *shader_src = source_utf.data(); //convert to const char*
+
+//    auto geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+//    glShaderSource(geometryShader, 1, &shader_src, nullptr);
+//    glCompileShader(geometryShader);
+
+//    checkCompileErrors(geometryShader,"GEOMETRY");
+
+//    glAttachShader(shaderProgram, geometryShader);
+//    glLinkProgram(shaderProgram);
+
+//    glDeleteShader(geometryShader);
+//    glDetachShader(shaderProgram,geometryShader);
 }
 /*
 * getUniformLocation(char* nameOfUniform)
@@ -130,9 +145,11 @@ void _Shader::setChildShader(QString s, uint typ)
 {
     std::cout << s.data() ;
     uint shader = compileShader(tools.ReadStringFromQrc(s),typ);
+    checkCompileErrors(shader,"s");
     child_shaders[typ]=shader;//setting dictionary value shader ID at key typ
 }
 /*
+ * Not in use
  */
 void _Shader::setChildShader(std::vector<QString> shader_parts, uint typ)
 {
@@ -195,3 +212,28 @@ template<class T> void setUniformArrayValue(uint shaderProgram,
             .toStdString().c_str();
    return getUniformLocation(name, value);
 }
+
+
+void _Shader::checkCompileErrors(GLuint shader, std::string type)
+ {
+     GLint success;
+     GLchar infoLog[1024];
+     if(type != "PROGRAM")
+     {
+         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+         if(!success)
+         {
+             glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+             std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+         }
+     }
+     else
+     {
+         glGetProgramiv(shader, GL_LINK_STATUS, &success);
+         if(!success)
+         {
+             glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+             std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+         }
+     }
+ }

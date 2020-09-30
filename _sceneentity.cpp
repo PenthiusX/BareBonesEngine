@@ -325,11 +325,17 @@ void _SceneEntity::setModelData(QString path)
 /*
  * setShaderPath(QString vSh, QString fSh)
  * sets the path  for the shadert to be loaded ,for the current object.
-
 */
 void _SceneEntity::setShader(QString vSh, QString fSh) {
     vShaderPath = vSh;
     fShaderPath = fSh;
+}
+
+void _SceneEntity::setShader(QString vshader, QString fshader, QString geometry)
+{
+    vShaderPath = vshader;
+    fShaderPath = fshader;
+    gShaderPath = geometry;
 }
 /* Function:gets/sets texture path getTexturePath().
  * returns the path of the texture that is applied to the sceneObject.
@@ -354,6 +360,11 @@ QString _SceneEntity::getVertexShaderPath() const{
 */
 QString _SceneEntity::getFragmentShaderPath() const{
     return fShaderPath;
+}
+
+QString _SceneEntity::getGeometryShaderPath() const
+{
+    return gShaderPath;
 }
 /*
  * setPhysicsObject(_Physics::PhysicsObjects penum)

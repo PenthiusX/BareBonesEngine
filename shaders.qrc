@@ -11,5 +11,8 @@
         <file>shaders/skyboxV.glsl</file>
         <file>shaders/shadowDepthMapF.glsl</file>
         <file>shaders/shadowDepthMapV.glsl</file>
+        <file>shaders/geometryShadetTest.glsl</file>
+        <file>shaders/geometryShadetTestV.glsl</file>
+        <file>shaders/geometryShadetTestF.glsl</file>
     </qresource>
 </RCC>

@@ -3,6 +3,10 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 uv;
 
+out VS_OUT {
+    vec3 normal;
+} vs_out;
+
 out vec3 Normal;
 out vec3 FragPos;
 
@@ -24,19 +28,22 @@ out vec2 iMouseO;//to fragment
 
 void main()
 {
-    //get the Vertex fragment positons,Vertex lighting
-    FragPos = vec3(model * vec4(aPos, 1.0));
-    fragPosLightSpace = shadowLightSpace * vec4(FragPos, 1.0);
-
-    //apply the transforms applied on the model position data to update the normal data as well
-    Normal = mat3(transpose(inverse(model))) * normal;
-
-    ourColor = aColor;//not being used in this instance
-
     //Model view projection combined
     mat4 mvpx = projection * view * model;
     gl_Position =  mvpx * vec4(aPos, 1.0);
 
+    //get the Vertex fragment positons,Vertex lighting
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    //apply the transforms applied on the model position data to update the normal data as well
+    Normal = mat3(transpose(inverse(model))) * normal;
+    //FOr shadows
+    fragPosLightSpace = shadowLightSpace * vec4(FragPos, 1.0);
+
+    //For geometry shader
+    mat3 normalMatrix = mat3(transpose(inverse(view * model)));
+    vs_out.normal = vec3(vec4(normalMatrix * normal, 0.0));
+    //
+    ourColor = aColor;//not being used in this instance
     //Default uv cords for model editors that match coordinate order with opengl
     //TexCoord = uv;
     //if BlenderAssets wich have oposite coord order , force flip of the uV coords

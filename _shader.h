@@ -23,6 +23,7 @@ public:
 
     void attachShaders();
     void attachShaders(QString v , QString f);
+    void attachShaders(QString v , QString f,QString g);
     void useShaderProgram();
     GLint getUniformLocation(const char *nameOfUniform);
 
@@ -39,6 +40,7 @@ private:
     std::map<uint,uint> child_shaders;
 
     uint compileShader(QString src_path,uint typ);
+    void checkCompileErrors(GLuint shader, std::string type);
 
 
     _Tools tools;

@@ -72,11 +72,13 @@ public:
     void setModelData(_ModelInfo minfo);//set the modelInfo object in sceneEntity
     void setModelData(QString path);//takes the relative path via a qrc file path
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
+    void setShader(QString vshader, QString fshader,QString geometry);
     //void setTexturePath(QString texPath);
     QString getTexturePath() const;
     //
     QString getVertexShaderPath() const;//returns the vertexshader path
     QString getFragmentShaderPath() const;//returns the fragment shader path
+    QString getGeometryShaderPath() const;
 
     //flag for enabling mesh editing
     void setIsMeshEditable(bool isit);
@@ -172,6 +174,8 @@ private:
     //
     QString vShaderPath;
     QString fShaderPath;
+    QString gShaderPath;
+    //
     QString texturePath;
     //
     void setVertexData(std::vector<float> vertices);//sets the Vertex data.

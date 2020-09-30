@@ -32,6 +32,8 @@ _GLWidget::_GLWidget(QWidget *parent) : QOpenGLWidget(parent){
     d1  = new _SceneEntity();
     sl1 = new _SceneEntity();
 
+    glEnable(GL_MULTISAMPLE);
+
 }
 _GLWidget::~_GLWidget(){
     delete scene;
@@ -173,15 +175,15 @@ void _GLWidget::initializeGL(){
     s3->setIsLineNoCullMode(false);
     s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
     s3->setRotation(glm::vec3(-0.95,-0.24,0.0));
-    s3->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+    s3->setShader(":/shaders/geometryShadetTestV.glsl",":/shaders/geometryShadetTestF.glsl",":/shaders/geometryShadetTest.glsl");
     s3->setScale(4.7f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
-    scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
+    //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //Scene Objects-----------
     scene->addSceneObject(s2);
     scene->addSceneObject(s);
-   // scene->addSceneObject(s3);
+    scene->addSceneObject(s3);
     //Lights------------------
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);

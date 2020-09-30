@@ -80,6 +80,11 @@ void _FrameBuffer::setupFramebuffer(int resWidth, int resHeight)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, resH, resW );//revert vieport back to default
 }
+
+void _FrameBuffer::setUpMsAAFrameBuffer(int w, int h)
+{
+
+}
 /*
  * this function calls to all function needed on initialisation
  * should be called on resize as well if you need the Framebuffer texture to

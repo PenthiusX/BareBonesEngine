@@ -528,7 +528,7 @@ void _Scene::addAllHelperTypesInScene()
         mpnt->setTag("mousePointerObject");
         mpnt->setIsTransformationLocal(false);
         mpnt->setShader(":/shaders/dmvshader.glsl", ":/shaders/dmfshader.glsl");
-        mpnt->setScale(0.02f);
+        mpnt->setScale(0.09f);
         mpnt->setModelData(sph->getModelInfo());
         //---
         cnet->setId(991);

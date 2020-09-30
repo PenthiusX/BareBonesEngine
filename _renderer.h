@@ -94,6 +94,7 @@ private:
     std::vector<_Shader*> shaderVec;
     void setShader();//default shatder to load
     void setShader(QString vertexShader, QString fragmentShader);//takes a string literal and passes
+    void setShader(QString vertexShader,QString fragmentShader,QString geometryShader);
     //
     uint ssl;//shader index selector
     //lights

@@ -64,9 +64,9 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity* s)
     sceneEntity = s;
     actualColor = sceneEntity->getColor();
     //generates a shader program
-    setShader(sceneEntity->getVertexShaderPath(), sceneEntity->getFragmentShaderPath());//1
-    if(sceneEntity->getIsShadowCaster()){setShader(":/shaders/shadowDepthMapV.glsl",":/shaders/shadowDepthMapF.glsl");}//2
-    //sets the lightings init info
+    setShader(sceneEntity->getVertexShaderPath(), sceneEntity->getFragmentShaderPath(),sceneEntity->getGeometryShaderPath());//1 used for normal lighting based rendering
+    if(sceneEntity->getIsShadowCaster()){setShader(":/shaders/shadowDepthMapV.glsl",":/shaders/shadowDepthMapF.glsl");}//2 use when rendering to shadowdepth buffer
+    //sets the Texture info if applicable
     if(sceneEntity->getMaterial().getDiffuseTexture().size() != 0){setupTexture(sceneEntity->getMaterial().getDiffuseTexture(),_Texture::Type::Diffuse);}
     if(sceneEntity->getMaterial().getSpecualrTexture().size() != 0){setupTexture(sceneEntity->getMaterial().getSpecualrTexture(),_Texture::Type::Specular);}
     //Sets the matrices init info
@@ -125,6 +125,19 @@ void _Renderer::setShader(QString vSh, QString fSh)
 {
     shdr = new _Shader();
     shdr->attachShaders(vSh,fSh);
+    shaderVec.push_back(shdr);
+    qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity->getTag().c_str();
+}
+
+void _Renderer::setShader(QString vSh, QString fSh, QString geo)
+{
+    shdr = new _Shader();
+    if(geo.size()!= 0){
+       shdr->attachShaders(vSh,fSh,geo);
+    }
+    else{
+       shdr->attachShaders(vSh,fSh);
+    }
     shaderVec.push_back(shdr);
     qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity->getTag().c_str();
 }
