@@ -4,5 +4,5 @@
 void main()
 {
         //gl_FragDepth = gl_FragCoord.z;
-       gl_FragColor = vec4(gl_FragCoord.z);//for debug
+    gl_FragColor = vec4(gl_FragCoord.z);//for debug
 }

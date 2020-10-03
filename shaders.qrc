@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>shaders/dmvshader.glsl</file>
         <file>shaders/dmfshader.glsl</file>
-        <file>shaders/lightingVert.glsl</file>
         <file>shaders/lightingFrag.glsl</file>
         <file>shaders/fboTexVshader.glsl</file>
         <file>shaders/fboTexFshader.glsl</file>
@@ -11,8 +10,10 @@
         <file>shaders/skyboxV.glsl</file>
         <file>shaders/shadowDepthMapF.glsl</file>
         <file>shaders/shadowDepthMapV.glsl</file>
-        <file>shaders/geometryShadetTest.glsl</file>
-        <file>shaders/geometryShadetTestV.glsl</file>
-        <file>shaders/geometryShadetTestF.glsl</file>
+        <file>shaders/geoShaderExplode.glsl</file>
+        <file>shaders/geoTestV.glsl</file>
+        <file>shaders/geoTestF.glsl</file>
+        <file>shaders/lightingVertUVDefault.glsl</file>
+        <file>shaders/lightingVertUVyFlipped.glsl</file>
     </qresource>
 </RCC>

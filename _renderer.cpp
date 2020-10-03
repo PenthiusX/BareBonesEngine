@@ -575,7 +575,18 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
         glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("shadowLightSpace"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix * lightViewMatrix));//for shadow calcs
         glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity->getModelMatrix()));
         //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getTranslationMatrix()*sceneEntity->getRotationmatrix()*pivotTmat *sceneEntity->getScaleingMatrix()));
-        //
+
+//        GL_POINTS 0x0000
+//        GL_LINES 0x0001
+//        GL_LINE_LOOP 0x0002
+//        GL_LINE_STRIP 0x0003
+//        GL_TRIANGLES 0x0004
+//        GL_TRIANGLE_STRIP 0x0005
+//        GL_TRIANGLE_FAN 0x0006
+//        GL_QUADS 0x0007
+//        GL_QUAD_STRIP 0x0008
+//        GL_POLYGON 0x0009
+
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         //
         glBindVertexArray(0);//Clear the buffer
@@ -608,16 +619,7 @@ void _Renderer::updateColorUniforms()
         col.setZ(col.z() + abs(cos(timer.elapsed() * 0.05)));
         glUniform4f(shaderVec[ssl]->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
     }
-
     sceneEntity->getisHitByRay() ? sceneEntity->setColor(actualColor * 2.0) : sceneEntity->setColor(actualColor * 1.0);
-
-    //    if(sceneEntity->getIsHitByTri()){
-    //        QVector4D qc = actualColor;
-    //         qc.setX(actualColor.x() + 1.0f);
-    //        sceneEntity->setColor(qc);
-    //    }
-    //    else
-    //        sceneEntity->setColor(actualColor);
 }
 /*
  * Updates the light uniforms on the model

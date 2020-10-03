@@ -4,7 +4,7 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec2 iMouseO;
 in vec2 iMouse1;
-in float iTime;
+uniform float time;
 
 uniform sampler2D screenTexture;
 

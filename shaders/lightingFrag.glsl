@@ -63,6 +63,8 @@ struct SpotLight{
 uniform Light light;
 uniform SpotLight spot;
 
+uniform bool blinn;
+
 #define NR_POINT_LIGHTS 4
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 //-----------------------------------------
@@ -76,6 +78,7 @@ out vec4 FragColor;
 //-----------------------------------------
 //Texturing
 in vec2 TexCoord;
+in vec2 TexCoords;
 uniform sampler2D diffuseTex;//1
 uniform sampler2D specularTex;//2
 uniform sampler2D bumpTex;//3 //not in use yet
@@ -134,7 +137,13 @@ vec3 compPointLight(PointLight pl ,vec4 diffuseTexture, vec4 specularTexture){
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = pl.diffuse * diff * (diffuseTexture.xyz + material.diffuse);
 
-    // specular
+    //Binn
+    //  halfwayDir = normalize(lightDir + viewDir);
+    //  specular = pow(max(dot(norm, halfwayDir), 0.0), 32.0);
+    //Blin-Phong
+    //  reflectDir = reflect(-lightDir, norm);
+    //  specular = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
@@ -219,7 +228,6 @@ void main()
     blendingOp(texColor);
     //Light and Material inputs
     vec3 color;
-    PointLight p;
 
     color +=  compDirectonalLight(texColor,specColor);//finalise seperate class
     for(int i = 0; i < 2; i++){color +=  compPointLight(pointLights[i],texColor,specColor);}
@@ -228,6 +236,7 @@ void main()
     FragColor = vec4(color.xyz, texColor.a);//Final color output
 //    FragColor = vec4(vec3(gl_FragCoord.z), 1.0);
     //FragColor = texture2D(shadowDepthTex,TexCoord);
+    //FragColor = texture2D(diffuseTex,TexCoords);
 }
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------

@@ -76,6 +76,7 @@ void _GLWidget::initializeGL(){
     //
     p1->setId(8002);
     p1->setTag("plight1");
+    p1->setIsShadowCaster(true);
     p1->setAsLight(_SceneEntity::Point);
     p1->setModelData(":/models/sphere.obj");
     p1->setPhysicsObject(_SceneEntity::Sphere);
@@ -86,6 +87,7 @@ void _GLWidget::initializeGL(){
     //->
     p2->setId(8003);
     p2->setTag("plight2");
+    p2->setIsShadowCaster(true);
     p2->setAsLight(_SceneEntity::Point);
     p2->setModelData(":/models/sphere.obj");
     p2->setPhysicsObject(_SceneEntity::Sphere);
@@ -96,6 +98,7 @@ void _GLWidget::initializeGL(){
 
     sl1->setId(8004);
     sl1->setTag("slight2");
+    sl1->setIsShadowCaster(true);
     sl1->setAsLight(_SceneEntity::Spot);
     sl1->setModelData(":/models/sphere.obj");
     sl1->setPhysicsObject(_SceneEntity::Sphere);
@@ -148,7 +151,7 @@ void _GLWidget::initializeGL(){
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
-    s->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+    s->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
     s->setScale(0.2f);
 
     s2->setId(8881);
@@ -161,7 +164,7 @@ void _GLWidget::initializeGL(){
     s2->setIsTransformationLocal(false);
     s2->setIsLineNoCullMode(false);
     s2->setPosition(glm::vec3(0.0,-4.0,0.0));//initial position
-    s2->setShader(":/shaders/lightingVert.glsl",":/shaders/lightingFrag.glsl");
+    s2->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
     s2->setScale(15.0f);
 
     s3->setId(8882);
@@ -175,7 +178,7 @@ void _GLWidget::initializeGL(){
     s3->setIsLineNoCullMode(false);
     s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
     s3->setRotation(glm::vec3(-0.95,-0.24,0.0));
-    s3->setShader(":/shaders/geometryShadetTestV.glsl",":/shaders/geometryShadetTestF.glsl",":/shaders/geometryShadetTest.glsl");
+    s3->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl",":/shaders/geoShaderExplode.glsl");
     s3->setScale(4.7f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
@@ -454,8 +457,8 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         makeCurrent();
         onPress = new _SceneEntity();
         onPress->setId(scene->getSceneObjects().size() + i);
-
         onPress->setIsTransformationLocal(false);
+        onPress->setIsShadowCaster(true);
         onPress->setPhysicsObject(_SceneEntity::PhysicsBody::Sphere);
 //      onPress->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
         onPress->setPosition(glm::vec3(_Tools::getRandomNumberfromRangeF(-10,10),_Tools::getRandomNumberfromRangeF(-10,10), _Tools::getRandomNumberfromRangeF(-5,10)));
@@ -467,7 +470,7 @@ void _GLWidget::addRandomSceneEntitestoScene(uint count)
         onPress->setModelData("D:/DiamondPalRepo/DiamondPal/models/torus_blender.obj");//dont need to reparse modelfile
         scene->addSceneObject(onPress);
         qInfo()<< "created" << i <<"th object" << "id" << onPress->getId();
-        delete onPress;
+        //delete onPress;
         doneCurrent();
     }
 }

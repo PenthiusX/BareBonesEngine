@@ -109,23 +109,7 @@ void _Shader::attachShaders(QString v, QString f, QString g)
 */
 void _Shader::setGeometryShader(QString geoS)
 {
-
     setChildShader(geoS,GL_GEOMETRY_SHADER);
-
-//    QByteArray source_utf = geoS.toLocal8Bit(); // get shader source from qrc file
-//    const char *shader_src = source_utf.data(); //convert to const char*
-
-//    auto geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-//    glShaderSource(geometryShader, 1, &shader_src, nullptr);
-//    glCompileShader(geometryShader);
-
-//    checkCompileErrors(geometryShader,"GEOMETRY");
-
-//    glAttachShader(shaderProgram, geometryShader);
-//    glLinkProgram(shaderProgram);
-
-//    glDeleteShader(geometryShader);
-//    glDetachShader(shaderProgram,geometryShader);
 }
 /*
 * getUniformLocation(char* nameOfUniform)
