@@ -1,11 +1,11 @@
-#ifndef _PHYSICS_H
-#define _PHYSICS_H
+#pragma once
 
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "_sceneentity.h"
+#include "_renderer.h"
 
 /*
  * Class: _Physics
@@ -92,6 +92,13 @@ private:
     void updateSphereExtents();
 
     bool triangleTriangleIntersectionTest(_Physics objA, _Physics objB);
-};
 
-#endif // _PHYSICS_H
+
+    //Objects for Visualhelper creation
+    _Renderer *r;
+
+    void createVisualHelper();
+    void updateVisualHelper();
+    void drawVisualHelper();
+
+};

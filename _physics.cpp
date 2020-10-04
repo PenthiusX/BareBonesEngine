@@ -15,10 +15,11 @@
 //#include "_tools.h"
 
 _Physics::_Physics(){
-//    sceneEntity = new _SceneEntity();
+    //    sceneEntity = new _SceneEntity();
 }
 _Physics::~_Physics(){
-//    delete sceneEntity;
+    //    delete sceneEntity;
+    delete r;
 }
 
 /*
@@ -54,6 +55,7 @@ std::vector<_Phy_Triangle> _Physics::getPhysTries() const{
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
 void _Physics::initialiseSceneEntity(_SceneEntity* s){
+    r = new _Renderer();//for visual helprs
     sceneEntity = s;
     //Initialise based on SceneEntity;
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere){
@@ -62,22 +64,25 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
+        createVisualHelper();
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
+        createVisualHelper();
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
         //inline if condition--
         sceneEntity->getModelInfo().getVertexArray().size() == 0 ?
-        genTriesforCollision(sceneEntity->getModelInfo().getVertexInfoArray(),sceneEntity->getModelInfo().getIndexArray()):
-        genTriesforCollision(sceneEntity->getModelInfo().getVertexArray(),sceneEntity->getModelInfo().getIndexArray());
+                    genTriesforCollision(sceneEntity->getModelInfo().getVertexInfoArray(),sceneEntity->getModelInfo().getIndexArray()):
+                    genTriesforCollision(sceneEntity->getModelInfo().getVertexArray(),sceneEntity->getModelInfo().getIndexArray());
         //---------------
         triVectorCopy = triVector;
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
+        createVisualHelper();
     }
 }
 /*
@@ -359,43 +364,44 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
     setMousePointerRay(mousePos,sceneEntity->getProjectionMatrix(),sceneEntity->getViewMatrix(),screenRes);
     switch(sceneEntity->getPhysicsObjectType())
     {
-        case _SceneEntity::Sphere :
-            //updates the maxExtents
-            transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
-            //set sphere collider dimensions
-            updateSphereExtents();
-            //intersection check
-            hitSphere(sp.center,sp.radius,camPos)?sceneEntity->setIsHitByRay(true):sceneEntity->setIsHitByRay(false);
-            if(hitSphere(sp.center,sp.radius,camPos)){
-                qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
-            }
-            break;
-        case _SceneEntity::Box :
-            //updates the maxExtents
-            transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
-            //set box collider extents
-            bx.max = sceneEntity->getModelInfo().getMaxExtent();
-            bx.min = sceneEntity->getModelInfo().getMinExtent();
-            //intersection check.
-            if(hitBoundingBoxF(bx,camPos,ray_wor)){
-                sceneEntity->setIsHitByRay(true);
-                qDebug() <<"HitBox"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
-            }
-            if(!hitBoundingBoxF(bx,camPos,ray_wor)){sceneEntity->setIsHitByRay(false);}
-            break;
-        case _SceneEntity::Mesh :
-            //updates the maxExtents
-            transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
-            //sets the updated modelMatrix from the sceneEntity->
-            transFormPhysicsTriangles(sceneEntity->getModelMatrix());
-            //Intersection check.
-            if(rayIntersectsTriangles(triVector,camPos,ray_wor)){
-                sceneEntity->setIsHitByRay(true);
-                qDebug() <<"HitMesh"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
-            }else if(!rayIntersectsTriangles(triVector,camPos,ray_wor)){
-                sceneEntity->setIsHitByRay(false);}
-            break;
+    case _SceneEntity::Sphere :
+        //updates the maxExtents
+        transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
+        //set sphere collider dimensions
+        updateSphereExtents();
+        //intersection check
+        hitSphere(sp.center,sp.radius,camPos)?sceneEntity->setIsHitByRay(true):sceneEntity->setIsHitByRay(false);
+        if(hitSphere(sp.center,sp.radius,camPos)){
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
+        }
+        break;
+    case _SceneEntity::Box :
+        //updates the maxExtents
+        transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
+        //set box collider extents
+        bx.max = sceneEntity->getModelInfo().getMaxExtent();
+        bx.min = sceneEntity->getModelInfo().getMinExtent();
+        //intersection check.
+        if(hitBoundingBoxF(bx,camPos,ray_wor)){
+            sceneEntity->setIsHitByRay(true);
+            qDebug() <<"HitBox"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
+        }
+        if(!hitBoundingBoxF(bx,camPos,ray_wor)){sceneEntity->setIsHitByRay(false);}
+        break;
+    case _SceneEntity::Mesh :
+        //updates the maxExtents
+        transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
+        //sets the updated modelMatrix from the sceneEntity->
+        transFormPhysicsTriangles(sceneEntity->getModelMatrix());
+        //Intersection check.
+        if(rayIntersectsTriangles(triVector,camPos,ray_wor)){
+            sceneEntity->setIsHitByRay(true);
+            qDebug() <<"HitMesh"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
+        }else if(!rayIntersectsTriangles(triVector,camPos,ray_wor)){
+            sceneEntity->setIsHitByRay(false);}
+        break;
     }
+    updateVisualHelper();
 }
 
 /*
@@ -420,7 +426,9 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
             //implement sphere on sphere here;
         }
     }
+    updateVisualHelper();
 }
+
 
 
 /* Triangle/triangle intersection test routine,
@@ -455,14 +463,16 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
 #define cross(dest,v1,v2){                     \
     dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
     dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
-    dest[2]=v1[0]*v2[1]-v1[1]*v2[0];}
+    dest[2]=v1[0]*v2[1]-v1[1]*v2[0];\
+}
 
 #define dot(v1,v2)(v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
 
 #define sub(dest,v1,v2){         \
     dest[0]=v1[0]-v2[0]; \
     dest[1]=v1[1]-v2[1]; \
-    dest[2]=v1[2]-v2[2];}
+    dest[2]=v1[2]-v2[2]; \
+}
 
 /*
  * sort so that a<=b
@@ -474,7 +484,7 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
     c=a;     \
     a=b;     \
     b=c;     \
-    }
+}
 
 
 /*
@@ -490,16 +500,16 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
     f=Ay*Bx-Ax*By;                                      \
     d=By*Cx-Bx*Cy;                                      \
     if((f>0 && d>=0 && d<=f) || (f<0 && d<=0 && d>=f))  \
-{                                                   \
-    e=Ax*Cy-Ay*Cx;                                    \
-    if(f>0)                                           \
-{                                                 \
-    if(e>=0 && e<=f) return 1;                      \
-    }                                                 \
-    else                                              \
-{                                                 \
-    if(e<=0 && e>=f) return 1;                      \
-    }                                                 \
+    {                                                   \
+        e=Ax*Cy-Ay*Cx;                                    \
+        if(f>0)                                           \
+        {                                                 \
+            if(e>=0 && e<=f) return 1;                      \
+        }                                                 \
+        else                                              \
+        {                                                 \
+            if(e<=0 && e>=f) return 1;                      \
+        }                                                 \
     }
 
 #define edgeAgainstTriEdges(V0,V1,U0,U1,U2) \
@@ -513,7 +523,7 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
     edgeEdgeTest(V0,U1,U2);                    \
     /* test edge U2,U1 against V0,V1 */          \
     edgeEdgeTest(V0,U2,U0);                    \
-    }
+}
 
 #define pointInTri(V0,U0,U1,U2)           \
 {                                           \
@@ -535,10 +545,10 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
     c=-a*U2[i0]-b*U2[i1];                     \
     d2=a*V0[i0]+b*V0[i1]+c;                   \
     if(d0*d1>0.0)                             \
-{                                         \
-    if(d0*d2>0.0) return 1;                 \
+    {                                         \
+        if(d0*d2>0.0) return 1;                 \
     }                                         \
-    }
+}
 /*
  */
 int coPlanarTriTri(float N[3],float V0[3],float V1[3],float V2[3],float U0[3],float U1[3],float U2[3])
@@ -742,4 +752,64 @@ bool _Physics::triangleTriangleIntersectionTest(_Physics objA, _Physics objB){
         }
     }
     return false;
+}
+/*
+▌ ▐·▪  . ▄▄ · ▄• ▄▌ ▄▄▄· ▄▄▌  ▪  .▄▄ · ▄▄▄ .
+▪█·█▌██ ▐█ ▀. █▪██▌▐█ ▀█ ██•  ██ ▐█ ▀. ▀▄.▀·
+▐█▐█•▐█·▄▀▀▀█▄█▌▐█▌▄█▀▀█ ██▪  ▐█·▄▀▀▀█▄▐▀▀▪▄
+ ███ ▐█▌▐█▄▪▐█▐█▄█▌▐█ ▪▐▌▐█▌▐▌▐█▌▐█▄▪▐█▐█▄▄▌
+. ▀  ▀▀▀ ▀▀▀▀  ▀▀▀  ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀  ▀▀▀
+*/
+/*
+ * this is local meshRenderObject to create a custom visual object
+ * that acts as a visual rep of the physics object
+*/
+void _Physics::createVisualHelper()
+{
+    r->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl",":/shaders/geoShaderExplode.glsl");//1
+
+    if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh)
+    {
+        //Sets the matrices init info
+        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
+        std::vector<float> vertexArray;
+        for(uint t = 0 ; t > triVector.size() ; t++){
+            vertexArray.push_back(triVector[t].pointA.x);
+            vertexArray.push_back(triVector[t].pointA.y);
+            vertexArray.push_back(triVector[t].pointA.z);
+
+            vertexArray.push_back(triVector[t].pointB.x);
+            vertexArray.push_back(triVector[t].pointB.y);
+            vertexArray.push_back(triVector[t].pointB.z);
+
+            vertexArray.push_back(triVector[t].pointC.x);
+            vertexArray.push_back(triVector[t].pointC.y);
+            vertexArray.push_back(triVector[t].pointC.z);
+        }
+        r->setModelDataInBuffers(vertexArray);
+    }
+    if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box)
+    {
+        //Sets the matrices init info
+        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
+        r->setModelDataInBuffers(this->sceneEntity->getModelInfo().getVertexArray());
+    }
+    if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere)
+    {
+        //Sets the matrices init info
+        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
+        r->setModelDataInBuffers(this->sceneEntity->getModelInfo().getVertexArray());
+    }
+}
+
+void _Physics::updateVisualHelper()
+{
+    r->setPosition(sceneEntity->getPostion());
+    r->setRotation(sceneEntity->getRotation());
+    r->setscale(sceneEntity->getScale());
+}
+
+void _Physics::drawVisualHelper()
+{
+    r->draw(1);
 }

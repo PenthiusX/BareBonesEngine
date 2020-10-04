@@ -156,7 +156,7 @@ void _GLWidget::initializeGL(){
 
     s2->setId(8881);
     s2->setTag("LitObject2");
-    s2->setIsShadowCaster(true);
+    s2->setIsShadowCaster(false);
     s2->setGLModes(g);// glmode settings
     s2->setMaterial(m2);//material obhect
     s2->setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
@@ -178,7 +178,7 @@ void _GLWidget::initializeGL(){
     s3->setIsLineNoCullMode(false);
     s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
     s3->setRotation(glm::vec3(-0.95,-0.24,0.0));
-    s3->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl",":/shaders/geoShaderExplode.glsl");
+    s3->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
     s3->setScale(4.7f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
@@ -246,7 +246,9 @@ void _GLWidget::paintGL()//the renderloop
     //---------------------------
     timeSinceLastFrame = qTimer.elapsed() * 0.001;//sets the time past since the frame was completed
     float timePerDraw = timeSinceLastFrame - currentTime;
+
     //Rendering info as text on screen
+    makeCurrent();
     iter++;
     if(iter > 100){iter = 0; qInfo()<< 1/timePerDraw << "\n";}
     text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay()->getTag(),
@@ -254,6 +256,8 @@ void _GLWidget::paintGL()//the renderloop
                 scene->getSceneEntityHitWithRay()->getRotation(),
                 glm::vec3(scene->getSceneEntityHitWithRay()->getScale()),
                 (uint)triCount);
+    doneCurrent();
+    //
 }
 //---------------------------------------------------------------------------------------
 /*

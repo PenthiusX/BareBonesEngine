@@ -82,26 +82,6 @@ void _Renderer::setSceneEntityInRenderer(_SceneEntity* s){
     sceneEntity = s;
 }
 /*
- *
-*/
-void _Renderer::keepSceneEntityUpdated(){
-    //Keeps a copy of the current matrix info in the respective sceneEntity
-    sceneEntity->setTranslationMatrix(translationMatrix);
-    sceneEntity->setRotationmatrix(rotationMatrix);
-    sceneEntity->setScaleingMatrix(scalingMatrix);
-    sceneEntity->setProjectionMatrix(projectionMatrix);
-    sceneEntity->setViewMatrix(viewMatrix);
-    sceneEntity->setModelMatrix(modelMatrix);
-
-    //get the real position values from the modelMatrix
-    glm::mat4x4 tmat4 = modelMatrix * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
-    sceneEntity->setPosition(glm::vec3(tmat4[3][0],
-            tmat4[3][1],
-            tmat4[3][2]));
-    //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
-}
-
-/*
  * Sets a dafault hard-fed shader
  * on the render object
  * Is being used by the _glWidget class
@@ -133,10 +113,10 @@ void _Renderer::setShader(QString vSh, QString fSh, QString geo)
 {
     shdr = new _Shader();
     if(geo.size()!= 0){
-       shdr->attachShaders(vSh,fSh,geo);
+        shdr->attachShaders(vSh,fSh,geo);
     }
     else{
-       shdr->attachShaders(vSh,fSh);
+        shdr->attachShaders(vSh,fSh);
     }
     shaderVec.push_back(shdr);
     qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity->getTag().c_str();
@@ -164,11 +144,12 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof(float), &vertexArray[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
 
-    //  glEnableVertexAttribArray(0);
-    //  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
     //  position attribute
     glEnableVertexAttribArray(0);
+    //(nth attribute index, no of elements per sample, type,bool, stride for the whole data set, location in stride)
+    //stride for the whole data set -> if array contains vertices and normals , stride is 6 for whole data set of
+    //3 + 3 floats xyz pos and xyz normal.
+    //location in stride-> sets what part of the data set has the relavant info
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     // normal attribute
     glEnableVertexAttribArray(1);
@@ -189,7 +170,7 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
     glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size() * sizeof(uint),&indexArray[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint),&indices[0], GL_STATIC_DRAW);
 
     // vertex positions
     glEnableVertexAttribArray(0);
@@ -201,6 +182,35 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 
+    glBindVertexArray(0);
+}
+
+void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
+{
+    //    float vertices[] = {
+    //            -0.5f, -0.5f, 0.0f, // left
+    //             0.5f, -0.5f, 0.0f, // right
+    //             0.0f,  0.5f, 0.0f  // top
+    //        };
+
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof(float), vertexArray.data(), GL_STATIC_DRAW);
+
+    //(nth attribute index, no of elements per sample, type,bool, stride for thewhole data set, location in stride)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
 }
 
@@ -327,6 +337,25 @@ void _Renderer::setProjectionMatrix(int type, glm::mat4x4 m)
   ▐█▌·▐█•█▌▐█ ▪▐▌██▐█▌▐█▄▪▐███▌.▐█▌.▐▌▐█•█▌██ ██▌▐█▌
   ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
 */
+/*
+ *
+*/
+void _Renderer::keepSceneEntityUpdated(){
+    //Keeps a copy of the current matrix info in the respective sceneEntity
+    sceneEntity->setTranslationMatrix(translationMatrix);
+    sceneEntity->setRotationmatrix(rotationMatrix);
+    sceneEntity->setScaleingMatrix(scalingMatrix);
+    sceneEntity->setProjectionMatrix(projectionMatrix);
+    sceneEntity->setViewMatrix(viewMatrix);
+    sceneEntity->setModelMatrix(modelMatrix);
+
+    //    //get the real position values from the modelMatrix
+    glm::mat4x4 tmat4 = translationMatrix;//modelMatrix * glm::inverse(rotationMatrix) * glm::inverse(scalingMatrix);
+    sceneEntity->setPosition(glm::vec3(tmat4[3][0],
+            tmat4[3][1],
+            tmat4[3][2]));
+    //    qDebug()<< tmat4[3][0] <<tmat4[3][1] << tmat4[3][2];
+}
 /*
  * updates the specific trasformations that affect the model matrix
  * of the matrices of the individual object.In this case the positions
@@ -576,18 +605,20 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
         glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity->getModelMatrix()));
         //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getTranslationMatrix()*sceneEntity->getRotationmatrix()*pivotTmat *sceneEntity->getScaleingMatrix()));
 
-//        GL_POINTS 0x0000
-//        GL_LINES 0x0001
-//        GL_LINE_LOOP 0x0002
-//        GL_LINE_STRIP 0x0003
-//        GL_TRIANGLES 0x0004
-//        GL_TRIANGLE_STRIP 0x0005
-//        GL_TRIANGLE_FAN 0x0006
-//        GL_QUADS 0x0007
-//        GL_QUAD_STRIP 0x0008
-//        GL_POLYGON 0x0009
+        //  GL_POINTS 0x0000
+        //  GL_LINES 0x0001
+        //  GL_LINE_LOOP 0x0002
+        //  GL_LINE_STRIP 0x0003
+        //  GL_TRIANGLES 0x0004
+        //  GL_TRIANGLE_STRIP 0x0005
+        //  GL_TRIANGLE_FAN 0x0006
+        //  GL_QUADS 0x0007
+        //  GL_QUAD_STRIP 0x0008
+        //  GL_POLYGON 0x0009
 
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
+        //
+        indices.size() == 0 ? glDrawArrays(GL_TRIANGLES, 0, 3) :
+                              glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
         //
         glBindVertexArray(0);//Clear the buffer
         for(uint t=0;t<textures.size();t++){textures[t].unbind();}

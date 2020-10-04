@@ -1,7 +1,7 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormals;
-layout (location = 2) in vec2 aTexCoords;
+//layout (location = 1) in vec3 aNormals;
+//layout (location = 2) in vec2 aTexCoords;
 
 //if using a Geometry shader
 //all varibles need to be passed through it
@@ -21,6 +21,6 @@ void main()
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 
     //mat4 normalMatrix = mat4(mat3(transpose(inverse(model))));
-    vs_out.gNormals = normalize(projection * view * model * vec4(aNormals,0.0)).xyz;
-    vs_out.gTexCoords = aTexCoords;
+//    vs_out.gNormals = normalize(projection * view * model * vec4(aNormals,0.0)).xyz;
+//    vs_out.gTexCoords = aTexCoords;
 }
