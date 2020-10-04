@@ -65,6 +65,8 @@ public:
     void updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes);
     bool updateObjObjPhysics(std::vector<_Physics*> _physicsObjArray);
 
+    void drawVisualHelper();
+
 private:
     std::vector<_Phy_Triangle> triVector,triVectorCopy;
     //
@@ -99,6 +101,4 @@ private:
 
     void createVisualHelper();
     void updateVisualHelper();
-    void drawVisualHelper();
-
 };

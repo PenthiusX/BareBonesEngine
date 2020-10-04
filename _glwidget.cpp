@@ -142,12 +142,12 @@ void _GLWidget::initializeGL(){
 
     //------------------Main Meshes---------------------
     s->setId(8880);
-    s->setTag("LitObject1");
+    s->setTag("LitSkull");
     s->setIsShadowCaster(true);
     s->setGLModes(g);// glmode settings
     s->setMaterial(m);//material obhect
     s->setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
-    s->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    s->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
@@ -155,8 +155,8 @@ void _GLWidget::initializeGL(){
     s->setScale(0.2f);
 
     s2->setId(8881);
-    s2->setTag("LitObject2");
-    s2->setIsShadowCaster(false);
+    s2->setTag("LitPlane");
+    s2->setIsShadowCaster(true);
     s2->setGLModes(g);// glmode settings
     s2->setMaterial(m2);//material obhect
     s2->setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
@@ -168,7 +168,7 @@ void _GLWidget::initializeGL(){
     s2->setScale(15.0f);
 
     s3->setId(8882);
-    s3->setTag("LitObject3");
+    s3->setTag("litBag");
     s3->setIsShadowCaster(true);
     s3->setGLModes(g);// glmode settings
     s3->setMaterial(m3);//material obhect

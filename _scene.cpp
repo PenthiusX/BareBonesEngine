@@ -279,21 +279,20 @@ void _Scene::onResize(int w,int h){
 void _Scene::render()
 {
     shadowBObject.startWriteToDepthBuffer();//wrtites the info drawn after
-    //--
-    drawMeshesForShadowBuffer(meshesRVec);
-    //--
+    drawMeshesForShadowBuffer(meshesRVec);//draw the meshes that are throwing a shadow
     shadowBObject.stopWrite();//Binds 0 to stop write to the shadowFbuff
     //--
     fboObject->setUpdatedFrame();//wrtites the info drawn after
-    //--
     //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //--
-     drawMeshesWithLigthingInfo(meshesRVec);
+    drawMeshesWithLigthingInfo(meshesRVec);
     //--
-    // use the texture color and pass it as pixel info for the Quad used in front of the screen
-    fboObject->renderFrameOnQuad();
-    //sets the mouse pointervalues for the shader applied on the FBO quad
-    fboObject->setMousePos(mousePositionR);
+    for(uint iter = 0 ; iter < physVector.size(); iter++)
+    {
+       physVector[iter]->drawVisualHelper();
+    }
+    fboObject->renderFrameOnQuad();//use the texture color and pass it as pixel info for the Quad used in front of the screen
+    fboObject->setMousePos(mousePositionR);//sets the mouse pointervalues for the shader applied on the FBO quad
 }
 //---------------------------------------------------------------------------------------
 void _Scene::drawMeshesForShadowBuffer(std::vector<_Renderer *> meshesRVec)

@@ -64,16 +64,16 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
-        createVisualHelper();
+        createVisualHelper();//---
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
-        createVisualHelper();
+        createVisualHelper();//---
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
-        //inline if condition--
+        //inline if condition
         sceneEntity->getModelInfo().getVertexArray().size() == 0 ?
                     genTriesforCollision(sceneEntity->getModelInfo().getVertexInfoArray(),sceneEntity->getModelInfo().getIndexArray()):
                     genTriesforCollision(sceneEntity->getModelInfo().getVertexArray(),sceneEntity->getModelInfo().getIndexArray());
@@ -82,7 +82,7 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
-        createVisualHelper();
+        createVisualHelper();//---
     }
 }
 /*
@@ -766,14 +766,16 @@ bool _Physics::triangleTriangleIntersectionTest(_Physics objA, _Physics objB){
 */
 void _Physics::createVisualHelper()
 {
-    r->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl",":/shaders/geoShaderExplode.glsl");//1
-
-    if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh)
+     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh)
     {
+         r->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl");//1
         //Sets the matrices init info
         r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
+        r->actualColor = sceneEntity->getColor();
         std::vector<float> vertexArray;
-        for(uint t = 0 ; t > triVector.size() ; t++){
+
+        for(uint t = 0 ; t < triVector.size() ; t++)
+        {
             vertexArray.push_back(triVector[t].pointA.x);
             vertexArray.push_back(triVector[t].pointA.y);
             vertexArray.push_back(triVector[t].pointA.z);
@@ -786,19 +788,21 @@ void _Physics::createVisualHelper()
             vertexArray.push_back(triVector[t].pointC.y);
             vertexArray.push_back(triVector[t].pointC.z);
         }
+
         r->setModelDataInBuffers(vertexArray);
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box)
     {
-        //Sets the matrices init info
-        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
-        r->setModelDataInBuffers(this->sceneEntity->getModelInfo().getVertexArray());
+//        //Sets the matrices init info
+//        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
+//        r->setModelDataInBuffers(this->sceneEntity->getModelInfo().getVertexArray());
+
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere)
     {
-        //Sets the matrices init info
-        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
-        r->setModelDataInBuffers(this->sceneEntity->getModelInfo().getVertexArray());
+//        //Sets the matrices init info
+//        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
+//        r->setModelDataInBuffers(this->sceneEntity->getModelInfo().getVertexArray());
     }
 }
 
@@ -811,5 +815,7 @@ void _Physics::updateVisualHelper()
 
 void _Physics::drawVisualHelper()
 {
+   if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
     r->draw(1);
+   }
 }

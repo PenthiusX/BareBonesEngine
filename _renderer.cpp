@@ -187,13 +187,6 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
 
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
 {
-    //    float vertices[] = {
-    //            -0.5f, -0.5f, 0.0f, // left
-    //             0.5f, -0.5f, 0.0f, // right
-    //             0.0f,  0.5f, 0.0f  // top
-    //        };
-
-    unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
@@ -202,9 +195,9 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof(float), vertexArray.data(), GL_STATIC_DRAW);
 
+    glEnableVertexAttribArray(0);
     //(nth attribute index, no of elements per sample, type,bool, stride for thewhole data set, location in stride)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -582,10 +575,14 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
     {
         //Using the shader program in the current context
         shaderVec[ssl]->useShaderProgram();
+        //Update the uniforms in shader, This needs to be under the relavant shaders->useprogram invocation to pass it to that shader if available.
+        updateColorUniforms();
+        updateMatrixUniforms();
         //Bind Textures
         for(uint t=0;t<textures.size();t++){
             textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
         }
+        //set the shadow txture in the shader , make sure the tex slot matches the one you set in setupTexture();
         glActiveTexture(GL_TEXTURE4);//sets the shadow texture in the shader
         glBindTexture(GL_TEXTURE_2D,shadoDepthTex);
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
@@ -596,34 +593,16 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
         }
         //Bind the VAO of the respective buffer object (needs to be bound everytime)
         glBindVertexArray(VAO);
-        //
-        //Sets the values for the MVP matrix in the vertex shader
-        glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
-        glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getProjectionMatrix()));
-        glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("orthoProjection"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
-        glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("shadowLightSpace"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix * lightViewMatrix));//for shadow calcs
-        glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity->getModelMatrix()));
-        //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getTranslationMatrix()*sceneEntity->getRotationmatrix()*pivotTmat *sceneEntity->getScaleingMatrix()));
-
-        //  GL_POINTS 0x0000
-        //  GL_LINES 0x0001
-        //  GL_LINE_LOOP 0x0002
-        //  GL_LINE_STRIP 0x0003
-        //  GL_TRIANGLES 0x0004
-        //  GL_TRIANGLE_STRIP 0x0005
-        //  GL_TRIANGLE_FAN 0x0006
-        //  GL_QUADS 0x0007
-        //  GL_QUAD_STRIP 0x0008
+        //  GL_POINTS 0x0000        //  GL_LINES 0x0001     //  GL_LINE_LOOP 0x0002
+        //  GL_LINE_STRIP 0x0003    //  GL_TRIANGLES 0x0004 //  GL_TRIANGLE_STRIP 0x0005
+        //  GL_TRIANGLE_FAN 0x0006  //  GL_QUADS 0x0007     //  GL_QUAD_STRIP 0x0008
         //  GL_POLYGON 0x0009
-
-        //
         indices.size() == 0 ? glDrawArrays(GL_TRIANGLES, 0, 3) :
                               glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
-        //
+
+        //Reset relative the buffers binds
         glBindVertexArray(0);//Clear the buffer
         for(uint t=0;t<textures.size();t++){textures[t].unbind();}
-        //
-        updateColorUniforms();//Setting the uniform for color if shader allows
     }
 }
 /*
@@ -651,6 +630,18 @@ void _Renderer::updateColorUniforms()
         glUniform4f(shaderVec[ssl]->getUniformLocation("aColor"), col.x(),col.y(), col.z(), col.w());
     }
     sceneEntity->getisHitByRay() ? sceneEntity->setColor(actualColor * 2.0) : sceneEntity->setColor(actualColor * 1.0);
+}
+
+void _Renderer::updateMatrixUniforms()
+{
+    //Sets the values for the MVP matrix in the vertex shader
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getProjectionMatrix()));
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("orthoProjection"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("shadowLightSpace"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix * lightViewMatrix));//for shadow calcs
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity->getModelMatrix()));
+    //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getTranslationMatrix()*sceneEntity->getRotationmatrix()*pivotTmat *sceneEntity->getScaleingMatrix()));
+
 }
 /*
  * Updates the light uniforms on the model

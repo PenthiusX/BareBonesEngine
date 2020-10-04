@@ -91,6 +91,7 @@ private:
     //
     void keepSceneEntityUpdated();
     void updateColorUniforms();
+    void updateMatrixUniforms();
     void updateMaterial(_Material m);
     //
     //Shader class object sets the shaders and passes the program to the current context
