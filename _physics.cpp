@@ -20,6 +20,7 @@ _Physics::_Physics(){
 _Physics::~_Physics(){
     //    delete sceneEntity;
     delete r;
+    delete locPCam;
 }
 
 /*
@@ -54,9 +55,18 @@ std::vector<_Phy_Triangle> _Physics::getPhysTries() const{
   ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
-void _Physics::initialiseSceneEntity(_SceneEntity* s){
-    r = new _Renderer();//for visual helprs
+void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam){
+    locPCam = cam;
     sceneEntity = s;
+    //--create visual helper
+    s->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl");
+    r = new _Renderer();//creates a new render object for each sceneEntity that gets added to the scene
+    r->setCamViewMatrix(cam->getEyePosition(), cam->getFocalPoint(), cam->getUpVector());
+    r->setProjectionMatrix(resW,resH,cam->getFOV(),cam->getNearClipDistance(),cam->getFarClipDistance());
+    r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
+    //meshR->setShadowDepthTex(shadowBObject.getShadowDepthTexture());
+    //----
+
     //Initialise based on SceneEntity;
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere){
         sp.center = sceneEntity->getPostion();
@@ -155,7 +165,8 @@ void _Physics::genTriesforCollision(std::vector<float> vert, std::vector<unsigne
 /*
  * takes the mouse position and casts a ray in world space from it.
  */
-void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4, glm::vec2 res){
+void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_projection4x4, glm::mat4x4 glm_view4x4, glm::vec2 res)
+{
     resW = (int)res.x;
     resH = (int)res.y;
 
@@ -177,7 +188,8 @@ void _Physics::setMousePointerRay(glm::vec2 mousePressPosition, glm::mat4x4 glm_
 }
 /*Not in use
 */
-_Phy_Plane _Physics::constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1, glm::vec3 V2){
+_Phy_Plane _Physics::constructPlaneFromPoints(glm::vec3 V0, glm::vec3 V1, glm::vec3 V2)
+{
     glm::vec3 normal = glm::normalize(glm::cross(V1 - V0, V2 - V0));
     return constructPlaneFromPointNormal(V0, normal);
 }
@@ -189,7 +201,8 @@ _Phy_Plane _Physics::constructPlaneFromPointVectors(glm::vec3 Pt, glm::vec3 V1, 
 }
 /*Not in use
 */
-_Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal){
+_Phy_Plane _Physics::constructPlaneFromPointNormal(glm::vec3 Pt, glm::vec3 normal)
+{
     _Phy_Plane Result;
     glm::vec3  normalizedNormal = glm::normalize(normal);
     Result.a = normalizedNormal.x;
@@ -359,7 +372,7 @@ void _Physics::updateSphereExtents(){
 /*
  * Update everything Internally goes in the _scene update loop
 */
-void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes)
+void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec2 screenRes)
 {
     setMousePointerRay(mousePos,sceneEntity->getProjectionMatrix(),sceneEntity->getViewMatrix(),screenRes);
     switch(sceneEntity->getPhysicsObjectType())
@@ -370,8 +383,8 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
         //set sphere collider dimensions
         updateSphereExtents();
         //intersection check
-        hitSphere(sp.center,sp.radius,camPos)?sceneEntity->setIsHitByRay(true):sceneEntity->setIsHitByRay(false);
-        if(hitSphere(sp.center,sp.radius,camPos)){
+        hitSphere(sp.center,sp.radius,locPCam->getEyePosition())?sceneEntity->setIsHitByRay(true):sceneEntity->setIsHitByRay(false);
+        if(hitSphere(sp.center,sp.radius,locPCam->getEyePosition())){
             qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
         }
         break;
@@ -382,11 +395,11 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
         bx.max = sceneEntity->getModelInfo().getMaxExtent();
         bx.min = sceneEntity->getModelInfo().getMinExtent();
         //intersection check.
-        if(hitBoundingBoxF(bx,camPos,ray_wor)){
+        if(hitBoundingBoxF(bx,locPCam->getEyePosition(),ray_wor)){
             sceneEntity->setIsHitByRay(true);
             qDebug() <<"HitBox"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
         }
-        if(!hitBoundingBoxF(bx,camPos,ray_wor)){sceneEntity->setIsHitByRay(false);}
+        if(!hitBoundingBoxF(bx,locPCam->getEyePosition(),ray_wor)){sceneEntity->setIsHitByRay(false);}
         break;
     case _SceneEntity::Mesh :
         //updates the maxExtents
@@ -394,10 +407,10 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec
         //sets the updated modelMatrix from the sceneEntity->
         transFormPhysicsTriangles(sceneEntity->getModelMatrix());
         //Intersection check.
-        if(rayIntersectsTriangles(triVector,camPos,ray_wor)){
+        if(rayIntersectsTriangles(triVector,locPCam->getEyePosition(),ray_wor)){
             sceneEntity->setIsHitByRay(true);
             qDebug() <<"HitMesh"<<"Hit Id-"<<sceneEntity->getId()<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
-        }else if(!rayIntersectsTriangles(triVector,camPos,ray_wor)){
+        }else if(!rayIntersectsTriangles(triVector,locPCam->getEyePosition(),ray_wor)){
             sceneEntity->setIsHitByRay(false);}
         break;
     }
@@ -426,7 +439,6 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
             //implement sphere on sphere here;
         }
     }
-    updateVisualHelper();
 }
 
 
@@ -768,7 +780,7 @@ void _Physics::createVisualHelper()
 {
      if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh)
     {
-         r->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl");//1
+         r->setShader(":/shaders/dmVshader.glsl",":/shaders/dmFshader.glsl");//1
         //Sets the matrices init info
         r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
         r->actualColor = sceneEntity->getColor();
@@ -811,11 +823,13 @@ void _Physics::updateVisualHelper()
     r->setPosition(sceneEntity->getPostion());
     r->setRotation(sceneEntity->getRotation());
     r->setscale(sceneEntity->getScale());
+    r->setProjectionMatrix(resW,resH,locPCam->getFOV(),locPCam->getNearClipDistance(),locPCam->getFarClipDistance());
+    r->setCamViewMatrix(locPCam->getEyePosition(), locPCam->getFocalPoint(), locPCam->getUpVector());
 }
 
 void _Physics::drawVisualHelper()
 {
    if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
-    r->draw(1);
+        r->draw(1);
    }
 }

@@ -597,11 +597,12 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
         //  GL_LINE_STRIP 0x0003    //  GL_TRIANGLES 0x0004 //  GL_TRIANGLE_STRIP 0x0005
         //  GL_TRIANGLE_FAN 0x0006  //  GL_QUADS 0x0007     //  GL_QUAD_STRIP 0x0008
         //  GL_POLYGON 0x0009
-        indices.size() == 0 ? glDrawArrays(GL_TRIANGLES, 0, 3) :
-                              glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
+        indices.size() == 0 ?
+        glDrawArrays(GL_TRIANGLES, 0, 3) :
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
 
         //Reset relative the buffers binds
-        glBindVertexArray(0);//Clear the buffer
+//        glBindVertexArray(0);//Clear the buffer
         for(uint t=0;t<textures.size();t++){textures[t].unbind();}
     }
 }

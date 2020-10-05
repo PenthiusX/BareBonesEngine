@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "_sceneentity.h"
 #include "_renderer.h"
+#include "_camera.h"
 
 /*
  * Class: _Physics
@@ -42,7 +43,7 @@ public:
     _Physics();
     ~_Physics();
     //
-    void initialiseSceneEntity(_SceneEntity* s);
+    void initialiseSceneEntity(_SceneEntity* s,_Camera* c);
     void setSceneEntity(_SceneEntity* s);
     _SceneEntity* getSceneEntity();
     //
@@ -62,12 +63,14 @@ public:
     //
     glm::vec3 getRayTriIntersectionPoint() const;
     //
-    void updateMousePhysics(glm::vec2 mousePos, glm::vec3 camPos, glm::vec2 screenRes);
+    void updateMousePhysics(glm::vec2 mousePos,glm::vec2 screenRes);
     bool updateObjObjPhysics(std::vector<_Physics*> _physicsObjArray);
 
     void drawVisualHelper();
 
 private:
+    _Camera* locPCam;
+    //
     std::vector<_Phy_Triangle> triVector,triVectorCopy;
     //
     _Phy_Sphere sp;

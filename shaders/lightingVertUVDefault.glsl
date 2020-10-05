@@ -32,7 +32,8 @@ void main()
     //get the Vertex fragment positons,Vertex lighting
     FragPos = vec3(model * vec4(aPos, 1.0));
     //apply the transforms applied on the model position data to update the normal data as well
-    Normal = mat3(transpose(inverse(model))) * normal;
+   //Normal = mat3(transpose(inverse(model))) * normal;
+    Normal  = normalize(mat3(model) * normal);
     //FOr shadows
     fragPosLightSpace = shadowLightSpace * vec4(FragPos, 1.0);
     //

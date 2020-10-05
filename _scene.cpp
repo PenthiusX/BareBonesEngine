@@ -90,7 +90,8 @@ void _Scene::initialisePhysics(_SceneEntity* s)
 {//only inits if the object has a physics component attached
     if(s->getIsPhysicsObject()){
         _Physics *phys = new _Physics();
-        phys->initialiseSceneEntity(s);
+
+        phys->initialiseSceneEntity(s,&this->cam);
         physVector.push_back(phys);
     }
 }
@@ -287,10 +288,10 @@ void _Scene::render()
     //--
     drawMeshesWithLigthingInfo(meshesRVec);
     //--
-    for(uint iter = 0 ; iter < physVector.size(); iter++)
-    {
-       physVector[iter]->drawVisualHelper();
-    }
+//    for(uint iter = 0 ; iter < physVector.size(); iter++)
+//    {
+//       physVector[iter]->drawVisualHelper();
+//    }
     fboObject->renderFrameOnQuad();//use the texture color and pass it as pixel info for the Quad used in front of the screen
     fboObject->setMousePos(mousePositionR);//sets the mouse pointervalues for the shader applied on the FBO quad
 }
@@ -372,9 +373,6 @@ void _Scene::updateAllPhysicsObjectsOnce(){
         for (uint index = 0; index < physVector.size(); index++)
         {
             physVector[index]->updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-                                                  glm::vec3(cam.getEyePosition().x,//Camera Position for screen space cals
-                                                            cam.getEyePosition().y,
-                                                            cam.getEyePosition().z),
                                                   glm::vec2(resW,resH));
 
             if(physVector[index]->getSceneEntity()->getisHitByRay())
