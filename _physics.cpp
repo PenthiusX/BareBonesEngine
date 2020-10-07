@@ -18,9 +18,9 @@ _Physics::_Physics(){
     //    sceneEntity = new _SceneEntity();
 }
 _Physics::~_Physics(){
-    //    delete sceneEntity;
-    delete r;
-    delete locPCam;
+    //delete sceneEntity;
+   // delete r;
+    //delete locPCam;
 }
 
 /*
@@ -58,14 +58,6 @@ std::vector<_Phy_Triangle> _Physics::getPhysTries() const{
 void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam){
     locPCam = cam;
     sceneEntity = s;
-    //--create visual helper
-    s->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl");
-    r = new _Renderer();//creates a new render object for each sceneEntity that gets added to the scene
-    r->setCamViewMatrix(cam->getEyePosition(), cam->getFocalPoint(), cam->getUpVector());
-    r->setProjectionMatrix(resW,resH,cam->getFOV(),cam->getNearClipDistance(),cam->getFarClipDistance());
-    r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
-    //meshR->setShadowDepthTex(shadowBObject.getShadowDepthTexture());
-    //----
 
     //Initialise based on SceneEntity;
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere){
@@ -74,13 +66,13 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
-        createVisualHelper();//---
+        //createVisualHelper();//---
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
-        createVisualHelper();//---
+        //createVisualHelper();//---
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
         //inline if condition
@@ -92,7 +84,15 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam){
         //used for maxextent update
         initialMax = sceneEntity->getModelInfo().getMaxExtent();
         initialMin = sceneEntity->getModelInfo().getMinExtent();
-        createVisualHelper();//---
+
+        //--set renderer for visual helper
+        s->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl",":/shaders/geoShaderExplode.glsl");
+        r = new _Renderer();//creates a new render object for each Physics object added to lists for visulisation.
+        r->setCamViewMatrix(cam->getEyePosition(), cam->getFocalPoint(), cam->getUpVector());
+        r->setProjectionMatrix(resW,resH,cam->getFOV(),cam->getNearClipDistance(),cam->getFarClipDistance());
+        r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
+        //r->indices.clear();
+       // createVisualHelper();//---
     }
 }
 /*
@@ -101,25 +101,28 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam){
 void _Physics::genTriesforCollision(std::vector<VertexInfo> vert, std::vector<unsigned int> index){
     std::vector< glm::vec4> pv;
     if(vert.size() > 0){
-        for(uint i = 0 ; i < vert.size() ; i++){
-            pv.push_back(glm::vec4(vert[i].Position.x,vert[i].Position.y,vert[i].Position.z,0.0));
-        }
-
-    }
-    if(index.size() > 0){
-        //Exception handeling: for improper models with extra
-        //vertices that are not forming tries.
-        //Improper models invoke an out of bounds error.
-        uint setOfTries = index.size()/3;
-        //
-        for(uint i = 0 ; i < setOfTries * 3 ; i+= 3){
-            _Phy_Triangle tri;
-            tri.pointA = pv[index[i]];
-            tri.pointB = pv[index[i+1]];
-            tri.pointC = pv[index[i+2]];
+        for(uint i = 0 ; i < vert.size() ; i += 3){
+            //pv.push_back(glm::vec4(vert[i].Position.x,vert[i].Position.y,vert[i].Position.z,0.0));
+            tri.pointA = glm::vec4(vert[i].Position.x,   vert[i].Position.y,   vert[i].Position.z,0.0);
+            tri.pointB = glm::vec4(vert[i+1].Position.x, vert[i+1].Position.y, vert[i+1].Position.z,0.0);
+            tri.pointC = glm::vec4(vert[i+2].Position.x, vert[i+2].Position.y, vert[i+2].Position.z,0.0);
             triVector.push_back(tri);
         }
     }
+//    if(index.size() > 0){
+//        //Exception handeling: for improper models with extra
+//        //vertices that are not forming tries.
+//        //Improper models invoke an out of bounds error.
+//        uint setOfTries = index.size()/3;
+//        //
+//        for(uint i = 0 ; i < setOfTries * 3 ; i+= 3){
+//            _Phy_Triangle tri;
+//            tri.pointA = pv[index[i]];
+//            tri.pointB = pv[index[i+1]];
+//            tri.pointC = pv[index[i+2]];
+//            triVector.push_back(tri);
+//        }
+//    }
     else{
         qInfo() << "cant generate triangles for collision ModelData incomplete";
     }
@@ -414,7 +417,7 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec2 screenRes)
             sceneEntity->setIsHitByRay(false);}
         break;
     }
-    updateVisualHelper();
+    //updateVisualHelper();
 }
 
 /*
@@ -780,10 +783,6 @@ void _Physics::createVisualHelper()
 {
      if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh)
     {
-         r->setShader(":/shaders/dmVshader.glsl",":/shaders/dmFshader.glsl");//1
-        //Sets the matrices init info
-        r->setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
-        r->actualColor = sceneEntity->getColor();
         std::vector<float> vertexArray;
 
         for(uint t = 0 ; t < triVector.size() ; t++)
@@ -829,7 +828,5 @@ void _Physics::updateVisualHelper()
 
 void _Physics::drawVisualHelper()
 {
-   if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
-        r->draw(1);
-   }
+   r->draw(1);
 }

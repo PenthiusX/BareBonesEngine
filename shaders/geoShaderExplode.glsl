@@ -90,6 +90,7 @@ vec3 calcNormal()
 void GenerateLine(int index)
 {
     vec3 normal = calcNormal();
+    normal.z = 0.0;
 
     gl_Position =  gl_in[index].gl_Position;
     EmitVertex();

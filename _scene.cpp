@@ -90,7 +90,6 @@ void _Scene::initialisePhysics(_SceneEntity* s)
 {//only inits if the object has a physics component attached
     if(s->getIsPhysicsObject()){
         _Physics *phys = new _Physics();
-
         phys->initialiseSceneEntity(s,&this->cam);
         physVector.push_back(phys);
     }
@@ -288,10 +287,12 @@ void _Scene::render()
     //--
     drawMeshesWithLigthingInfo(meshesRVec);
     //--
-//    for(uint iter = 0 ; iter < physVector.size(); iter++)
-//    {
-//       physVector[iter]->drawVisualHelper();
-//    }
+    for(uint iter = 0 ; iter < physVector.size(); iter++)
+    {
+       if(physVector[iter]->getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Mesh)
+            physVector[iter]->drawVisualHelper();
+
+    }
     fboObject->renderFrameOnQuad();//use the texture color and pass it as pixel info for the Quad used in front of the screen
     fboObject->setMousePos(mousePositionR);//sets the mouse pointervalues for the shader applied on the FBO quad
 }
@@ -369,6 +370,7 @@ void _Scene::fixedUpdate(float intervalTime)
  *  * It holds a refrence of its respective sceneEntity and gets updated values if affected.
 */
 void _Scene::updateAllPhysicsObjectsOnce(){
+    std::vector<_SceneEntity*> rayhitList;
     if(physVector.size() > 0){
         for (uint index = 0; index < physVector.size(); index++)
         {
@@ -377,12 +379,19 @@ void _Scene::updateAllPhysicsObjectsOnce(){
 
             if(physVector[index]->getSceneEntity()->getisHitByRay())
             {
-                rayHitSceneEntity = physVector[index]->getSceneEntity();
+                rayhitList.push_back(physVector[index]->getSceneEntity());
                 qInfo() << physVector[index]->getRayTriIntersectionPoint().x <<"," <<
                            physVector[index]->getRayTriIntersectionPoint().y <<"," <<
                            physVector[index]->getRayTriIntersectionPoint().z<<"\n";
             }
+
         }
+        for(uint i = 0 ; i < rayhitList.size() ; i++){
+            float dist = glm::distance(cam.getEyePosition(),rayhitList[i]->getPostion());
+            rayHitSceneEntity = rayhitList[0];//select the first item from the list of hit object is one behind the other
+            rayhitList.clear();
+        }
+
     }
 }
 
@@ -393,15 +402,8 @@ void _Scene::updateAllPhysicsObjectsOnce(){
 //---------------------------------------------------------------------------------------
 void _Scene::updateAllPhysicsObjectsLoop()
 {    if(physVector.size() > 0){
-        //        physVector[loopIndex].setSceneEntity(meshesRVec[physVector[loopIndex].getSceneEntity().getIndexPosInScene()]->getSceneEntity());
-        //        //Passing some essentials into the updateLoop for physics
-        //        //updates the physics object instance and runs the main physics updateOperations.
-        //        physVector[loopIndex].updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
-        //                                            glm::vec3(cam.getEyePosition().x(),//Camera Position
-        //                                                      cam.getEyePosition().y(),
-        //                                                      cam.getEyePosition().z()),
-        //                                            glm::vec2(resW,resH));
-
+//        physVector[loopIndex]->updateMousePhysics(glm::vec2(mousePositionL.x(),mousePositionL.y()),
+//                                              glm::vec2(resW,resH));
 
         //       TriTriIntersection test,!!FITTING TEST!!----needs  modification of isHit scenario
         bool is = false;

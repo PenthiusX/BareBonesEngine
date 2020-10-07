@@ -82,9 +82,9 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
     {
         indexCounter++;
         if(indexCounter == 9){
-            glm::vec3 a = glm::vec3(vertices[v-8],vertices[v-7],vertices[v-6]);
+            glm::vec3 c = glm::vec3(vertices[v-8],vertices[v-7],vertices[v-6]);
             glm::vec3 b = glm::vec3(vertices[v-5],vertices[v-4],vertices[v-3]);
-            glm::vec3 c = glm::vec3(vertices[v-2],vertices[v-1],vertices[v]);
+            glm::vec3 a = glm::vec3(vertices[v-2],vertices[v-1],vertices[v]);
 
             glm::vec3 n = computeNormal(a,b,c);
             normals.push_back(n.x);
@@ -99,14 +99,20 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
       //only for compound arrays with nor
      indexCounter = 0; //create array of VertexOffsetnormal array
      uint ncounter = 0;
+     uint copycounter= 0;
      for(uint v = 0 ; v < vertices.size() ; v++){
 
          if(indexCounter == 3){
              normalVertices.push_back(normalsVec3[ncounter].x);
              normalVertices.push_back(normalsVec3[ncounter].y);
              normalVertices.push_back(normalsVec3[ncounter].z);
-             ncounter++;
+
              indexCounter = 0;
+             copycounter++;
+             if(copycounter == 3){
+                 ncounter++;
+                 copycounter = 0;
+             }
          }
          normalVertices.push_back(vertices[v]);
           indexCounter++;
@@ -228,9 +234,9 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
         if( Loader.LoadedVertices[i].Position.Y > vertMax.y ){vertMax.y = Loader.LoadedVertices[i].Position.Y;}
         if( Loader.LoadedVertices[i].Position.Z > vertMax.z ){vertMax.z = Loader.LoadedVertices[i].Position.Z;}
 
-        if( Loader.LoadedVertices[i].Position.X < vertMin.x ){vertMax.x = Loader.LoadedVertices[i].Position.X;}
-        if( Loader.LoadedVertices[i].Position.Y < vertMin.y ){vertMax.y = Loader.LoadedVertices[i].Position.Y;}
-        if( Loader.LoadedVertices[i].Position.Z < vertMin.z ){vertMax.z = Loader.LoadedVertices[i].Position.Z;}
+        if( Loader.LoadedVertices[i].Position.X < vertMin.x ){vertMin.x = Loader.LoadedVertices[i].Position.X;}
+        if( Loader.LoadedVertices[i].Position.Y < vertMin.y ){vertMin.y = Loader.LoadedVertices[i].Position.Y;}
+        if( Loader.LoadedVertices[i].Position.Z < vertMin.z ){vertMin.z = Loader.LoadedVertices[i].Position.Z;}
 
         modelInfo.setMaxExtents(vertMax);
         modelInfo.setMinExtents(vertMin);

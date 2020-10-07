@@ -68,7 +68,7 @@ void _GLWidget::initializeGL(){
     dl1->setTag("dlight");
     dl1->setAsLight(_SceneEntity::Directional);
     dl1->setModelData(":/models/cube.obj");
-    dl1->setPhysicsObject(_SceneEntity::Sphere);
+    dl1->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     dl1->setPosition(glm::vec3(7.5f,6.56f, 6.1f));//hard coded value need to get passed into the shader
     dl1->setIsLineNoCullMode(false);
     dl1->setScale(0.15f);
@@ -79,7 +79,7 @@ void _GLWidget::initializeGL(){
     p1->setIsShadowCaster(true);
     p1->setAsLight(_SceneEntity::Point);
     p1->setModelData(":/models/sphere.obj");
-    p1->setPhysicsObject(_SceneEntity::Sphere);
+    p1->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     p1->setPosition(glm::vec3(-14.9f,9.40001f, -12.5f));//hard coded value need to get passed into the shader
     p1->setIsLineNoCullMode(false);
     p1->setScale(0.8);
@@ -90,7 +90,7 @@ void _GLWidget::initializeGL(){
     p2->setIsShadowCaster(true);
     p2->setAsLight(_SceneEntity::Point);
     p2->setModelData(":/models/sphere.obj");
-    p2->setPhysicsObject(_SceneEntity::Sphere);
+    p2->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     p2->setPosition(glm::vec3(-2.5f,-1.9f, 0.3f));//hard coded value need to get passed into the shader
     p2->setIsLineNoCullMode(false);
     p2->setScale(0.20f);
@@ -101,7 +101,7 @@ void _GLWidget::initializeGL(){
     sl1->setIsShadowCaster(true);
     sl1->setAsLight(_SceneEntity::Spot);
     sl1->setModelData(":/models/sphere.obj");
-    sl1->setPhysicsObject(_SceneEntity::Sphere);
+    sl1->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     sl1->setPosition(glm::vec3(2.5f,6.56f, 6.1f));//hard coded value need to get passed into the shader
     sl1->setIsLineNoCullMode(false);
     sl1->setScale(0.50f);
@@ -173,7 +173,7 @@ void _GLWidget::initializeGL(){
     s3->setGLModes(g);// glmode settings
     s3->setMaterial(m3);//material obhect
     s3->setModelData("D:/DiamondPalRepo/DiamondPal/models/backpack.obj");//Model data
-    s3->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
+    s3->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
     s3->setIsTransformationLocal(false);
     s3->setIsLineNoCullMode(false);
     s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
@@ -182,17 +182,18 @@ void _GLWidget::initializeGL(){
     s3->setScale(4.7f);
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
-    //scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
+    scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //Scene Objects-----------
-    scene->addSceneObject(s2);
-    scene->addSceneObject(s);
     scene->addSceneObject(s3);
+    scene->addSceneObject(s);
     //Lights------------------
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
     scene->addSceneObject(sl1);
-    //------------------------
+    //---------Ground----------
+    scene->addSceneObject(s2);//place the ground last for picking it last in intersection test,(a workaround, needs a proper solution)
+    //-------------------------
     for(uint i = 0 ; i < scene->getSceneObjects().size();i++){
         triCount += (scene->getSceneObjects()[i]->getSceneEntity()->getModelInfo().getIndexArray().size() * 0.3333333333333);
     }

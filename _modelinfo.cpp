@@ -70,25 +70,52 @@ bool _ModelInfo::getIsLoaded() const{
 /*
 */
 void _ModelInfo::calcMinMaxExtents(){
-    std::vector<float> v = vertexArray;
-    for(unsigned int i = 0 ; i < v.size() ; i += 3)
+  if(vertexInfoArray.size() != 0){
+    for(unsigned int i = 0 ; i < vertexInfoArray.size(); i++)
     {
-        if(v[i] >= max.x)
-            max.x=(v[i]);
-        if(v[i + 1] >= max.y)
-            max.y=(v[i + 1]);
-        if(v[i + 2] >= max.z)
-            max.z=(v[i + 2]);
-        max.w = 0.0f;
+        glm::vec3 p = vertexInfoArray[i].Position;
         //maxEntent
-        if(v[i] <= min.x)
-            min.x=(v[i]);
-        if(v[i + 1] <= min.y)
-            min.y=(v[i + 1]);
-        if(v[i + 2] <= min.z)
-            min.z=(v[i + 2]);
+        if(p.x >= max.x)
+            max.x=(p.x);
+        if(p.y >= max.y)
+            max.y=(p.y);
+        if(p.z >= max.z)
+            max.z=(p.z);
+        max.w = 0.0f;
+
+        //min extent
+        if(p.x <= min.x)
+            min.x=(p.x);
+        if(p.y <= min.y)
+            min.y=(p.y);
+        if(p.z <= min.z)
+            min.z=(p.z);
         min.w = 0.0f;
     }
+  }
+  if(vertexArray.size() != 0)
+  {
+      std::vector<float> v = vertexArray;
+      for(unsigned int i = 0 ; i < v.size() ; i += 3)
+      {
+          //maxEntent
+          if(v[i] >= max.x)
+              max.x=(v[i]);
+          if(v[i + 1] >= max.y)
+              max.y=(v[i + 1]);
+          if(v[i + 2] >= max.z)
+              max.z=(v[i + 2]);
+          max.w = 0.0f;
+          //min extent
+          if(v[i] <= min.x)
+              min.x=(v[i]);
+          if(v[i + 1] <= min.y)
+              min.y=(v[i + 1]);
+          if(v[i + 2] <= min.z)
+              min.z=(v[i + 2]);
+          min.w = 0.0f;
+      }
+  }
     cent =  calcCentroidFromMinMax();
 }
 /*
