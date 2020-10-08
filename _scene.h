@@ -36,6 +36,7 @@ public:
     void render();
     void drawMeshesForShadowBuffer(std::vector<_Renderer*>  meshesRVec);
     void drawMeshesWithLigthingInfo(std::vector<_Renderer*>  sv);
+    void drawPhysicsVisualisations();
 
     void fixedUpdate(float intervalTime);
     //

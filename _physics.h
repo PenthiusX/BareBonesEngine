@@ -44,6 +44,11 @@ public:
     ~_Physics();
     //
     void initialiseSceneEntity(_SceneEntity* s,_Camera* c);
+    void genratePhysicsSphere();
+    void generatePhysicsCube();
+    void genratePhysicsMesh(_Camera* cam,_SceneEntity* s);
+
+
     void setSceneEntity(_SceneEntity* s);
     _SceneEntity* getSceneEntity();
     //

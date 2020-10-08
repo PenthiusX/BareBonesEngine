@@ -55,45 +55,65 @@ std::vector<_Phy_Triangle> _Physics::getPhysTries() const{
   ▐█▌██▐█▌▐█▌ ▐█▌·▐█▌▐█ ▪▐▌▐█▌▐▌▐█▌█▌▪▄█▀▐█▄▄▌
   ▀▀▀▀▀ █▪▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ .▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀
 */
-void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam){
+void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam)
+{
     locPCam = cam;
     sceneEntity = s;
-
     //Initialise based on SceneEntity;
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere){
-        sp.center = sceneEntity->getPostion();
-        sp.radius = glm::distance(glm::vec3(sceneEntity->getModelInfo().getCentroid()), glm::vec3(sceneEntity->getModelInfo().getMaxExtent())) ;
-        //used for maxextent update
-        initialMax = sceneEntity->getModelInfo().getMaxExtent();
-        initialMin = sceneEntity->getModelInfo().getMinExtent();
-        //createVisualHelper();//---
+        genratePhysicsSphere();
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box){
-        //used for maxextent update
-        initialMax = sceneEntity->getModelInfo().getMaxExtent();
-        initialMin = sceneEntity->getModelInfo().getMinExtent();
-        //createVisualHelper();//---
+        generatePhysicsCube();
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Mesh){
-        //inline if condition
-        sceneEntity->getModelInfo().getVertexArray().size() == 0 ?
-                    genTriesforCollision(sceneEntity->getModelInfo().getVertexInfoArray(),sceneEntity->getModelInfo().getIndexArray()):
-                    genTriesforCollision(sceneEntity->getModelInfo().getVertexArray(),sceneEntity->getModelInfo().getIndexArray());
-        //---------------
-        triVectorCopy = triVector;
-        //used for maxextent update
-        initialMax = sceneEntity->getModelInfo().getMaxExtent();
-        initialMin = sceneEntity->getModelInfo().getMinExtent();
-
-        //--set renderer for visual helper
-        s->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl",":/shaders/geoShaderExplode.glsl");
-        r = new _Renderer();//creates a new render object for each Physics object added to lists for visulisation.
-        r->setCamViewMatrix(cam->getEyePosition(), cam->getFocalPoint(), cam->getUpVector());
-        r->setProjectionMatrix(resW,resH,cam->getFOV(),cam->getNearClipDistance(),cam->getFarClipDistance());
-        r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
-        //r->indices.clear();
-        createVisualHelper();//---
+        genratePhysicsSphere();//for optimised testing , will first check with spere and then the tries inside.
+        genratePhysicsMesh(cam,s);
     }
+}
+
+void _Physics::genratePhysicsSphere()
+{
+    sp.center = sceneEntity->getPostion();
+    sp.radius = glm::distance(glm::vec3(sceneEntity->getModelInfo().getCentroid()), glm::vec3(sceneEntity->getModelInfo().getMaxExtent())) ;
+    //used for maxextent update
+    initialMax = sceneEntity->getModelInfo().getMaxExtent();
+    initialMin = sceneEntity->getModelInfo().getMinExtent();
+    //createVisualHelper();//---
+}
+
+void _Physics::generatePhysicsCube()
+{
+    //used for maxextent update
+    initialMax = sceneEntity->getModelInfo().getMaxExtent();
+    initialMin = sceneEntity->getModelInfo().getMinExtent();
+    //createVisualHelper();//---
+}
+
+void _Physics::genratePhysicsMesh(_Camera* cam,_SceneEntity* s)
+{
+    //inline if condition
+    sceneEntity->getModelInfo().getVertexArray().size() == 0 ?
+                genTriesforCollision(sceneEntity->getModelInfo().getVertexInfoArray(),sceneEntity->getModelInfo().getIndexArray()):
+                genTriesforCollision(sceneEntity->getModelInfo().getVertexArray(),sceneEntity->getModelInfo().getIndexArray());
+    //---------------
+    triVectorCopy = triVector;
+    //used for maxextent update
+    initialMax = sceneEntity->getModelInfo().getMaxExtent();
+    initialMin = sceneEntity->getModelInfo().getMinExtent();
+
+    //--set renderer for visual helper
+    _SceneEntity* locS = new _SceneEntity();
+    *locS = *s;
+    locS->setShader(":/shaders/geoTestV.glsl",":/shaders/geoTestF.glsl");
+    _SceneEntity::GlEnablements g;
+    g.fillMode = _SceneEntity::GlEnablements::FrontAndBackLine;
+    locS->setGLModes(g);
+    r = new _Renderer();//creates a new render object for each Physics object added to lists for visulisation.
+    r->setCamViewMatrix(cam->getEyePosition(), cam->getFocalPoint(), cam->getUpVector());
+    r->setProjectionMatrix(resW,resH,cam->getFOV(),cam->getNearClipDistance(),cam->getFarClipDistance());
+    r->initSceneEntityInRenderer(locS);//sets the model data , matrix , tex and shders in the renderer
+    createVisualHelper();//---
 }
 /*
 .0 *
@@ -254,20 +274,28 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec2 screenRes)
         }
         if(!hitBoundingBoxF(bx,locPCam->getEyePosition(),ray_wor)){sceneEntity->setIsHitByRay(false);}
         break;
-    case _SceneEntity::Mesh :
-        //updates the maxExtents
+    case _SceneEntity::Mesh ://This is an optimised mesh intersection check with the first pass being of a ray on spehre
+        //and the second pas on the actual traiangles , this segrigates checking on all triangles in scene and rather
+        //cals on just spheres. This can be further extendid to AABB
         transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
-        //sets the updated modelMatrix from the sceneEntity->
-        transFormPhysicsTriangles();
-        //Intersection check.
-        if(rayIntersectsTriangles(triVector,locPCam->getEyePosition(),ray_wor)){
-            sceneEntity->setIsHitByRay(true);
-            qDebug() <<"HitMesh"<<"Hit Id-"<<sceneEntity->getTag().c_str();//<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
-        }else if(!rayIntersectsTriangles(triVector,locPCam->getEyePosition(),ray_wor)){
-            sceneEntity->setIsHitByRay(false);}
+        updateSphereExtents();
+        if(hitSphere(sp.center,sp.radius,locPCam->getEyePosition())){
+            transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
+            transFormPhysicsTriangles();
+            if(rayIntersectsTriangles(triVector,locPCam->getEyePosition(),ray_wor)){
+                sceneEntity->setIsHitByRay(true);
+                qDebug() <<"HitMesh"<<"Hit Id-"<<sceneEntity->getTag().c_str();//<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
+            }
+            else if(!rayIntersectsTriangles(triVector,locPCam->getEyePosition(),ray_wor)){
+                sceneEntity->setIsHitByRay(false);}
+        }
+        else{sceneEntity->setIsHitByRay(false);}
+        if(hitSphere(sp.center,sp.radius,locPCam->getEyePosition())){
+            qDebug() <<"HitSphere"<<"Hit Id-"<<sceneEntity->getTag().c_str();//<<"Hit Ipos-"<<sceneEntity->getIndexPosInScene();
+        }
+        updateVisualHelper();//--
         break;
     }
-    //updateVisualHelper();
 }
 
 /*
@@ -308,6 +336,7 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
 */
 void _Physics::transFormPhysicsTriangles(){
     for(unsigned int tr = 0 ; tr < triVector.size() ; tr++){
+        glm::mat4 scalingmatrix = sceneEntity->getScaleingMatrix();
         triVector[tr].pointA = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + (sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix() * triVectorCopy[tr].pointA);
         triVector[tr].pointB = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + (sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix() * triVectorCopy[tr].pointB);
         triVector[tr].pointC = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + (sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix() * triVectorCopy[tr].pointC);
@@ -829,7 +858,9 @@ void _Physics::updateVisualHelper()
     r->setCamViewMatrix(locPCam->getEyePosition(), locPCam->getFocalPoint(), locPCam->getUpVector());
 }
 
+
 void _Physics::drawVisualHelper()
 {
+   updateVisualHelper();
    r->draw(1);
 }

@@ -109,9 +109,9 @@ void connectPoints(){
     vec3 dir1 = calcDirection(gl_in[0].gl_Position.xyz,gl_in[1].gl_Position.xyz);
     vec3 dir2 = calcDirection(gl_in[0].gl_Position.xyz,gl_in[2].gl_Position.xyz);
 
-    gl_Position =  gl_in[0].gl_Position + (vec4(dir1,0.0) * distance(gl_in[0].gl_Position,gl_in[1].gl_Position));
+    gl_Position =  gl_in[0].gl_Position + (vec4(dir1,0.0) * 10.0);
     EmitVertex();
-    gl_Position =  gl_in[0].gl_Position + (vec4(dir2,0.0) * distance(gl_in[0].gl_Position,gl_in[2].gl_Position));
+    gl_Position =  gl_in[0].gl_Position + (vec4(dir2,0.0) * 10.0);
     EmitVertex();
     EndPrimitive();
 }

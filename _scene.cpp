@@ -223,10 +223,10 @@ void _Scene::setMousePositionInScene(QVector2D mousePos,Qt::MouseButton m){
     else if(m == Qt::LeftButton){
         mousePositionL = mousePos;
         //Physics+Helpers update on detached threads
-        //        pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
-        //        ph = std::thread(&_Scene::updateHelpersOnce,this);
-        //        if(pu.joinable()){pu.detach();}
-        //        if(ph.joinable()){ph.detach();}
+//                pu = std::thread(&_Scene::updateAllPhysicsObjectsOnce,this);
+//                ph = std::thread(&_Scene::updateHelpersOnce,this);
+//                if(pu.joinable()){pu.detach();}
+//                if(ph.joinable()){ph.detach();}
         updateAllPhysicsObjectsOnce();
         updateHelpersOnce();
     }
@@ -287,12 +287,8 @@ void _Scene::render()
     //--
     drawMeshesWithLigthingInfo(meshesRVec);
     //--
-    for(uint iter = 0 ; iter < physVector.size(); iter++)
-    {
-       if(physVector[iter]->getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Mesh)
-            physVector[iter]->drawVisualHelper();
-
-    }
+    //drawPhysicsVisualisations();
+    //--
     fboObject->renderFrameOnQuad();//use the texture color and pass it as pixel info for the Quad used in front of the screen
     fboObject->setMousePos(mousePositionR);//sets the mouse pointervalues for the shader applied on the FBO quad
 }
@@ -338,6 +334,18 @@ void _Scene::drawMeshesWithLigthingInfo(std::vector<_Renderer *> sv)
             }
             lrc++;
         }
+    }
+}
+
+///this only draws the Visualisation info and does not update the physics objects
+//
+void _Scene::drawPhysicsVisualisations()
+{
+    for(uint iter = 0 ; iter < physVector.size(); iter++)
+    {
+       if(physVector[iter]->getSceneEntity()->getPhysicsObjectType() == _SceneEntity::Mesh)
+            physVector[iter]->drawVisualHelper();
+            updateHelpersLoop(iter);
     }
 }
 
@@ -469,12 +477,39 @@ void _Scene::updateHelpersOnce()
     }
 }
 
-//Not in use//---------------------------------------------------------------------------
-void _Scene::updateHelpersLoop(uint index){
-    if(meshesRVec[index]->getSceneEntity()->getIsPhysicsHelper() &&  meshesRVec[index]->getSceneEntity()->getisHitByRay()){
-        // binding the pivot object to focus object
-        meshesRVec[pivotIndex]->setPosition(meshesRVec[index]->getSceneEntity()->getPostion());
-        meshesRVec[pivotIndex]->setRotation(meshesRVec[index]->getSceneEntity()->getRotation());
+void _Scene::updateHelpersLoop(uint i){
+    if(isHelpers == true){
+        glm::vec4 mx,mn,cntrd;
+        glm::vec3 rot,pos;
+
+            if(physVector[i]->getSceneEntity()->getIsPhysicsHelper() && physVector[i]->getSceneEntity()->getisHitByRay())
+            {
+                glm::vec3 p = physVector[i]->getRayTriIntersectionPoint();
+                meshesRVec[mPointerIndex]->setPosition(p);
+                //sc = physVector[i].getSceneEntity().getScale();
+
+                //Temporary Helpers for Max min extents
+                mx = physVector[i]->getSceneEntity()->getModelInfo().getMaxExtent();
+                mn = physVector[i]->getSceneEntity()->getModelInfo().getMinExtent();
+                cntrd = physVector[i]->getSceneEntity()->getModelInfo().getCentroid();
+
+                pos = physVector[i]->getSceneEntity()->getPostion();
+                rot = physVector[i]->getSceneEntity()->getRotation();
+            }
+
+
+        meshesRVec[cIndex]->setPosition(cntrd);
+
+        meshesRVec[mxIndex]->setPosition(glm::vec3(mx.x,mx.y,mx.z));
+        meshesRVec[mxIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //meshesRVec[mxIndex]->lookAt(cam.getEyePosition());//buggy lookat
+
+        meshesRVec[minIndex]->setPosition(glm::vec3(mn.x,mn.y,mn.z));
+        meshesRVec[minIndex]->setRotation(glm::vec3(1.5,0.0,0.0));
+        //meshesRVec[minIndex]->lookAt(cam.getEyePosition());//buggy look at
+
+        meshesRVec[pivotIndex]->setPosition(pos);
+        meshesRVec[pivotIndex]->setRotation(rot);
     }
 }
 //---------------------------------------------------------------------------------------
