@@ -73,7 +73,7 @@ in VS_OUT {
     vec3 gNormals;
 }gs_in[];
 
-const float MAGNITUDE = 1.0;
+const float MAGNITUDE = 10.0;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -92,16 +92,34 @@ void GenerateLine(int index)
     vec3 normal = calcNormal();
     normal.z = 0.0;
 
-    gl_Position =  gl_in[index].gl_Position;
+    gl_Position =  gl_in[index].gl_Position - (vec4(normal, 0.0) * MAGNITUDE);
     EmitVertex();
     gl_Position =  gl_in[index].gl_Position + (vec4(normal, 0.0) * MAGNITUDE);
     EmitVertex();
     EndPrimitive();
 }
 
+vec3 calcDirection(vec3 a , vec3 b){
+    return normalize( b - a);
+}
+
+
+void connectPoints(){
+
+    vec3 dir1 = calcDirection(gl_in[0].gl_Position.xyz,gl_in[1].gl_Position.xyz);
+    vec3 dir2 = calcDirection(gl_in[0].gl_Position.xyz,gl_in[2].gl_Position.xyz);
+
+    gl_Position =  gl_in[0].gl_Position + (vec4(dir1,0.0) * distance(gl_in[0].gl_Position,gl_in[1].gl_Position));
+    EmitVertex();
+    gl_Position =  gl_in[0].gl_Position + (vec4(dir2,0.0) * distance(gl_in[0].gl_Position,gl_in[2].gl_Position));
+    EmitVertex();
+    EndPrimitive();
+}
+
 void main()
 {
-    GenerateLine(0); // first vertex normal
-    GenerateLine(1); // second vertex normal
-    GenerateLine(2); // third vertex normal
+//     GenerateLine(0); // first vertex normal
+//    GenerateLine(1); // second vertex normal
+    //GenerateLine(2); // third vertex normal
+    connectPoints();
 }

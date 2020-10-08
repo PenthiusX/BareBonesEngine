@@ -92,7 +92,7 @@ void _Physics::initialiseSceneEntity(_SceneEntity* s,_Camera* cam){
         r->setProjectionMatrix(resW,resH,cam->getFOV(),cam->getNearClipDistance(),cam->getFarClipDistance());
         r->initSceneEntityInRenderer(s);//sets the model data , matrix , tex and shders in the renderer
         //r->indices.clear();
-       // createVisualHelper();//---
+        createVisualHelper();//---
     }
 }
 /*
@@ -258,7 +258,7 @@ void _Physics::updateMousePhysics(glm::vec2 mousePos, glm::vec2 screenRes)
         //updates the maxExtents
         transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
         //sets the updated modelMatrix from the sceneEntity->
-        transFormPhysicsTriangles(sceneEntity->getModelMatrix());
+        transFormPhysicsTriangles();
         //Intersection check.
         if(rayIntersectsTriangles(triVector,locPCam->getEyePosition(),ray_wor)){
             sceneEntity->setIsHitByRay(true);
@@ -283,7 +283,7 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
             //updates the maxExtents
             transFormBoxExtents(sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix());
             //sets the updated modelMatrix from the sceneEntity->
-            transFormPhysicsTriangles(sceneEntity->getModelMatrix());
+            transFormPhysicsTriangles();
             return triangleTriangleIntersectionTest(*this,*_physicsObjArray[i]);
         }
         else if(this->sceneEntity->getPhysicsObjectType() == _SceneEntity::Sphere &&
@@ -306,14 +306,13 @@ bool _Physics::updateObjObjPhysics(std::vector<_Physics *> _physicsObjArray){
  * is bound on.
 
 */
-void _Physics::transFormPhysicsTriangles(glm::mat4x4 modelMatrix){
+void _Physics::transFormPhysicsTriangles(){
     for(unsigned int tr = 0 ; tr < triVector.size() ; tr++){
-        triVector[tr].pointA =   glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + triVectorCopy[tr].pointA * modelMatrix;
-        triVector[tr].pointB =   glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + triVectorCopy[tr].pointB * modelMatrix;
-        triVector[tr].pointC =   glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + triVectorCopy[tr].pointC * modelMatrix;
+        triVector[tr].pointA = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + (sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix() * triVectorCopy[tr].pointA);
+        triVector[tr].pointB = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + (sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix() * triVectorCopy[tr].pointB);
+        triVector[tr].pointC = glm::vec4(sceneEntity->getPostion().x,sceneEntity->getPostion().y,sceneEntity->getPostion().z,0.0f) + (sceneEntity->getRotationmatrix() * sceneEntity->getScaleingMatrix() * triVectorCopy[tr].pointC);
     }
-
-    _Tools::Debugmatrix4x4(modelMatrix);
+   //_Tools::Debugmatrix4x4(modelMatrix);
 }
 /*
 */
@@ -804,6 +803,7 @@ void _Physics::createVisualHelper()
         }
 
         r->setModelDataInBuffers(vertexArray);
+        r->indices.clear();
     }
     if(sceneEntity->getPhysicsObjectType() == _SceneEntity::Box)
     {
