@@ -387,7 +387,6 @@ void _Scene::updateAllPhysicsObjectsOnce(){
 
         }
         for(uint i = 0 ; i < rayhitList.size() ; i++){
-            float dist = glm::distance(cam.getEyePosition(),rayhitList[i]->getPostion());
             rayHitSceneEntity = rayhitList[0];//select the first item from the list of hit object is one behind the other
             rayhitList.clear();
         }

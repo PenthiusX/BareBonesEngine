@@ -647,8 +647,7 @@ void _Renderer::updateMatrixUniforms()
 /*
  * Updates the light uniforms on the model
  * is called in the Scene class in the draw function();
- */
-
+*/
 void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
 {
     glUniform1f(shaderVec[ssl]->getUniformLocation("time"),qtimer.elapsed());

@@ -147,7 +147,7 @@ void _GLWidget::initializeGL(){
     s->setGLModes(g);// glmode settings
     s->setMaterial(m);//material obhect
     s->setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
-    s->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
+    s->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
@@ -160,7 +160,7 @@ void _GLWidget::initializeGL(){
     s2->setGLModes(g);// glmode settings
     s2->setMaterial(m2);//material obhect
     s2->setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
-    s2->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
+    s2->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
     s2->setIsTransformationLocal(false);
     s2->setIsLineNoCullMode(false);
     s2->setPosition(glm::vec3(0.0,-4.0,0.0));//initial position

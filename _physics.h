@@ -104,4 +104,6 @@ private:
 
     void createVisualHelper();
     void updateVisualHelper();
+
+    bool hitBoundingBoxF(_Phy_Box b,glm::vec3 orig, glm::vec3 r);
 };

@@ -54,6 +54,7 @@ QVector2D _Tools::retunrnMaxPoint(QVector2D mousepos)
 
 void _Tools::Debugmatrix4x4(glm::mat4x4 mat4)
 {
+    qInfo() << "----------------------------------------------------";
     for(int i = 0 ; i < 4 ; i++)
     {
         qInfo() << mat4[i][0] <<" "<< mat4[i][1] <<" "<< mat4[i][2] <<" "<< mat4[i][3];
