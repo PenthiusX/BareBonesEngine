@@ -6,3 +6,7 @@
 - From scratch Perfromant Opengl based Rendering Engine,
 - Consolidating popular Rendering Techinques
 - WIP..
+
+Dependencies:
+-Qt
+-GLM
