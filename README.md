@@ -8,5 +8,5 @@
 - WIP..
 
 Dependencies:
--Qt
--GLM
+- Qt
+- GLM
