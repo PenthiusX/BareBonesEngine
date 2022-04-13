@@ -112,7 +112,6 @@ void _GLWidget::initializeGL(){
     /*_Material*/ m = {};
     m.setDiffuseTexture(":/textures/Skull.jpg");//color texture
     m.setSpecularTexture(":/textures/SkullSpec.jpg");//spec texture
-    m.setShine(0.5);
     m.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));
     m.setDiffuse(glm::vec3( 0.7f, 0.7f, 0.7f));
     m.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
@@ -121,7 +120,6 @@ void _GLWidget::initializeGL(){
     /*_Material*/ m2 = {};
     m2.setDiffuseTexture(":/textures/brickwall.jpg");//color texture
     m2.setSpecularTexture(":/textures/brickwallSpec.png");//spec texture
-    m2.setShine(0.5);
     m2.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
     m2.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
     m2.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
@@ -130,7 +128,6 @@ void _GLWidget::initializeGL(){
     /*_Material*/ m3 = {};
     m3.setDiffuseTexture(":/textures/diffuse_bkp2k.jpg");//color texture
     m3.setSpecularTexture(":/textures/specular_bkp2k.jpg");//spec texture
-    m3.setShine(0.5);
     m3.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
     m3.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
     m3.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
@@ -146,7 +143,7 @@ void _GLWidget::initializeGL(){
     s->setIsShadowCaster(true);
     s->setGLModes(g);// glmode settings
     s->setMaterial(m);//material obhect
-    s->setModelData("D:/DiamondPalRepo/DiamondPal/models/skull_blender.obj");
+    s->setModelData("D:/WorkSpace/BareBonesEngine/models/skull_blender.obj");
     s->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
@@ -159,7 +156,7 @@ void _GLWidget::initializeGL(){
     s2->setIsShadowCaster(true);
     s2->setGLModes(g);// glmode settings
     s2->setMaterial(m2);//material obhect
-    s2->setModelData("D:/DiamondPalRepo/DiamondPal/models/plane_blender.obj");//Model data
+    s2->setModelData("D:/WorkSpace/BareBonesEngine/models/plane_blender.obj");//Model data
     s2->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
     s2->setIsTransformationLocal(false);
     s2->setIsLineNoCullMode(false);
@@ -172,7 +169,7 @@ void _GLWidget::initializeGL(){
     s3->setIsShadowCaster(true);
     s3->setGLModes(g);// glmode settings
     s3->setMaterial(m3);//material obhect
-    s3->setModelData("D:/DiamondPalRepo/DiamondPal/models/backpack.obj");//Model data
+    s3->setModelData("D:/WorkSpace/BareBonesEngine/models/backpack.obj");//Model data
     s3->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
     s3->setIsTransformationLocal(false);
     s3->setIsLineNoCullMode(false);
@@ -184,7 +181,7 @@ void _GLWidget::initializeGL(){
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //Scene Objects-----------
-    scene->addSceneObject(s3);
+//    scene->addSceneObject(s3);
     scene->addSceneObject(s);
     //Lights------------------
     scene->addSceneObject(dl1);

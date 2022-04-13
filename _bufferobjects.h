@@ -58,7 +58,10 @@ private:
 
 };
 
-
+/*
+ *
+ *
+ */
 class _ShadowBuffer : public QOpenGLExtraFunctions
 {
 public:

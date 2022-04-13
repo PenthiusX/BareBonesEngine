@@ -62,7 +62,11 @@ win32 { #check if platform is windows
 DEFINES += PLATFORM_WIN=true
 INCLUDEPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
 DEPENDPATH += $$PWD/Dependancies/common/glm-0.9.9.3/glm/
-
 LIBS += -lOpengl32
-
 }
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Dependancies/common/assimp-5.2.3/buildMingw/lib/ -llibassimp.dll
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Dependancies/common/assimp-5.2.3/buildMingw/lib/ -llibassimp.dll
+
+INCLUDEPATH += $$PWD/Dependancies/common/assimp-5.2.3/buildMingw/include
+DEPENDPATH += $$PWD/Dependancies/common/assimp-5.2.3/buildMingw/bin

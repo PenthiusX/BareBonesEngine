@@ -6,7 +6,6 @@
 
 /*
  * The Renderer class
- *
  * Author: Aditya
 */
 /*
@@ -155,7 +154,9 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 }
-
+/*
+ *
+ */
 void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
 {
     indices = indexArray;
@@ -184,7 +185,9 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
 
     glBindVertexArray(0);
 }
-
+/*
+ *
+ */
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
 {
     glGenVertexArrays(1, &VAO);
@@ -206,7 +209,9 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
 }
-
+/*
+ *
+ */
 //Bind the textre set in the Matirial obj of sceneEntity->
 void _Renderer::setupTexture(QString texfile,_Texture::Type t)
 {

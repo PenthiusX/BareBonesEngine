@@ -15,17 +15,8 @@
 #include <QXmlStreamReader>
 
 #include "_tools.h"
-
-//#include <assimp/scene.h>         |assimp does not work , cannot be compiled with Mingw32 , isse is pending in developmennt witht he assimp team|
-//#include <assimp/postprocess.h>   | https://github.com/assimp/assimp/issues/3044 |
-//#include <assimp/Importer.hpp>
-
-//#include <Qt3DCore/QEntity>
-//#include <Qt3DRender>
-//#include <QEntityPtr>
-
 #include "_extobjLoader.h"
-
+//-----------------------------------------------------------
 /*
 * Constructor/Distructor:
 */
@@ -40,37 +31,26 @@ _AssetLoader::_AssetLoader()
     posCounter = 0;
     arrayCounter = 0;
     modelInfo.setIsLoaded(false);
-
-//    const aiScene* scene = importer.ReadFile(":/models/cube.obj",
-//            aiProcess_GenSmoothNormals |
-//            aiProcess_CalcTangentSpace |
-//            aiProcess_Triangulate |
-//            aiProcess_JoinIdenticalVertices |
-//            aiProcess_SortByPType
-//            );
-
-//    if (!scene)
-//    {
-//        qDebug() << "Error loading file: (assimp:) " << importer.GetErrorString();
-//    }
 }
-_AssetLoader::~_AssetLoader(){}
 
+_AssetLoader::~_AssetLoader(){}
+//-----------------------------------------------------------
 void _AssetLoader::setModelInfo(_ModelInfo minfo){
     modelInfo = minfo;
     if(modelInfo.getVertexArray().size() > 0 && modelInfo.getIndexArray().size() > 0)
         modelInfo.setIsLoaded(true);
 }
+//-----------------------------------------------------------
 _ModelInfo _AssetLoader::getModelInfo(){
     return modelInfo;
 }
 
-
+//-----------------------------------------------------------
 glm::vec3 computeNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c)
 {
     return normalize(glm::cross(b - a, c - a));
 }
-
+//-----------------------------------------------------------
 std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>vertices)
 {
     std::vector<float> normalVertices;
@@ -120,9 +100,9 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
      //-----------------------------
      return normalVertices;
 
-//    return normals;
+     //    return normals;
 }
-
+//-----------------------------------------------------------
 /*
 * takes a Qstring path to qrc file and then parses through
 * a string array to get the approptie onfo to render the model
@@ -208,7 +188,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
     qInfo()<<"--------------------------------------------------------";
 }
-
+//-----------------------------------------------------------
 //Loads an Obj format file from the windows file system into memory
 void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
 {
@@ -259,7 +239,78 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
 
      qInfo() << vertMax.x << vertMax.y << vertMax.z;
 }
+//-----------------------------------------------------------
+void _AssetLoader::assimpLoader(std::string externalFilePath)
+{
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(externalFilePath,
+               aiProcess_GenSmoothNormals |
+               aiProcess_CalcTangentSpace |
+               aiProcess_Triangulate |
+//               aiProcess_JoinIdenticalVertices |
+               aiProcess_SortByPType
+               );
+    if(scene){
+        initFromScene(scene);
+    }
+    else{
+        qInfo() <<" Could not load Mesh with Assimp - " << externalFilePath.c_str();
+    }
 
+    modelInfo.setPath(externalFilePath.c_str());
+}
+//-------
+void _AssetLoader::initFromScene(const aiScene *scene)
+{
+//   aiMesh** mesh  = scene->mMeshes;
+     std::vector<VertexInfo> vfa;
+     std::vector<uint> indices;
+     for(uint i = 0; i < scene->mNumMeshes; i++)
+     {
+             aiMesh* mesh = scene->mMeshes[i];
+//             iMaterialIndices.push_back(mesh->mMaterialIndex);
+//             int iSizeBefore = vboModelData.GetCurrentSize();
+//             iMeshStartIndices.push_back(iSizeBefore/iVertexTotalSize);
+             for(uint j = 0; j < mesh->mNumFaces; j++)
+             {
+                 const aiFace& face = mesh->mFaces[j];
+                 if (face.mNumIndices == 3)
+                 {
+                     indices.push_back(face.mIndices[0]);
+                     indices.push_back(face.mIndices[1]);
+                     indices.push_back(face.mIndices[2]);
+                 }
+                 for(uint k = 0; k < face.mNumIndices; k++)
+                 {
+                     aiVector3D pos = mesh->mVertices[face.mIndices[k]];
+                     aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[k]];
+                     aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
+
+                     VertexInfo v;
+                     v.Position = glm::vec3(pos.x,pos.y,pos.z);
+                     v.Normal = glm::vec3(normal.x,normal.y,normal.z);
+                     v.TexCoords = glm::vec2(uv.x,uv.y);
+//                     vboModelData.AddData(&pos, sizeof(aiVector3D));
+//                     vboModelData.AddData(&uv, sizeof(aiVector2D));
+//                     vboModelData.AddData(&normal, sizeof(aiVector3D));
+                     vfa.push_back(v);
+                 }
+             }
+//             int iMeshVertices = mesh->mNumVertices;
+//             iTotalVertices += iMeshVertices;
+//             iMeshSizes.push_back((vboModelData.GetCurrentSize()-iSizeBefore)/iVertexTotalSize);
+    }
+
+     //Needs to set model info min max .
+     modelInfo.setVertexInfoArray(vfa);
+     modelInfo.setIndexArray(indices);
+     modelInfo.setMaxExtents(glm::vec4(0.0,0.0,0.0,0.0));
+     modelInfo.setMinExtents(glm::vec4(0.0,0.0,0.0,0.0));
+     modelInfo.calcCentroidFromMinMax();
+     modelInfo.setIsLoaded(true);
+
+}
+//-----------------------------------------------------------
 /* Not in use---
 * Preprocess all models into memory
 * will reduce ovehead on runtime.
@@ -278,6 +329,7 @@ void _AssetLoader::loadAllModelsInfoFromFolder(QString folderName)
         indices.clear();
     }
 }
+//-----------------------------------------------------------
 /*
 */
 _ModelInfo _AssetLoader::generateQuad()
@@ -301,7 +353,7 @@ _ModelInfo _AssetLoader::generateQuad()
 
     return m;
 }
-
+//-----------------------------------------------------------
 _ModelInfo _AssetLoader::generateTri()
 {
     //Code to be excluded only for Test purposes
@@ -321,7 +373,7 @@ _ModelInfo _AssetLoader::generateTri()
 
     return m;
 }
-
+//-----------------------------------------------------------
 _ModelInfo _AssetLoader::generateTri(glm::vec3 p1,glm::vec3 p2,glm::vec3 p3)
 {
     //Code to be excluded only for Test purposes
@@ -341,7 +393,7 @@ _ModelInfo _AssetLoader::generateTri(glm::vec3 p1,glm::vec3 p2,glm::vec3 p3)
 
     return m;
 }
-
+//-----------------------------------------------------------
 _ModelInfo _AssetLoader::generateCubeWithNormals()
 {
     std::vector<float> vertices = {
@@ -397,3 +449,4 @@ _ModelInfo _AssetLoader::generateCubeWithNormals()
 
       return m;
 }
+//-----------------------------------------------------------

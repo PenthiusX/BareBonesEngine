@@ -314,7 +314,8 @@ void _SceneEntity::setModelData(QString path)
         }
     }
     else {
-        assetLoader.extrenalObjLoader(path.toStdString());
+//        assetLoader.extrenalObjLoader(path.toStdString());
+        assetLoader.assimpLoader(path.toStdString());//test
         if(assetLoader.getModelInfo().getVertexInfoArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
             modelInfo = assetLoader.getModelInfo();
             modelInfo.setIsLoaded(true);

@@ -5,14 +5,18 @@
 #include <qvector3d.h>
 #include <glm/glm.hpp>
 
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
+
 #include "_modelinfo.h"
+
 /*
  * Class: _AssetLoader
  * class sets values needed by the viewMatrix
  * for setting of values on Init or realtime
  * Author: Aditya
 */
-
 
 class _AssetLoader
 {
@@ -23,6 +27,7 @@ public:
     _ModelInfo getModelInfo();
     void objLoader(QString pathToFile);
     void extrenalObjLoader(std::string externalFilePath);//an unideal external file loader , not inteded for embeded executables.
+    void assimpLoader(std::string externalFilePath);
 
     void loadAllModelsInfoFromFolder(QString folderName);//not in use
     _ModelInfo generateQuad();
@@ -46,8 +51,8 @@ private:
     int posCounter;
     int arrayCounter;
 
-
     void LoadObjModel(const char *filename);
+    void initFromScene(const aiScene* pScene);
 };
 
 #endif // _ASSETLOADER_H

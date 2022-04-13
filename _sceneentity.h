@@ -71,6 +71,7 @@ public:
     void setModelData(_AssetLoader aloader);//set the modelInfo object in sceneEntity
     void setModelData(_ModelInfo minfo);//set the modelInfo object in sceneEntity
     void setModelData(QString path);//takes the relative path via a qrc file path
+    //
     void setShader(QString vshader, QString fshader);//sets the relative qrc file path to the shader files for use in the
     void setShader(QString vshader, QString fshader,QString geometry);
     //void setTexturePath(QString texPath);
