@@ -240,8 +240,15 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
      qInfo() << vertMax.x << vertMax.y << vertMax.z;
 }
 //-----------------------------------------------------------
+/*
+ * Assimp model loading , for now is only loading up the
+ * Primitive data witout textures or position.
+ */
 void _AssetLoader::assimpLoader(std::string externalFilePath)
 {
+    qInfo() << "Loading----------------------" << externalFilePath.c_str();
+    Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
+
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(externalFilePath,
                aiProcess_GenSmoothNormals |
@@ -258,19 +265,20 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
     }
 
     modelInfo.setPath(externalFilePath.c_str());
+    Assimp::DefaultLogger::kill();
 }
 //-------
 void _AssetLoader::initFromScene(const aiScene *scene)
 {
-//   aiMesh** mesh  = scene->mMeshes;
      std::vector<VertexInfo> vfa;
      std::vector<uint> indices;
+
+     vertMax = glm::vec4(0.0,0.0,0.0,0.0);
+     vertMin = glm::vec4(0.0,0.0,0.0,0.0);
+
      for(uint i = 0; i < scene->mNumMeshes; i++)
      {
              aiMesh* mesh = scene->mMeshes[i];
-//             iMaterialIndices.push_back(mesh->mMaterialIndex);
-//             int iSizeBefore = vboModelData.GetCurrentSize();
-//             iMeshStartIndices.push_back(iSizeBefore/iVertexTotalSize);
              for(uint j = 0; j < mesh->mNumFaces; j++)
              {
                  const aiFace& face = mesh->mFaces[j];
@@ -283,29 +291,33 @@ void _AssetLoader::initFromScene(const aiScene *scene)
                  for(uint k = 0; k < face.mNumIndices; k++)
                  {
                      aiVector3D pos = mesh->mVertices[face.mIndices[k]];
-                     aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[k]];
+                     aiVector3D uv = mesh->mTextureCoords[0] != NULL ? mesh->mTextureCoords[0][face.mIndices[k]] :  aiVector3D(0.0,0.0,0.0);
                      aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
+
+                     if( mesh->mVertices[face.mIndices[k]].x > vertMax.x ){vertMax.x = mesh->mVertices[face.mIndices[k]].x;}
+                     if( mesh->mVertices[face.mIndices[k]].y > vertMax.y ){vertMax.y = mesh->mVertices[face.mIndices[k]].y;}
+                     if( mesh->mVertices[face.mIndices[k]].z > vertMax.z ){vertMax.z = mesh->mVertices[face.mIndices[k]].z;}
+
+                     if( mesh->mVertices[face.mIndices[k]].x < vertMin.x ){vertMin.x = mesh->mVertices[face.mIndices[k]].x;}
+                     if( mesh->mVertices[face.mIndices[k]].y < vertMin.y ){vertMin.y = mesh->mVertices[face.mIndices[k]].y;}
+                     if( mesh->mVertices[face.mIndices[k]].z < vertMin.z ){vertMin.z = mesh->mVertices[face.mIndices[k]].z;}
 
                      VertexInfo v;
                      v.Position = glm::vec3(pos.x,pos.y,pos.z);
                      v.Normal = glm::vec3(normal.x,normal.y,normal.z);
                      v.TexCoords = glm::vec2(uv.x,uv.y);
-//                     vboModelData.AddData(&pos, sizeof(aiVector3D));
-//                     vboModelData.AddData(&uv, sizeof(aiVector2D));
-//                     vboModelData.AddData(&normal, sizeof(aiVector3D));
                      vfa.push_back(v);
                  }
              }
 //             int iMeshVertices = mesh->mNumVertices;
 //             iTotalVertices += iMeshVertices;
-//             iMeshSizes.push_back((vboModelData.GetCurrentSize()-iSizeBefore)/iVertexTotalSize);
     }
 
-     //Needs to set model info min max .
+     //Needs to set model info
      modelInfo.setVertexInfoArray(vfa);
      modelInfo.setIndexArray(indices);
-     modelInfo.setMaxExtents(glm::vec4(0.0,0.0,0.0,0.0));
-     modelInfo.setMinExtents(glm::vec4(0.0,0.0,0.0,0.0));
+     modelInfo.setMaxExtents(vertMax);
+     modelInfo.setMinExtents(vertMin);
      modelInfo.calcCentroidFromMinMax();
      modelInfo.setIsLoaded(true);
 

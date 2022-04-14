@@ -65,8 +65,8 @@ private:
     //
     glm::vec3 sLightPos;
     //
-    _Renderer* meshR;
-    std::vector<_Renderer*> meshesRVec;
+    _Renderer* renderEntity;
+    std::vector<_Renderer*> renderEntities;
     //
     _Camera cam;
     bool isCamera;

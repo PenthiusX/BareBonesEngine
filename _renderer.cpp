@@ -23,10 +23,9 @@ _Renderer::_Renderer() : QOpenGLExtraFunctions(QOpenGLContext::currentContext())
     modelMatrix = glm::mat4(1.0f);
     viewMatrix = glm::mat4(1.0f);
     pivotTmat = glm::mat4(1.0f);
-    qDebug() << "render initialised ";
     sceneEntity = new _SceneEntity();
     lightViewMatrix =glm::mat4(1.0f);
-
+    qDebug() << "render initialised ";
 }
 /*
  *Distructor: _Renderer Class

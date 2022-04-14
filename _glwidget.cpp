@@ -132,6 +132,7 @@ void _GLWidget::initializeGL(){
     m3.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
     m3.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
     m3.setShine(32.0);
+
     //------GLRaster Ebablements ovveride---------------
     _SceneEntity::GlEnablements g;
     g.fillMode = _SceneEntity::GlEnablements::FrontAndBackFill;
@@ -169,20 +170,21 @@ void _GLWidget::initializeGL(){
     s3->setIsShadowCaster(true);
     s3->setGLModes(g);// glmode settings
     s3->setMaterial(m3);//material obhect
-    s3->setModelData("D:/WorkSpace/BareBonesEngine/models/backpack.obj");//Model data
+    s3->setModelData("D:/WorkSpace/BareBonesEngine/models/monkey.obj");//Model data
     s3->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
     s3->setIsTransformationLocal(false);
     s3->setIsLineNoCullMode(false);
     s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
     s3->setRotation(glm::vec3(-0.95,-0.24,0.0));
     s3->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
-    s3->setScale(4.7f);
+    s3->setScale(1.7f);
+
     //--------Essentials---------------------------------
     scene->addCamera(cam);//camera essential
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //Scene Objects-----------
-//    scene->addSceneObject(s3);
-    scene->addSceneObject(s);
+    scene->addSceneObject(s3);
+//  scene->addSceneObject(s);
     //Lights------------------
     scene->addSceneObject(dl1);
     scene->addSceneObject(p1);
@@ -248,7 +250,7 @@ void _GLWidget::paintGL()//the renderloop
     //Rendering info as text on screen
     makeCurrent();
     iter++;
-    if(iter > 100){iter = 0; qInfo()<< 1/timePerDraw << "\n";}
+   // if(iter > 100){iter = 0; qInfo()<< 1/timePerDraw << "\n";}
     text.render(this,1/timePerDraw,scene->getSceneEntityHitWithRay()->getTag(),
                 scene->getSceneEntityHitWithRay()->getPostion(),
                 scene->getSceneEntityHitWithRay()->getRotation(),

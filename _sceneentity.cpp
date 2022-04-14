@@ -267,6 +267,8 @@ bool _SceneEntity::getIsTransformationLocal(){
     return isTransformationLocal;
 }
 /*
+ * Sets the modelData in the SceneEntity itself that then gets
+ * transfered to the entityRenderes in the _scene
 */
 void _SceneEntity::setModelData(_AssetLoader aloader)
 {
@@ -296,8 +298,7 @@ void _SceneEntity::setModelData(_ModelInfo minfo)
  * sets the vertex and index data in one function, for the current object.
  * takes data as a path and uses the assetloader class to load in the obj data from
  * a path to the obj File.
-
- */
+*/
 void _SceneEntity::setModelData(QString path)
 {
     //!!Need to create an exception to handel External and qrc paths
@@ -315,7 +316,7 @@ void _SceneEntity::setModelData(QString path)
     }
     else {
 //        assetLoader.extrenalObjLoader(path.toStdString());
-        assetLoader.assimpLoader(path.toStdString());//test
+         assetLoader.assimpLoader(path.toStdString());//test
         if(assetLoader.getModelInfo().getVertexInfoArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
             modelInfo = assetLoader.getModelInfo();
             modelInfo.setIsLoaded(true);
