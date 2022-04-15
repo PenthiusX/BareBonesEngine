@@ -53,8 +53,11 @@ private:
     int posCounter;
     int arrayCounter;
 
-    void LoadObjModel(const char *filename);
+    //Assimp
     void initFromScene(const aiScene* pScene);
+    void loadBones(const aiMesh* mesh);
+
+    std::map<std::string,uint> m_BoneNameToIndexMap;
 };
 
 #endif // _ASSETLOADER_H

@@ -10,6 +10,18 @@ struct VertexInfo {//added Aug.2020//for a secondary model loading system
     glm::vec2 TexCoords;
 };
 
+struct BoneInfo
+{
+    glm::mat4x4 OffsetMatrix;
+    glm::mat4x4 FinalTransformation;
+
+    BoneInfo(const glm::mat4x4& Offset)
+    {
+        OffsetMatrix = Offset;
+//        FinalTransformation.SetZero();
+    }
+};
+
 class _ModelInfo
 {
 public:
