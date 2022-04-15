@@ -246,7 +246,6 @@ void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
  */
 void _AssetLoader::assimpLoader(std::string externalFilePath)
 {
-    qInfo() << "Loading----------------------" << externalFilePath.c_str();
     Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
 
     Assimp::Importer importer;
@@ -258,6 +257,7 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
                aiProcess_SortByPType
                );
     if(scene){
+        qInfo() <<" Sence successfull, starting to load Mesh with Assimp - " << externalFilePath.c_str();
         initFromScene(scene);
     }
     else{
@@ -320,6 +320,16 @@ void _AssetLoader::initFromScene(const aiScene *scene)
      modelInfo.setMinExtents(vertMin);
      modelInfo.calcCentroidFromMinMax();
      modelInfo.setIsLoaded(true);
+
+     qInfo()<<"--------------MODEL INFO-------------------------------";
+     qInfo()<< "Path" << this->modelInfo.getPath();
+     qInfo()<< "VertexArray" << modelInfo.getVertexArray().size();
+     qInfo()<< "IndexArray" << modelInfo.getIndexArray().size();
+     qInfo()<< "MaxExtents" << modelInfo.getMaxExtent().x << modelInfo.getMaxExtent().y << modelInfo.getMaxExtent().z;
+     qInfo()<< "MinExtents" << modelInfo.getMinExtent().x << modelInfo.getMinExtent().y << modelInfo.getMinExtent().z;
+     qInfo()<< "Centroid" << modelInfo.getCentroid().x << modelInfo.getCentroid().y << modelInfo.getCentroid().z;
+     qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
+     qInfo()<<"--------------------------------------------------------";
 
 }
 //-----------------------------------------------------------
