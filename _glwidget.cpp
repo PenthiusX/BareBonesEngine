@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+
 #include "_glwidget.h"
 #include "_tools.h"
 
@@ -73,6 +75,17 @@ void _GLWidget::initializeGL(){
     dl1->setIsLineNoCullMode(false);
     dl1->setScale(0.15f);
     dl1->setColor(QVector4D(0.5,0.5,0.5,1.0));
+
+    _SceneEntity * dl2 = new _SceneEntity();
+    dl2->setId(8009);
+    dl2->setTag("dlight2");
+    dl2->setAsLight(_SceneEntity::Directional);
+    dl2->setModelData(":/models/cube.obj");
+    dl2->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
+    dl2->setPosition(glm::vec3(-7.5f,6.56f, -6.1f));//hard coded value need to get passed into the shader
+    dl2->setIsLineNoCullMode(false);
+    dl2->setScale(0.15f);
+    dl2->setColor(QVector4D(0.5,0.5,0.5,1.0));
     //
     p1->setId(8002);
     p1->setTag("plight1");
@@ -91,7 +104,7 @@ void _GLWidget::initializeGL(){
     p2->setAsLight(_SceneEntity::Point);
     p2->setModelData(":/models/sphere.obj");
     p2->setPhysicsObject(_SceneEntity::Sphere,_SceneEntity::Helper);
-    p2->setPosition(glm::vec3(-2.5f,-1.9f, 0.3f));//hard coded value need to get passed into the shader
+    p2->setPosition(glm::vec3(-2.5f,5.3f, 0.3f));//hard coded value need to get passed into the shader
     p2->setIsLineNoCullMode(false);
     p2->setScale(0.20f);
     p2->setColor(QVector4D(0.5,0.5,0.5,1.0));
@@ -117,7 +130,7 @@ void _GLWidget::initializeGL(){
     m.setSpecular(glm::vec3(0.1f, 0.1f, 0.1f));
     m.setShine(5.0);
 
-    /*_Material*/ m2 = {};
+    _Material m2 = {};
     m2.setDiffuseTexture(":/textures/brickwall.jpg");//color texture
     m2.setSpecularTexture(":/textures/brickwallSpec.png");//spec texture
     m2.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
@@ -125,13 +138,21 @@ void _GLWidget::initializeGL(){
     m2.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
     m2.setShine(32.0);
 
-    /*_Material*/ m3 = {};
+    _Material m3 = {};
     m3.setDiffuseTexture(":/textures/diffuse_bkp2k.jpg");//color texture
     m3.setSpecularTexture(":/textures/specular_bkp2k.jpg");//spec texture
     m3.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
     m3.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
     m3.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
     m3.setShine(32.0);
+
+    _Material m4 = {};
+    m4.setDiffuseTexture("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/tex/051F_03SET_02SHOT_Diffuse.tif");//color texture
+    m4.setSpecularTexture("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/tex/051F_03SET_02SHOT_Specular.png");//spec texture
+    m4.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
+    m4.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
+    m4.setSpecular(glm::vec3(0.0f, 0.0f, 0.0f));//0 means value only from texture
+    m4.setShine(32.0);
 
     //------GLRaster Ebablements ovveride---------------
     _SceneEntity::GlEnablements g;
@@ -140,17 +161,17 @@ void _GLWidget::initializeGL(){
 
     //------------------Main Meshes---------------------
     s->setId(8880);
-    s->setTag("LitSkull");
+    s->setTag("Lady");
     s->setIsShadowCaster(true);
     s->setGLModes(g);// glmode settings
-    s->setMaterial(m);//material obhect
-    s->setModelData("D:/WorkSpace/BareBonesEngine/models/skull_blender.obj");
-    s->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);
+    s->setMaterial(m4);//material obhect
+    s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/MODEL/051F_03SET_02SHOT.fbx");
+    s->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
     s->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
-    s->setScale(0.2f);
+    s->setScale(0.05f);
 
     s2->setId(8881);
     s2->setTag("LitPlane");
@@ -161,21 +182,21 @@ void _GLWidget::initializeGL(){
     s2->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
     s2->setIsTransformationLocal(false);
     s2->setIsLineNoCullMode(false);
-    s2->setPosition(glm::vec3(0.0,-4.0,0.0));//initial position
+    s2->setPosition(glm::vec3(0.0,-0.2,0.0));//initial position
     s2->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
     s2->setScale(15.0f);
 
     s3->setId(8882);
-    s3->setTag("litBag");
+    s3->setTag("MonkeyFace");
     s3->setIsShadowCaster(true);
     s3->setGLModes(g);// glmode settings
     s3->setMaterial(m3);//material obhect
     s3->setModelData("D:/WorkSpace/BareBonesEngine/models/monkey.obj");//Model data
-    s3->setPhysicsObject(_SceneEntity::Mesh,_SceneEntity::Helper);//Physics object
+    s3->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);//Physics object
     s3->setIsTransformationLocal(false);
     s3->setIsLineNoCullMode(false);
-    s3->setPosition(glm::vec3(-10.1,1.1,-0.24));//initial position
-    s3->setRotation(glm::vec3(-0.95,-0.24,0.0));
+    s3->setPosition(glm::vec3(0.3,8.4,-0.34));//initial position
+    s3->setRotation(glm::vec3(0.04,-0.43,0.0));
     s3->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
     s3->setScale(1.7f);
 
@@ -184,9 +205,10 @@ void _GLWidget::initializeGL(){
     scene->addAllHelperTypesInScene();// pReLoad helpers into scene, these are fixed scene Entities.
     //Scene Objects-----------
     scene->addSceneObject(s3);
-//  scene->addSceneObject(s);
+    scene->addSceneObject(s);
     //Lights------------------
     scene->addSceneObject(dl1);
+    scene->addSceneObject(dl2);
     scene->addSceneObject(p1);
     scene->addSceneObject(p2);
     scene->addSceneObject(sl1);
