@@ -36,6 +36,17 @@ out vec2 TexCoord;
 uniform vec2 iMouse;//in
 out vec2 iMouseO;//to fragment
 
+
+void calcBoneTransform(){
+	vec4 totalLocPos = vec4(0.0);
+	vec4 totalNormal = vec4(0.0);
+	
+	for(int i=0; i < 3;i++){
+		// mat4 jointTransform = jointTransforms[]
+	}
+	
+}
+
 void main()
 {
     //Model view projection combined
