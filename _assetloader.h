@@ -42,13 +42,6 @@ class _AssetLoader
         _ModelInfo generateCubeWithNormals();
         std::vector<float> calculateNormalsOfVertices(std::vector<float>vertices);
 
-
-        //Skeletal Anim
-        //Subject to Cleanup
-        int m_BoneCounter = 0;
-        auto& GetBoneInfoMap() {return m_BoneInfoMap;}
-        int& GetBoneCount() {return m_BoneCounter;}
-
     private:
         _ModelInfo modelInfo;
         //
@@ -66,10 +59,6 @@ class _AssetLoader
 
         //Assimp
         void loadAssimpScene(const aiScene* pScene);
-
-        //Skeletal Anim
-        //Subject to Cleanup
-        std::map<std::string, BoneInfo> m_BoneInfoMap; //
 };
 
 #endif // _ASSETLOADER_H

@@ -15,6 +15,8 @@
 #include<assimp/vector3.h>
 #include<assimp/matrix4x4.h>
 
+#include <map>
+
 
 //struct VertexBoneData
 //{
@@ -79,6 +81,13 @@ public:
     void calcMinMaxExtents();
     glm::vec4 calcCentroidFromMinMax();
     glm::vec4 calcCentroidFromMinMax(glm::vec3 min, glm::vec3 max);
+
+    //Skeletal Anim
+    //Subject to Cleanup
+    int m_BoneCounter = 0;
+    auto& GetBoneInfoMap() {return m_BoneInfoMap;}
+    int& GetBoneCount() {return m_BoneCounter;}
+    std::map<std::string, BoneInfo> m_BoneInfoMap;
 
 private:
     QString name;//the tag

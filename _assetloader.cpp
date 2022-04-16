@@ -352,18 +352,18 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene)
              {
                  int boneID = -1;
                  std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
-                 if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end())
+                 if (modelInfo.m_BoneInfoMap.find(boneName) == modelInfo.m_BoneInfoMap.end())
                  {
                      BoneInfo newBoneInfo;
-                     newBoneInfo.id = m_BoneCounter;
+                     newBoneInfo.id = modelInfo.m_BoneCounter;
                      newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
-                     m_BoneInfoMap[boneName] = newBoneInfo;
-                     boneID = m_BoneCounter;
-                     m_BoneCounter++;
+                     modelInfo.m_BoneInfoMap[boneName] = newBoneInfo;
+                     boneID = modelInfo.m_BoneCounter;
+                     modelInfo.m_BoneCounter++;
                  }
                  else
                  {
-                     boneID = m_BoneInfoMap[boneName].id;
+                     boneID = modelInfo.m_BoneInfoMap[boneName].id;
                  }
                  assert(boneID != -1);
                  aiVertexWeight* weights = mesh->mBones[boneIndex]->mWeights;
