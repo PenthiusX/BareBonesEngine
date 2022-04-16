@@ -268,10 +268,33 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
     Assimp::DefaultLogger::kill();
 }
 //-------
+uint MAX_BONE_WEIGHTS = 4;
+void SetVertexBoneData(VertexInfo& vertex, int boneID, float weight)
+{
+    for (int i = 0; i < MAX_BONE_WEIGHTS; ++i)
+    {
+        if (vertex.m_BoneIDs[i] < 0)
+        {
+            vertex.m_Weights[i] = weight;
+            vertex.m_BoneIDs[i] = boneID;
+            break;
+        }
+    }
+}
+
+void SetVertexBoneDataToDefault(VertexInfo& vertex)
+{
+    for (int i = 0; i < MAX_BONE_WEIGHTS; i++)
+    {
+        vertex.m_BoneIDs[i] = -1;
+        vertex.m_Weights[i] = 0.0f;
+    }
+}
+
+
 void _AssetLoader::loadAssimpScene(const aiScene *scene)
 {
      std::vector<VertexInfo> vfa;
-     std::vector<VertexBoneData> vboa;
      std::vector<uint> indices;
 
      vertMax = glm::vec4(0.0,0.0,0.0,0.0);
@@ -280,70 +303,23 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene)
      for(uint i = 0; i < scene->mNumMeshes; i++)
      {
          aiMesh* mesh = scene->mMeshes[i];
-         qInfo() << scene->mNumMeshes << " meshes avalable";
-
-         if(mesh->HasBones()){
-
-//             qInfo() << "Mesh Has Bones -" << mesh->mNumBones;
-//             for(uint i = 0; i < mesh->mNumBones; i++){
-
-//                 int BoneIndex  = 0;
-//                  std::string BoneName(mesh->mBones[i]->mName.data);
-
-//                  if (m_BoneNameToIndexMap.find(BoneName) == m_BoneNameToIndexMap.end()) {
-
-//                      vboa.push_back();
-//                  }
-//                  else {
-//                      BoneId = m_BoneNameToIndexMap[BoneName];
-//                  }
-
-//                for(uint j = 0; j < mesh->mBones[i]->mNumWeights; j++){
-//                    const aiVertexWeight& vw = mesh->mBones[i]->mWeights[j];
-//                }
-//             }
-         }
-         else{qInfo() << "No Bones Found";}
+         qInfo() << scene->mNumMeshes << " meshes avalable for -" << scene->mMeshes[i]->mName.data;
 
          //Loadup Faces/indices
          indices.reserve(mesh->mNumFaces * 3);
          for(uint j = 0; j < mesh->mNumFaces; j++)
          {
              assert(mesh->mNumFaces * 3);
-//                 const aiFace& face = mesh->mFaces[j];
-//                 if (face.mNumIndices == 3)
-//                 {
-                 indices.push_back(mesh->mFaces[j].mIndices[0]);
-                 indices.push_back(mesh->mFaces[j].mIndices[1]);
-                 indices.push_back(mesh->mFaces[j].mIndices[2]);
-//                 }
-             /*
-             for(uint k = 0; k < face.mNumIndices; k++)
-             {
-                 aiVector3D pos = mesh->mVertices[face.mIndices[k]];
-                 aiVector3D uv = mesh->mTextureCoords[0] != NULL ? mesh->mTextureCoords[0][face.mIndices[k]] :  aiVector3D(0.0,0.0,0.0);
-                 aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
-
-                 if( mesh->mVertices[face.mIndices[k]].x > vertMax.x ){vertMax.x = mesh->mVertices[face.mIndices[k]].x;}
-                 if( mesh->mVertices[face.mIndices[k]].y > vertMax.y ){vertMax.y = mesh->mVertices[face.mIndices[k]].y;}
-                 if( mesh->mVertices[face.mIndices[k]].z > vertMax.z ){vertMax.z = mesh->mVertices[face.mIndices[k]].z;}
-
-                 if( mesh->mVertices[face.mIndices[k]].x < vertMin.x ){vertMin.x = mesh->mVertices[face.mIndices[k]].x;}
-                 if( mesh->mVertices[face.mIndices[k]].y < vertMin.y ){vertMin.y = mesh->mVertices[face.mIndices[k]].y;}
-                 if( mesh->mVertices[face.mIndices[k]].z < vertMin.z ){vertMin.z = mesh->mVertices[face.mIndices[k]].z;}
-
-                 VertexInfo v;
-                 v.Position = glm::vec3(pos.x,pos.y,pos.z);
-                 v.Normal = glm::vec3(normal.x,normal.y,normal.z);
-                 v.TexCoords = glm::vec2(uv.x,uv.y);
-                 vfa.push_back(v);
-             }
-             */
+             indices.push_back(mesh->mFaces[j].mIndices[0]);
+             indices.push_back(mesh->mFaces[j].mIndices[1]);
+             indices.push_back(mesh->mFaces[j].mIndices[2]);
          }
 
          //Loadup Vertices
          for(uint i = 0 ; i < mesh->mNumVertices ; i++){
              VertexInfo v;
+             SetVertexBoneDataToDefault(v);//clean implementation
+
              const aiVector3D& pos = mesh->mVertices[i];            //Vertex Positions
              v.Position = glm::vec3(pos.x,pos.y,pos.z);
 
@@ -367,6 +343,42 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene)
 
              vfa.push_back(v);
         }
+
+
+        //Cleanup Bone Animations
+         if(mesh->HasBones())
+         {
+             for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
+             {
+                 int boneID = -1;
+                 std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+                 if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end())
+                 {
+                     BoneInfo newBoneInfo;
+                     newBoneInfo.id = m_BoneCounter;
+                     newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
+                     m_BoneInfoMap[boneName] = newBoneInfo;
+                     boneID = m_BoneCounter;
+                     m_BoneCounter++;
+                 }
+                 else
+                 {
+                     boneID = m_BoneInfoMap[boneName].id;
+                 }
+                 assert(boneID != -1);
+                 aiVertexWeight* weights = mesh->mBones[boneIndex]->mWeights;
+                 int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+                 for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
+                 {
+                     int vertexId = weights[weightIndex].mVertexId;
+                     float weight = weights[weightIndex].mWeight;
+                     assert(vertexId <= vfa.size());
+                     SetVertexBoneData(vfa[vertexId], boneID, weight);
+                 }
+             }
+         }
+         else{qInfo() << "No Bones Found";}
      }
 
      //Model info set , this will be utilised by the renderer to load up data.

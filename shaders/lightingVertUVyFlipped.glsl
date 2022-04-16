@@ -1,15 +1,20 @@
 #version 330 core
 
-const int MAX_JOINTS = 50;
-
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 uv;
+//Skeletal Animation in
+layout(location = 3) in ivec4 boneIds; 
+layout(location = 4) in vec4 weights;
 
+//Skeletal Animation Bone transforms //in
+const int MAX_BONES = 100;
+const int MAX_BONE_INFLUENCE = 4;
+uniform mat4 finalBonesMatrices[MAX_BONES];
 
 ////for geometry shader
 //out VS_OUT {
-//    vec2 texCoords;
+//    vec2 texCoords;AA
 //} vs_out;
 
 //Lighting Calcs out
@@ -20,9 +25,6 @@ out vec3 FragPos;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-
-//Bone transforms //in
-uniform mat4 jointTransforms[MAX_JOINTS];
 
 //shadow info
 uniform mat4 shadowLightSpace;//dirLightOrthoProjMatrix * lightViewMatrix , V*P 
@@ -37,21 +39,27 @@ uniform vec2 iMouse;//in
 out vec2 iMouseO;//to fragment
 
 
-void calcBoneTransform(){
-	vec4 totalLocPos = vec4(0.0);
-	vec4 totalNormal = vec4(0.0);
-	
-	for(int i=0; i < 3;i++){
-		// mat4 jointTransform = jointTransforms[]
-	}
-	
-}
-
 void main()
-{
+{	
+    //Skeletal Animation
+	vec4 totalPosition = vec4(0.0f);
+    for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
+    {
+        if(boneIds[i] == -1) 
+            continue;
+        if(boneIds[i] >=MAX_BONES) 
+        {
+            totalPosition = vec4(aPos,1.0f);
+            break;
+        }
+        vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(aPos,1.0f);
+        totalPosition += localPosition * weights[i];
+        vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normal;
+    }
+	
     //Model view projection combined
     mat4 mvpx = projection * view * model;
-    gl_Position =  mvpx * vec4(aPos, 1.0);
+    gl_Position =  mvpx * vec4(totalPosition.xyz, 1.0);
 
     //get the Vertex fragment positons, for Vertex lighting
     FragPos = vec3(model * vec4(aPos, 1.0));

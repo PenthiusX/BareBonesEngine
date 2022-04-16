@@ -13,6 +13,7 @@ TARGET = DiamondPal
 TEMPLATE = app
 
 HEADERS  += \
+    _animation.h \
     _bufferobjects.h \
     _extobjLoader.h \
     _material.h \
@@ -33,6 +34,7 @@ HEADERS  += \
     _text.h
 
 SOURCES +=  \
+    _animation.cpp \
     _bufferobjects.cpp \
     _material.cpp \
     main.cpp \
