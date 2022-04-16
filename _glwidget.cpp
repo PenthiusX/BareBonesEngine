@@ -147,8 +147,8 @@ void _GLWidget::initializeGL(){
     m3.setShine(32.0);
 
     _Material m4 = {};
-    m4.setDiffuseTexture("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/tex/051F_03SET_02SHOT_Diffuse.tif");//color texture
-    //m4.setDiffuseTexture("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/textures/egyptian_red_B_texture.jpg");//color texture
+    //m4.setDiffuseTexture("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/tex/051F_03SET_02SHOT_Diffuse.tif");//color texture
+    m4.setDiffuseTexture("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/textures/egyptian_red_B_texture.jpg");//color texture
     m4.setSpecularTexture("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/tex/051F_03SET_02SHOT_Specular.png");//spec texture
     m4.setAmbient(glm::vec3( 0.0f, 0.0f, 0.0f));//0 means value only from light
     m4.setDiffuse(glm::vec3( 0.5f, 0.5f, 0.5f));//0 means value only from texture
@@ -166,7 +166,8 @@ void _GLWidget::initializeGL(){
     s->setIsShadowCaster(true);
     s->setGLModes(g);// glmode settings
     s->setMaterial(m4);//material obhect
-    s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/MODEL/051F_03SET_02SHOT.fbx");
+    //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/MODEL/051F_03SET_02SHOT.fbx");
+    s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx");
     //s->setModelData("E:/WorkStudy/CG/ogldev-sourceAssimpAndAnimation/ogldev-source/tutorial25_youtube/models/example1_two_bone.fbx");
     s->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);

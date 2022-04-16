@@ -315,8 +315,8 @@ void _SceneEntity::setModelData(QString path)
         }
     }
     else {
-//        assetLoader.extrenalObjLoader(path.toStdString());
-         assetLoader.assimpLoader(path.toStdString());//test
+//        assetLoader.extrenalObjLoader(path.toStdString());//use this for obj files only if assimp not presesnt
+         assetLoader.assimpLoader(path.toStdString());//Assimp for mutiformat support
         if(assetLoader.getModelInfo().getVertexInfoArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
             modelInfo = assetLoader.getModelInfo();
             modelInfo.setIsLoaded(true);

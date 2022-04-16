@@ -252,13 +252,13 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
     const aiScene* scene = importer.ReadFile(externalFilePath,
                aiProcess_GenSmoothNormals |
                aiProcess_CalcTangentSpace |
-//               aiProcess_Triangulate |
+               aiProcess_Triangulate |
 //               aiProcess_JoinIdenticalVertices |
                aiProcess_SortByPType
                );
     if(scene){
         qInfo() <<" Sence successfull, starting to load Mesh with Assimp - " << externalFilePath.c_str();
-        initFromScene(scene);
+        loadAssimpScene(scene);
     }
     else{
         qInfo() <<" Could not load Mesh with Assimp - " << externalFilePath.c_str();
@@ -268,7 +268,7 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
     Assimp::DefaultLogger::kill();
 }
 //-------
-void _AssetLoader::initFromScene(const aiScene *scene)
+void _AssetLoader::loadAssimpScene(const aiScene *scene)
 {
      std::vector<VertexInfo> vfa;
      std::vector<uint> indices;
@@ -284,44 +284,49 @@ void _AssetLoader::initFromScene(const aiScene *scene)
              if(mesh->HasBones()){qInfo() << "Mesh Has Bones -" << mesh->mNumBones; loadBones(mesh);}
              else{qInfo() << "No Bones Found";}
 
+             //Loadup Faces/indices
+             indices.reserve(mesh->mNumFaces * 3);
              for(uint j = 0; j < mesh->mNumFaces; j++)
              {
-                 const aiFace& face = mesh->mFaces[j];
-                 if (face.mNumIndices == 3)
-                 {
-                     indices.push_back(face.mIndices[0]);
-                     indices.push_back(face.mIndices[1]);
-                     indices.push_back(face.mIndices[2]);
-                 }
-//                 for(uint k = 0; k < face.mNumIndices; k++)
+                 assert(mesh->mNumFaces * 3);
+//                 const aiFace& face = mesh->mFaces[j];
+//                 if (face.mNumIndices == 3)
 //                 {
-//                     aiVector3D pos = mesh->mVertices[face.mIndices[k]];
-//                     aiVector3D uv = mesh->mTextureCoords[0] != NULL ? mesh->mTextureCoords[0][face.mIndices[k]] :  aiVector3D(0.0,0.0,0.0);
-//                     aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
-
-//                     if( mesh->mVertices[face.mIndices[k]].x > vertMax.x ){vertMax.x = mesh->mVertices[face.mIndices[k]].x;}
-//                     if( mesh->mVertices[face.mIndices[k]].y > vertMax.y ){vertMax.y = mesh->mVertices[face.mIndices[k]].y;}
-//                     if( mesh->mVertices[face.mIndices[k]].z > vertMax.z ){vertMax.z = mesh->mVertices[face.mIndices[k]].z;}
-
-//                     if( mesh->mVertices[face.mIndices[k]].x < vertMin.x ){vertMin.x = mesh->mVertices[face.mIndices[k]].x;}
-//                     if( mesh->mVertices[face.mIndices[k]].y < vertMin.y ){vertMin.y = mesh->mVertices[face.mIndices[k]].y;}
-//                     if( mesh->mVertices[face.mIndices[k]].z < vertMin.z ){vertMin.z = mesh->mVertices[face.mIndices[k]].z;}
-
-//                     VertexInfo v;
-//                     v.Position = glm::vec3(pos.x,pos.y,pos.z);
-//                     v.Normal = glm::vec3(normal.x,normal.y,normal.z);
-//                     v.TexCoords = glm::vec2(uv.x,uv.y);
-//                     vfa.push_back(v);
+                     indices.push_back(mesh->mFaces[j].mIndices[0]);
+                     indices.push_back(mesh->mFaces[j].mIndices[1]);
+                     indices.push_back(mesh->mFaces[j].mIndices[2]);
 //                 }
+                 /*
+                 for(uint k = 0; k < face.mNumIndices; k++)
+                 {
+                     aiVector3D pos = mesh->mVertices[face.mIndices[k]];
+                     aiVector3D uv = mesh->mTextureCoords[0] != NULL ? mesh->mTextureCoords[0][face.mIndices[k]] :  aiVector3D(0.0,0.0,0.0);
+                     aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
+
+                     if( mesh->mVertices[face.mIndices[k]].x > vertMax.x ){vertMax.x = mesh->mVertices[face.mIndices[k]].x;}
+                     if( mesh->mVertices[face.mIndices[k]].y > vertMax.y ){vertMax.y = mesh->mVertices[face.mIndices[k]].y;}
+                     if( mesh->mVertices[face.mIndices[k]].z > vertMax.z ){vertMax.z = mesh->mVertices[face.mIndices[k]].z;}
+
+                     if( mesh->mVertices[face.mIndices[k]].x < vertMin.x ){vertMin.x = mesh->mVertices[face.mIndices[k]].x;}
+                     if( mesh->mVertices[face.mIndices[k]].y < vertMin.y ){vertMin.y = mesh->mVertices[face.mIndices[k]].y;}
+                     if( mesh->mVertices[face.mIndices[k]].z < vertMin.z ){vertMin.z = mesh->mVertices[face.mIndices[k]].z;}
+
+                     VertexInfo v;
+                     v.Position = glm::vec3(pos.x,pos.y,pos.z);
+                     v.Normal = glm::vec3(normal.x,normal.y,normal.z);
+                     v.TexCoords = glm::vec2(uv.x,uv.y);
+                     vfa.push_back(v);
+                 }
+                 */
              }
 
-
+             //Loadup Vertices
              for(uint i = 0 ; i < mesh->mNumVertices ; i++){
                  VertexInfo v;
-                 const aiVector3D& pos = mesh->mVertices[i];
+                 const aiVector3D& pos = mesh->mVertices[i];            //Vertex Positions
                  v.Position = glm::vec3(pos.x,pos.y,pos.z);
 
-                  if( pos.x > vertMax.x ){vertMax.x = pos.x;}
+                  if( pos.x > vertMax.x ){vertMax.x = pos.x;}           //Calculate min Max as Assim AABB not working
                   if( pos.y > vertMax.y ){vertMax.y = pos.y;}
                   if( pos.z > vertMax.z ){vertMax.z = pos.z;}
 
@@ -330,21 +335,20 @@ void _AssetLoader::initFromScene(const aiScene *scene)
                   if(pos.z < vertMin.z ){vertMin.z = pos.z;}
 
                  if (mesh->mNormals) {
-                     const aiVector3D& pNormal = mesh->mNormals[i];
+                     const aiVector3D& pNormal = mesh->mNormals[i];      //Vertex normals
                      v.Normal = glm::vec3(pNormal.x,pNormal.y,pNormal.z);
                  } else {
-                     aiVector3D Normal(0.0f, 1.0f, 0.0f);
+                     aiVector3D Normal(0.0f, 1.0f, 0.0f);                //If no normal exists
                      v.Normal = glm::vec3(Normal.x,Normal.y,Normal.z);
                  }
-
                  const aiVector3D& pTexCoord = mesh->HasTextureCoords(0) ? mesh->mTextureCoords[0][i] : aiVector3D(0.0,0.0,0.0);
-                 v.TexCoords = glm::vec2(pTexCoord.x,pTexCoord.y);
+                 v.TexCoords = glm::vec2(pTexCoord.x,pTexCoord.y);       //Vertex UV coords
 
                  vfa.push_back(v);
             }
     }
 
-     //Needs to set model info
+     //Model info set , this will be utilised by the renderer to load up data.
      modelInfo.setVertexInfoArray(vfa);
      modelInfo.setIndexArray(indices);
      modelInfo.setMaxExtents(vertMax);
@@ -352,6 +356,7 @@ void _AssetLoader::initFromScene(const aiScene *scene)
      modelInfo.calcCentroidFromMinMax();
      modelInfo.setIsLoaded(true);
 
+     //Debug output
      qInfo()<<"--------------MODEL INFO-------------------------------";
      qInfo()<< "Path" << this->modelInfo.getPath();
      qInfo()<< "VertexInfoArray" << modelInfo.getVertexInfoArray().size();
@@ -361,7 +366,6 @@ void _AssetLoader::initFromScene(const aiScene *scene)
      qInfo()<< "Centroid" << modelInfo.getCentroid().x << modelInfo.getCentroid().y << modelInfo.getCentroid().z;
      qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
      qInfo()<<"--------------------------------------------------------";
-
 }
 //-----------------------------------------------------------
 /*

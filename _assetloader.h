@@ -54,7 +54,7 @@ private:
     int arrayCounter;
 
     //Assimp
-    void initFromScene(const aiScene* pScene);
+    void loadAssimpScene(const aiScene* pScene);
     void loadBones(const aiMesh* mesh);
 
     std::map<std::string,uint> m_BoneNameToIndexMap;
