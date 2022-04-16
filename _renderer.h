@@ -62,11 +62,13 @@ private:
     uint VBO;//vertex buffer objec
     uint VAO;//attribute buffer object
     uint EBO;//index buffer object
+//    uint BBO;//Bonebuffer
+
     //Matrices for Translation and view will be multiplied with the position to set translation rotaion ,scaling witrespect to view.
     glm::mat4 modelMatrix;
     glm::mat4 rotationMatrix,translationMatrix,scalingMatrix;
     glm::mat4 pivotTmat;
-    glm::mat4 projectionMatrix,orthoProjMatrix;
+    glm::mat4 projectionMatrix,dirLightOrthoProjMatrix;
     glm::mat4 viewMatrix,lightViewMatrix;
     //
     _SceneEntity *sceneEntity;//the local sceneEntity object for use in the renderer
@@ -78,6 +80,8 @@ private:
     void setModelMatrix(glm::vec3 position, float scale, glm::vec3 rotation);//set the model matrix
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
     void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
+    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray, std::vector<VertexBoneData> vertBones);
+
     void setModelDataInBuffers(std::vector<float> vertexArray);
     //void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<float> normalsArray ,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
     //Holds the vertex and index data

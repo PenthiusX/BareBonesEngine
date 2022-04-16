@@ -274,7 +274,7 @@ void _Scene::onResize(int w,int h){
 /*
  * This function is render function that will call the glDraw fuinction in
  * the render final draw of all sceneEntity objects attached to scene.
- * this is being called by the _GlWidget class.
+ * this is being called by the _GlWidget class. callstack : Glwidget.paintGL() -> this.render() next calls renderEntities[i]->draw(1)
 */
 void _Scene::render()
 {
@@ -285,7 +285,7 @@ void _Scene::render()
     fboObject->setUpdatedFrame();//wrtites the info drawn after
     //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //--
-    drawMeshesWithLigthingInfo(renderEntities);
+    drawMeshesWithLigthingInfo(renderEntities); // cutom
     //--
     //drawPhysicsVisualisations();
     //--

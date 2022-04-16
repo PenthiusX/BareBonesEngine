@@ -1,9 +1,8 @@
 #include "_modelinfo.h"
 
-_ModelInfo::_ModelInfo(){
+_ModelInfo::_ModelInfo(){}
 
-}
-
+//Setters
 void _ModelInfo::setName(QString name){
     this->name = name;
 }
@@ -16,7 +15,6 @@ void _ModelInfo::setIsLoaded(bool isLoaded){
 void _ModelInfo::setVertexArray(std::vector<float> vertexArray){
     this->vertexArray = vertexArray;
 }
-
 void _ModelInfo::setVertexInfoArray(std::vector<VertexInfo> vertexInfoArray){
     this->vertexInfoArray = vertexInfoArray;
 }
@@ -35,6 +33,8 @@ void _ModelInfo::setMaxExtents(glm::vec4 max){
 void _ModelInfo::setMinExtents(glm::vec4 min){
     this->min = min;
 }
+
+//Getters
 QString _ModelInfo::getName() const{
     return this->name;
 }
@@ -44,7 +44,6 @@ QString _ModelInfo::getPath() const{
 std::vector<float> _ModelInfo::getVertexArray() const{
     return this->vertexArray;
 }
-
 std::vector<VertexInfo> _ModelInfo::getVertexInfoArray()const{
     return this->vertexInfoArray;
 }

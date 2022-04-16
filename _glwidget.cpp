@@ -213,7 +213,7 @@ void _GLWidget::initializeGL(){
     scene->addSceneObject(dl1);
 //    scene->addSceneObject(dl2);//shader not having option to load up multiple dir light , WIP
     scene->addSceneObject(p1);
-    scene->addSceneObject(p2);
+    scene->addSceneObject(p2);//Need to work on proceduraly load up more point lights in shader if this array size increases. Currentlt maxed at 2 harcoded in shader
     scene->addSceneObject(sl1);
     //---------Ground----------
     scene->addSceneObject(s2);//place the ground last for picking it last in intersection test,(a workaround, needs a proper solution)

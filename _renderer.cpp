@@ -106,7 +106,9 @@ void _Renderer::setShader(QString vSh, QString fSh)
     shaderVec.push_back(shdr);
     qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity->getTag().c_str();
 }
-
+/*
+ *
+ */
 void _Renderer::setShader(QString vSh, QString fSh, QString geo)
 {
     shdr = new _Shader();
@@ -124,7 +126,7 @@ void _Renderer::setShader(QString vSh, QString fSh, QString geo)
  * the GPU buffers to use for the current model.
  * May have extended implementation for inclusion of UV for texture and Normals for
  * lighting.
- * Used by: the _glWidget class initializeGL().
+ * Used by: the _glWidget class initializeGL(). //Depricated , Redundant
 */
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vector<uint> indexArray)//Pass normals
 {
@@ -153,8 +155,9 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 }
-/*
- *
+/* Current most features
+ * Extended Laodup functonality , will loadup vertices , Normals and UV info as well, via VertexInfo container.
+ * see: _assetloader to modelInfo data inputs
  */
 void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
 {
@@ -185,7 +188,49 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
     glBindVertexArray(0);
 }
 /*
- *
+ * WIP current : Includes sending data for Bone Anim
+ */
+void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray, std::vector<VertexBoneData> vertBones)
+{
+    indices = indexArray;
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+//    glGenBuffers(1, &BBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint),&indices[0], GL_STATIC_DRAW);
+
+    // vertex positions
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
+    // vertex normals
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
+    // vertex texture coords
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
+
+    //Bones
+//    glBindBuffer(GL_ARRAY_BUFFER,BBO);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertBones[0]) * vertBones.size(), &vertBones[0], GL_STATIC_DRAW);
+//    //BoneIDs
+//    glEnableVertexAttribArray(3);
+//    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (const void*)0);
+//    //Weights
+//    glEnableVertexAttribArray(4);
+//    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (void*)offsetof(VertexBoneData, weight));
+
+//    glBindVertexArray(0);
+}
+/*
+ * //Depricated , Redundant , Uses only vertex array to load up models
  */
 void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
 {
@@ -294,11 +339,13 @@ void _Renderer::setCamViewMatrix(glm::vec3 eyePos,glm::vec3 focalPoint,glm::vec3
                 glm::vec3(upVector.x, upVector.y, upVector.z));
     keepSceneEntityUpdated();
 }
+/*
+ * Set the OthroPrjection and Light view matrix exclusivelt from the dirlights perspective.
+ */
 void _Renderer::setOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar){
-    //    float near_plane = 1.0f, far_plane = 7.5f;
-    //     orthoProjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-    orthoProjMatrix = glm::ortho(left,right,bottom,top, zNear, zFar);
+    dirLightOrthoProjMatrix = glm::ortho(left,right,bottom,top, zNear, zFar);
 }
+//-----------
 void _Renderer::setLightViewMatrix(glm::vec3 eye, glm::vec3 focal, glm::vec3 up)
 {
     lightViewMatrix = glm::lookAt(eye,focal,up);
@@ -323,6 +370,8 @@ void _Renderer::setProjectionMatrix(int resW, int resH, float fov, float zNear, 
     sceneEntity->setProjectionMatrix(projectionMatrix);
     //qDebug() << "setProjectionMatrix() on entity" << sceneEntity->getTag().c_str();
 }
+/*
+ */
 void _Renderer::setProjectionMatrix(int type, glm::mat4x4 m)
 {
     projectionMatrix = m;
@@ -518,7 +567,8 @@ void _Renderer::lookAt(QVector3D ptl) //Not Implemented properly yet needs to be
 
     RotationBetweenVectors(glm::vec3(ptl.x(),ptl.y(),ptl.z()));
 }
-
+/*
+ */
 void _Renderer::RotationBetweenVectors(glm::vec3 dest)
 {
     glm::vec3 start = glm::vec3(sceneEntity->getPostion());
@@ -551,7 +601,9 @@ void _Renderer::RotationBetweenVectors(glm::vec3 dest)
     this->sceneEntity->setModelMatrix(modelMatrix);
     keepSceneEntityUpdated();
 }
-//updates the local material info
+/*
+ * updates the local material info.
+*/
 void _Renderer::updateMaterial(_Material m)
 {
     sceneEntity->setMaterial(m);
@@ -567,21 +619,21 @@ void _Renderer::updateMaterial(_Material m)
 /*
  * This is your proprietory draw function
  * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
- * Used by: the _glWidget class paintGl().
+ * Used by: the _glWidget class paintGl(). calling stack : glwidget -> scene.render() -> this.draw()
 */
-void _Renderer::_Renderer::draw(uint shaderSelector)
+void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
 {
-    setGLEnablements();//function sets openGL Rasterisation modifiers
+    setGLEnablements();//OpenGL based Rasterisation modifiers / Extension Invocations.
     //---
-    shaderSelector > shaderVec.size() ? shaderSelector = 0 : shaderSelector;
-    ssl = shaderSelector;
+    shaderSelectorOvveride > shaderVec.size() ? shaderSelectorOvveride = 0 : shaderSelectorOvveride;
+    ssl = shaderSelectorOvveride;
     if(sceneEntity->getIsActive())
     {
         //Using the shader program in the current context
         shaderVec[ssl]->useShaderProgram();
-        //Update the uniforms in shader, This needs to be under the relavant shaders->useprogram invocation to pass it to that shader if available.
-        updateColorUniforms();
-        updateMatrixUniforms();
+
+        updateColorUniforms(); //Update the uniforms in shader, This needs to be under the relavant shaders->useprogram invocation to pass it to that shader if available.
+        updateMatrixUniforms();//update the matirix uniform in shader, this helps in vertex deformations that help in tranformations and Translations of madels
         //Bind Textures
         for(uint t=0;t<textures.size();t++){
             textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
@@ -611,7 +663,7 @@ void _Renderer::_Renderer::draw(uint shaderSelector)
     }
 }
 /*
- *  Used in the Draw functon
+ * Used in the Draw functon
  * Updates the color and relative uniforms
  */
 void _Renderer::updateColorUniforms()
@@ -636,17 +688,17 @@ void _Renderer::updateColorUniforms()
     }
     sceneEntity->getisHitByRay() ? sceneEntity->setColor(actualColor * 2.0) : sceneEntity->setColor(actualColor * 1.0);
 }
-
+/*
+ */
 void _Renderer::updateMatrixUniforms()
 {
     //Sets the values for the MVP matrix in the vertex shader
-    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
-    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getProjectionMatrix()));
-    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("orthoProjection"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix));//for shadow calcs
-    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("shadowLightSpace"), 1, GL_FALSE, glm::value_ptr(orthoProjMatrix * lightViewMatrix));//for shadow calcs
-    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity->getModelMatrix()));
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));//View position and fov and frustum culling.
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getProjectionMatrix()));//Setting FOV and perspective devide.
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("model"),1,GL_FALSE,glm::value_ptr(sceneEntity->getModelMatrix())); //Your Model matrix fpr scale , translate and rotate.
     //glUniformMatrix4fv(shdr->getUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getTranslationMatrix()*sceneEntity->getRotationmatrix()*pivotTmat *sceneEntity->getScaleingMatrix()));
-
+    //Shadow based data passes to shader
+    glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("shadowLightSpace"), 1, GL_FALSE, glm::value_ptr(dirLightOrthoProjMatrix * lightViewMatrix));//for shadow calcs.
 }
 /*
  * Updates the light uniforms on the model
@@ -669,9 +721,9 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
             glUniform3f(shaderVec[ssl]->getUniformLocation("light.specular"), il[li]->getLightParams()[3].x,il[li]->getLightParams()[3].y,il[li]->getLightParams()[3].z);
 
         }
-        if(il[li]->getLightType() == "PointLight")
+        if(il[li]->getLightType() == "PointLight") //PointL
         {
-            //PointL
+             //used to create procedureal bindings for custom light numbers , but not working as of now as array size pre-alocation fails in shader WIP
             f  = "pointLights[";
             u  = std::to_string(piter);
             e1 = "].position";
@@ -735,7 +787,6 @@ void _Renderer::setGLEnablements()
     glCullFace(GL_BACK);//culls the backface saving some raster ops
 
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-
     //    //The poligon winding order in which it is rendered,
     //    //glFrontFace(GL_CW);//clockwise
     glFrontFace(GL_CCW);//counterClokwise, default, even if not explicitly stated
