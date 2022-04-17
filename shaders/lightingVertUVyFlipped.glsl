@@ -42,12 +42,12 @@ out vec2 iMouseO;//to fragment
 void main()
 {	
     //Skeletal Animation
-	vec4 totalPosition = vec4(0.0f);
+        vec4 totalPosition = vec4(0.0f);
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
-        if(boneIds[i] == -1) 
+        if(boneIds[i] == -1)
             continue;
-        if(boneIds[i] >=MAX_BONES) 
+        if(boneIds[i] >=MAX_BONES)
         {
             totalPosition = vec4(aPos,1.0f);
             break;
@@ -56,10 +56,11 @@ void main()
         totalPosition += localPosition * weights[i];
         vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normal;
     }
-	
+
     //Model view projection combined
     mat4 mvpx = projection * view * model;
-    gl_Position =  mvpx * vec4(totalPosition.xyz, 1.0);
+    gl_Position =  mvpx * vec4(aPos.xyz, 1.0);
+    // gl_Position =  mvpx * vec4(totalPosition.xyz, 1.0);
 
     //get the Vertex fragment positons, for Vertex lighting
     FragPos = vec3(model * vec4(aPos, 1.0));

@@ -3,17 +3,18 @@
 #include <vector>
 #include <qstring.h>
 #include <qvector3d.h>
-//#include<glm/glm.hpp>
-//#include<glm/gtc/quaternion.hpp>
 
-//#include <assimp/Importer.hpp>      // C++ importer interface
-//#include <assimp/scene.h>           // Output data structure
-//#include <assimp/postprocess.h>     // Post processing flags
-//#include <assimp/Logger.hpp>
-//#include <assimp/DefaultLogger.hpp>
-//#include<assimp/quaternion.h>
-//#include<assimp/vector3.h>
-//#include<assimp/matrix4x4.h>
+#include<glm/glm.hpp>
+#include<glm/gtc/quaternion.hpp>
+
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
+#include <assimp/Logger.hpp>
+#include <assimp/DefaultLogger.hpp>
+#include <assimp/quaternion.h>
+#include <assimp/vector3.h>
+#include <assimp/matrix4x4.h>
 
 #include "_modelinfo.h"
 

@@ -14,6 +14,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <qtimer.h>
+
 //#include <qopengl.h>
 /*
  * Class: _Renderer
@@ -41,8 +43,8 @@ public:
     void lookAt(QVector3D ptl);
     void RotationBetweenVectors(glm::vec3 dest);
     //Scene Entity
-    void initSceneEntityInRenderer(_SceneEntity* s_);
-    void setSceneEntityInRenderer(_SceneEntity* s);
+    void initSceneEntityInRenderer(_SceneEntity* s_);//sets the data into Renderer see: scene->initSceneEntityinRenderer()
+    void setSceneEntityInRenderer(_SceneEntity* s);//holds the refrence of the scebeEntity used to create this object context see: scene->initSceneEntityinRenderer()
     _SceneEntity* getSceneEntity() const;
     //
     void draw(uint shaderSelector);// Draws paints everything bound in the scene

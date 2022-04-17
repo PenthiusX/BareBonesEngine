@@ -10,6 +10,8 @@
 #include  "_material.h"
 #include "_light.h"
 
+#include "a_animation.h"
+
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
  * to derive from while rendering.
@@ -158,6 +160,12 @@ public:
     };
     void setAsLight(light l);
     light getLightSource();
+
+    //Animation
+    _Animation anim;//test refactor later
+    Animator animator;
+
+
 private:
     uint id;
     std::string tag;

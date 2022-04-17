@@ -262,6 +262,7 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
     }
     else{
         qInfo() <<" Could not load Mesh with Assimp - " << externalFilePath.c_str();
+        qInfo() <<"---------------------------------------------------------------";
     }
 
     modelInfo.setPath(externalFilePath.c_str());
@@ -356,7 +357,7 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene)
                  {
                      BoneInfo newBoneInfo;
                      newBoneInfo.id = modelInfo.m_BoneCounter;
-                     newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
+                     newBoneInfo.offset = _Tools::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
                      modelInfo.m_BoneInfoMap[boneName] = newBoneInfo;
                      boneID = modelInfo.m_BoneCounter;
                      modelInfo.m_BoneCounter++;
@@ -381,13 +382,16 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene)
          else{qInfo() << "No Bones Found";}
      }
 
+
      //Model info set , this will be utilised by the renderer to load up data.
      modelInfo.setVertexInfoArray(vfa);
      modelInfo.setIndexArray(indices);
      modelInfo.setMaxExtents(vertMax);
      modelInfo.setMinExtents(vertMin);
      modelInfo.calcCentroidFromMinMax();
-     modelInfo.setIsLoaded(true);
+     if(vfa.size() !=0 && indices.size() != 0){
+        modelInfo.setIsLoaded(true);
+     }
 
      //Debug output
      qInfo()<<"--------------MODEL INFO-------------------------------";

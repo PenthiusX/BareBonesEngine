@@ -1,6 +1,7 @@
 #include "_modelinfo.h"
 
-_ModelInfo::_ModelInfo(){}
+_ModelInfo::_ModelInfo(){
+}
 
 //Setters
 void _ModelInfo::setName(QString name){

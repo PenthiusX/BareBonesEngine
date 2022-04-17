@@ -75,6 +75,14 @@ void _Scene::addSceneObject(_SceneEntity* s)
     }
 }
 //---------------------------------------------------------------------------------------
+/*
+ * Takes the _SceneEntity Entity as input and loads up its data
+ * into the GPU and creates a Renderer object instance called
+ * renderEntity . renderEntity is a scene Entity but with all
+ * the Opengl Specefic preprocessing and bindings done .
+ * The draw()/render() in called for each Renderer renderEntity implicitly,
+ * having it own uniqe data and Transforms stored locally.
+ */
 void _Scene::initialiseMesh(_SceneEntity* s)
 {
     s->setOrderInIndex(renderEntities.size());
@@ -86,6 +94,10 @@ void _Scene::initialiseMesh(_SceneEntity* s)
     renderEntities.push_back(renderEntity);//add the renderer object to array for batch render
 }
 //---------------------------------------------------------------------------------------
+/*
+ * Init the phycsics OBjects that exist in parallel 3d space(non visualised) to the RenderEntites
+ * It takes SceneEntity data as an input and creates a phycs body for it
+ */
 void _Scene::initialisePhysics(_SceneEntity* s)
 {//only inits if the object has a physics component attached
     if(s->getIsPhysicsObject()){
@@ -283,7 +295,7 @@ void _Scene::render()
     shadowBObject.stopWrite();//Binds 0 to stop write to the shadowFbuff
     //--
     fboObject->setUpdatedFrame();//wrtites the info drawn after
-    //skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
+    skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
     //--
     drawMeshesWithLigthingInfo(renderEntities); // cutom
     //--

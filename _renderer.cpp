@@ -4,6 +4,7 @@
 #include <qquaternion.h>
 
 
+
 /*
  * The Renderer class
  * Author: Aditya
@@ -121,6 +122,12 @@ void _Renderer::setShader(QString vSh, QString fSh, QString geo)
     shaderVec.push_back(shdr);
     qDebug() << "setShader(QString"<<vSh<<", QString"<<fSh<<")" << sceneEntity->getTag().c_str();
 }
+
+//▄▄▄▄· ▪   ▐ ▄ ·▄▄▄▄       ▄▄▄· ▄▄▄▄▄▄▄▄▄▄▄▄▄  ▪  ▄▄▄▄· ▄• ▄▌▄▄▄▄▄▄▄▄ ..▄▄ ·
+//▐█ ▀█▪██ •█▌▐███▪ ██     ▐█ ▀█ •██  •██  ▀▄ █·██ ▐█ ▀█▪█▪██▌•██  ▀▄.▀·▐█ ▀.
+//▐█▀▀█▄▐█·▐█▐▐▌▐█· ▐█▌    ▄█▀▀█  ▐█.▪ ▐█.▪▐▀▀▄ ▐█·▐█▀▀█▄█▌▐█▌ ▐█.▪▐▀▀▪▄▄▀▀▀█▄
+//██▄▪▐█▐█▌██▐█▌██. ██     ▐█ ▪▐▌ ▐█▌· ▐█▌·▐█•█▌▐█▌██▄▪▐█▐█▄█▌ ▐█▌·▐█▄▄▌▐█▄▪▐█
+//·▀▀▀▀ ▀▀▀▀▀ █▪▀▀▀▀▀•      ▀  ▀  ▀▀▀  ▀▀▀ .▀  ▀▀▀▀·▀▀▀▀  ▀▀▀  ▀▀▀  ▀▀▀  ▀▀▀▀
 /*
  * set Vertex and Index data into
  * the GPU buffers to use for the current model.
@@ -155,8 +162,8 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 }
-/* Current most features
- * Extended Laodup functonality , will loadup vertices , Normals and UV info as well, via VertexInfo container.
+/* Latest Updated features  > function in use
+ * Extended Laodup functonality , will loadup vertices , Normals and UV info as well as Bone info, via VertexInfo container.
  * see: _assetloader to modelInfo data inputs
  */
 void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
@@ -186,11 +193,11 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 
     // ids
-//    glEnableVertexAttribArray(3);
-//    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexInfo), (void*)offsetof(VertexInfo, m_BoneIDs));
-//    // weights
-//    glEnableVertexAttribArray(4);
-//    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
+    glEnableVertexAttribArray(3);
+    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexInfo), (void*)offsetof(VertexInfo, m_BoneIDs));
+    // weights
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
 
     glBindVertexArray(0);
 }
@@ -348,7 +355,7 @@ void _Renderer::setProjectionMatrix(int type, glm::mat4x4 m)
   ▐█▌·▐█•█▌▐█ ▪▐▌██▐█▌▐█▄▪▐███▌.▐█▌.▐▌▐█•█▌██ ██▌▐█▌
   ▀▀▀ .▀  ▀ ▀  ▀ ▀▀ █▪ ▀▀▀▀ ▀▀▀  ▀█▄▀▪.▀  ▀▀▀  █▪▀▀▀
 */
-/*
+/*Keep the sceneEntity data in sync with the RendererData.
  *
 */
 void _Renderer::keepSceneEntityUpdated(){
@@ -586,6 +593,7 @@ void _Renderer::updateMaterial(_Material m)
  * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
  * Used by: the _glWidget class paintGl(). calling stack : glwidget -> scene.render() -> this.draw()
 */
+uint lastFrame = 0;
 void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
 {
     setGLEnablements();//OpenGL based Rasterisation modifiers / Extension Invocations.
@@ -599,6 +607,23 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
 
         updateColorUniforms(); //Update the uniforms in shader, This needs to be under the relavant shaders->useprogram invocation to pass it to that shader if available.
         updateMatrixUniforms();//update the matirix uniform in shader, this helps in vertex deformations that help in tranformations and Translations of madels
+
+        //Test anim
+
+        if(this->sceneEntity->getTag() == "Lady"){
+            float currentFrame = qtimer.elapsed() * 0.001;//sets the time elapsed
+            uint deltaTime = currentFrame - lastFrame;
+            uint lastFrame = currentFrame;
+
+            this->sceneEntity->animator.UpdateAnimation(deltaTime);
+
+            auto transforms = this->sceneEntity->animator.GetFinalBoneMatrices();
+            for (int i = 0; i < transforms.size(); ++i){
+               glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
+               //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
+            }
+        }
+
         //Bind Textures
         for(uint t=0;t<textures.size();t++){
             textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex

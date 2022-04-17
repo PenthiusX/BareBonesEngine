@@ -168,12 +168,13 @@ void _GLWidget::initializeGL(){
     s->setMaterial(m4);//material obhect
     //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/MODEL/051F_03SET_02SHOT.fbx");
     s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx");
+    //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/vampire/dancing_vampire.dae");
     //s->setModelData("E:/WorkStudy/CG/ogldev-sourceAssimpAndAnimation/ogldev-source/tutorial25_youtube/models/example1_two_bone.fbx");
     s->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
-    s->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
+    s->setShader(":/shaders/animtestV.glsl",":/shaders/animtestF.glsl");
     s->setScale(1.05f);
 
     s2->setId(8881);

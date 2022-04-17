@@ -314,13 +314,19 @@ void _SceneEntity::setModelData(QString path)
             isActive = false;
         }
     }
-    else {
+    else{
 //        assetLoader.extrenalObjLoader(path.toStdString());//use this for obj files only if assimp not presesnt
          assetLoader.assimpLoader(path.toStdString());//Assimp for mutiformat support
         if(assetLoader.getModelInfo().getVertexInfoArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
             modelInfo = assetLoader.getModelInfo();
-            modelInfo.setIsLoaded(true);
             isActive = true;
+
+             //test for only one file type , Debug test
+            if(path == "D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx"){
+                _Animation danceAnimation("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx",&modelInfo);
+                Animator animator(danceAnimation);
+               this->animator = animator;//pass this to renderer see:renderer updateloop
+            }
         }
     }
 }
@@ -346,9 +352,6 @@ void _SceneEntity::setShader(QString vshader, QString fshader, QString geometry)
 QString _SceneEntity::getTexturePath() const{
     return texturePath;
 }
-//void _SceneEntity::setTexturePath(QString texPath) {
-//    texturePath = texPath;
-//}
 /*
 * getVertexShaderPath()
 * returns the Vertex shader path set in the object via set shader Path
@@ -363,7 +366,6 @@ QString _SceneEntity::getVertexShaderPath() const{
 QString _SceneEntity::getFragmentShaderPath() const{
     return fShaderPath;
 }
-
 QString _SceneEntity::getGeometryShaderPath() const
 {
     return gShaderPath;

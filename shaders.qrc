@@ -15,5 +15,7 @@
         <file>shaders/geoTestF.glsl</file>
         <file>shaders/lightingVertUVDefault.glsl</file>
         <file>shaders/lightingVertUVyFlipped.glsl</file>
+		<file>shaders/animtestV.glsl</file>
+		<file>shaders/animtestF.glsl</file>
     </qresource>
 </RCC>
