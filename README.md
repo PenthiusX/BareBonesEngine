@@ -9,5 +9,6 @@ Discription:
 - WIP..
 
 External Dependencies:
-- Qt
-- GLM
+- Qt - Static UI & OpenGl with cross platform windowing and deployment.
+- GLM - Math.
+- Assimp - Asset import.
