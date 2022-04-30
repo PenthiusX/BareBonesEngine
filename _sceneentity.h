@@ -9,8 +9,7 @@
 #include "_assetloader.h"
 #include  "_material.h"
 #include "_light.h"
-
-#include "a_animation.h"
+#include "_anim.h"
 
 /* Class: _SceneEntity()
  * The scene entity class holds the values for all the paramets a scene object needs
@@ -69,6 +68,7 @@ public:
     //
     void setModelInfo(_ModelInfo minfo);
     _ModelInfo getModelInfo()const;
+    _AssetLoader getAssetLoader()const;
     //
     void setModelData(_AssetLoader aloader);//set the modelInfo object in sceneEntity
     void setModelData(_ModelInfo minfo);//set the modelInfo object in sceneEntity
@@ -161,9 +161,10 @@ public:
     void setAsLight(light l);
     light getLightSource();
 
-    //Animation
-    _Animation anim;//test refactor later
-    Animator animator;
+//    //Animation
+//    _Animation anim;//test refactor later
+//    Animator animator;
+    _Anim* animator = nullptr;
 
 
 private:

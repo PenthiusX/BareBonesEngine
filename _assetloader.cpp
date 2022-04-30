@@ -76,31 +76,31 @@ std::vector<float> _AssetLoader::calculateNormalsOfVertices(std::vector<float>ve
         }
     }
 
-      //only for compound arrays with nor
-     indexCounter = 0; //create array of VertexOffsetnormal array
-     uint ncounter = 0;
-     uint copycounter= 0;
-     for(uint v = 0 ; v < vertices.size() ; v++){
+    //only for compound arrays with nor
+    indexCounter = 0; //create array of VertexOffsetnormal array
+    uint ncounter = 0;
+    uint copycounter= 0;
+    for(uint v = 0 ; v < vertices.size() ; v++){
 
-         if(indexCounter == 3){
-             normalVertices.push_back(normalsVec3[ncounter].x);
-             normalVertices.push_back(normalsVec3[ncounter].y);
-             normalVertices.push_back(normalsVec3[ncounter].z);
+        if(indexCounter == 3){
+            normalVertices.push_back(normalsVec3[ncounter].x);
+            normalVertices.push_back(normalsVec3[ncounter].y);
+            normalVertices.push_back(normalsVec3[ncounter].z);
 
-             indexCounter = 0;
-             copycounter++;
-             if(copycounter == 3){
-                 ncounter++;
-                 copycounter = 0;
-             }
-         }
-         normalVertices.push_back(vertices[v]);
-          indexCounter++;
-     }
-     //-----------------------------
-     return normalVertices;
+            indexCounter = 0;
+            copycounter++;
+            if(copycounter == 3){
+                ncounter++;
+                copycounter = 0;
+            }
+        }
+        normalVertices.push_back(vertices[v]);
+        indexCounter++;
+    }
+    //-----------------------------
+    return normalVertices;
 
-     //    return normals;
+    //    return normals;
 }
 //-----------------------------------------------------------
 /*
@@ -171,7 +171,7 @@ void _AssetLoader::objLoader(QString pathToFile)
     //sets the ModelInfo data at the end of modelfile parse.
     modelInfo.setPath(pathToFile);
     modelInfo.setVertexArray(calculateNormalsOfVertices(vertices));//setting vertexarry with normal info for this use
-//    modelInfo.setNormalArray(calculateNormalsOfVertices(vertices));
+    //    modelInfo.setNormalArray(calculateNormalsOfVertices(vertices));
     modelInfo.setIndexArray(indices);
     modelInfo.setMaxExtents(vertMax);
     modelInfo.setMinExtents(vertMin);
@@ -188,60 +188,61 @@ void _AssetLoader::objLoader(QString pathToFile)
     qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
     qInfo()<<"--------------------------------------------------------";
 }
+
 //-----------------------------------------------------------
 //Loads an Obj format file from the windows file system into memory
 void _AssetLoader::extrenalObjLoader(std::string externalFilePath)
 {
     objl::Loader Loader;
-        // Load .obj File
+    // Load .obj File
     bool loadout = Loader.LoadFile(externalFilePath);
     std::vector<VertexInfo> vfa;
     vertMax = glm::vec4(Loader.LoadedVertices[0].Position.X,Loader.LoadedVertices[0].Position.Y,Loader.LoadedVertices[0].Position.Z,0.0);
     vertMin = glm::vec4(Loader.LoadedVertices[0].Position.X,Loader.LoadedVertices[0].Position.Y,Loader.LoadedVertices[0].Position.Z,0.0);
     if(loadout){
-    for(unsigned int i = 0 ; i < Loader.LoadedVertices.size(); i++){
-//        //For existing Mesh physics
-//        vertices.push_back(Loader.LoadedVertices[i].Position.X);
-//        vertices.push_back(Loader.LoadedVertices[i].Position.Y);
-//        vertices.push_back(Loader.LoadedVertices[i].Position.Z);
-        //
-        VertexInfo v;
-        v.Position = glm::vec3(Loader.LoadedVertices[i].Position.X,Loader.LoadedVertices[i].Position.Y,Loader.LoadedVertices[i].Position.Z);
-        v.Normal = glm::vec3(Loader.LoadedVertices[i].Normal.X,Loader.LoadedVertices[i].Normal.Y,Loader.LoadedVertices[i].Normal.Z);
-        v.TexCoords = glm::vec2(Loader.LoadedVertices[i].TextureCoordinate.X,Loader.LoadedVertices[i].TextureCoordinate.Y);
-        //Set Max min
-        if( Loader.LoadedVertices[i].Position.X > vertMax.x ){vertMax.x = Loader.LoadedVertices[i].Position.X;}
-        if( Loader.LoadedVertices[i].Position.Y > vertMax.y ){vertMax.y = Loader.LoadedVertices[i].Position.Y;}
-        if( Loader.LoadedVertices[i].Position.Z > vertMax.z ){vertMax.z = Loader.LoadedVertices[i].Position.Z;}
+        for(unsigned int i = 0 ; i < Loader.LoadedVertices.size(); i++){
+            //        //For existing Mesh physics
+            //        vertices.push_back(Loader.LoadedVertices[i].Position.X);
+            //        vertices.push_back(Loader.LoadedVertices[i].Position.Y);
+            //        vertices.push_back(Loader.LoadedVertices[i].Position.Z);
+            //
+            VertexInfo v;
+            v.Position = glm::vec3(Loader.LoadedVertices[i].Position.X,Loader.LoadedVertices[i].Position.Y,Loader.LoadedVertices[i].Position.Z);
+            v.Normal = glm::vec3(Loader.LoadedVertices[i].Normal.X,Loader.LoadedVertices[i].Normal.Y,Loader.LoadedVertices[i].Normal.Z);
+            v.TexCoords = glm::vec2(Loader.LoadedVertices[i].TextureCoordinate.X,Loader.LoadedVertices[i].TextureCoordinate.Y);
+            //Set Max min
+            if( Loader.LoadedVertices[i].Position.X > vertMax.x ){vertMax.x = Loader.LoadedVertices[i].Position.X;}
+            if( Loader.LoadedVertices[i].Position.Y > vertMax.y ){vertMax.y = Loader.LoadedVertices[i].Position.Y;}
+            if( Loader.LoadedVertices[i].Position.Z > vertMax.z ){vertMax.z = Loader.LoadedVertices[i].Position.Z;}
 
-        if( Loader.LoadedVertices[i].Position.X < vertMin.x ){vertMin.x = Loader.LoadedVertices[i].Position.X;}
-        if( Loader.LoadedVertices[i].Position.Y < vertMin.y ){vertMin.y = Loader.LoadedVertices[i].Position.Y;}
-        if( Loader.LoadedVertices[i].Position.Z < vertMin.z ){vertMin.z = Loader.LoadedVertices[i].Position.Z;}
+            if( Loader.LoadedVertices[i].Position.X < vertMin.x ){vertMin.x = Loader.LoadedVertices[i].Position.X;}
+            if( Loader.LoadedVertices[i].Position.Y < vertMin.y ){vertMin.y = Loader.LoadedVertices[i].Position.Y;}
+            if( Loader.LoadedVertices[i].Position.Z < vertMin.z ){vertMin.z = Loader.LoadedVertices[i].Position.Z;}
 
-        modelInfo.setMaxExtents(vertMax);
-        modelInfo.setMinExtents(vertMin);
-        modelInfo.calcCentroidFromMinMax();
-        //
-        vfa.push_back(v);
+            modelInfo.setMaxExtents(vertMax);
+            modelInfo.setMinExtents(vertMin);
+            modelInfo.calcCentroidFromMinMax();
+            //
+            vfa.push_back(v);
         }
     }
     else{
         qInfo() << externalFilePath.c_str() << "Did not load";
     }
 
-     qInfo() << vertMax.x << vertMax.y << vertMax.z;
+    qInfo() << vertMax.x << vertMax.y << vertMax.z;
 
-     //Needs to set model info min max .
-     modelInfo.setVertexInfoArray(vfa);
-     modelInfo.setIndexArray(Loader.LoadedIndices);
-     modelInfo.setIsLoaded(true);
-     modelInfo.setPath(externalFilePath.c_str());
+    //Needs to set model info min max .
+    modelInfo.setVertexInfoArray(vfa);
+    modelInfo.setIndexArray(Loader.LoadedIndices);
+    modelInfo.setIsLoaded(true);
+    modelInfo.setPath(externalFilePath.c_str());
 
-     qInfo() << vertMax.x << vertMax.y << vertMax.z;
+    qInfo() << vertMax.x << vertMax.y << vertMax.z;
 }
+
 //-----------------------------------------------------------
-/*
- * Assimp model loading , for now is only loading up the
+/* Assimp model loading , for now is only loading up the
  * Primitive data witout textures or position.
  */
 void _AssetLoader::assimpLoader(std::string externalFilePath)
@@ -249,160 +250,196 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
     Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
 
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(externalFilePath,
-               aiProcess_GenSmoothNormals |
-               aiProcess_CalcTangentSpace |
-               aiProcess_Triangulate |
-//               aiProcess_JoinIdenticalVertices |
-               aiProcess_SortByPType
-               );
+    scene = importer.ReadFile(externalFilePath,
+                              aiProcess_GenSmoothNormals |
+                              aiProcess_CalcTangentSpace |
+                              aiProcess_Triangulate |
+                              //aiProcess_JoinIdenticalVertices //|
+                              aiProcess_SortByPType
+                              );
+
     if(scene){
         qInfo() <<" Sence successfull, starting to load Mesh with Assimp - " << externalFilePath.c_str();
-        loadAssimpScene(scene);
+        loadAssimpScene(scene,externalFilePath);
     }
     else{
         qInfo() <<" Could not load Mesh with Assimp - " << externalFilePath.c_str();
         qInfo() <<"---------------------------------------------------------------";
     }
-
-    modelInfo.setPath(externalFilePath.c_str());
     Assimp::DefaultLogger::kill();
 }
-//-------
-uint MAX_BONE_WEIGHTS = 4;
-void SetVertexBoneData(VertexInfo& vertex, int boneID, float weight)
+//--------------------Animation-------------------------------------
+int _AssetLoader::GetBoneId(const aiBone* pBone)
 {
-    for (int i = 0; i < MAX_BONE_WEIGHTS; ++i)
+    int BoneIndex = 0;
+    std::string BoneName(pBone->mName.C_Str());
+
+    if (this->modelInfo.m_BoneNameToIndexMap.find(BoneName) == this->modelInfo.m_BoneNameToIndexMap.end()) {
+        // Allocate an index for a new bone
+        BoneIndex = (int)this->modelInfo.m_BoneNameToIndexMap.size();
+        this->modelInfo.m_BoneNameToIndexMap[BoneName] = BoneIndex;
+    }
+    else {
+        BoneIndex = this->modelInfo.m_BoneNameToIndexMap[BoneName];
+    }
+
+    return BoneIndex;
+}
+
+//--------------------Animation-----------------------------------
+//-------------------------------------------------------------------
+void _AssetLoader::loadAssimpScene(const aiScene *scene , std::string path)
+{
+    std::vector<VertexInfo> vfa;
+    std::vector<uint> indices;
+
+    modelInfo.setPath(path.c_str());
+    modelInfo.m_GlobalInverseTransform = mat4_cast(scene->mRootNode->mTransformation);
+
+    vertMax = glm::vec4(0.0,0.0,0.0,0.0);
+    vertMin = glm::vec4(0.0,0.0,0.0,0.0);
+
+    //    double factor(0.0);
+    //    scene->mMetaData->Get("UnitScaleFactor", factor);
+    //    qInfo() << factor;  !!!FOR FBX files Blender does not bake the tranformations to the base vertex position , make sure to apply them seperately
+    //-----------------------------------------------------------------
+    for(uint i = 0; i < scene->mNumMeshes; i++)
     {
-        if (vertex.m_BoneIDs[i] < 0)
+        aiMesh* mesh = scene->mMeshes[i];
+        qInfo() << scene->mNumMeshes << " mNumMeshes avalable for -" << scene->mMeshes[i]->mName.data;
+
+        //Loadup Faces/indices
+        indices.reserve(mesh->mNumFaces * 3);
+        for(uint j = 0; j < mesh->mNumFaces; j++)
         {
-            vertex.m_Weights[i] = weight;
-            vertex.m_BoneIDs[i] = boneID;
-            break;
+            assert(mesh->mNumFaces * 3);
+            indices.push_back(mesh->mFaces[j].mIndices[0]);
+            indices.push_back(mesh->mFaces[j].mIndices[1]);
+            indices.push_back(mesh->mFaces[j].mIndices[2]);
         }
-    }
-}
+        qInfo() << mesh->mNumFaces << " mNumFaces avalable for -" << scene->mMeshes[i]->mName.data;
+        //Loadup Vertices
+        for(uint i = 0 ; i < mesh->mNumVertices ; i++){
+            //SetVertexBoneDataToDefault(v);//clean implementation
+            VertexInfo v;
+            const aiVector3D& pos = mesh->mVertices[i];            //Vertex Positions
+            v.Position = glm::vec3(pos.x,pos.y,pos.z);
 
-void SetVertexBoneDataToDefault(VertexInfo& vertex)
-{
-    for (int i = 0; i < MAX_BONE_WEIGHTS; i++)
-    {
-        vertex.m_BoneIDs[i] = -1;
-        vertex.m_Weights[i] = 0.0f;
-    }
-}
+            if( pos.x > vertMax.x ){vertMax.x = pos.x;}           //Calculate min Max as Assim AABB not working
+            if( pos.y > vertMax.y ){vertMax.y = pos.y;}
+            if( pos.z > vertMax.z ){vertMax.z = pos.z;}
 
+            if(pos.x < vertMin.x ){vertMin.x = pos.x;}
+            if(pos.y < vertMin.y ){vertMin.y = pos.y;}
+            if(pos.z < vertMin.z ){vertMin.z = pos.z;}
 
-void _AssetLoader::loadAssimpScene(const aiScene *scene)
-{
-     std::vector<VertexInfo> vfa;
-     std::vector<uint> indices;
+            if (mesh->mNormals) {
+                const aiVector3D& pNormal = mesh->mNormals[i];      //Vertex normals
+                v.Normal = glm::vec3(pNormal.x,pNormal.y,pNormal.z);
+            } else {
+                aiVector3D Normal(0.0f, 1.0f, 0.0f);                //If no normal exists
+                v.Normal = glm::vec3(Normal.x,Normal.y,Normal.z);
+            }
+            const aiVector3D& pTexCoord = mesh->HasTextureCoords(0) ? mesh->mTextureCoords[0][i] : aiVector3D(0.0,0.0,0.0);
+            v.TexCoords = glm::vec2(pTexCoord.x,pTexCoord.y);       //Vertex UV coords
 
-     vertMax = glm::vec4(0.0,0.0,0.0,0.0);
-     vertMin = glm::vec4(0.0,0.0,0.0,0.0);
-
-     for(uint i = 0; i < scene->mNumMeshes; i++)
-     {
-         aiMesh* mesh = scene->mMeshes[i];
-         qInfo() << scene->mNumMeshes << " meshes avalable for -" << scene->mMeshes[i]->mName.data;
-
-         //Loadup Faces/indices
-         indices.reserve(mesh->mNumFaces * 3);
-         for(uint j = 0; j < mesh->mNumFaces; j++)
-         {
-             assert(mesh->mNumFaces * 3);
-             indices.push_back(mesh->mFaces[j].mIndices[0]);
-             indices.push_back(mesh->mFaces[j].mIndices[1]);
-             indices.push_back(mesh->mFaces[j].mIndices[2]);
-         }
-
-         //Loadup Vertices
-         for(uint i = 0 ; i < mesh->mNumVertices ; i++){
-             VertexInfo v;
-             SetVertexBoneDataToDefault(v);//clean implementation
-
-             const aiVector3D& pos = mesh->mVertices[i];            //Vertex Positions
-             v.Position = glm::vec3(pos.x,pos.y,pos.z);
-
-              if( pos.x > vertMax.x ){vertMax.x = pos.x;}           //Calculate min Max as Assim AABB not working
-              if( pos.y > vertMax.y ){vertMax.y = pos.y;}
-              if( pos.z > vertMax.z ){vertMax.z = pos.z;}
-
-              if(pos.x < vertMin.x ){vertMin.x = pos.x;}
-              if(pos.y < vertMin.y ){vertMin.y = pos.y;}
-              if(pos.z < vertMin.z ){vertMin.z = pos.z;}
-
-             if (mesh->mNormals) {
-                 const aiVector3D& pNormal = mesh->mNormals[i];      //Vertex normals
-                 v.Normal = glm::vec3(pNormal.x,pNormal.y,pNormal.z);
-             } else {
-                 aiVector3D Normal(0.0f, 1.0f, 0.0f);                //If no normal exists
-                 v.Normal = glm::vec3(Normal.x,Normal.y,Normal.z);
-             }
-             const aiVector3D& pTexCoord = mesh->HasTextureCoords(0) ? mesh->mTextureCoords[0][i] : aiVector3D(0.0,0.0,0.0);
-             v.TexCoords = glm::vec2(pTexCoord.x,pTexCoord.y);       //Vertex UV coords
-
-             vfa.push_back(v);
+            for(uint it=0 ; it < 4 ;it++){
+                v.m_BoneIDs[it] = -1;
+                v.m_Weights[it] = 0;
+            }
+            vfa.push_back(v);
         }
-
+        qInfo() << mesh->mNumVertices << " mNumVertices avalable for -" << scene->mMeshes[i]->mName.data;
 
         //Cleanup Bone Animations
-         if(mesh->HasBones())
-         {
-             for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
-             {
-                 int boneID = -1;
-                 std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
-                 if (modelInfo.m_BoneInfoMap.find(boneName) == modelInfo.m_BoneInfoMap.end())
-                 {
-                     BoneInfo newBoneInfo;
-                     newBoneInfo.id = modelInfo.m_BoneCounter;
-                     newBoneInfo.offset = _Tools::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
-                     modelInfo.m_BoneInfoMap[boneName] = newBoneInfo;
-                     boneID = modelInfo.m_BoneCounter;
-                     modelInfo.m_BoneCounter++;
-                 }
-                 else
-                 {
-                     boneID = modelInfo.m_BoneInfoMap[boneName].id;
-                 }
-                 assert(boneID != -1);
-                 aiVertexWeight* weights = mesh->mBones[boneIndex]->mWeights;
-                 int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+        //--------------------Animation-------------------------------------
+        if(mesh->HasBones())
+        {
+            this->modelInfo.m_Bones.resize(mesh->mNumVertices);//cleanup this structure~!!!!
 
-                 for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
-                 {
-                     int vertexId = weights[weightIndex].mVertexId;
-                     float weight = weights[weightIndex].mWeight;
-                     assert(vertexId <= vfa.size());
-                     SetVertexBoneData(vfa[vertexId], boneID, weight);
-                 }
-             }
-         }
-         else{qInfo() << "No Bones Found";}
-     }
+            qInfo() << mesh->mNumBones << " mNumBones avalable for -" << scene->mMeshes[i]->mName.data;
+
+            for (int b = 0; b < mesh->mNumBones; b++)
+            {
+
+                int BoneIndex = 0;
+                std::string BoneName(mesh->mBones[b]->mName.C_Str());
+
+                if (this->modelInfo.m_BoneNameToIndexMap.find(BoneName) == this->modelInfo.m_BoneNameToIndexMap.end()) {
+                    // Allocate an index for a new bone
+                    BoneIndex = (int)this->modelInfo.m_BoneNameToIndexMap.size();
+                    this->modelInfo.m_BoneNameToIndexMap[BoneName] = BoneIndex;
+                }
+                else {
+                    BoneIndex = this->modelInfo.m_BoneNameToIndexMap[BoneName];
+                }
+
+                //                int bonindex = GetBoneId(mesh->mBones[b]);
+
+                if (BoneIndex == this->modelInfo.m_BoneTranformMatrixInfo.size())
+                {
+                    BoneTranformMatrixInfo bi(mat4_cast(mesh->mBones[b]->mOffsetMatrix));
+                    this->modelInfo.m_BoneTranformMatrixInfo.push_back(bi);
+                }
+
+                uint weightNumber = mesh->mBones[b]->mNumWeights;
+                for (uint i = 0 ; i < weightNumber ; i++) {
+
+//                    uint vertex_id = mesh->mBones[b]->mWeights[i].mVertexId;
+//                    float weight = mesh->mBones[b]->mWeights[i].mWeight;
+//                    this->modelInfo.m_Bones[vertex_id].AddBoneData(bone_index, weight);
+
+                    const aiVertexWeight& vw = mesh->mBones[b]->mWeights[i];
+                    uint GlobalVertexID = /*m_Meshes[MeshIndex].BaseVertex +*/mesh->mBones[b]->mWeights[i].mVertexId;
+                    this->modelInfo.m_Bones[GlobalVertexID].AddBoneData(BoneIndex, vw.mWeight);
+                }
 
 
-     //Model info set , this will be utilised by the renderer to load up data.
-     modelInfo.setVertexInfoArray(vfa);
-     modelInfo.setIndexArray(indices);
-     modelInfo.setMaxExtents(vertMax);
-     modelInfo.setMinExtents(vertMin);
-     modelInfo.calcCentroidFromMinMax();
-     if(vfa.size() !=0 && indices.size() != 0){
+                auto weights = mesh->mBones[b]->mWeights;
+                int numWeights = mesh->mBones[b]->mNumWeights;
+                for (int w = 0; w < numWeights; ++w)
+                {
+                    int vertexId = weights[w].mVertexId;
+                    float weight = weights[w].mWeight;
+                    assert(vertexId <= vfa.size());
+                    //SetVertexBoneData(vertices[vertexId], BoneIndex, weight);
+                   // uint GlobalVertexID = mesh->mBones[b]->mWeights[w].mVertexId;
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        if (vfa[vertexId].m_BoneIDs[i] < 0)
+                        {
+                            vfa[vertexId].m_Weights[i] = weight;
+                            vfa[vertexId].m_BoneIDs[i] = BoneIndex;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else{qInfo() << "No Bones Found";}
+    }
+    //--------------------------------------------------------------------
+
+    //Model info set , this will be utilised by the renderer to load up data.
+    modelInfo.setVertexInfoArray(vfa);
+    modelInfo.setIndexArray(indices);
+    modelInfo.setMaxExtents(vertMax);
+    modelInfo.setMinExtents(vertMin);
+    modelInfo.calcCentroidFromMinMax();
+    if(vfa.size() !=0 && indices.size() != 0){
         modelInfo.setIsLoaded(true);
-     }
+    }
 
-     //Debug output
-     qInfo()<<"--------------MODEL INFO-------------------------------";
-     qInfo()<< "Path" << this->modelInfo.getPath();
-     qInfo()<< "VertexInfoArray" << modelInfo.getVertexInfoArray().size();
-     qInfo()<< "IndexArray" << modelInfo.getIndexArray().size();
-     qInfo()<< "MaxExtents" << modelInfo.getMaxExtent().x << modelInfo.getMaxExtent().y << modelInfo.getMaxExtent().z;
-     qInfo()<< "MinExtents" << modelInfo.getMinExtent().x << modelInfo.getMinExtent().y << modelInfo.getMinExtent().z;
-     qInfo()<< "Centroid" << modelInfo.getCentroid().x << modelInfo.getCentroid().y << modelInfo.getCentroid().z;
-     qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
-     qInfo()<<"--------------------------------------------------------";
+    //Debug output
+    qInfo()<<"--------------MODEL INFO-------------------------------";
+    qInfo()<< "Path" << this->modelInfo.getPath();
+    qInfo()<< "VertexInfoArray" << modelInfo.getVertexInfoArray().size();
+    qInfo()<< "IndexArray" << modelInfo.getIndexArray().size();
+    qInfo()<< "MaxExtents" << modelInfo.getMaxExtent().x << modelInfo.getMaxExtent().y << modelInfo.getMaxExtent().z;
+    qInfo()<< "MinExtents" << modelInfo.getMinExtent().x << modelInfo.getMinExtent().y << modelInfo.getMinExtent().z;
+    qInfo()<< "Centroid" << modelInfo.getCentroid().x << modelInfo.getCentroid().y << modelInfo.getCentroid().z;
+    qInfo()<< "IsLoaded" << modelInfo.getIsLoaded();
+    qInfo()<<"--------------------------------------------------------";
 }
 //-----------------------------------------------------------
 /* Not in use---
@@ -497,56 +534,56 @@ _ModelInfo _AssetLoader::generateTri(glm::vec3 p1,glm::vec3 p2,glm::vec3 p3)
 _ModelInfo _AssetLoader::generateCubeWithNormals()
 {
     std::vector<float> vertices = {
-           -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-           -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-           -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-           -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-           -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-           -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 
-           -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-           -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-           -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-           -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-           -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-           -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-           -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-           -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-           -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-           -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-           -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-           -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-       };
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    };
 
     _ModelInfo m;
-//     m.setVertexArray(calculateNormalsOfVertices(vertices));
+    //     m.setVertexArray(calculateNormalsOfVertices(vertices));
     m.setVertexArray(vertices);
-//     m.setIndexArray(indiceV);
+    //     m.setIndexArray(indiceV);
     m.calcMinMaxExtents();
     m.setName("NormalCube");
 
-      return m;
+    return m;
 }
 //-----------------------------------------------------------

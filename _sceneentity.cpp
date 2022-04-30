@@ -207,6 +207,10 @@ void _SceneEntity::setModelInfo(_ModelInfo minfo){
 _ModelInfo _SceneEntity::getModelInfo() const{
     return modelInfo;
 }
+
+_AssetLoader _SceneEntity::getAssetLoader() const{
+    return this->assetLoader;
+}
 void _SceneEntity::setIsActive(bool isIt){
     isActive = isIt;
 }
@@ -315,21 +319,17 @@ void _SceneEntity::setModelData(QString path)
         }
     }
     else{
-//        assetLoader.extrenalObjLoader(path.toStdString());//use this for obj files only if assimp not presesnt
-         assetLoader.assimpLoader(path.toStdString());//Assimp for mutiformat support
+        //assetLoader.extrenalObjLoader(path.toStdString());//use this for obj files only if assimp not presesnt
+        modelInfo.setPath(path.toStdString().c_str());//Wip aditya
+        assetLoader.assimpLoader(path.toStdString());//Assimp for mutiformat support
         if(assetLoader.getModelInfo().getVertexInfoArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
             modelInfo = assetLoader.getModelInfo();
+            animator = new _Anim(path.toStdString().c_str());
             isActive = true;
-
-             //test for only one file type , Debug test
-            if(path == "D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx"){
-                _Animation danceAnimation("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx",&modelInfo);
-                Animator animator(danceAnimation);
-               this->animator = animator;//pass this to renderer see:renderer updateloop
-            }
         }
     }
 }
+
 /*
  * setShaderPath(QString vSh, QString fSh)
  * sets the path  for the shadert to be loaded ,for the current object.

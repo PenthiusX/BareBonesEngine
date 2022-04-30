@@ -62,17 +62,22 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity* s)
 {
     sceneEntity = s;
     actualColor = sceneEntity->getColor();
+
     //generates a shader program
     setShader(sceneEntity->getVertexShaderPath(), sceneEntity->getFragmentShaderPath(),sceneEntity->getGeometryShaderPath());//1 used for normal lighting based rendering
     if(sceneEntity->getIsShadowCaster()){setShader(":/shaders/shadowDepthMapV.glsl",":/shaders/shadowDepthMapF.glsl");}//2 use when rendering to shadowdepth buffer
+
     //sets the Texture info if applicable
     if(sceneEntity->getMaterial().getDiffuseTexture().size() != 0){setupTexture(sceneEntity->getMaterial().getDiffuseTexture(),_Texture::Type::Diffuse);}
     if(sceneEntity->getMaterial().getSpecualrTexture().size() != 0){setupTexture(sceneEntity->getMaterial().getSpecualrTexture(),_Texture::Type::Specular);}
+
     //Sets the matrices init info
     setModelMatrix(sceneEntity->getPostion(), sceneEntity->getScale(), sceneEntity->getRotation());
+
     //sets the model data into buffers
     if(sceneEntity->getModelInfo().getVertexArray().size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexArray(), sceneEntity->getModelInfo().getIndexArray());}
-    else{setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}
+    else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 && sceneEntity->getModelInfo().m_Bones.size() == 0){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}
+    else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 && sceneEntity->getModelInfo().m_Bones.size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray(),sceneEntity->getModelInfo().m_Bones);}//Aditya WIP
 }
 /*
  sets a copy of sceneEntity in the renderer
@@ -192,13 +197,11 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 
-    // ids
-    glEnableVertexAttribArray(3);
-    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexInfo), (void*)offsetof(VertexInfo, m_BoneIDs));
-    // weights
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
-
+    //    glEnableVertexAttribArray(3);
+    //    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexInfo), (void*)offsetof(VertexInfo, m_BoneIDs));
+    //    // weights
+    //    glEnableVertexAttribArray(4);
+    //    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
     glBindVertexArray(0);
 }
 /*
@@ -225,6 +228,59 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
 }
+
+void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray, std::vector<VertexBoneData> m_Bones)
+{
+    indices = indexArray;
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+
+
+    glBindVertexArray(VAO);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint),&indices[0], GL_STATIC_DRAW);
+
+
+    //Allocate the bound data to its respective attribute channel.
+    // vertex positions
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
+    // vertex normals
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
+    // vertex texture coords
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
+
+    // ids
+     glEnableVertexAttribArray(3);
+     glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexInfo), (void*)offsetof(VertexInfo, m_BoneIDs));
+      // weights
+     glEnableVertexAttribArray(4);
+     glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
+
+//     //Animation  //Aditya WIP
+//     //Animation  //Aditya WIP
+//     glGenBuffers(1, &BBO);//Wip aditya Test
+//     glBindBuffer(GL_ARRAY_BUFFER, BBO);
+//     glBufferData(GL_ARRAY_BUFFER, sizeof(m_Bones[0]) * m_Bones.size(), &m_Bones[0], GL_STATIC_DRAW);
+
+//    glEnableVertexAttribArray(3);
+//    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
+//    glEnableVertexAttribArray(4);
+////    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData),(const GLvoid*)(MAX_NUM_BONES_PER_VERTEX * sizeof(int32_t)));
+//    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (GLvoid*)offsetof(VertexBoneData, Weights));
+
+    glBindVertexArray(0);
+}
 /*
  *
  */
@@ -244,7 +300,6 @@ void _Renderer::setupTexture(QString texfile,_Texture::Type t)
         glUniform1i(shaderVec[s]->getUniformLocation("bumpTex"), 3);
         glUniform1i(shaderVec[s]->getUniformLocation("shadowDepthTex"), 4);
     }
-
     textures.push_back(texture);
 }
 /*
@@ -610,19 +665,33 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
 
         //Test anim
 
+        //        if(this->sceneEntity->getTag() == "Lady"){
+        float currentFrame = qtimer.elapsed() * 0.001;//sets the time elapsed
+        uint deltaTime = currentFrame - lastFrame;
+        uint lastFrame = currentFrame;
+
+        //            this->sceneEntity->animator.UpdateAnimation(deltaTime);
+
+        //            auto transforms = this->sceneEntity->animator.GetFinalBoneMatrices();
+        //            for (int i = 0; i < transforms.size(); ++i){
+        //               glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
+        //               //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
+        //            }
+        //        }
+
         if(this->sceneEntity->getTag() == "Lady"){
-            float currentFrame = qtimer.elapsed() * 0.001;//sets the time elapsed
-            uint deltaTime = currentFrame - lastFrame;
-            uint lastFrame = currentFrame;
 
-            this->sceneEntity->animator.UpdateAnimation(deltaTime);
 
-            auto transforms = this->sceneEntity->animator.GetFinalBoneMatrices();
-            for (int i = 0; i < transforms.size(); ++i){
-               glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
-               //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
+            std::vector<glm::mat4x4> transforms;
+            this->sceneEntity->animator->GetBoneTransforms(deltaTime, transforms);
+            for (uint i = 0 ; i < transforms.size() ; i++) {
+                glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("gBones[" + std::to_string(i) + "]").c_str()), 1, GL_TRUE, glm::value_ptr(transforms[i]));
             }
+
+            //this->sceneEntity->animator->GetBoneTransforms((float)deltaTime, Transforms);
+            //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("gBones"), (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
         }
+
 
         //Bind Textures
         for(uint t=0;t<textures.size();t++){
@@ -632,8 +701,7 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
         glActiveTexture(GL_TEXTURE4);//sets the shadow texture in the shader
         glBindTexture(GL_TEXTURE_2D,shadoDepthTex);
         //Bind the Buffers data of the respective buffer object(only needed if mesh need chenging on runtime)
-        if(sceneEntity->getIsMeshEditable())
-        {
+        if(sceneEntity->getIsMeshEditable()){
             glBindBuffer(GL_ARRAY_BUFFER,VBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
         }
@@ -648,7 +716,7 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
 
         //Reset relative the buffers binds
-//        glBindVertexArray(0);//Clear the buffer
+        //        glBindVertexArray(0);//Clear the buffer
         for(uint t=0;t<textures.size();t++){textures[t].unbind();}
     }
 }
@@ -713,7 +781,7 @@ void _Renderer::updateLightUniforms(std::vector<I_Light*> il)
         }
         if(il[li]->getLightType() == "PointLight") //PointL
         {
-             //used to create procedureal bindings for custom light numbers , but not working as of now as array size pre-alocation fails in shader WIP
+            //used to create procedureal bindings for custom light numbers , but not working as of now as array size pre-alocation fails in shader WIP
             f  = "pointLights[";
             u  = std::to_string(piter);
             e1 = "].position";
