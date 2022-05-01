@@ -53,7 +53,7 @@ void main()
             BoneTransform += gBones[BoneIDs[i]] * v;
         }
     vec4 bonetransformPos = BoneTransform * vec4(aPos, 1.0);
-    //gl_Position = projection * view * model * bonetransformPos;
+    gl_Position = projection * view * model * bonetransformPos;
     c += vec4(normalize((mvpx * bonetransformPos)).xyz,1.0);
 
 
