@@ -177,7 +177,7 @@ void _GLWidget::initializeGL(){
     s->setPosition(glm::vec3(0.0,0.0,0.0));
 //    s->setShader(":/shaders/animtestV.glsl",":/shaders/animtestF.glsl");
     s->setShader(":/shaders/animtestV.glsl",":/shaders/animtestF.glsl");
-    s->setScale(1.05f);
+    s->setScale(0.005f);
 
     s2->setId(8881);
     s2->setTag("LitPlane");

@@ -324,7 +324,7 @@ void _SceneEntity::setModelData(QString path)
         assetLoader.assimpLoader(path.toStdString());//Assimp for mutiformat support
         if(assetLoader.getModelInfo().getVertexInfoArray().size() > 0 && assetLoader.getModelInfo().getIndexArray().size() > 0){
             modelInfo = assetLoader.getModelInfo();
-            animator = new _Anim(path.toStdString().c_str());
+            animator = new _Anim(path.toStdString().c_str());//Aditya wip
             isActive = true;
         }
     }

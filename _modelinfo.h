@@ -96,6 +96,18 @@ struct BoneTranformMatrixInfo
     }
 };
 
+struct BoneTranformMatrixInfoAi
+{
+    aiMatrix4x4 OffsetMatrix;
+    aiMatrix4x4 FinalTransformation;
+
+    BoneTranformMatrixInfoAi(const aiMatrix4x4& Offset)
+    {
+        OffsetMatrix = Offset;
+        FinalTransformation.IsIdentity();
+    }
+};
+
 class _ModelInfo
 {
 public:

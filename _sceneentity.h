@@ -164,7 +164,7 @@ public:
 //    //Animation
 //    _Animation anim;//test refactor later
 //    Animator animator;
-    _Anim* animator = nullptr;
+    _Anim* animator = nullptr;//Aditya Wip
 
 
 private:

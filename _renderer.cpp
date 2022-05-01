@@ -237,10 +237,7 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
-
-
     glBindVertexArray(VAO);
-
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
@@ -260,15 +257,16 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 
-    // ids
+
+     //ids
      glEnableVertexAttribArray(3);
      glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexInfo), (void*)offsetof(VertexInfo, m_BoneIDs));
       // weights
      glEnableVertexAttribArray(4);
      glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
 
-//     //Animation  //Aditya WIP
-//     //Animation  //Aditya WIP
+
+//    //Animation  //Aditya WIP
 //     glGenBuffers(1, &BBO);//Wip aditya Test
 //     glBindBuffer(GL_ARRAY_BUFFER, BBO);
 //     glBufferData(GL_ARRAY_BUFFER, sizeof(m_Bones[0]) * m_Bones.size(), &m_Bones[0], GL_STATIC_DRAW);
@@ -680,12 +678,14 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
         //        }
 
         if(this->sceneEntity->getTag() == "Lady"){
-
-
-            std::vector<glm::mat4x4> transforms;
-            this->sceneEntity->animator->GetBoneTransforms(deltaTime, transforms);
+//            std::vector<glm::mat4x4> transforms;
+//            this->sceneEntity->animator->GetBoneTransforms(deltaTime, transforms);
+            std::vector<aiMatrix4x4> transforms;
+            this->sceneEntity->animator->boneTransform(deltaTime,transforms);
             for (uint i = 0 ; i < transforms.size() ; i++) {
-                glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("gBones[" + std::to_string(i) + "]").c_str()), 1, GL_TRUE, glm::value_ptr(transforms[i]));
+                //glm::mat4 t = this->sceneEntity->animator->mat4_cast(transforms[i]);
+                //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("gBones[" + std::to_string(i) + "]").c_str()), 1, GL_TRUE, glm::value_ptr(t));
+                glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("gBones[" + std::to_string(i) + "]").c_str()), 1, GL_TRUE,  (const GLfloat*)&transforms[i]);
             }
 
             //this->sceneEntity->animator->GetBoneTransforms((float)deltaTime, Transforms);
