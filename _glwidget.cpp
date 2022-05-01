@@ -167,17 +167,17 @@ void _GLWidget::initializeGL(){
     s->setGLModes(g);// glmode settings
     s->setMaterial(m4);//material obhect
     //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/MODEL/051F_03SET_02SHOT.fbx");
-    //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx");
-    s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/boxSnake.fbx");
+    s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx");
+    //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/boxSnake.fbx");
     //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/vampire/dancing_vampire.dae");
     //s->setModelData("E:/WorkStudy/CG/ogldev-sourceAssimpAndAnimation/ogldev-source/tutorial25_youtube/models/example1_two_bone.fbx");
     s->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
     s->setIsTransformationLocal(false);
     s->setIsLineNoCullMode(false);
     s->setPosition(glm::vec3(0.0,0.0,0.0));
-//    s->setShader(":/shaders/animtestV.glsl",":/shaders/animtestF.glsl");
+//  s->setShader(":/shaders/lightingVertUVyFlipped.glsl",":/shaders/lightingFrag.glsl");
     s->setShader(":/shaders/animtestV.glsl",":/shaders/animtestF.glsl");
-    s->setScale(0.005f);
+    s->setScale(0.05f);
 
     s2->setId(8881);
     s2->setTag("LitPlane");
@@ -398,14 +398,17 @@ void _GLWidget::wheelEvent(QWheelEvent *e)
 {
     //Scale target with mouseWheel
     int numDegrees = e->delta() / 8;
-    int numSteps = numDegrees / 15;
+    float numSteps = numDegrees / 15;
     if(isCTRL){
         scroolScale = scene->getSceneEntityHitWithRay()->getScale() + (numSteps * 0.05);
         scene->getSceneObjects()[scene->getSceneEntityHitWithRay()->getIndexPosInScene()]->setscale(scroolScale);
     }
     else if(!isCTRL){
-        scroolScale = cam.getFOV() - numSteps;
-        cam.setFOV(scroolScale);
+//        scroolScale = cam.getFOV() - numSteps;
+//        cam.setFOV(scroolScale);
+        glm::vec3 dir = glm::normalize(cam.getEyePosition() - cam.getFocalPoint());
+        glm::vec3 initalPos = cam.getEyePosition();
+        cam.setEyePosition(initalPos + (dir * -numSteps));
         scene->updateCamera(cam);
     }
 }
