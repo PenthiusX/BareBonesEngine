@@ -269,32 +269,13 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
     Assimp::DefaultLogger::kill();
 }
 //--------------------Animation-------------------------------------
-int _AssetLoader::GetBoneId(const aiBone* pBone)
-{
-    int BoneIndex = 0;
-    std::string BoneName(pBone->mName.C_Str());
-
-    if (this->modelInfo.m_BoneNameToIndexMap.find(BoneName) == this->modelInfo.m_BoneNameToIndexMap.end()) {
-        // Allocate an index for a new bone
-        BoneIndex = (int)this->modelInfo.m_BoneNameToIndexMap.size();
-        this->modelInfo.m_BoneNameToIndexMap[BoneName] = BoneIndex;
-    }
-    else {
-        BoneIndex = this->modelInfo.m_BoneNameToIndexMap[BoneName];
-    }
-
-    return BoneIndex;
-}
-
-//--------------------Animation-----------------------------------
-//-------------------------------------------------------------------
 void _AssetLoader::loadAssimpScene(const aiScene *scene , std::string path)
 {
     std::vector<VertexInfo> vfa;
     std::vector<uint> indices;
 
     modelInfo.setPath(path.c_str());
-    modelInfo.m_GlobalInverseTransform = mat4_cast(scene->mRootNode->mTransformation);
+//    modelInfo.m_GlobalInverseTransform = scene->mRootNode->mTransformation;
 
     vertMax = glm::vec4(0.0,0.0,0.0,0.0);
     vertMin = glm::vec4(0.0,0.0,0.0,0.0);
@@ -310,8 +291,7 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene , std::string path)
 
         //Loadup Faces/indices
         indices.reserve(mesh->mNumFaces * 3);
-        for(uint j = 0; j < mesh->mNumFaces; j++)
-        {
+        for(uint j = 0; j < mesh->mNumFaces; j++){
             assert(mesh->mNumFaces * 3);
             indices.push_back(mesh->mFaces[j].mIndices[0]);
             indices.push_back(mesh->mFaces[j].mIndices[1]);
@@ -319,7 +299,7 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene , std::string path)
         }
         qInfo() << mesh->mNumFaces << " mNumFaces avalable for -" << scene->mMeshes[i]->mName.data;
         //Loadup Vertices
-        for(uint i = 0 ; i < mesh->mNumVertices ; i++){
+        for(uint i = 0 ; i < mesh->mNumVertices ; i++) {
             //SetVertexBoneDataToDefault(v);//clean implementation
             VertexInfo v;
             const aiVector3D& pos = mesh->mVertices[i];            //Vertex Positions
@@ -355,45 +335,21 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene , std::string path)
         //--------------------Animation-------------------------------------
         if(mesh->HasBones())
         {
-            this->modelInfo.m_Bones.resize(mesh->mNumVertices);//cleanup this structure~!!!!
-
             qInfo() << mesh->mNumBones << " mNumBones avalable for -" << scene->mMeshes[i]->mName.data;
 
             for (int b = 0; b < mesh->mNumBones; b++)
             {
+                int boneIndex = 0;
+                std::string boneName = mesh->mBones[b]->mName.C_Str();
 
-                int BoneIndex = 0;
-                std::string BoneName(mesh->mBones[b]->mName.C_Str());
-
-                if (this->modelInfo.m_BoneNameToIndexMap.find(BoneName) == this->modelInfo.m_BoneNameToIndexMap.end()) {
+                if (this->modelInfo.m_BoneNameToIndexMap.find(boneName) == this->modelInfo.m_BoneNameToIndexMap.end()) {
                     // Allocate an index for a new bone
-                    BoneIndex = (int)this->modelInfo.m_BoneNameToIndexMap.size();
-                    this->modelInfo.m_BoneNameToIndexMap[BoneName] = BoneIndex;
+                    boneIndex = (int)this->modelInfo.m_BoneNameToIndexMap.size();
+                    this->modelInfo.m_BoneNameToIndexMap[boneName] = boneIndex;
                 }
                 else {
-                    BoneIndex = this->modelInfo.m_BoneNameToIndexMap[BoneName];
+                    boneIndex = this->modelInfo.m_BoneNameToIndexMap[boneName];
                 }
-
-                //                int bonindex = GetBoneId(mesh->mBones[b]);
-
-                if (BoneIndex == this->modelInfo.m_BoneTranformMatrixInfo.size())
-                {
-                    BoneTranformMatrixInfo bi(mat4_cast(mesh->mBones[b]->mOffsetMatrix));
-                    this->modelInfo.m_BoneTranformMatrixInfo.push_back(bi);
-                }
-
-                uint weightNumber = mesh->mBones[b]->mNumWeights;
-                for (uint i = 0 ; i < weightNumber ; i++) {
-
-//                    uint vertex_id = mesh->mBones[b]->mWeights[i].mVertexId;
-//                    float weight = mesh->mBones[b]->mWeights[i].mWeight;
-//                    this->modelInfo.m_Bones[vertex_id].AddBoneData(bone_index, weight);
-
-                    const aiVertexWeight& vw = mesh->mBones[b]->mWeights[i];
-                    uint GlobalVertexID = /*m_Meshes[MeshIndex].BaseVertex +*/mesh->mBones[b]->mWeights[i].mVertexId;
-                    this->modelInfo.m_Bones[GlobalVertexID].AddBoneData(BoneIndex, vw.mWeight);
-                }
-
 
                 auto weights = mesh->mBones[b]->mWeights;
                 int numWeights = mesh->mBones[b]->mNumWeights;
@@ -402,14 +358,12 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene , std::string path)
                     int vertexId = weights[w].mVertexId;
                     float weight = weights[w].mWeight;
                     assert(vertexId <= vfa.size());
-                    //SetVertexBoneData(vertices[vertexId], BoneIndex, weight);
-                   // uint GlobalVertexID = mesh->mBones[b]->mWeights[w].mVertexId;
-                    for (int i = 0; i < 4; ++i)
+                    for (int i = 0; i < 4; ++i)//4 is the size of the max bones affecting a vertex.
                     {
-                        if (vfa[vertexId].m_BoneIDs[i] < 0)
+                        if (vfa[vertexId].m_BoneIDs[i] < 0)//for each vertex with empty bone information.
                         {
                             vfa[vertexId].m_Weights[i] = weight;
-                            vfa[vertexId].m_BoneIDs[i] = BoneIndex;
+                            vfa[vertexId].m_BoneIDs[i] = boneIndex;
                             break;
                         }
                     }

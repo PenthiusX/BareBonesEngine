@@ -81,10 +81,9 @@ private:
     //
     void setModelMatrix(glm::vec3 position, float scale, glm::vec3 rotation);//set the model matrix
     void setModelDataInBuffers(std::vector<float>vertexArray,std::vector<uint> indexArray);//take vertex and index data and binds it to object buffer
-    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
+//    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
     void setModelDataInBuffers(std::vector<float> vertexArray);
-
-    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray,std::vector<VertexBoneData> m_Bones);//Aditya WIP
+    void setModelDataInBuffers(std::vector<VertexInfo>vertexInfoArray,std::vector<uint> indexArray);
 
     //Holds the vertex and index data
     std::vector<uint> indices;

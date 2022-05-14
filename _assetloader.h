@@ -36,7 +36,7 @@ class _AssetLoader
         _ModelInfo getModelInfo();
         void objLoader(QString pathToFile);
         void extrenalObjLoader(std::string externalFilePath);//an unideal external file loader , not inteded for embeded executables.
-        void assimpLoader(std::string externalFilePath);
+        void assimpLoader(std::string externalFilePath);//the main loading mechanism added in 04/2022 ->WIP multi object loading from single file.
 
         void loadAllModelsInfoFromFolder(QString folderName);//not in use
         _ModelInfo generateQuad();
@@ -45,11 +45,7 @@ class _AssetLoader
         _ModelInfo generateCubeWithNormals();
         std::vector<float> calculateNormalsOfVertices(std::vector<float>vertices);
 
-        //-----------Animation----
-        int GetBoneId(const aiBone* pBone);//Wip aditya
-        void LoadSingleBone(uint MeshIndex, const aiBone* pBone);
-        const aiScene* scene = nullptr;//wip aditya
-        //------------------------
+        const aiScene* scene = nullptr;
 
     private:
         _ModelInfo modelInfo;
@@ -68,13 +64,6 @@ class _AssetLoader
 
         //Assimp
         void loadAssimpScene(const aiScene* pScene, std::string path);
-
-        // For converting between ASSIMP and glm
-        static inline glm::vec3 vec3_cast(const aiVector3D &v) { return glm::vec3(v.x, v.y, v.z); }
-        static inline glm::vec2 vec2_cast(const aiVector3D &v) { return glm::vec2(v.x, v.y); }
-        static inline glm::quat quat_cast(const aiQuaternion &q) { return glm::quat(q.w, q.x, q.y, q.z); }
-        static inline glm::mat4 mat4_cast(const aiMatrix4x4 &m) { return glm::transpose(glm::make_mat4(&m.a1)); }
-        static inline glm::mat4 mat4_cast(const aiMatrix3x3 &m) { return glm::transpose(glm::make_mat3(&m.a1)); }
 };
 
 #endif // _ASSETLOADER_H

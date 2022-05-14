@@ -76,8 +76,8 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity* s)
 
     //sets the model data into buffers
     if(sceneEntity->getModelInfo().getVertexArray().size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexArray(), sceneEntity->getModelInfo().getIndexArray());}
-    else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 && sceneEntity->getModelInfo().m_Bones.size() == 0){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}
-    else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 && sceneEntity->getModelInfo().m_Bones.size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray(),sceneEntity->getModelInfo().m_Bones);}//Aditya WIP
+    else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 ){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}
+    //else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 && sceneEntity->getModelInfo().m_Bones.size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}//Aditya WIP
 }
 /*
  sets a copy of sceneEntity in the renderer
@@ -171,39 +171,34 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray, std::vecto
  * Extended Laodup functonality , will loadup vertices , Normals and UV info as well as Bone info, via VertexInfo container.
  * see: _assetloader to modelInfo data inputs
  */
-void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
-{
-    indices = indexArray;
+//void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
+//{
+//    indices = indexArray;
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+//    glGenVertexArrays(1, &VAO);
+//    glGenBuffers(1, &VBO);
+//    glGenBuffers(1, &EBO);
 
-    glBindVertexArray(VAO);
+//    glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
+//    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//    glBufferData(GL_ARRAY_BUFFER, vertexInfoArray.size() * sizeof(VertexInfo),&vertexInfoArray[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint),&indices[0], GL_STATIC_DRAW);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint),&indices[0], GL_STATIC_DRAW);
 
-    // vertex positions
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
-    // vertex normals
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
-    // vertex texture coords
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
+//    // vertex positions
+//    glEnableVertexAttribArray(0);
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
+//    // vertex normals
+//    glEnableVertexAttribArray(1);
+//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
+//    // vertex texture coords
+//    glEnableVertexAttribArray(2);
+//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 
-    //    glEnableVertexAttribArray(3);
-    //    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexInfo), (void*)offsetof(VertexInfo, m_BoneIDs));
-    //    // weights
-    //    glEnableVertexAttribArray(4);
-    //    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
-    glBindVertexArray(0);
-}
+//    glBindVertexArray(0);
+//}
 /*
  * //Depricated , Redundant , Uses only vertex array to load up models
  */
@@ -229,7 +224,7 @@ void _Renderer::setModelDataInBuffers(std::vector<float> vertexArray)
     glBindVertexArray(0);
 }
 
-void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray, std::vector<VertexBoneData> m_Bones)
+void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, std::vector<uint> indexArray)
 {
     indices = indexArray;
 
@@ -264,18 +259,6 @@ void _Renderer::setModelDataInBuffers(std::vector<VertexInfo> vertexInfoArray, s
       // weights
      glEnableVertexAttribArray(4);
      glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexInfo),(void*)offsetof(VertexInfo, m_Weights));
-
-
-//    //Animation  //Aditya WIP
-//     glGenBuffers(1, &BBO);//Wip aditya Test
-//     glBindBuffer(GL_ARRAY_BUFFER, BBO);
-//     glBufferData(GL_ARRAY_BUFFER, sizeof(m_Bones[0]) * m_Bones.size(), &m_Bones[0], GL_STATIC_DRAW);
-
-//    glEnableVertexAttribArray(3);
-//    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
-//    glEnableVertexAttribArray(4);
-////    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData),(const GLvoid*)(MAX_NUM_BONES_PER_VERTEX * sizeof(int32_t)));
-//    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (GLvoid*)offsetof(VertexBoneData, Weights));
 
     glBindVertexArray(0);
 }
@@ -663,7 +646,7 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
 
         //Test anim
 
-        //        if(this->sceneEntity->getTag() == "Lady"){
+        // if(this->sceneEntity->getTag() == "Lady"){
         float currentFrame = qtimer.elapsed() * 0.001;//sets the time elapsed
         uint deltaTime = currentFrame - lastFrame;
         uint lastFrame = currentFrame;
@@ -678,8 +661,8 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
         //        }
 
         if(this->sceneEntity->getTag() == "Lady") {
-//            std::vector<glm::mat4x4> transforms;
-//            this->sceneEntity->animator->GetBoneTransforms(deltaTime, transforms);
+//          std::vector<glm::mat4x4> transforms;
+//          this->sceneEntity->animator->GetBoneTransforms(deltaTime, transforms);
             std::vector<aiMatrix4x4> transforms;
             this->sceneEntity->animator->boneTransform(currentFrame,transforms);
             for (uint i = 0 ; i < transforms.size() ; i++) {

@@ -167,8 +167,8 @@ void _GLWidget::initializeGL(){
     s->setGLModes(g);// glmode settings
     s->setMaterial(m4);//material obhect
     //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/051F_03SET_02SHOT/MODEL/051F_03SET_02SHOT.fbx");
-    //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/FBX(animated)/blue/egyptian_B.fbx");
-    s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/boxSnake.fbx");
+    //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/Free_Warriors_Turbosquid/models/egyp.fbx");
+    s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/boxSnake2.fbx");
     //s->setModelData("D:/WorkSpace/BareBonesEngine/models/Animated/vampire/dancing_vampire.dae");
     //s->setModelData("E:/WorkStudy/CG/ogldev-sourceAssimpAndAnimation/ogldev-source/tutorial25_youtube/models/example1_two_bone.fbx");
     s->setPhysicsObject(_SceneEntity::Box,_SceneEntity::Helper);
