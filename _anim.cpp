@@ -470,9 +470,7 @@ const aiNodeAnim *_Anim::findNodeAnim(const aiAnimation *p_animation, const std:
 
 void _Anim::readNodeHierarchy(float p_animation_time, const aiNode *p_node, const aiMatrix4x4 parent_transform)
 {
-
     std::string node_name(p_node->mName.data);
-
 
     const aiAnimation* animation = assimpScene->mAnimations[0];
     aiMatrix4x4 node_transform = p_node->mTransformation;
@@ -525,14 +523,13 @@ void _Anim::readNodeHierarchy(float p_animation_time, const aiNode *p_node, cons
     {
         readNodeHierarchy(p_animation_time, p_node->mChildren[i], global_transform);
     }
-
 }
 
 void _Anim::boneTransform(double time_in_sec, std::vector<aiMatrix4x4> &transforms)
 {
     aiMatrix4x4 identity_matrix; // = mat4(1.0f);
 
-    float ticks_per_second = (float)(assimpScene->mAnimations[0]->mTicksPerSecond != 0 ? assimpScene->mAnimations[0]->mTicksPerSecond : 25.0f);
+    float ticks_per_second = assimpScene->mAnimations[0]->mTicksPerSecond;;//(float)(assimpScene->mAnimations[0]->mTicksPerSecond != 0 ? assimpScene->mAnimations[0]->mTicksPerSecond : 25.0f);
     double time_in_ticks = time_in_sec * ticks_per_second;
     float animation_time = fmod(time_in_ticks, assimpScene->mAnimations[0]->mDuration);
 

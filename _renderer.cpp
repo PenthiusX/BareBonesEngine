@@ -677,11 +677,11 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
         //            }
         //        }
 
-        if(this->sceneEntity->getTag() == "Lady"){
+        if(this->sceneEntity->getTag() == "Lady") {
 //            std::vector<glm::mat4x4> transforms;
 //            this->sceneEntity->animator->GetBoneTransforms(deltaTime, transforms);
             std::vector<aiMatrix4x4> transforms;
-            this->sceneEntity->animator->boneTransform(deltaTime,transforms);
+            this->sceneEntity->animator->boneTransform(currentFrame,transforms);
             for (uint i = 0 ; i < transforms.size() ; i++) {
                 //glm::mat4 t = this->sceneEntity->animator->mat4_cast(transforms[i]);
                 //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("gBones[" + std::to_string(i) + "]").c_str()), 1, GL_TRUE, glm::value_ptr(t));
