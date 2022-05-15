@@ -290,9 +290,10 @@ void _Scene::onResize(int w,int h){
 */
 void _Scene::render()
 {
+ //
     shadowBObject.startWriteToDepthBuffer();//wrtites the info drawn after
-    drawMeshesForShadowBuffer(renderEntities);//draw the meshes that are throwing a shadow
-    shadowBObject.stopWrite();//Binds 0 to stop write to the shadowFbuff
+    drawMeshesForShadowBuffer(renderEntities);//draw the meshes that are throwing a shadow ie : get the depth info from the framebuffer that capures this for shadow calc
+    shadowBObject.stopWrite();//Binds 0 to stop write to the farmeBuffer/ShadowBuffer.
     //--
     fboObject->setUpdatedFrame();//wrtites the info drawn after
     skyb.draw(this->cam,resH,resW);//draw the skybox first to visualise it last.
@@ -309,14 +310,14 @@ void _Scene::drawMeshesForShadowBuffer(std::vector<_Renderer *> meshesRVec)
 {
     for (uint i = 0; i < meshesRVec.size(); i++)
     {
-        if(meshesRVec[i]->getSceneEntity()->getTag() == "dlight"){
+        if(meshesRVec[i]->getSceneEntity()->getTag() == "dlight"){//this is the directonal light from wich perspective the FrameBuffer frames will be captured.
             sLightPos = meshesRVec[i]->getSceneEntity()->getPostion();
         }
         if(meshesRVec[i]->getSceneEntity()->getIsShadowCaster() == true){
             //sets the view to orthographics so as to have no perspective devide to the buffer image
             meshesRVec[i]->setOrthoProjectionMatrix(-20.0f, 20.0f, -20.0f, 20.0f,0.1,100.0);
             //shader just has the lightspaceMatrix * pos to capture the FBO depth tex for use in shadows
-            meshesRVec[i]->draw(2);
+            meshesRVec[i]->draw(2);//handle index of a basic shader that is preloaded into the shaderVec array. see: draw();
         }
         meshesRVec[i]->setLightViewMatrix(sLightPos,glm::vec3(0),glm::vec3(0.0,1.0,0.0));
     }
@@ -339,8 +340,7 @@ void _Scene::drawMeshesWithLigthingInfo(std::vector<_Renderer *> sv)
             lightsArray[lrc]->setPosition(renderEntities[i]->getSceneEntity()->getPostion());
             QVector4D col =  renderEntities[i]->getSceneEntity()->getColor();
             lightsArray[lrc]->setAmbDefSpec(glm::vec3(col.x(),col.y(),col.z()),glm::vec3(0.1),glm::vec3(1.0));
-            if(lightsArray[lrc]->getLightType() == "PointLight")
-            {
+            if(lightsArray[lrc]->getLightType() == "PointLight"){
                 lightsArray[lrc]->setAdditonalParams3x3(glm::vec3(1.0),glm::vec3(0.09),glm::vec3(0.032));
             }
             lrc++;

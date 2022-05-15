@@ -33,7 +33,7 @@ uint _Shader::getShaderProgram()
 */
 void _Shader::setFragmentShader(QString f)
 {
-    //Fragment Shader
+    this->fShaderPath = f.toStdString();
     setChildShader(f,GL_FRAGMENT_SHADER);
 }
 /*
@@ -44,6 +44,7 @@ void _Shader::setFragmentShader(QString f)
 */
 void _Shader::setVertexShader(QString v)
 {
+    this->vShaderPath = v.toStdString();
     setChildShader(v,GL_VERTEX_SHADER);
 }
 /*

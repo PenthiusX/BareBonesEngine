@@ -19,7 +19,6 @@ public:
     void setFragmentShader(QString fshader);
     void setVertexShader(QString vShader);
     void setGeometryShader(QString geoS);
-    void setComputeShader(QString compShader);
 
     void attachShaders();
     void attachShaders(QString v , QString f);
@@ -31,12 +30,10 @@ public:
     void setChildShader(std::vector<QString>, uint typ);
 
 private:
+    std::string vShaderPath;//Pathname
+    std::string fShaderPath;
     //Shader Program
     uint shaderProgram;
-
-    // map(dictionary) of shader
-    //key : shader typ enum eg. GL_VERTEX_SHADER
-    //value : shader ID returned by glCreateShader
     std::map<uint,uint> child_shaders;
 
     uint compileShader(QString src_path,uint typ);

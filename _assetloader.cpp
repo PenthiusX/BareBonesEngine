@@ -255,6 +255,7 @@ void _AssetLoader::assimpLoader(std::string externalFilePath)
                               aiProcess_CalcTangentSpace |
                               aiProcess_Triangulate |
                               //aiProcess_JoinIdenticalVertices //|
+                              aiProcess_GenBoundingBoxes |
                               aiProcess_SortByPType
                               );
 
@@ -305,13 +306,13 @@ void _AssetLoader::loadAssimpScene(const aiScene *scene , std::string path)
             const aiVector3D& pos = mesh->mVertices[i];            //Vertex Positions
             v.Position = glm::vec3(pos.x,pos.y,pos.z);
 
-            if( pos.x > vertMax.x ){vertMax.x = pos.x;}           //Calculate min Max as Assim AABB not working
-            if( pos.y > vertMax.y ){vertMax.y = pos.y;}
-            if( pos.z > vertMax.z ){vertMax.z = pos.z;}
+              vertMax.x = mesh->mAABB.mMax.x;
+              vertMax.y = mesh->mAABB.mMax.y;
+              vertMax.z = mesh->mAABB.mMax.z;
 
-            if(pos.x < vertMin.x ){vertMin.x = pos.x;}
-            if(pos.y < vertMin.y ){vertMin.y = pos.y;}
-            if(pos.z < vertMin.z ){vertMin.z = pos.z;}
+              vertMin.x = mesh->mAABB.mMin.x;
+              vertMin.y = mesh->mAABB.mMin.y;
+              vertMin.z = mesh->mAABB.mMin.z;
 
             if (mesh->mNormals) {
                 const aiVector3D& pNormal = mesh->mNormals[i];      //Vertex normals

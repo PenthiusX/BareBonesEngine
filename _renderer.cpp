@@ -77,7 +77,6 @@ void _Renderer::initSceneEntityInRenderer(_SceneEntity* s)
     //sets the model data into buffers
     if(sceneEntity->getModelInfo().getVertexArray().size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexArray(), sceneEntity->getModelInfo().getIndexArray());}
     else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 ){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}
-    //else if(sceneEntity->getModelInfo().getVertexInfoArray().size() > 1 && sceneEntity->getModelInfo().m_Bones.size() > 1){setModelDataInBuffers(sceneEntity->getModelInfo().getVertexInfoArray(), sceneEntity->getModelInfo().getIndexArray());}//Aditya WIP
 }
 /*
  sets a copy of sceneEntity in the renderer
@@ -629,57 +628,35 @@ void _Renderer::updateMaterial(_Material m)
  * Draws frames on a avg of 60frames per second(is subjective and changes with hardware)
  * Used by: the _glWidget class paintGl(). calling stack : glwidget -> scene.render() -> this.draw()
 */
-uint lastFrame = 0;
 void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
 {
     setGLEnablements();//OpenGL based Rasterisation modifiers / Extension Invocations.
     //---
     shaderSelectorOvveride > shaderVec.size() ? shaderSelectorOvveride = 0 : shaderSelectorOvveride;
-    ssl = shaderSelectorOvveride;
-    if(sceneEntity->getIsActive())
-    {
-        //Using the shader program in the current context
+    ssl = shaderSelectorOvveride;//can use this number to oveeride the preloaded shading handles stored in shaderVec array.
+    if(sceneEntity->getIsActive()){
+        //Using/Binding the shader program in the for the current entity context
         shaderVec[ssl]->useShaderProgram();
 
         updateColorUniforms(); //Update the uniforms in shader, This needs to be under the relavant shaders->useprogram invocation to pass it to that shader if available.
         updateMatrixUniforms();//update the matirix uniform in shader, this helps in vertex deformations that help in tranformations and Translations of madels
 
-        //Test anim
-
-        // if(this->sceneEntity->getTag() == "Lady"){
-        float currentFrame = qtimer.elapsed() * 0.001;//sets the time elapsed
-        uint deltaTime = currentFrame - lastFrame;
-        uint lastFrame = currentFrame;
-
-        //            this->sceneEntity->animator.UpdateAnimation(deltaTime);
-
-        //            auto transforms = this->sceneEntity->animator.GetFinalBoneMatrices();
-        //            for (int i = 0; i < transforms.size(); ++i){
-        //               glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
-        //               //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(sceneEntity->getViewMatrix()));
-        //            }
-        //        }
-
-        if(this->sceneEntity->getTag() == "Lady") {
-//          std::vector<glm::mat4x4> transforms;
-//          this->sceneEntity->animator->GetBoneTransforms(deltaTime, transforms);
+        //Animate objects with animation information in its context
+        if(this->sceneEntity->animator != nullptr && this->sceneEntity->animator->hasAnimations() == true) {
+             glUniform1i(shaderVec[ssl]->getUniformLocation("hasAnimation"),true);//indicate to the shader as well that animations exists.So that is starts using the transforms passes below.
+            float currentTime = qtimer.elapsed() * 0.001;//sets the time elapsed;
             std::vector<aiMatrix4x4> transforms;
-            this->sceneEntity->animator->boneTransform(currentFrame,transforms);
-            for (uint i = 0 ; i < transforms.size() ; i++) {
-                //glm::mat4 t = this->sceneEntity->animator->mat4_cast(transforms[i]);
-                //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("gBones[" + std::to_string(i) + "]").c_str()), 1, GL_TRUE, glm::value_ptr(t));
+            this->sceneEntity->animator->boneTransform(currentTime,transforms);
+            for (uint i = 0 ; i < transforms.size() ; i++) {//Pass the transform info into the shader
                 glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation(("gBones[" + std::to_string(i) + "]").c_str()), 1, GL_TRUE,  (const GLfloat*)&transforms[i]);
             }
-
-            //this->sceneEntity->animator->GetBoneTransforms((float)deltaTime, Transforms);
-            //glUniformMatrix4fv(shaderVec[ssl]->getUniformLocation("gBones"), (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
         }
 
-
-        //Bind Textures
+        //Bind Textures per Entity context
         for(uint t=0;t<textures.size();t++){
             textures[t].bind(t+1);//starts with 1 , as the 0th is assigned to the FBO tex
         }
+
         //set the shadow txture in the shader , make sure the tex slot matches the one you set in setupTexture();
         glActiveTexture(GL_TEXTURE4);//sets the shadow texture in the shader
         glBindTexture(GL_TEXTURE_2D,shadoDepthTex);
@@ -698,8 +675,8 @@ void _Renderer::_Renderer::draw(uint shaderSelectorOvveride)
         glDrawArrays(GL_LINES, 0, 3) :
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);//The Final draw call for each frame
 
-        //Reset relative the buffers binds
-        //        glBindVertexArray(0);//Clear the buffer
+        //Reset/unbind relevant buffers information
+        glBindVertexArray(0);//Clear the buffer
         for(uint t=0;t<textures.size();t++){textures[t].unbind();}
     }
 }

@@ -36,16 +36,21 @@ public:
     _Anim(std::string pathToModelFile);//Load model and anim data from model file
     ~_Anim();
 
-    const aiScene* assimpScene = nullptr;
+    void boneTransform(double time_in_sec, std::vector<aiMatrix4x4>& transforms);
+    bool hasAnimations() const;
+
+private:
+    //Vars
+    const aiScene* assimpScene;
     Assimp::Importer *importer;
-    void loadAssimpScene(const aiScene* scene, std::string path);
-
-
+    glm::quat rotate_head_xz;
+    aiMatrix4x4 m_GlobalInverseTransform;
     std::map<std::string,uint> m_BoneNameToIndexMap;
     std::vector<BoneTranformMatrixInfo> m_BoneTranformMatrixInfo;
+    bool _hasAnimation = false;
 
-    glm::quat rotate_head_xz = glm::quat(cos(glm::radians(0.0f)), sin(glm::radians(0.0f)) * glm::vec3(1.0f, 0.0f, 0.0f));
-    aiMatrix4x4 m_GlobalInverseTransform;
+    //Functions
+    void loadAssimpScene(const aiScene* scene, std::string path);
 
     aiQuaternion nlerp(aiQuaternion a, aiQuaternion b, float blend);
     uint findPosition(float p_animation_time, const aiNodeAnim* p_node_anim);
@@ -58,9 +63,6 @@ public:
 
     const aiNodeAnim * findNodeAnim(const aiAnimation * p_animation, const std::string p_node_name);
     void readNodeHierarchy(float p_animation_time, const aiNode* p_node, const aiMatrix4x4 parent_transform);
-    void boneTransform(double time_in_sec, std::vector<aiMatrix4x4>& transforms);
-
-private:
 
 };
 

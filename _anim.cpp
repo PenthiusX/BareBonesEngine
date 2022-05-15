@@ -1,8 +1,8 @@
 #include "_anim.h"
 
-_Anim::_Anim()
-{
-
+_Anim::_Anim(){
+    this->_hasAnimation = false;
+    this->assimpScene = nullptr;
 }
 //-------------------------------------------------------------------------------------------
 _Anim::_Anim(std::string pathToModelFile)
@@ -11,11 +11,7 @@ _Anim::_Anim(std::string pathToModelFile)
 
     importer = new Assimp::Importer;
     assimpScene = importer->ReadFile(pathToModelFile,
-                                     aiProcess_GenSmoothNormals |
-                                     aiProcess_CalcTangentSpace |
-                                     aiProcess_Triangulate |
-                                     //aiProcess_JoinIdenticalVertices //|
-                                     aiProcess_SortByPType
+                                     aiProcess_LimitBoneWeights
                                      );
 
     if(assimpScene) {
@@ -28,13 +24,16 @@ _Anim::~_Anim(){
     delete importer;
 }
 //-------------------------------------------------------------------------------------------
-//Load up Animation realted
+/*
+ *
+ */
 void _Anim::loadAssimpScene(const aiScene *scene, std::string path) {
     for(uint i = 0; i < scene->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[i];
         if(mesh->HasBones())
         {
+            this->_hasAnimation = true;
             for (int b = 0; b < mesh->mNumBones; b++)
             {
                 int boneIndex = 0;
@@ -58,6 +57,9 @@ void _Anim::loadAssimpScene(const aiScene *scene, std::string path) {
     }
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 aiQuaternion _Anim::nlerp(aiQuaternion a, aiQuaternion b, float blend) {
 
     a.Normalize();
@@ -82,6 +84,9 @@ aiQuaternion _Anim::nlerp(aiQuaternion a, aiQuaternion b, float blend) {
     return result.Normalize();
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 uint _Anim::findPosition(float p_animation_time, const aiNodeAnim *p_node_anim) {
     for (uint i = 0; i < p_node_anim->mNumPositionKeys - 1; i++){
         if (p_animation_time < (float)p_node_anim->mPositionKeys[i + 1].mTime){
@@ -92,6 +97,9 @@ uint _Anim::findPosition(float p_animation_time, const aiNodeAnim *p_node_anim) 
     return 0;
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 uint _Anim::findRotation(float p_animation_time, const aiNodeAnim *p_node_anim) {
     for (uint i = 0; i < p_node_anim->mNumRotationKeys - 1; i++) {
         if (p_animation_time < (float)p_node_anim->mRotationKeys[i + 1].mTime) {
@@ -102,6 +110,9 @@ uint _Anim::findRotation(float p_animation_time, const aiNodeAnim *p_node_anim) 
     return 0;
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 uint _Anim::findScaling(float p_animation_time, const aiNodeAnim *p_node_anim)
 {
     for (uint i = 0; i < p_node_anim->mNumScalingKeys - 1; i++) {
@@ -109,11 +120,13 @@ uint _Anim::findScaling(float p_animation_time, const aiNodeAnim *p_node_anim)
             return i;
         }
     }
-
     assert(0);
     return 0;
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 aiVector3D _Anim::calcInterpolatedPosition(float p_animation_time, const aiNodeAnim *p_node_anim)
 {
     if (p_node_anim->mNumPositionKeys == 1)
@@ -136,6 +149,9 @@ aiVector3D _Anim::calcInterpolatedPosition(float p_animation_time, const aiNodeA
     return start + factor * delta;
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 aiQuaternion _Anim::calcInterpolatedRotation(float p_animation_time, const aiNodeAnim *p_node_anim)
 {
     if (p_node_anim->mNumRotationKeys == 1)
@@ -158,6 +174,9 @@ aiQuaternion _Anim::calcInterpolatedRotation(float p_animation_time, const aiNod
     return nlerp(start_quat, end_quat, factor);
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 aiVector3D _Anim::calcInterpolatedScaling(float p_animation_time, const aiNodeAnim *p_node_anim)
 {
     if (p_node_anim->mNumScalingKeys == 1)
@@ -180,6 +199,9 @@ aiVector3D _Anim::calcInterpolatedScaling(float p_animation_time, const aiNodeAn
     return start + factor * delta;
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 const aiNodeAnim *_Anim::findNodeAnim(const aiAnimation *p_animation, const std::string p_node_name)
 {
     for (uint i = 0; i < p_animation->mNumChannels; i++)
@@ -193,6 +215,9 @@ const aiNodeAnim *_Anim::findNodeAnim(const aiAnimation *p_animation, const std:
     return nullptr;
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 void _Anim::readNodeHierarchy(float p_animation_time, const aiNode *p_node, const aiMatrix4x4 parent_transform)
 {
     std::string node_name = p_node->mName.data;
@@ -217,10 +242,10 @@ void _Anim::readNodeHierarchy(float p_animation_time, const aiNode *p_node, cons
         aiMatrix4x4 translate_matr;
         aiMatrix4x4::Translation(translate_vector, translate_matr);
 
-        if ( std::string(node_anim->mNodeName.data) == std::string("Head")) {
+        if ( std::string(node_anim->mNodeName.data) == "Head") {
             //this rotation will additively add rotational transformation on the bone that is named head.
+            rotate_head_xz = glm::quat(cos(glm::radians(100.0f)), sin(glm::radians(0.0f)) * glm::vec3(1.0f, 0.0f, 0.0f));
             aiQuaternion rotate_head = aiQuaternion(rotate_head_xz.w, rotate_head_xz.x, rotate_head_xz.y, rotate_head_xz.z);
-
             node_transform = translate_matr * (rotate_matr * aiMatrix4x4(rotate_head.GetMatrix())) * scaling_matr;
         }
         else {
@@ -235,10 +260,13 @@ void _Anim::readNodeHierarchy(float p_animation_time, const aiNode *p_node, cons
         m_BoneTranformMatrixInfo[bone_index].FinalTransformation = m_GlobalInverseTransform * global_transform * m_BoneTranformMatrixInfo[bone_index].OffsetMatrix;
     }
     for (uint i = 0; i < p_node->mNumChildren; i++) {
-        readNodeHierarchy(p_animation_time, p_node->mChildren[i], global_transform);
+        readNodeHierarchy(p_animation_time, p_node->mChildren[i], global_transform);//Traverse the tree.
     }
 }
 //-------------------------------------------------------------------------------------------
+/*
+ *
+ */
 void _Anim::boneTransform(double time_in_sec, std::vector<aiMatrix4x4> &transforms)
 {
     aiMatrix4x4 identity_matrix; // = mat4(1.0f);
@@ -254,5 +282,9 @@ void _Anim::boneTransform(double time_in_sec, std::vector<aiMatrix4x4> &transfor
     for (uint i = 0; i < m_BoneTranformMatrixInfo.size(); i++){
         transforms[i] = m_BoneTranformMatrixInfo[i].FinalTransformation;
     }
+}
+
+bool _Anim::hasAnimations() const{
+    return this->_hasAnimation;
 }
 //-------------------------------------------------------------------------------------------
